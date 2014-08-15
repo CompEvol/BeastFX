@@ -145,7 +145,7 @@ public class HTTPPostServer extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				sendResponse(404, "Error: " + e.getMessage() + "<br>YABBY_is_done", false, null);
+				sendResponse(404, "Error: " + e.getMessage() + "<br>BEASTFX_is_done", false, null);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

@@ -22,16 +22,16 @@
     <import file="${beast2path}/build.xml" />
 
 
-	<property name="main_class_BEAST" value="beastfx.app.beastfx.BeastFX" />
+	<property name="main_class_BEASTFX" value="beastfx.app.beastfx.BeastFX" />
 	<property name="report" value="${buildFX}/junitreport"/>
 
 	<path id="classpath">
         <pathelement path="${buildFX}"/>
-		<fileset dir="${libFX}" includes="junit-4.8.2.jar"/>
 		<fileset dir="${beast2path}/lib" includes="jam.jar"/>
 		<fileset dir="${beast2path}/lib" includes="beagle.jar"/>
 		<fileset dir="${beast2path}/lib" includes="fest.jar"/>
 		<fileset dir="${beast2path}/lib" includes="colt.jar"/>
+		<fileset dir="${beast2path}/lib" includes="junit-4.8.2.jar"/>
         <pathelement path="${beast2classpath}"/>
 	</path>
 
@@ -77,14 +77,18 @@
 		       memorymaximumsize="1024m"
 			   source="1.8"
 		       target="1.8">
-			<include name="beast/**/**" />
+			<include name="beastfx/**/**" />
 			<!-- compile JUnit test classes -->
-			<include name="test/beast/**" />
+			<include name="test/**" />
 		</javac>
 	    <copy todir="${buildFX}/javascript">
-		<fileset dir="${srcFC}/javascript" includes="**/*"/>
-		<fileset dir="${srcFC}/javascript" includes="beastfx/*"/>
+			<fileset dir="${srcFX}/javascript" includes="**/*"/>
+			<fileset dir="${srcFX}/javascript" includes="beastfx/*"/>
 	    </copy>
+	    <copy todir="${buildFX}">
+			<fileset dir="${srcFX}" includes="beastfx.*"/>
+	    </copy>
+
 		<echo message="Successfully compiled." />
 	</target>
 
@@ -97,10 +101,12 @@
 		<jar jarfile="${distFX}/BeastFX.jar">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Main-Class" value="${main_class_BEAST}" />
+				<attribute name="Main-Class" value="${main_class_BEASTFX}" />
 			</manifest>
 			<fileset dir="${buildFX}">
-				<include name="beast/**/*.class" />
+				<include name="**/*.class" />
+				<include name="javascript/**/*" />
+				<include name="beastfx*" />
 			</fileset>
 			<fileset dir="${beast2classpath}">
 				<include name="**/*" />
