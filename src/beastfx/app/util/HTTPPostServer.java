@@ -11,8 +11,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import javax.swing.JFrame;
-
 import beastfx.app.beastfx.BeastFX;
 import beast.core.util.Log;
 import beast.util.AddOnManager;
@@ -92,36 +90,17 @@ public class HTTPPostServer extends Thread {
 						file = new File(PKG_DIR + httpQueryString);
 					}
 					if (file == null || !file.exists()) {
-	if (handler != null) {
-		String response = handler.handleRequest(httpQueryString, null);
-System.err.println("RESPONSE\n" + response);
-		sendResponse(200, response, false, in);
-	} else {
-System.err.println("RESPONSE2\n404 error");
-		sendResponse(404, "<b>Requested resource was not found ...." + "Usage: http://127.0.0.1:5000</b>", false, in);
-	}
-} else {
-	in = new FileInputStream(file);
-}
+						if (handler != null) {
+							String response = handler.handleRequest(httpQueryString, null);
+							sendResponse(200, response, false, in);
+						} else {
+							sendResponse(404, "<b>Requested resource was not found ...." + "Usage: http://127.0.0.1:5000</b>", false, in);
+						}
+					} else {
+						in = new FileInputStream(file);
+					}
 
-//					InputStream in = getClass().getResourceAsStream(httpQueryString);
-//					if (in == null) {
-//System.err.println("NULL1\n" + httpQueryString);
-//						in = getClass().getResourceAsStream("../../../" + httpQueryString);
-//						if (in == null) {
-//System.err.println("NULL2\n" + httpQueryString);
-//							if (handler != null) {
-//								String response = handler.handleRequest(httpQueryString, null);
-//System.err.println("RESPONSE\n" + response);
-//								sendResponse(200, response, false, in);
-//							} else {
-//System.err.println("RESPONSE2\n404 error");
-//								sendResponse(404, "<b>Requested resource was not found ...." + "Usage: http://127.0.0.1:5000</b>", false, in);
-//							}
-//						}
-//					}
 					if (in != null) {
-System.err.println("RESPONSE3\n" + in);
 						sendResponse(200, httpQueryString, true, in);
 						in.close();
 					}
