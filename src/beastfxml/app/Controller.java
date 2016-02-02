@@ -23,7 +23,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebEngine;
@@ -128,7 +127,7 @@ public class Controller implements Initializable {
 		PrintStream p3 = new PrintStream(new BOAS("color:green"));
 		System.setOut(p1);
 		System.setErr(p2);
-		//Log.err = p2;
+		Log.err = p2;
 		Log.warning = p2;
 		Log.info = p1;
 		Log.debug = p3;
@@ -142,6 +141,18 @@ public class Controller implements Initializable {
 		Set<Integer> set = IntStream.range(1, 21).boxed().collect(Collectors.toSet());
 		threads.setItems(FXCollections.observableArrayList(set));
 		threads.setValue(1);
+		
+		
+		new Thread() {
+			public void run() {
+				try {
+					sleep(2000);
+					// clear backlog if any
+					logToView(null, null);
+				} catch (InterruptedException e) {
+				}
+			};
+		}.start();
 	}
 
 	@FXML
@@ -246,26 +257,48 @@ public class Controller implements Initializable {
 
 	private boolean isPre;
 
-	void logToView(String data, String style) {
+	class Message {
+		public Message(String data, String style) {
+			this.data = data;
+			this.style = style;
+		}
+		
+		String data; 
+		String style;
+	};
+	List<Message> backLog = new ArrayList<>();
+	
+	void logToView(String _data, String _style) {
 		// new Runnable() {
 		// public void run() {
 		Platform.runLater(new Runnable() {
 			public void run() { /* your code here */
 				Document doc = output.getEngine().getDocument();
-				if (isPre) {
-					Element el = doc.getElementById("pre");
-					String text = el.getTextContent();
-					text += "\n" + data;
-					el.setTextContent(text);
-				} else {
-					Element newLine = doc.createElement("DIV");
-					newLine.setAttribute("style", "padding: 0 0 0 0;" + style);
-					newLine.appendChild(doc.createTextNode(data));
-					Element el = doc.getElementById("pre");
-					el.appendChild(newLine);
-					// el.appendChild(doc.createElement("BR"));
+				if (_style != null) {
+					backLog.add(new Message(_data, _style));
+				}
+				if (doc == null) {
+					return;
+				}
+				for (Message msg : backLog) {
+					String data = msg.data;
+					String style = msg.style;
+					if (isPre) {
+						Element el = doc.getElementById("pre");
+						String text = el.getTextContent();
+						text += "\n" + data;
+						el.setTextContent(text);
+					} else {
+						Element newLine = doc.createElement("DIV");
+						newLine.setAttribute("style", "padding: 0 0 0 0;" + style);
+						newLine.appendChild(doc.createTextNode(data));
+						Element el = doc.getElementById("pre");
+						el.appendChild(newLine);
+						// el.appendChild(doc.createElement("BR"));
+					}
 				}
 				output.getEngine().executeScript("toBottom()");
+				backLog.clear();
 			}
 		});
 		// }

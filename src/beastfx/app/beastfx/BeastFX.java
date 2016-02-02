@@ -199,11 +199,6 @@ public class BeastFX extends Application implements HTTPRequestHandler {
 	        } catch (XMLParserException e) {
 	            Log.err.println(e.getMessage());
 				Log.info.println(BEASTFX_IS_DONE);
-	            //e.printStackTrace();
-	        } catch (JSONParserException e) {
-	            Log.err.println(e.getMessage());
-				Log.info.println(BEASTFX_IS_DONE);
-	            //e.printStackTrace();
 			} catch (Exception e) {
 				Log.err.println("Could not start MCMC: " + e.getMessage());
 				Log.info.println(BEASTFX_IS_DONE);
