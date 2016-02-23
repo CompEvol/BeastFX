@@ -88,8 +88,10 @@
             <ChoiceBox fx:id="precision" layoutX="111.0" layoutY="67.0" prefHeight="26.0" prefWidth="129.0" />
             <ChoiceBox fx:id="scaling" layoutX="111.0" layoutY="101.0" prefHeight="26.0" prefWidth="129.0" />
             <Label layoutX="8.0" layoutY="106.0" text="Scaling" />
-            <ChoiceBox fx:id="threads" layoutX="111.0" layoutY="4.0" prefHeight="26.0" prefWidth="43.0" />
+            <ChoiceBox fx:id="threads" layoutX="66.0" layoutY="4.0" prefHeight="26.0" prefWidth="43.0" />
             <Label layoutX="11.0" layoutY="9.0" text="Threads" />
+            <Label layoutX="117.0" layoutY="9.0" text="Instances" />
+            <ChoiceBox fx:id="instances" layoutX="190.0" layoutY="4.0" prefHeight="26.0" prefWidth="50.0" />
          </children>
       </Pane>
       <Label layoutX="113.0" layoutY="117.0" text="Log level:" />

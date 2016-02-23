@@ -44,6 +44,8 @@ public class Controller implements Initializable {
 	
 	@FXML
 	private ChoiceBox<Integer> threads;
+	@FXML
+	private ChoiceBox<Integer> instances;
 
 	@FXML
 	private ChoiceBox<String> logFileMode;
@@ -142,6 +144,8 @@ public class Controller implements Initializable {
 		threads.setItems(FXCollections.observableArrayList(set));
 		threads.setValue(1);
 		
+		instances.setItems(FXCollections.observableArrayList(set));
+		instances.setValue(1);
 		
 		new Thread() {
 			public void run() {
@@ -200,6 +204,7 @@ public class Controller implements Initializable {
 		MCMCArgs.add(seed.getText());
 		MCMCArgs.add("-threads");
 		MCMCArgs.add(threads.getSelectionModel().getSelectedItem() + "");
+        System.setProperty("beast.instance.count", instances.getSelectionModel().getSelectedItem() +"");
 
 		String beagle = this.beagle.getSelectionModel().getSelectedItem();
 		if (beagle.equals(beagles[0])) {
