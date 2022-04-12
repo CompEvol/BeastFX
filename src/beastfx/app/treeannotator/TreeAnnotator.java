@@ -25,6 +25,7 @@
 
 package beastfx.app.treeannotator;
 
+
 import java.io.*;
 import java.util.*;
 
@@ -48,8 +49,9 @@ import beast.base.util.HeapSort;
 import beast.pkgmgmt.Arguments;
 import beast.pkgmgmt.BEASTVersion;
 
-import javafx.application.Application;
-import javafx.application.Platform;
+import beastfx.app.util.Console;
+
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -63,7 +65,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
  * 
  * TreeAnnotator ported from BEAST 1
  */
-public class TreeAnnotator extends beastfx.app.util.Console {
+public class TreeAnnotator extends Console {
 
     private final static BEASTVersion version = new BEASTVersion();
 
@@ -1182,10 +1184,15 @@ public class TreeAnnotator extends beastfx.app.util.Console {
     static private Controller controller;
 
     @Override
-	protected void createDialog() {
-		
+	protected void createDialog() {		
+		PrintStream err = System.err;
+		System.setErr(new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		    }
+		}));
 		Utils.loadUIManager();
-
+		System.setErr(err);
+		
         System.setProperty("com.apple.macos.useScreenMenuBar", "true");
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.showGrowBox", "true");
@@ -1224,9 +1231,11 @@ public class TreeAnnotator extends beastfx.app.util.Console {
         printTitle();
 
 
+        // next line initialises JavaFX toolkit
+//        new JFXPanel();
         
-		Platform.runLater(new Runnable() {
-	        public void run() {
+//		Platform.runLater(new Runnable() {
+//	        public void run() {
 	        	try {
 					Dialog<String> dialog = new Dialog<>();
 				    dialog.setTitle("TreeAnnotator " + BEASTVersion.INSTANCE.getVersion());
@@ -1251,6 +1260,8 @@ public class TreeAnnotator extends beastfx.app.util.Console {
 					    controller = fl.getController();
 			        	controller.run(null);
 			        } else {
+			        	Log.warning("Quiting TreeAnnotator");
+			        	System.exit(0);
 			    		return;
 			        }
 
@@ -1307,38 +1318,38 @@ public class TreeAnnotator extends beastfx.app.util.Console {
 
 		        progressStream.println("Finished - Quit program to exit.");
 
-		        while (true) {
-		            try {
-		                Thread.sleep(100);
-		            } catch (InterruptedException e) {
-		                e.printStackTrace();
-		            }
-		        }
+//		        while (true) {
+//		            try {
+//		                Thread.sleep(100);
+//		            } catch (InterruptedException e) {
+//		                e.printStackTrace();
+//		            }
+//		        }
 //			}
 //		}.start();
 
 		        } catch (IOException e) {
 		        	e.printStackTrace();
 		        }
-		    }});
+	// }});
     }
 
 
     //Main method
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) {
         // There is a major issue with languages that use the comma as a decimal separator.
         // To ensure compatibility between programs in the package, enforce the US locale.
         Locale.setDefault(Locale.US);
-
-        String targetTreeFileName = null;
-        String inputFileName = null;
-        String outputFileName = null;
 
         if (args.length == 0) {
         	launch();
         	return;
         }
+
+        String targetTreeFileName = null;
+        String inputFileName = null;
+        String outputFileName = null;
+
 
         printTitle();
 
@@ -1456,8 +1467,8 @@ public class TreeAnnotator extends beastfx.app.util.Console {
         
         try {
         	new TreeAnnotator(burnin, lowMem, heights, posteriorLimit, hpd2D, target, targetTreeFileName, inputFileName, outputFileName);
-        } catch (IOException e) {
-        	throw e;
+        //} catch (IOException e) {
+        //	throw e;
         } catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1575,5 +1586,6 @@ public class TreeAnnotator extends beastfx.app.util.Console {
 
         return true;
     }
+
 }
 

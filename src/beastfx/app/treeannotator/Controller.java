@@ -59,14 +59,14 @@ public class Controller implements Initializable {
 	}
 
 	public void run(ActionEvent e) {
-		System.out.println("nodeHeights: " + nodeHeights.getValue());
-		System.out.println("treeType: " + treeType.getValue() + " " + treeType.getItems());
-		System.out.println("lowMemory: " + lowMemory.isSelected());
-		System.out.println("burninPercentage: " + burninPercentage.getText());
-		System.out.println("posteriorLimit: " + posteriorLimit.getText());
-		System.out.println("targetTreeFile: " + targetTreeFile.getText());
-		System.out.println("inputTreeFile: " + inputTreeFile.getText());
-		System.out.println("outputFile: " + outputFile.getText());
+//		System.out.println("nodeHeights: " + nodeHeights.getValue());
+//		System.out.println("treeType: " + treeType.getValue() + " " + treeType.getItems());
+//		System.out.println("lowMemory: " + lowMemory.isSelected());
+//		System.out.println("burninPercentage: " + burninPercentage.getText());
+//		System.out.println("posteriorLimit: " + posteriorLimit.getText());
+//		System.out.println("targetTreeFile: " + targetTreeFile.getText());
+//		System.out.println("inputTreeFile: " + inputTreeFile.getText());
+//		System.out.println("outputFile: " + outputFile.getText());
 
 //		Alert alert = new Alert(AlertType.INFORMATION, "Running tree annotator", ButtonType.CLOSE);
 //		alert.showAndWait();

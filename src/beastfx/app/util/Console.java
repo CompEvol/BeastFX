@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import beast.base.core.Log;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -68,7 +69,7 @@ public class Console extends javafx.application.Application {
 		Log.trace = p;
 	}
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 	    launch();
 	}
 
@@ -104,7 +105,12 @@ public class Console extends javafx.application.Application {
 		});
 		
 		initStreams();
-        createDialog();
+		
+		Platform.runLater(new Runnable() {
+	        public void run() {
+	        	createDialog();
+	        }
+		});
 	}       
 	
 }
