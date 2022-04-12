@@ -1,4 +1,4 @@
-package beastfx.beauti;
+package beastfx.app.inputeditor;
 
 //import java.awt.Color;
 //import java.awt.Component;
@@ -25,6 +25,9 @@ import javax.swing.event.ListSelectionListener;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
+import beastfx.app.beauti.BeautiDoc;
+import beastfx.app.beauti.BeautiPanel;
+import beastfx.app.beauti.BeautiPanelConfig;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
@@ -170,6 +173,7 @@ public abstract class Base extends HBox implements InputEditor {
     // TODO since its currently set by an input of BeautiPanelConfig, which can be different for each BeautiPanel.
     public static int g_nLabelWidth = 150;
 
+    public Base() {}
 	public Base(BeautiDoc doc) {
 		// setLayout(new HBox());
 		this.doc = doc;

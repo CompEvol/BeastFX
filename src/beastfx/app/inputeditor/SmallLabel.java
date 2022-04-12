@@ -1,4 +1,4 @@
-package beastfx.beauti;
+package beastfx.app.inputeditor;
 
 
 
