@@ -68,8 +68,8 @@ public class Controller implements Initializable {
 		System.out.println("inputTreeFile: " + inputTreeFile.getText());
 		System.out.println("outputFile: " + outputFile.getText());
 
-		Alert alert = new Alert(AlertType.INFORMATION, "Running tree annotator", ButtonType.CLOSE);
-		alert.showAndWait();
+//		Alert alert = new Alert(AlertType.INFORMATION, "Running tree annotator", ButtonType.CLOSE);
+//		alert.showAndWait();
 	}
 
 	public void quit(ActionEvent e) {
@@ -126,11 +126,21 @@ public class Controller implements Initializable {
 	}
 
 	public Target getTargetOption() {
-		return Target.valueOf(treeType.getValue());
+		for (Target t : Target.values()) {
+			if (t.toString().equals(treeType.getValue())) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 	public HeightsSummary getHeightsOption() {
-		return HeightsSummary.valueOf(nodeHeights.getValue());
+		for (HeightsSummary t : HeightsSummary.values()) {
+			if (t.toString().equals(nodeHeights.getValue())) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 	public String getTargetFileName() {

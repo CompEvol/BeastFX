@@ -42,7 +42,7 @@
       <Label text="Target tree type:" GridPane.rowIndex="2" />
       
       <TextField fx:id="burninPercentage" prefWidth="20.0" maxWidth="75" text="10" GridPane.columnIndex="1" />
-      <TextField fx:id="posteriorLimit" prefHeight="25.0" maxWidth="75.0" text="5" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="posteriorLimit" prefHeight="25.0" maxWidth="75.0" text="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Label text="Node heights:" GridPane.rowIndex="3" />
       <ComboBox fx:id="treeType" onAction="#refresh" prefWidth="250.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
       <ComboBox fx:id="nodeHeights" onAction="#refresh" prefWidth="250.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
@@ -52,13 +52,11 @@
       <Label text="Low memory:" GridPane.rowIndex="8" />
       <CheckBox fx:id="lowMemory" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="8" />
       <TextField fx:id="targetTreeFile" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-      <TextField fx:id="inputTreeFile" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      <TextField fx:id="outputFile" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      <TextField fx:id="inputTreeFile" GridPane.columnIndex="1" GridPane.rowIndex="6" text="dna.trees"/>
+      <TextField fx:id="outputFile" GridPane.columnIndex="1" GridPane.rowIndex="7" text="dna.tree"/>
       <Button fx:id="targetTreeFileButton" disable="true" mnemonicParsing="false" onAction="#chooseTargetTreeFile" text="Choose file..." GridPane.columnIndex="2" GridPane.rowIndex="5" />
       <Button mnemonicParsing="false" onAction="#chooseInputTreeFile" text="Choose file..." GridPane.columnIndex="2" GridPane.rowIndex="6" />
       <Button mnemonicParsing="false" onAction="#chooseOutputFile" text="Choose file..." GridPane.columnIndex="2" GridPane.rowIndex="7" />
-      <Button mnemonicParsing="false" onAction="#run" prefWidth="100" text="Run" GridPane.columnIndex="2" GridPane.rowIndex="9" />
-      <Button mnemonicParsing="false" onAction="#quit" prefWidth="100" text="Quit" GridPane.columnIndex="1" GridPane.rowIndex="9" />
       <Separator prefHeight="0.0" prefWidth="432.0" GridPane.columnSpan="3" GridPane.rowIndex="4" />
    </children>
    <padding>

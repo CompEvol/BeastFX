@@ -47,12 +47,14 @@ import beast.base.util.FileUtils;
 import beast.base.util.HeapSort;
 import beast.pkgmgmt.Arguments;
 import beast.pkgmgmt.BEASTVersion;
-import beastfx.app.util.ConsoleTextArea;
+
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.stage.Stage;
 import javafx.scene.control.ButtonBar.ButtonData;
 
 /**
@@ -61,7 +63,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
  * 
  * TreeAnnotator ported from BEAST 1
  */
-public class TreeAnnotator {
+public class TreeAnnotator extends beastfx.app.util.Console {
 
     private final static BEASTVersion version = new BEASTVersion();
 
@@ -1077,41 +1079,9 @@ public class TreeAnnotator {
         node.setMetaData(label, new Object[]{lower, upper});
     }
 
-    // todo Move rEngine to outer class; create once.
-//        Rengine rEngine = null;
-//
-//        private final String[] rArgs = {"--no-save"};
-//
-//
-//        private final String[] rBootCommands = {
-//                "library(MASS)",
-//                "makeContour = function(var1, var2, prob=0.95, n=50, h=c(1,1)) {" +
-//                        "post1 = kde2d(var1, var2, n = n, h=h); " +    // This had h=h in argument
-//                        "dx = diff(post1$x[1:2]); " +
-//                        "dy = diff(post1$y[1:2]); " +
-//                        "sz = sort(post1$z); " +
-//                        "c1 = cumsum(sz) * dx * dy; " +
-//                        "levels = sapply(prob, function(x) { approx(c1, sz, xout = 1 - x)$y }); " +
-//                        "line = contourLines(post1$x, post1$y, post1$z, level = levels); " +
-//                        "return(line) }"
-//        };
-//
-//        private String makeRString(double[] values) {
-//            StringBuffer sb = new StringBuffer("c(");
-//            sb.append(values[0]);
-//            for (int i = 1; i < values.length; i++) {
-//                sb.append(",");
-//                sb.append(values[i]);
-//            }
-//            sb.append(")");
-//            return sb.toString();
-//        }
+
 
     public static final String CORDINATE = "cordinates";
-
-//		private String formattedLocation(double loc1, double loc2) {
-//			return formattedLocation(loc1) + "," + formattedLocation(loc2);
-//		}
 
     private String formattedLocation(double x) {
         return String.format("%5.2f", x);
@@ -1121,71 +1091,8 @@ public class TreeAnnotator {
                                         double hpd, double[][] values) {
         if (USE_R) {
 
-            // Uses R-Java interface, and the HPD routines from 'emdbook' and 'coda'
-
-//                int N = 50;
-//                if (rEngine == null) {
-//
-//                    if (!Rengine.versionCheck()) {
-//                        throw new RuntimeException("JRI library version mismatch");
-//                    }
-//
-//                    rEngine = new Rengine(rArgs, false, null);
-//
-//                    if (!rEngine.waitForR()) {
-//                        throw new RuntimeException("Cannot load R");
-//                    }
-//
-//                    for (String command : rBootCommands) {
-//                        rEngine.eval(command);
-//                    }
-//                }
-//
-//                // todo Need a good method to pick grid size
-//
-//
-//                REXP x = rEngine.eval("makeContour(" +
-//                        makeRString(values[0]) + "," +
-//                        makeRString(values[1]) + "," +
-//                        hpd + "," +
-//                        N + ")");
-//
-//                RVector contourList = x.asVector();
-//                int numberContours = contourList.size();
-//
-//                if (numberContours > 1) {
-//                    Log.err.println("Warning: a node has a disjoint " + 100 * hpd + "% HPD region.  This may be an artifact!");
-//                    Log.err.println("Try decreasing the enclosed mass or increasing the number of samples.");
-//                }
-//
-//
-//                node.setMetaData(preLabel + postLabel + "_modality", numberContours);
-//
-//                StringBuffer output = new StringBuffer();
-//                for (int i = 0; i < numberContours; i++) {
-//                    output.append("\n<" + CORDINATE + ">\n");
-//                    RVector oneContour = contourList.at(i).asVector();
-//                    double[] xList = oneContour.at(1).asDoubleArray();
-//                    double[] yList = oneContour.at(2).asDoubleArray();
-//                    StringBuffer xString = new StringBuffer("{");
-//                    StringBuffer yString = new StringBuffer("{");
-//                    for (int k = 0; k < xList.length; k++) {
-//                        xString.append(formattedLocation(xList[k])).append(",");
-//                        yString.append(formattedLocation(yList[k])).append(",");
-//                    }
-//                    xString.append(formattedLocation(xList[0])).append("}");
-//                    yString.append(formattedLocation(yList[0])).append("}");
-//
-//                    node.setMetaData(preLabel + "1" + postLabel + "_" + (i + 1), xString);
-//                    node.setMetaData(preLabel + "2" + postLabel + "_" + (i + 1), yString);
-//                }
-
 
         } else { // do not use R
-
-
-//                KernelDensityEstimator2D kde = new KernelDensityEstimator2D(values[0], values[1], N);
-            //ContourMaker kde = new ContourWithSynder(values[0], values[1], N);
             boolean bandwidthLimit = false;
 
             ContourMaker kde = new ContourWithSynder(values[0], values[1], bandwidthLimit);
@@ -1234,22 +1141,6 @@ public class TreeAnnotator {
 
     static boolean processBivariateAttributes = true;
     
-//    static {
-//        try {
-//            System.loadLibrary("jri");
-//            processBivariateAttributes = true;
-//            Log.err.println("JRI loaded. Will process bivariate attributes");
-//        } catch (UnsatisfiedLinkError e) {
-//            Log.err.print("JRI not available. ");
-//            if (!USE_R) {
-//                processBivariateAttributes = true;
-//                Log.err.println("Using Java bivariate attributes");
-//            } else {
-//                Log.err.println("Will not process bivariate attributes");
-//            }
-//        }
-//    }
-
     public static void printTitle() {
         progressStream.println();
         centreLine("TreeAnnotator " + version.getVersionString() + ", " + version.getDateString(), 60);
@@ -1290,6 +1181,149 @@ public class TreeAnnotator {
 
     static private Controller controller;
 
+    @Override
+	protected void createDialog() {
+		
+		Utils.loadUIManager();
+
+        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("apple.awt.showGrowBox", "true");
+
+        java.net.URL url = TreeAnnotator.class.getClassLoader().getResource("../tools/images/utility.png");
+        javax.swing.Icon icon = null;
+
+        if (url != null) {
+            icon = new javax.swing.ImageIcon(url);
+        }
+
+        final String versionString = version.getVersionString();
+        String nameString = "TreeAnnotator " + versionString;
+        String aboutString = "<html><center><p>" + versionString + ", " + version.getDateString() + "</p>" +
+                "<p>by<br>" +
+                "Andrew Rambaut and Alexei J. Drummond</p>" +
+                "<p>Institute of Evolutionary Biology, University of Edinburgh<br>" +
+                "<a href=\"mailto:a.rambaut@ed.ac.uk\">a.rambaut@ed.ac.uk</a></p>" +
+                "<p>Department of Computer Science, University of Auckland<br>" +
+                "<a href=\"mailto:alexei@cs.auckland.ac.nz\">alexei@cs.auckland.ac.nz</a></p>" +
+                "<p>Part of the BEAST package:<br>" +
+                "<a href=\"http://beast.bio.ed.ac.uk/\">http://beast.bio.ed.ac.uk/</a></p>" +
+                "</center></html>";
+
+        // new ConsoleApplication(nameString, aboutString, icon, true);
+        Log.info = System.out;
+        Log.err = System.err;
+
+        // The ConsoleApplication will have overridden System.out so set progressStream
+        // to capture the output to the window:
+        // new beastfx.app.util.Console();            
+        progressStream = System.out;
+        // System.out.println(nameString);
+        // System.out.println(aboutString);
+
+        printTitle();
+
+
+        
+		Platform.runLater(new Runnable() {
+	        public void run() {
+	        	try {
+					Dialog<String> dialog = new Dialog<>();
+				    dialog.setTitle("TreeAnnotator " + BEASTVersion.INSTANCE.getVersion());
+				    FXMLLoader fl = new FXMLLoader();
+				    fl.setLocation(TreeAnnotator.class.getResource("TreeAnnotator.fxml"));
+				    DialogPane root = fl.load();
+				    dialog.setDialogPane(root);
+			
+				    ButtonType run = new ButtonType("Run", ButtonData.OK_DONE);
+				    dialog.getDialogPane().getButtonTypes().add(run);
+				    ButtonType cancel = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
+				    dialog.getDialogPane().getButtonTypes().add(cancel);
+				    
+					//Showing the dialog on clicking the button
+			        Optional<String> result = dialog.showAndWait();
+			        dialog.close();
+			        
+			        Object o = result.get();
+			        String str = o.toString();
+			        
+				    if (str.equals(run.toString())) {
+					    controller = fl.getController();
+			        	controller.run(null);
+			        } else {
+			    		return;
+			        }
+
+//				    new Thread() {
+//			@Override
+//			public void run() {
+		        int burninPercentage = controller.getBurninPercentage();
+		        if (burninPercentage < 0) {
+		        	Log.warning.println("burnin percentage is " + burninPercentage + " but should be non-negative. Setting it to zero");
+		        	burninPercentage = 0;
+		        }
+		        if (burninPercentage >= 100) {
+		        	Log.err.println("burnin percentage is " + burninPercentage + " but should be less than 100.");
+		        	return;
+		        }
+		        double posteriorLimit = controller.getPosteriorLimit();
+		        double hpd2D = 0.80;
+		        Target targetOption = controller.getTargetOption();
+		        HeightsSummary heightsOption = controller.getHeightsOption();
+
+		        String targetTreeFileName = controller.getTargetFileName();
+		        if (targetOption == Target.USER_TARGET_TREE && targetTreeFileName == null) {
+		            Log.err.println("No target file specified");
+		            return;
+		        }
+
+		        String inputFileName = controller.getInputFileName();
+		        if (inputFileName == null) {
+		            Log.err.println("No input file specified");
+		            return;
+		        }
+
+		        String outputFileName = controller.getOutputFileName();
+		        if (outputFileName == null) {
+		            Log.err.println("No output file specified");
+		            return;
+		        }
+		    	boolean lowMem = controller.useLowMem();
+
+		        try {
+		            new TreeAnnotator(burninPercentage,
+		            		lowMem,
+		                    heightsOption,
+		                    posteriorLimit,
+		                    hpd2D,
+		                    targetOption,
+		                    targetTreeFileName,
+		                    inputFileName,
+		                    outputFileName);
+
+		        } catch (Exception ex) {
+		            Log.err.println("Exception: " + ex.getMessage());
+		        }
+
+		        progressStream.println("Finished - Quit program to exit.");
+
+		        while (true) {
+		            try {
+		                Thread.sleep(100);
+		            } catch (InterruptedException e) {
+		                e.printStackTrace();
+		            }
+		        }
+//			}
+//		}.start();
+
+		        } catch (IOException e) {
+		        	e.printStackTrace();
+		        }
+		    }});
+    }
+
+
     //Main method
     public static void main(String[] args) throws IOException {
 
@@ -1302,139 +1336,8 @@ public class TreeAnnotator {
         String outputFileName = null;
 
         if (args.length == 0) {
-        	Utils.loadUIManager();
-
-            System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("apple.awt.showGrowBox", "true");
-
-            java.net.URL url = TreeAnnotator.class.getClassLoader().getResource("../tools/images/utility.png");
-            javax.swing.Icon icon = null;
-
-            if (url != null) {
-                icon = new javax.swing.ImageIcon(url);
-            }
-
-            final String versionString = version.getVersionString();
-            String nameString = "TreeAnnotator " + versionString;
-            String aboutString = "<html><center><p>" + versionString + ", " + version.getDateString() + "</p>" +
-                    "<p>by<br>" +
-                    "Andrew Rambaut and Alexei J. Drummond</p>" +
-                    "<p>Institute of Evolutionary Biology, University of Edinburgh<br>" +
-                    "<a href=\"mailto:a.rambaut@ed.ac.uk\">a.rambaut@ed.ac.uk</a></p>" +
-                    "<p>Department of Computer Science, University of Auckland<br>" +
-                    "<a href=\"mailto:alexei@cs.auckland.ac.nz\">alexei@cs.auckland.ac.nz</a></p>" +
-                    "<p>Part of the BEAST package:<br>" +
-                    "<a href=\"http://beast.bio.ed.ac.uk/\">http://beast.bio.ed.ac.uk/</a></p>" +
-                    "</center></html>";
-
-            // new ConsoleApplication(nameString, aboutString, icon, true);
-            Log.info = System.out;
-            Log.err = System.err;
-
-            // The ConsoleApplication will have overridden System.out so set progressStream
-            // to capture the output to the window:
-            new beastfx.app.util.Console();            
-            progressStream = System.out;
-            System.out.println(nameString);
-            System.out.println(aboutString);
-
-            printTitle();
-
-
-            
-    		Platform.runLater(new Runnable() {
-    	        public void run() {
-    	        	try {
-    					Dialog<String> dialog = new Dialog<>();
-    				    dialog.setTitle("TreeAnnotator " + BEASTVersion.INSTANCE.getVersion());
-    				    FXMLLoader fl = new FXMLLoader();
-    				    fl.setLocation(Main.class.getResource("TreeAnnotator.fxml"));
-    				    DialogPane root = fl.load();
-    				    dialog.setDialogPane(root);
-    			
-    				    ButtonType run = new ButtonType("Run", ButtonData.OK_DONE);
-    				    dialog.getDialogPane().getButtonTypes().add(run);
-    				    ButtonType cancel = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
-    				    dialog.getDialogPane().getButtonTypes().add(cancel);
-    				    
-    					//Showing the dialog on clicking the button
-    			        Optional<String> result = dialog.showAndWait();
-    			        dialog.close();
-    			        
-    			        Object o = result.get();
-    			        String str = o.toString();
-    			        
-    				    if (str.equals(run.toString())) {
-    			        	System.out.println("Run result:" + result);
-    					    controller = fl.getController();
-    			        	controller.run(null);
-    			        } else {
-    			    		System.out.println("Quit result:" + result);
-    			    		return;
-    			        }
-    	        } catch (IOException e) {
-    	        	e.printStackTrace();
-    	        }
-    	    }});
-
-
-            int burninPercentage = controller.getBurninPercentage();
-            if (burninPercentage < 0) {
-            	Log.warning.println("burnin percentage is " + burninPercentage + " but should be non-negative. Setting it to zero");
-            	burninPercentage = 0;
-            }
-            if (burninPercentage >= 100) {
-            	Log.err.println("burnin percentage is " + burninPercentage + " but should be less than 100.");
-            	return;
-            }
-            double posteriorLimit = controller.getPosteriorLimit();
-            double hpd2D = 0.80;
-            Target targetOption = controller.getTargetOption();
-            HeightsSummary heightsOption = controller.getHeightsOption();
-
-            targetTreeFileName = controller.getTargetFileName();
-            if (targetOption == Target.USER_TARGET_TREE && targetTreeFileName == null) {
-                Log.err.println("No target file specified");
-                return;
-            }
-
-            inputFileName = controller.getInputFileName();
-            if (inputFileName == null) {
-                Log.err.println("No input file specified");
-                return;
-            }
-
-            outputFileName = controller.getOutputFileName();
-            if (outputFileName == null) {
-                Log.err.println("No output file specified");
-                return;
-            }
-        	boolean lowMem = controller.useLowMem();
-
-            try {
-                new TreeAnnotator(burninPercentage,
-                		lowMem,
-                        heightsOption,
-                        posteriorLimit,
-                        hpd2D,
-                        targetOption,
-                        targetTreeFileName,
-                        inputFileName,
-                        outputFileName);
-
-            } catch (Exception ex) {
-                Log.err.println("Exception: " + ex.getMessage());
-            }
-
-            progressStream.println("Finished - Quit program to exit.");
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        	launch();
+        	return;
         }
 
         printTitle();
@@ -1672,6 +1575,5 @@ public class TreeAnnotator {
 
         return true;
     }
-
 }
 
