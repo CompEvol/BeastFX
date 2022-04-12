@@ -1,32 +1,43 @@
 package beastfx.beauti;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
+//import java.awt.Color;
+//import java.awt.Component;
+//import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
+//import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+//import javax.swing.JLabel;
+//import javax.swing.JPanel;
+//import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 
-import beast.app.beauti.BeautiDoc;
-import beast.app.beauti.BeautiPanel;
-import beast.app.beauti.BeautiPanelConfig;
-import beast.core.BEASTInterface;
-import beast.core.Input;
-import beast.core.util.Log;
+// import beast.app.beauti.BeautiPanel;
+// import beast.app.inputeditor.BeautiDoc;
+import beast.base.core.BEASTInterface;
+import beast.base.core.Input;
+import beast.base.core.Log;
+import javafx.geometry.Dimension2D;
+import javafx.scene.Parent;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Box;
+import javafx.scene.text.TextAlignment;
 
 /**
  * Base class for editors that provide a GUI for manipulating an Input for a BEASTObject.
@@ -89,9 +100,9 @@ public interface InputEditor {
     /** propagate status of predecessor inputs through list of beastObjects **/
     void notifyValidationListeners(ValidationStatus state);
     
-    Component getComponent();
+    Parent getComponent();
 
-public abstract class Base extends Pane implements InputEditor {
+public abstract class Base extends HBox implements InputEditor {
 
     /**
      * the input to be edited *
@@ -106,17 +117,17 @@ public abstract class Base extends Pane implements InputEditor {
     /**
      * text field used for primitive input editors *
      */
-    protected JTextField m_entry;
+    protected TextField m_entry;
     
     protected int itemNr;
 
-    public JTextField getEntry() {
+    public TextField getEntry() {
         return m_entry;
     }
 
-    JLabel m_inputLabel;
-    protected static Dimension PREFERRED_SIZE = new Dimension(200, 25);
-    protected static Dimension MAX_SIZE = new Dimension(1024, 25);
+    Label m_inputLabel;
+    protected static Dimension2D PREFERRED_SIZE = new Dimension2D(200, 25);
+    protected static Dimension2D MAX_SIZE = new Dimension2D(1024, 25);
 
     /**
      * flag to indicate label, edit and validate buttons/labels should be added *
@@ -160,7 +171,7 @@ public abstract class Base extends Pane implements InputEditor {
     public static int g_nLabelWidth = 150;
 
 	public Base(BeautiDoc doc) {
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		// setLayout(new HBox());
 		this.doc = doc;
 		if (doc != null) {
 			doc.currentInputEditors.add(this);
@@ -169,7 +180,7 @@ public abstract class Base extends Pane implements InputEditor {
 
 	protected BeautiDoc getDoc() {
         if (doc == null) {
-            Component c = this;
+        	Parent c = this;
             while (c.getParent() != null) {
                 c = c.getParent();
                 if (c instanceof BeautiPanel) {
@@ -209,39 +220,41 @@ public abstract class Base extends Pane implements InputEditor {
 
         setUpEntry();
 
-        add(m_entry);
-        add(Box.createHorizontalGlue());
+        getChildren().add(m_entry);
+        setHgrow(new Region(), Priority.ALWAYS);
+        // getChildren().add(Box.createHorizontalGlue());
         addValidationLabel();
     } // init
 
     void setUpEntry() {
-        m_entry = new JTextField();
-        m_entry.setName(m_input.getName());
-        Dimension prefDim = new Dimension(PREFERRED_SIZE.width, m_entry.getPreferredSize().height);
-        Dimension maxDim = new Dimension(MAX_SIZE.width, m_entry.getPreferredSize().height);
-        m_entry.setMinimumSize(prefDim);
-        m_entry.setPreferredSize(prefDim);
-        m_entry.setSize(prefDim);
+        m_entry = new TextField();
+        m_entry.setId(m_input.getName());
+        Dimension2D prefDim = new Dimension2D(PREFERRED_SIZE.getWidth(), m_entry.getPrefHeight());
+        Dimension2D maxDim = new Dimension2D(MAX_SIZE.getWidth(), m_entry.getPrefHeight());
+        m_entry.setMinSize(prefDim.getWidth(), prefDim.getHeight());
+        m_entry.setPrefSize(prefDim.getWidth(), prefDim.getHeight());
+        // m_entry.setSize(prefDim.getWidth(), prefDim.getHeight());
         initEntry();
-        m_entry.setToolTipText(m_input.getHTMLTipText());
-        m_entry.setMaximumSize(maxDim);
+        m_entry.setTooltip(new Tooltip(m_input.getHTMLTipText()));
+        m_entry.setMaxSize(maxDim.getWidth(), maxDim.getHeight());
 
-        m_entry.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                processEntry();
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                processEntry();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                processEntry();
-            }
-        });
+//        m_entry.getDocument().addDocumentListener(new DocumentListener() {
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {
+//                processEntry();
+//            }
+//
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {
+//                processEntry();
+//            }
+//
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {
+//                processEntry();
+//            }
+//        });
+        m_entry.setOnKeyPressed(event -> processEntry());
     }
 
     protected void initEntry() {
@@ -274,7 +287,7 @@ public abstract class Base extends Pane implements InputEditor {
         try {
         	setValue(m_entry.getText());
             validateInput();
-            m_entry.requestFocusInWindow();
+            m_entry.requestFocus();
         } catch (Exception ex) {
 //			JOptionPane.showMessageDialog(null, "Error while setting " + m_input.getName() + ": " + ex.getMessage() +
 //					" Leaving value at " + m_input.get());
@@ -307,28 +320,29 @@ public abstract class Base extends Pane implements InputEditor {
 
     protected void addInputLabel(String label, String tipText) {
         if (m_bAddButtons) {
-            m_inputLabel = new JLabel(label);
-            m_inputLabel.setToolTipText(tipText);
-            m_inputLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
+            m_inputLabel = new Label(label);
+            m_inputLabel.setTooltip(new Tooltip(tipText));
+            m_inputLabel.setTextAlignment(TextAlignment.RIGHT);
             //Dimension size = new Dimension(g_nLabelWidth, 20);
-            Dimension size = new Dimension(200, 20);
-            m_inputLabel.setMaximumSize(size);
-            m_inputLabel.setMinimumSize(size);
-            m_inputLabel.setPreferredSize(size);
-            m_inputLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+            Dimension2D size = new Dimension2D(200, 20);
+            m_inputLabel.setMaxSize(size.getWidth(), size.getHeight());
+            m_inputLabel.setMinSize(size.getWidth(), size.getHeight());
+            m_inputLabel.setPrefSize(size.getWidth(), size.getHeight());
+            m_inputLabel.setStyle("-fx-border-width: 0 5 0 5;");
+            // setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
 //            m_inputLabel.setSize(size);
 //            m_inputLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
             // RRB: temporary
             //m_inputLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-            add(m_inputLabel);
+           getChildren().add(m_inputLabel);
         }
     }
 
     protected void addValidationLabel() {
         if (m_bAddButtons) {
             m_validateLabel = new SmallLabel("x", "orange");
-            add(m_validateLabel);
+            getChildren().add(m_validateLabel);
             m_validateLabel.setVisible(true);
             validateInput();
         }
@@ -423,7 +437,7 @@ public abstract class Base extends Pane implements InputEditor {
 
 
     public void refreshPanel() {
-        Component c = this;
+        Parent c = this;
         while (c.getParent() != null) {
             c = c.getParent();
             if (c instanceof ListSelectionListener) {
@@ -436,7 +450,7 @@ public abstract class Base extends Pane implements InputEditor {
      * synchronise values in panel with current network *
      */
     protected void sync() {
-        Component c = this;
+        Parent c = this;
         while (c.getParent() != null) {
             c = c.getParent();
             if (c instanceof BeautiPanel) {
@@ -448,11 +462,11 @@ public abstract class Base extends Pane implements InputEditor {
     }
 
     // we should leave it to the component to set its own border
-    @Override
-	@Deprecated
-    public void setBorder(Border border) {
-		super.setBorder(border);
-    }
+//    @Override
+//	@Deprecated
+//    public void setBorder(Border border) {
+//		super.setBorder(border);
+//    }
 
     @Override
     public void setDoc(BeautiDoc doc) {
@@ -462,17 +476,17 @@ public abstract class Base extends Pane implements InputEditor {
     // what is this method for? We should leave repainting to the standard mechanism
     // RRB: Did not always work in the past. The following should suffice (though perhaps
     // slightly less efficient to also revalidate, but have not noticed any difference)
-	@Override
+//	@Override
 	public void repaint() {
-		// tell Swing that an area of the window is dirty
-		super.repaint();
-		
-		// tell the layout manager to recalculate the layout
-		super.revalidate();
+//		// tell Swing that an area of the window is dirty
+//		super.repaint();
+//		
+//		// tell the layout manager to recalculate the layout
+//		super.revalidate();
 	}
 
 	@Override
-	public Component getComponent() {
+	public Parent getComponent() {
 		return this;
 	}
 
