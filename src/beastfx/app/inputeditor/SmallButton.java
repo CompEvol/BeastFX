@@ -1,23 +1,20 @@
 package beastfx.app.inputeditor;
 
 
-import java.awt.Image;
+
 import java.net.URL;
 
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
+import javax.imageio.ImageIO;
 
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 
 /**
  * @author Alexei Drummond
  */
 public class SmallButton extends Button {
-
-	private static final long serialVersionUID = 1L;
 
 	public enum ButtonType {roundRect, square, toolbar}
     
@@ -28,7 +25,7 @@ public class SmallButton extends Button {
 
 	public SmallButton(String label, boolean isEnabled, ButtonType buttonType) {
         super(label);
-        setEnabled(isEnabled);
+		setDisable(!isEnabled);
         setButtonType(buttonType);
         setIcon(label);
     }
@@ -36,22 +33,21 @@ public class SmallButton extends Button {
 	private void setIcon(String label) {
         if (label.equals("e")) {
         	setText("");
-            URL url = SmallButton.class.getClassLoader().getResource(BEASTObjectDialog.ICONPATH + "edit.png");
-            if (url == null) {
-            	return;
-            }
-            Icon icon = new ImageIcon(url);
-        	setIcon(icon);
-            setBorder(BorderFactory.createEmptyBorder());
+            Image image = new Image(getClass().getResource(BEASTObjectDialog.ICONPATH + "edit.png").toString());
+            ImageView icon = new ImageView(image);
+        	setGraphic(icon);
+            //setBorder(BorderFactory.createEmptyBorder());
+            setStyle("-fx-border:0 0 0 0 ");
         }
 	}
 
     public void setButtonType(ButtonType buttonType) {
-        putClientProperty("JButton.buttonType", buttonType.toString());    
+    	// RRB TODO not sure what to do here
+        //setClientProperty("Button.buttonType", buttonType.toString());    
     }
     
     public void setImg(Image image) {
-        setIcon(new ImageIcon(image));
+    	setGraphic(new ImageView(image));
     }
 
 }

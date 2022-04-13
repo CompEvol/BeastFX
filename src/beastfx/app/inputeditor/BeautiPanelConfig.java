@@ -1,11 +1,11 @@
-package beastfx.app.beauti;
+package beastfx.app.inputeditor;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import beast.app.inputeditor.BEASTObjectPanel;
+import beastfx.app.inputeditor.BEASTObjectPanel;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;
@@ -13,7 +13,6 @@ import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.core.Input.Validate;
 import beast.pkgmgmt.BEASTClassLoader;
-import beastfx.app.inputeditor.InputEditor;
 
 
 
@@ -39,7 +38,7 @@ public class BeautiPanelConfig extends BEASTObject {
     final public Input<Boolean> isVisibleInput = new Input<>("isVisible", "flag to indicate panel is visible on startup, default true", true);
 
 
-    final public Input<String> iconInput = new Input<>("icon", "icon shown in the panel relative to /beast/app/beauti, default 0.png", "0.png");
+    final public Input<String> iconInput = new Input<>("icon", "icon shown in the panel relative to /beastfx.app.beauti, default 0.png", "0.png");
 
     final public Input<InputEditor.ExpandOption> forceExpansionInput = new Input<>("forceExpansion", "whether to expand the input(s)" +
             "This can be " + Arrays.toString(InputEditor.ExpandOption.values()) + " (default 'FALSE')", InputEditor.ExpandOption.FALSE, InputEditor.ExpandOption.values());

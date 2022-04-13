@@ -6,20 +6,22 @@ package beastfx.app.inputeditor;
 import java.util.List;
 
 //import javax.swing.Box;
-//import javax.swing.JComboBox;
+//import javafx.scene.control.ComboBox;
 //import javax.swing.JComponent;
-//import javax.swing.JLabel;
-//import javax.swing.JOptionPane;
+//import javafx.scene.control.Label;
+//import beastfx.app.util.Alert;
 //import javax.swing.border.EtchedBorder;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
-import beastfx.app.beauti.BeautiDoc;
+import beastfx.app.util.Alert;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 public class BEASTObjectInputEditor extends InputEditor.Base {
-    private static final long serialVersionUID = 1L;
     ComboBox<Object> m_selectBEASTObjectBox;
     SmallButton m_editBEASTObjectButton;
 
@@ -77,11 +79,11 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
             if (BEASTObjectPanel.countInputs(m_input.get(), doc) > 0) {
                 m_editBEASTObjectButton = new SmallButton("e", true);
                 if (input.get() == null) {
-                    m_editBEASTObjectButton.setEnabled(false);
+                    m_editBEASTObjectButton.setDisable(true);
                 }
-                m_editBEASTObjectButton.setToolTipText("Edit " + m_inputLabel.getText());
+                m_editBEASTObjectButton.setTooltip(new Tooltip("Edit " + m_inputLabel.getText()));
 
-                m_editBEASTObjectButton.addActionListener(e -> {
+                m_editBEASTObjectButton.setOnAction(e -> {
                     BEASTObjectDialog dlg = new BEASTObjectDialog((BEASTInterface) m_input.get(), m_input.getType(), doc);
                     if (dlg.showDialog()) {
                         try {
@@ -94,7 +96,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                     validateInput();
                     refreshPanel();
                 });
-                add(m_editBEASTObjectButton);
+                getChildren().add(m_editBEASTObjectButton);
             }
         }
         addValidationLabel();
@@ -102,12 +104,12 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 
     void refresh() {
     	if (m_selectBEASTObjectBox != null) {
-	        String oldID = (String) m_selectBEASTObjectBox.getSelectedItem();
+	        String oldID = (String) m_selectBEASTObjectBox.getValue();
 	        String id = ((BEASTInterface) m_input.get()).getID();
 	        if (!id.equals(oldID)) {
-	            m_selectBEASTObjectBox.addItem(id);
-	            m_selectBEASTObjectBox.setSelectedItem(id);
-	            m_selectBEASTObjectBox.removeItem(oldID);
+	            m_selectBEASTObjectBox.getItems().add(id);
+	            m_selectBEASTObjectBox.setValue(id);
+	            m_selectBEASTObjectBox.getItems().remove(oldID);
 	        }
     	}
         super.refreshPanel();
@@ -132,30 +134,30 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                 }
 
             }
-            m_selectBEASTObjectBox.removeAllItems();
+            m_selectBEASTObjectBox.getItems().remove(0, m_selectBEASTObjectBox.getItems().size()-1);
             for (String str : availableBEASTObjects.toArray(new String[0])) {
-                m_selectBEASTObjectBox.addItem(str);
+                m_selectBEASTObjectBox.getItems().add(str);
             }
-            m_selectBEASTObjectBox.setSelectedItem(m_beastObject.getID());
+            m_selectBEASTObjectBox.setValue(m_beastObject.getID());
         }
     }
 
-    Box m_expansionBox = null;
+    VBox m_expansionBox = null;
 
     void expandedInit(Input<?> input, BEASTInterface beastObject) {
         addInputLabel();
-        Box box = Box.createVerticalBox();
+        VBox box = new VBox();
         // add horizontal box with combobox of BEASTObjects to select from
-        Box combobox = Box.createHorizontalBox();
+        HBox combobox = new HBox();
         addComboBox(combobox, input, beastObject);
-        box.add(combobox);
+        box.getChildren().add(combobox);
 
         doc.getInputEditorFactory().addInputs(box, (BEASTInterface) input.get(), this, this, doc);
 
-        box.setBorder(new EtchedBorder());
+        // box.setBorder(new EtchedBorder());
         //box.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         
-        add(box);
+        getChildren().add(box);
         m_expansionBox = box;
     } // expandedInit
 
@@ -167,8 +169,8 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
      */
     protected void addComboBox(Pane box, Input<?> input, BEASTInterface beastObject0) {
     	if (itemNr >= 0) {
-    		box.add(new Label(beastObject0.getID()));
-    		box.add(Box.createGlue());
+    		box.getChildren().add(new Label(beastObject0.getID()));
+    		// box.add(Box.createGlue());
     		return;
     	}
     	
@@ -185,8 +187,9 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //        		}
 //
 //        	}
-            m_selectBEASTObjectBox = new JComboBox<>(availableTemplates.toArray());
-            m_selectBEASTObjectBox.setName(input.getName());
+            m_selectBEASTObjectBox = new ComboBox<>();
+            m_selectBEASTObjectBox.getItems().addAll(availableTemplates.toArray());
+            m_selectBEASTObjectBox.setId(input.getName());
 
             Object o = input.get();
             if (itemNr >= 0) {
@@ -205,11 +208,11 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
             }
             for (BeautiSubTemplate template : availableTemplates) {
                 if (template.matchesName(id2)) {
-                    m_selectBEASTObjectBox.setSelectedItem(template);
+                    m_selectBEASTObjectBox.setValue(template);
                 }
             }
 
-            m_selectBEASTObjectBox.addActionListener(e -> {
+            m_selectBEASTObjectBox.setOnAction(e -> {
 
 //            	SwingUtilities.invokeLater(new Runnable() {
 //					
@@ -217,7 +220,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //					public void run() {
 
                 // get a handle of the selected beastObject
-                BeautiSubTemplate selected = (BeautiSubTemplate) m_selectBEASTObjectBox.getSelectedItem();
+                BeautiSubTemplate selected = (BeautiSubTemplate) m_selectBEASTObjectBox.getValue();
                 BEASTInterface beastObject = (BEASTInterface) m_input.get();
                 String id = beastObject.getID();
                 String partition = id.indexOf('.') >= 0 ? 
@@ -254,7 +257,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //							}
 //                        }
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Could not select beastObject: " +
+                        Alert.showMessageDialog(null, "Could not select beastObject: " +
                                 ex.getClass().getName() + " " +
                                 ex.getMessage()
                         );
@@ -264,16 +267,16 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 
                 try {
                     if (beastObject == null) {
-                        m_selectBEASTObjectBox.setSelectedItem(NO_VALUE);
+                        m_selectBEASTObjectBox.setValue(NO_VALUE);
                         // is this input expanded?
                         if (m_expansionBox != null) {
                             // remove items from Expansion Box, if any
-                            for (int i = 1; i < m_expansionBox.getComponentCount(); i++) {
-                                m_expansionBox.remove(i);
+                            for (int i = 1; i < m_expansionBox.getChildren().size(); i++) {
+                                m_expansionBox.getChildren().remove(i);
                             }
                         } else { // not expanded
                             if (m_bAddButtons && m_editBEASTObjectButton != null) {
-                                m_editBEASTObjectButton.setEnabled(false);
+                                m_editBEASTObjectButton.setDisable(true);
                             }
                         }
                     } else {
@@ -292,13 +295,13 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                         if (id.indexOf('.') != -1) {
                         	id = id.substring(0,  id.indexOf('.'));
                         }
-                         for (int i = 0; i < m_selectBEASTObjectBox.getItemCount(); i++) {
-                            BeautiSubTemplate template = (BeautiSubTemplate) m_selectBEASTObjectBox.getItemAt(i);
+                         for (int i = 0; i < m_selectBEASTObjectBox.getItems().size(); i++) {
+                            BeautiSubTemplate template = (BeautiSubTemplate) m_selectBEASTObjectBox.getItems().get(i);
                             if (template.getMainID().replaceAll(".\\$\\(n\\)", "").equals(id) ||
                             		template.getMainID().replaceAll(".s:\\$\\(n\\)", "").equals(id) || 
                             		template.getMainID().replaceAll(".c:\\$\\(n\\)", "").equals(id) || 
                             		template.getMainID().replaceAll(".t:\\$\\(n\\)", "").equals(id)) {
-                                m_selectBEASTObjectBox.setSelectedItem(template);
+                                m_selectBEASTObjectBox.setValue(template);
                             }
                         }
                     }
@@ -308,9 +311,9 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 
                     if (m_expansionBox != null) {
                         // remove items from Expansion Box
-                        for (int i = 1; i < m_expansionBox.getComponentCount(); ) {
-                            m_expansionBox.remove(i);
-                        }
+                        //for (int i = 1; i < m_expansionBox.getChildren().size(); ) {
+                            m_expansionBox.getChildren().remove(1, m_expansionBox.getChildren().size()-1);
+                        //}
                         // add new items to Expansion Box
                         if (beastObject != null) {
                         	doc.getInputEditorFactory().addInputs(m_expansionBox, beastObject, _this, _this, doc);
@@ -318,7 +321,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                     } else {
                         // it is not expanded, enable the edit button
                         if (m_bAddButtons && m_editBEASTObjectButton != null) {
-                            m_editBEASTObjectButton.setEnabled(true);
+                            m_editBEASTObjectButton.setDisable(false);
                         }
                         validateInput();
                     }
@@ -326,19 +329,19 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                     refreshPanel();
                 } catch (Exception ex) {
                     id = ((BEASTInterface) m_input.get()).getID();
-                    m_selectBEASTObjectBox.setSelectedItem(id);
+                    m_selectBEASTObjectBox.setValue(id);
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Could not change beastObject: " +
+                    Alert.showMessageDialog(null, "Could not change beastObject: " +
                             ex.getClass().getName() + " " +
                             ex.getMessage() 
                     );
                 }
             });
 
-            m_selectBEASTObjectBox.setToolTipText(input.getHTMLTipText());
-            int fontsize = m_selectBEASTObjectBox.getFont().getSize();
-            m_selectBEASTObjectBox.setMaximumSize(new Dimension(1024, 200 * fontsize / 13));
-            box.add(m_selectBEASTObjectBox);
+            m_selectBEASTObjectBox.setTooltip(new Tooltip(input.getHTMLTipText()));
+            //int fontsize = m_selectBEASTObjectBox.getFont().getSize();
+            //m_selectBEASTObjectBox.setMaxSize(1024, 200 * fontsize / 13);
+            box.getChildren().add(m_selectBEASTObjectBox);
         }
     }
 
@@ -356,14 +359,14 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //        		}
 //
 //        	}
-//            m_selectPluginBox = new JComboBox(availableBEASTObjects.toArray(new String[0]));
+//            m_selectPluginBox = new ComboBox(availableBEASTObjects.toArray(new String[0]));
 //            String selectString = NO_VALUE;
 //            if (input.get() != null) {
 //                selectString = ((BEASTObject) input.get()).getID();
 //            }
 //            m_selectPluginBox.setSelectedItem(selectString);
 //
-//            m_selectPluginBox.addActionListener(new ActionListener() {
+//            m_selectPluginBox.setOnAction(new ActionListener() {
 //                // implements ActionListener
 //                public void actionPerformed(ActionEvent e) {
 //                	
@@ -405,7 +408,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //                            }
 //                            
 //                        } catch (Exception ex) {
-//                            JOptionPane.showMessageDialog(null, "Could not select beastObject: " +
+//                            Alert.showMessageDialog(null, "Could not select beastObject: " +
 //                                    ex.getClass().getName() + " " +
 //                                    ex.getMessage()
 //                            );
@@ -464,15 +467,15 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //                        String id = ((BEASTObject)m_input.get()).getID();
 //                        m_selectPluginBox.setSelectedItem(id);
 //                    	//ex.printStackTrace();
-//                        JOptionPane.showMessageDialog(null, "Could not change beastObject: " +
+//                        Alert.showMessageDialog(null, "Could not change beastObject: " +
 //                                ex.getClass().getName() + " " +
 //                                ex.getMessage()
 //                        );
 //                    }
 //                }
 //            });
-//            m_selectPluginBox.setToolTipText(input.getTipText());
-//            m_selectPluginBox.setMaximumSize(new Dimension(1024, 20));
+//            m_selectPluginBox.setTooltip(new Tooltip(input.getTipText()));
+//            m_selectPluginBox.setMaxSize(new Dimension(1024, 20));
 //            box.add(m_selectPluginBox);
 //        }
 //    }

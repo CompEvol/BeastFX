@@ -1,7 +1,5 @@
 package beastfx.app.inputeditor;
 
-import beastfx.app.beauti.BeautiDoc;
-
 public class DoubleInputEditor extends InputEditor.Base {
     private static final long serialVersionUID = 1L;
 

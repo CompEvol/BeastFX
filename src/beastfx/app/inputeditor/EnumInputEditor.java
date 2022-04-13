@@ -5,7 +5,6 @@ import java.util.List;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
-import beastfx.app.beauti.BeautiDoc;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;

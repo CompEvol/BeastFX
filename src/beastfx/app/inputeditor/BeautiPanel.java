@@ -1,4 +1,4 @@
-package beastfx.app.beauti;
+package beastfx.app.inputeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -23,10 +23,10 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import beastfx.app.inputeditor.BeautiDoc;
-import beastfx.app.inputeditor.BeautiDocProvider;
-import beastfx.app.inputeditor.BeautiPanelConfig;
-import beastfx.app.inputeditor.InputEditor;
+// import beastfx.app.inputeditor.BeautiDoc;
+//import beastfx.app.inputeditor.BeautiDocProvider;
+//import beastfx.app.inputeditor.BeautiPanelConfig;
+//import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.BeautiPanelConfig.Partition;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beast.app.util.Utils;
@@ -41,11 +41,12 @@ import beast.base.evolution.tree.TreeInterface;
 import beast.base.inference.CompoundDistribution;
 import beast.base.inference.MCMC;
 import beast.base.parser.PartitionContext;
+import javafx.scene.layout.Pane;
 
 /**
  * panel making up each of the tabs in Beauti *
  */
-public class BeautiPanel extends JPanel implements ListSelectionListener, BeautiDocProvider {
+public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDocProvider {
 
     private static final long serialVersionUID = 1L;
     public final static String ICONPATH = "beastfx.app.beauti/";
@@ -170,14 +171,14 @@ public class BeautiPanel extends JPanel implements ListSelectionListener, Beauti
         partitionComponent.add(partitionLabel, BorderLayout.NORTH);
         listModel = new DefaultListModel<>();
         listOfPartitions = new JList<>(listModel);
-        listOfPartitions.setName("listOfPartitions");
+        listOfPartitions.setID("listOfPartitions");
         listOfPartitions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         Dimension size = new Dimension(partitionListPreferredWidth, 300);
         //listOfPartitions.setFixedCellWidth(120);
 //    	m_listOfPartitions.setSize(size);
-        //listOfPartitions.setPreferredSize(size);
-    	listOfPartitions.setMinimumSize(size);
+        //listOfPartitions.setPrefSize(size);
+    	listOfPartitions.setMinSize(size);
 //    	m_listOfPartitions.setBounds(0, 0, 100, 100);
 
         listOfPartitions.addListSelectionListener(this);

@@ -32,7 +32,7 @@ public class SmallLabel extends Label {
         setStyle(style);
     }
 
-    public void setToolTipText(String text) {
+    public void setTooltip(String text) {
 	    final Tooltip tooltip = new Tooltip();
 	    tooltip.setText(text);
     	setTooltip(tooltip);

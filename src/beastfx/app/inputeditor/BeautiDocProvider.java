@@ -1,4 +1,4 @@
-package beastfx.app.beauti;
+package beastfx.app.inputeditor;
 
 public interface BeautiDocProvider {
 	

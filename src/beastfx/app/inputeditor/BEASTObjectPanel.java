@@ -15,9 +15,9 @@ import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.JLabel;
+import javafx.scene.control.Label;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javafx.scene.control.TextField;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -25,7 +25,6 @@ import beast.base.core.Log;
 import beast.base.inference.MCMC;
 import beast.base.parser.XMLProducer;
 import beast.pkgmgmt.BEASTClassLoader;
-import beastfx.app.beauti.BeautiDoc;
 import javafx.geometry.Dimension2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -54,8 +53,8 @@ public class BEASTObjectPanel extends Pane {
      * that is allowable if the beastObject class is changed.
      */
     Class<?> m_beastObjectClass;
-    JLabel m_beastObjectButton;
-    JTextField m_identry;
+    Label m_beastObjectButton;
+    TextField m_identry;
 
     private boolean m_bOK = false;
     /* Set of beastObjects in the system.
@@ -84,7 +83,7 @@ public class BEASTObjectPanel extends Pane {
 //        g_inputEditorMap = new HashMap<>, String>();
 //        g_listInputEditorMap = new HashMap<>, String>();
 //
-////        String [] knownEditors = new String [] {"beast.app.draw.DataInputEditor","beast.app.beauti.AlignmentListInputEditor", "beast.app.beauti.FrequenciesInputEditor", "beast.app.beauti.OperatorListInputEditor", "beast.app.beauti.ParametricDistributionInputEditor", "beast.app.beauti.PriorListInputEditor", "beast.app.beauti.SiteModelInputEditor", "beast.app.beauti.TaxonSetInputEditor", "beast.app.beauti.TipDatesInputEditor", "beast.app.draw.BooleanInputEditor", "beast.app.draw.DoubleInputEditor", "beast.app.draw.EnumInputEditor", "beast.app.draw.IntegerInputEditor", "beast.app.draw.ListInputEditor", 
+////        String [] knownEditors = new String [] {"beast.app.draw.DataInputEditor","beastfx.app.beauti.AlignmentListInputEditor", "beastfx.app.beauti.FrequenciesInputEditor", "beastfx.app.beauti.OperatorListInputEditor", "beastfx.app.beauti.ParametricDistributionInputEditor", "beastfx.app.beauti.PriorListInputEditor", "beastfx.app.beauti.SiteModelInputEditor", "beastfx.app.beauti.TaxonSetInputEditor", "beastfx.app.beauti.TipDatesInputEditor", "beast.app.draw.BooleanInputEditor", "beast.app.draw.DoubleInputEditor", "beast.app.draw.EnumInputEditor", "beast.app.draw.IntegerInputEditor", "beast.app.draw.ListInputEditor", 
 ////        		"beast.app.draw.ParameterInputEditor", "beast.app.draw.PluginInputEditor", "beast.app.draw.StringInputEditor"};
 ////        registerInputEditors(knownEditors);
 //        String[] PACKAGE_DIRS = {"beast.app",};
@@ -183,30 +182,30 @@ public class BEASTObjectPanel extends Pane {
         //setTitle(m_beastObject.getID() + " Editor");
 
         VBox mainBox = new VBox();
-        mainBox.getChildren().add(Box.createVerticalStrut(5));
+        // mainBox.getChildren().add(Box.createVerticalStrut(5));
 
         if (showHeader) {
             /* add beastObject + help button at the top */
             HBox pluginBox = createPluginBox();
             mainBox.getChildren().add(pluginBox);
-            mainBox..getChildren().add(Box.createVerticalStrut(5));
+            // mainBox.getChildren().add(Box.createVerticalStrut(5));
             if (doc != null && m_identry != null) {
             	// we are in Beauti, do not edit IDs
-            	m_identry.setEnabled(false);
+            	m_identry.setDisable(true);
             }
         }
 
         doc.getInputEditorFactory().addInputs(mainBox, m_beastObject, null, null, doc);
 
 
-        mainBox..getChildren().add(Box.createVerticalStrut(5));
+        // mainBox.getChildren().add(Box.createVerticalStrut(5));
 
         getChildren().add(mainBox);
         setPrefSize(mainBox.getPrefWidth() + 10, mainBox.getPrefHeight() + 30);
 
         BEASTObjectPanel.m_position.x += 30;
         BEASTObjectPanel.m_position.y += 30;
-        setLocation(BEASTObjectPanel.m_position);
+        // setLocation(BEASTObjectPanel.m_position);
     } // c'tor
 
     public boolean getOK() {
@@ -247,25 +246,25 @@ public class BEASTObjectPanel extends Pane {
      */
     HBox createPluginBox() {
         HBox box = new HBox();
-        //jLabel icon = new JLabel();
+        //jLabel icon = new Label();
         // box.add(Box.createHorizontalGlue());
         box.setHgrow(new Region(), Priority.ALWAYS);
 
         Label label = new Label(m_beastObjectClass.getName().replaceAll(".*\\.", "") + ":");
         box.getChildren().add(label);
 
-//        m_pluginButton = new JLabel(m_beastObject.getID());
-//        m_pluginButton.setToolTipText(m_beastObject.getID() + " is of type " + m_beastObject.getClass().getName() + " Click to change.");
+//        m_pluginButton = new Label(m_beastObject.getID());
+//        m_pluginButton.setTooltip(new Tooltip(m_beastObject.getID() + " is of type " + m_beastObject.getClass().getName() + " Click to change."));
         label.setTooltip(new Tooltip(m_beastObject.getID() + " is of type " + m_beastObject.getClass().getName() + " Click to change."));
 
-//		m_pluginButton.addActionListener(new ActionListener() {
+//		m_pluginButton.setOnAction(new ActionListener() {
 //			@Override
 //			public void actionPerformed(ActionEvent e) {
 //				List<String> classes = ClassDiscovery.find(m_pluginClass, "beast"); 
-//				String className = (String) JOptionPane.showInputDialog(null,
+//				String className = (String) Alert.showInputDialog(null,
 //						"Select another type of " + m_pluginClass.getName().replaceAll(".*\\.", ""), 
 //						"Select",
-//						JOptionPane.PLAIN_MESSAGE, null,
+//						Alert.PLAIN_MESSAGE, null,
 //						classes.toArray(new String[0]),
 //						null);
 //				if (className.equals(m_beastObject.getClass().getName())) {
@@ -277,7 +276,7 @@ public class BEASTObjectPanel extends Pane {
 //					// TODO: replace InputEditors where appropriate.
 //					
 //				} catch (Exception ex) {
-//					JOptionPane.showMessageDialog(null, "Could not change beastObject: " +
+//					Alert.showMessageDialog(null, "Could not change beastObject: " +
 //							ex.getClass().getName() + " " +
 //							ex.getMessage()
 //							);
@@ -290,9 +289,9 @@ public class BEASTObjectPanel extends Pane {
 
         box.getChildren().add(new Label(" " + m_beastObject.getID()));
         
-//        m_identry = new JTextField();
+//        m_identry = new TextField();
 //        m_identry.setText(m_beastObject.getID());
-//        m_identry.setToolTipText("Name/ID that uniquely identifies this item");
+//        m_identry.setTooltip(new Tooltip("Name/ID that uniquely identifies this item"));
 //
 //        m_identry.getDocument().addDocumentListener(new DocumentListener() {
 //            @Override

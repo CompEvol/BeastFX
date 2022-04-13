@@ -2,24 +2,25 @@ package beastfx.app.inputeditor;
 
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Frame;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.border.EmptyBorder;
+//import javax.swing.Icon;
+//import javax.swing.ImageIcon;
+//import javax.swing.JDialog;
+//import beastfx.app.util.Alert;
+//import javax.swing.border.EmptyBorder;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.inference.MCMC;
 import beast.base.parser.XMLProducer;
 import beast.pkgmgmt.BEASTClassLoader;
-import beastfx.app.beauti.BeautiDoc;
+import beastfx.app.util.Alert;
 
 /**
  * Dialog for editing BEASTObjects.
@@ -29,7 +30,7 @@ import beastfx.app.beauti.BeautiDoc;
  * *
  */
 
-public class BEASTObjectDialog extends JDialog {
+public class BEASTObjectDialog extends Dialog {
     private static final long serialVersionUID = 1L;
     /**
      * plug in to be edited *
@@ -38,11 +39,6 @@ public class BEASTObjectDialog extends JDialog {
     private boolean m_bOK = false;
 
     public BEASTObjectPanel m_panel;
-
-    /**
-     * map that identifies the InputEditor to use for a particular type of Input *
-     */
-
 
     BeautiDoc doc;
     
@@ -59,31 +55,31 @@ public class BEASTObjectDialog extends JDialog {
         this(new BEASTObjectPanel(beastObject, type, doc), doc);
     }
 
-    final public static String ICONPATH = "beast/app/inputeditor/icons/";
+    final public static String ICONPATH = "beastfx.app.inputeditor/icons/";
     
     public boolean showDialog() {
         URL url = BEASTObjectDialog.class.getClassLoader().getResource(ICONPATH + "beast.png");
         Icon icon = new ImageIcon(url);
-        JOptionPane optionPane = new JOptionPane(m_panel,
-                JOptionPane.QUESTION_MESSAGE,
-                JOptionPane.OK_CANCEL_OPTION,
+        Alert optionPane = new Alert(m_panel,
+                Alert.QUESTION_MESSAGE,
+                Alert.OK_CANCEL_OPTION,
                 icon,
                 null,
                 null);
         optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
 
         Frame frame = (doc != null ? doc.getFrame(): Frame.getFrames()[0]);
-        final JDialog dialog = optionPane.createDialog(frame, this.getTitle());
+        final Dialog dialog = optionPane.createDialog(frame, this.getTitle());
         dialog.pack();
 
         dialog.setVisible(true);
 
-        int result = JOptionPane.CANCEL_OPTION;
+        int result = Alert.CANCEL_OPTION;
         Integer value = (Integer) optionPane.getValue();
         if (value != null && value != -1) {
             result = value;
         }
-        m_bOK = (result != JOptionPane.CANCEL_OPTION);
+        m_bOK = (result != Alert.CANCEL_OPTION);
         return m_bOK;
     }
     
@@ -121,8 +117,8 @@ public class BEASTObjectDialog extends JDialog {
 //        /* add cancel and ok buttons at the bottom */
 //        Box cancelOkBox = Box.createHorizontalBox();
 //        cancelOkBox.setBorder(new EtchedBorder());
-//        JButton okButton = new JButton("Ok");
-//        okButton.addActionListener(new ActionListener() {
+//        Button okButton = new Button("Ok");
+//        okButton.setOnAction(new ActionListener() {
 //
 //            // implementation ActionListener
 //            public void actionPerformed(ActionEvent e) {
@@ -130,8 +126,8 @@ public class BEASTObjectDialog extends JDialog {
 //                dispose();
 //            }
 //        });
-//        JButton cancelButton = new JButton("Cancel");
-//        cancelButton.addActionListener(new ActionListener() {
+//        Button cancelButton = new Button("Cancel");
+//        cancelButton.setOnAction(new ActionListener() {
 //
 //            // implementation ActionListener
 //            public void actionPerformed(ActionEvent e) {

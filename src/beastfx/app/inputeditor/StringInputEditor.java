@@ -1,7 +1,5 @@
 package beastfx.app.inputeditor;
 
-import beastfx.app.beauti.BeautiDoc;
-
 public class StringInputEditor extends InputEditor.Base {
     private static final long serialVersionUID = 1L;
 
@@ -24,8 +22,8 @@ public class StringInputEditor extends InputEditor.Base {
     void setUpEntry() {
         super.setUpEntry();
         //Dimension size = new Dimension(200,20);
-        //m_entry.setMinimumSize(size);
-//		m_entry.setPreferredSize(size);
+        //m_entry.setMinSize(size);
+//		m_entry.setPrefSize(size);
 //		m_entry.setSize(size);
     }
 

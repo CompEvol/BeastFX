@@ -3,31 +3,19 @@ package beastfx.app.inputeditor;
 //import java.awt.Color;
 //import java.awt.Component;
 //import java.awt.Dimension;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.BorderFactory;
-//import javax.swing.Box;
-import javax.swing.BoxLayout;
-//import javax.swing.JLabel;
-//import javax.swing.JPanel;
-//import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 
-// import beast.app.beauti.BeautiPanel;
-// import beast.app.inputeditor.BeautiDoc;
+// import beastfx.app.beauti.BeautiPanel;
+// import beastfx.app.inputeditor.BeautiDoc;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
-import beastfx.app.beauti.BeautiDoc;
-import beastfx.app.beauti.BeautiPanel;
-import beastfx.app.beauti.BeautiPanelConfig;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
@@ -293,12 +281,12 @@ public abstract class Base extends HBox implements InputEditor {
             validateInput();
             m_entry.requestFocus();
         } catch (Exception ex) {
-//			JOptionPane.showMessageDialog(null, "Error while setting " + m_input.getName() + ": " + ex.getMessage() +
+//			Alert.showMessageDialog(null, "Error while setting " + m_input.getName() + ": " + ex.getMessage() +
 //					" Leaving value at " + m_input.get());
 //			m_entry.setText(m_input.get() + "");
             if (m_validateLabel != null) {
                 m_validateLabel.setVisible(true);
-                m_validateLabel.setToolTipText("<html><p>Parsing error: " + ex.getMessage() + ". Value was left at " + m_input.get() + ".</p></html>");
+                m_validateLabel.setTooltip(new Tooltip("<html><p>Parsing error: " + ex.getMessage() + ". Value was left at " + m_input.get() + ".</p></html>"));
                 m_validateLabel.setColor("orange");
             }
             repaint();
@@ -373,7 +361,7 @@ public abstract class Base extends HBox implements InputEditor {
                 notifyValidationListeners(ValidationStatus.HAS_INVALIDMEMBERS);
                 if (m_validateLabel != null) {
                     m_validateLabel.setVisible(true);
-                    m_validateLabel.setToolTipText("<html><p>Recursive error in " + e.getMessage() + "</p></html>");
+                    m_validateLabel.setTooltip(new Tooltip("<html><p>Recursive error in " + e.getMessage() + "</p></html>"));
                     m_validateLabel.setColor("orange");
                 }
                 repaint();
@@ -386,7 +374,7 @@ public abstract class Base extends HBox implements InputEditor {
         } catch (Exception e) {
             Log.err.println("Validation message: " + e.getMessage());
             if (m_validateLabel != null) {
-                m_validateLabel.setToolTipText(e.getMessage());
+                m_validateLabel.setTooltip(new Tooltip(e.getMessage()));
                 m_validateLabel.setColor("red");
                 m_validateLabel.setVisible(true);
             }

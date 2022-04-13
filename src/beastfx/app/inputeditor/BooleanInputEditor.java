@@ -1,12 +1,11 @@
 package beastfx.app.inputeditor;
 
 import javax.swing.Box;
-import javax.swing.JCheckBox;
+import javafx.scene.control.CheckBox;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
-import beastfx.app.beauti.BeautiDoc;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Priority;
