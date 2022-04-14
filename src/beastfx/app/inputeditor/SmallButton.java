@@ -33,7 +33,7 @@ public class SmallButton extends Button {
 	private void setIcon(String label) {
         if (label.equals("e")) {
         	setText("");
-            Image image = new Image(getClass().getResource(BEASTObjectDialog.ICONPATH + "edit.png").toString());
+            Image image = new Image(getClass().getResource("icon/edit.png").toString());
             ImageView icon = new ImageView(image);
         	setGraphic(icon);
             //setBorder(BorderFactory.createEmptyBorder());

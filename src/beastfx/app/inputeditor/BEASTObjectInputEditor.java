@@ -56,13 +56,14 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
         m_input = input;
         m_beastObject = beastObject;
 		this.itemNr = itemNr;
-    	pane = new VBox();
+    	pane = new HBox();
 
         if (isExpandOption == ExpandOption.FALSE) {
             simpleInit(input, beastObject);
         } else {
             expandedInit(input, beastObject);
         }
+        getChildren().add(pane);
     } // init
 
     /**

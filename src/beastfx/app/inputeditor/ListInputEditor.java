@@ -16,10 +16,15 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import beastfx.app.util.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
@@ -60,11 +65,11 @@ public class ListInputEditor extends InputEditor.Base {
     protected List<SmallButton> delButtonList;
     protected List<SmallButton> m_editButton;
     protected List<SmallLabel> m_validateLabels;
-    protected Box m_listBox;
+    protected VBox m_listBox;
     protected ExpandOption m_bExpandOption;
 
     // the box containing any buttons
-    protected Box buttonBox;
+    protected HBox buttonBox;
 
     static protected Set<String> g_collapsedIDs = new HashSet<>();
     static Set<String> g_initiallyCollapsedIDs = new HashSet<>();
@@ -137,7 +142,7 @@ public class ListInputEditor extends InputEditor.Base {
             m_inputLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
 
-        m_listBox = Box.createVerticalBox();
+        m_listBox = new VBox();
         // list of inputs 
         for (Object o : (List<?>) input.get()) {
             if (o instanceof BEASTInterface) {
@@ -149,13 +154,13 @@ public class ListInputEditor extends InputEditor.Base {
         setLayout(new BorderLayout());
         add(m_listBox, BorderLayout.NORTH);
 
-        buttonBox = Box.createHorizontalBox();
+        buttonBox = new HBox();
         if (m_buttonStatus == ButtonStatus.ALL || m_buttonStatus == ButtonStatus.ADD_ONLY) {
             addButton = new SmallButton("+", true);
             addButton.setId("+");
             addButton.setTooltip(new Tooltip("Add item to the list"));
             addButton.setOnAction(e -> addItem());
-            buttonBox.add(addButton);
+            buttonBox.getChildren().add(addButton);
             if (!doc.isExpertMode()) {
                 // if nothing can be added, make add button invisible
                 List<String> tabuList = new ArrayList<>();
@@ -172,12 +177,12 @@ public class ListInputEditor extends InputEditor.Base {
         // add validation label at the end of a list
         m_validateLabel = new SmallLabel("x", new Color(200, 0, 0));
         if (m_bAddButtons) {
-            buttonBox.add(m_validateLabel);
+            buttonBox.getChildren().add(m_validateLabel);
             m_validateLabel.setVisible(true);
             validateInput();
         }
-        buttonBox.add(Box.createHorizontalGlue());
-        m_listBox.add(buttonBox);
+        buttonBox.getChildren().add(new Separator());
+        m_listBox.getChildren().add(buttonBox);
 
         updateState();
         
@@ -190,7 +195,7 @@ public class ListInputEditor extends InputEditor.Base {
     } // init
 
     protected void addSingleItem(BEASTInterface beastObject) {
-        Box itemBox = Box.createHorizontalBox();
+        HBox itemBox = new HBox();
 
         InputEditor editor = addPluginItem(itemBox, beastObject);
         
@@ -210,11 +215,11 @@ public class ListInputEditor extends InputEditor.Base {
             editButton.setButtonType(SmallButton.ButtonType.toolbar);
         }
         m_editButton.add(editButton);
-        itemBox.add(editButton);
+        itemBox.getChildren().add(editButton);
 
 
         SmallLabel validateLabel = new SmallLabel("x", new Color(200, 0, 0));
-        itemBox.add(validateLabel);
+        itemBox.getChildren().add(validateLabel);
         validateLabel.setVisible(true);
         m_validateLabels.add(validateLabel);
 
@@ -231,10 +236,10 @@ public class ListInputEditor extends InputEditor.Base {
                 // only go here if it is worth showing expanded box
                 //expandBox.setBorder(BorderFactory.createMatteBorder(1, 5, 1, 1, Color.gray));
                 //itemBox = box;
-                Box box2 = Box.createVerticalBox();
-                box2.add(itemBox);
-                itemBox.add(editButton, 0);
-                box2.add(expandBox);
+                VBox box2 = new VBox();
+                box2.getChildren().add(itemBox);
+                itemBox.getChildren().add(editButton, 0);
+                box2.getChildren().add(expandBox);
 //        		expandBox.setVisible(false);
 //        		//itemBox.remove(editButton);
 //        		editButton.setVisible(false);
@@ -285,12 +290,12 @@ public class ListInputEditor extends InputEditor.Base {
         }
 
         if (m_validateLabel == null) {
-            m_listBox.add(itemBox);
+            m_listBox.getChildren().add(itemBox);
         } else {
-            Component c = m_listBox.getComponent(m_listBox.getComponentCount() - 1);
-            m_listBox.remove(c);
-            m_listBox.add(itemBox);
-            m_listBox.add(c);
+            Node c = m_listBox.getChildren().get(m_listBox.getChildren().size() - 1);
+            m_listBox.getChildren().remove(c);
+            m_listBox.getChildren().add(itemBox);
+            m_listBox.getChildren().add(c);
         }
     } // addSingleItem
 
@@ -301,7 +306,7 @@ public class ListInputEditor extends InputEditor.Base {
      * @param itemBox box to add components to
      * @param beastObject  beastObject to add
      */
-    protected InputEditor addPluginItem(Box itemBox, BEASTInterface beastObject) {
+    protected InputEditor addPluginItem(HBox itemBox, BEASTInterface beastObject) {
         String name = beastObject.getID();
         if (name == null || name.length() == 0) {
             name = beastObject.getClass().getName();
@@ -309,9 +314,9 @@ public class ListInputEditor extends InputEditor.Base {
         }
         Label label = new Label(name);
 
-        itemBox.add(Box.createRigidArea(new Dimension(5, 1)));
-        itemBox.add(label);
-        itemBox.add(Box.createHorizontalGlue());
+        itemBox.getChildren().add(new Separator());
+        itemBox.getChildren().add(label);
+        itemBox.getChildren().add(new Separator());
         return this;
     }
 
@@ -344,7 +349,7 @@ public class ListInputEditor extends InputEditor.Base {
             m_beastObject.setID(m_entry.getText());
             BEASTObjectPanel.renamePluginID(m_beastObject, oldID, m_beastObject.getID(), doc);
             validateAllEditors();
-            m_entry.requestFocusInWindow();
+            m_entry.requestFocus();
         }
     }
 

@@ -42,6 +42,8 @@ public class BeautiConfig extends BEASTObject {
 //	public Input<String> m_editButtonStatus = new Input<>("editButtonStatus","comma separated list of list-inputs with custom " +
 //	"button status. One of 'none', 'addonly' 'delonly' +, e.g., beast.core.MCMC.operator=addonly");
 
+    final public static String TEMPLATE_DIR = "fxtemplates";
+    
     final public Input<List<BeautiPanelConfig>> panelsInput = new Input<>("panel", "define custom panels and their properties",
             new ArrayList<>());
     final public Input<Boolean> isExpertInput = new Input<>("isExpert", "flag to indicate Beauti should start in expert mode", false);

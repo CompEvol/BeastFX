@@ -224,6 +224,7 @@ public abstract class Base extends Pane implements InputEditor {
         pane.getChildren().add(new Separator());
         // pane.getChildren().add(Box.createHorizontalGlue());
         addValidationLabel();
+        getChildren().add(pane);
     } // init
 
     void setUpEntry() {
@@ -254,7 +255,7 @@ public abstract class Base extends Pane implements InputEditor {
 //                processEntry();
 //            }
 //        });
-        m_entry.setOnKeyPressed(event -> processEntry());
+        m_entry.setOnKeyReleased(event -> processEntry());
     }
 
     protected void initEntry() {

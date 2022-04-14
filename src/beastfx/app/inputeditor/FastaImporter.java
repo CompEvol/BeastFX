@@ -120,7 +120,10 @@ public class FastaImporter implements AlignmentImporter {
 		        	switch (this.datatype) {
 			        	case userdefined:
 			        		// make user choose 
-				        	ComboBox<String> jcb = new ComboBox<>(new String[]{"aminoacid", "nucleotide", "all are aminoacid", "all are nucleotide"});
+				        	ComboBox<String> jcb = new ComboBox<>();
+				        	for (String s : new String[]{"aminoacid", "nucleotide", "all are aminoacid", "all are nucleotide"}) {
+				        		jcb.getItems().add(s);
+				        	}
 				        	jcb.setEditable(true);
 				        	jcb.setValue(datatype);
 				        	Alert.showMessageDialog(null, jcb, "Choose the datatype of alignment " + alignment.getID(), Alert.QUESTION_MESSAGE);

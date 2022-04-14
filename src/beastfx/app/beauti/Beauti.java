@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 
 import beastfx.app.inputeditor.BEASTObjectPanel;
 import beastfx.app.inputeditor.BeautiAlignmentProvider;
+import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiDocListener;
 import beastfx.app.inputeditor.BeautiPanelConfig;
@@ -360,7 +361,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             File file = beast.app.util.Utils
                     .getLoadFile("Load Template XML File");
             // JFileChooser fileChooser = new
-            // JFileChooser(System.getProperty("user.dir")+"/templates");
+            // JFileChooser(System.getProperty("user.dir")+"/" + BeautiConfig.TEMPLATE_DIR);
             // fileChooser.addChoosableFileFilter(ef1);
             // fileChooser.setDialogTitle("Load Template XML File");
             // if (fileChooser.showOpenDialog(null) ==
@@ -1037,7 +1038,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         List<AbstractAction> actions = new ArrayList<>();
         List<String> beastDirectories = PackageManager.getBeastDirectories();
         for (String dirName : beastDirectories) {
-            File dir = new File(dirName + "/templates");
+            File dir = new File(dirName + "/" + BeautiConfig.TEMPLATE_DIR);
             getTemplateActionForDir(dir, actions);
         }
         return actions;
@@ -1187,7 +1188,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
     private static String usage() {
         return "java Beauti [options]\n" + "where options can be one of the following:\n"
-                + "-template [template file] : BEAUti template to be used. Default templates/Standard.xml\n"
+                + "-template [template file] : BEAUti template to be used. Default " + BeautiConfig.TEMPLATE_DIR + "/Standard.xml\n"
         		+ "-nex [nexus data file] : nexus file to be read using template, multiple -nex arguments are allowed\n"
                 + "-xmldat [beast xml file] : as -nex but with BEAST 1 or 2 xml file instead of nexus file\n"
                 + "-xml [beast file] : BEAST 2 XML file to be loaded\n"

@@ -87,7 +87,7 @@ import beast.pkgmgmt.launcher.BeastLauncher;
 
 @Description("Beauti document in doc-view pattern, not useful in models")
 public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
-    final static String STANDARD_TEMPLATE = "templates/Standard.xml";
+    final static String STANDARD_TEMPLATE = BeautiConfig.TEMPLATE_DIR +"/Standard.xml";
 
     final public static int ALIGNMENT_PARTITION = 3;
     final public static int SITEMODEL_PARTITION = 0;

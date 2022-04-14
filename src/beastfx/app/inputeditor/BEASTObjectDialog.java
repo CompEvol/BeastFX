@@ -55,7 +55,7 @@ public class BEASTObjectDialog extends Dialog {
         this(new BEASTObjectPanel(beastObject, type, doc), doc);
     }
 
-    final public static String ICONPATH = "beastfx.app.inputeditor/icons/";
+    final public static String ICONPATH = "/beastfx/app/inputeditor/icons/";
     
     public boolean showDialog() {
         URL url = BEASTObjectDialog.class.getClassLoader().getResource(ICONPATH + "beast.png");

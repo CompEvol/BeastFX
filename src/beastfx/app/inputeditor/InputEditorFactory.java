@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -55,11 +56,8 @@ public class InputEditorFactory {
         }
 
         if (beast.pkgmgmt.Utils6.isJUnitTest() || inputEditorMap.size() == 0) {
-	        String[] PACKAGE_DIRS = {"beast.app","beast.base"};
-	        for (String packageName : PACKAGE_DIRS) {
-	            List<String> inputEditors = PackageManager.find("beastfx.app.inputeditor.InputEditor", packageName);
-	            registerInputEditors(inputEditors.toArray(new String[0]));
-	        }
+        	Set<String> inputEditors = PackageManager.listServices("beastfx.app.inputeditor.InputEditor");
+            registerInputEditors(inputEditors.toArray(new String[0]));
         }
     }
 

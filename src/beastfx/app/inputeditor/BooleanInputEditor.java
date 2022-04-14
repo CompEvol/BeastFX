@@ -8,6 +8,7 @@ import beast.base.core.Input;
 import beast.base.core.Log;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
@@ -55,9 +56,11 @@ public class BooleanInputEditor extends InputEditor.Base {
                     Log.err.println("BooleanInputEditor " + ex.getMessage());
                 }
             });
+        pane = new HBox();
         pane.getChildren().add(m_entry);
         //getChildren().add(Box.createHorizontalGlue());
         pane.getChildren().add(new Separator());
+        getChildren().add(pane);
     } // c'tor
 
 } // class BooleanInputEditor

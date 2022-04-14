@@ -6,6 +6,7 @@ import java.util.List;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
@@ -43,7 +44,8 @@ public class EnumInputEditor extends InputEditor.Base {
         m_input = input;
         m_beastObject = beastObject;
 		this.itemNr = itemNr;
-
+		pane = new HBox();
+		
         addInputLabel();
         List<String> availableValues = new ArrayList<>();
         for (int i = 0; i < input.possibleValues.length; i++) {
@@ -72,6 +74,7 @@ public class EnumInputEditor extends InputEditor.Base {
             // add(Box.createGlue());
             pane.getChildren().add(new Separator());
         }
+        getChildren().add(pane);
     } // init
 
 
