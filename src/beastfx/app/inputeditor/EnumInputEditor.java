@@ -68,9 +68,9 @@ public class EnumInputEditor extends InputEditor.Base {
                     }
                 });
             m_selectPluginBox.setTooltip(new Tooltip(input.getHTMLTipText()));
-            getChildren().add(m_selectPluginBox);
+            pane.getChildren().add(m_selectPluginBox);
             // add(Box.createGlue());
-            setHgrow(new Region(), Priority.ALWAYS);
+            pane.getChildren().add(new Separator());
         }
     } // init
 

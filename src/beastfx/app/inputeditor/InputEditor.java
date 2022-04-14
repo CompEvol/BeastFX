@@ -20,6 +20,7 @@ import javafx.geometry.Dimension2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -93,7 +94,7 @@ public interface InputEditor {
     
     Parent getComponent();
 
-public abstract class Base extends HBox implements InputEditor {
+public abstract class Base extends Pane implements InputEditor {
 
     /**
      * the input to be edited *
@@ -105,6 +106,10 @@ public abstract class Base extends HBox implements InputEditor {
      */
     protected BEASTInterface m_beastObject;
 
+    /**
+     * pane contains all controls for this input editor 
+     */
+    protected Pane pane;
     /**
      * text field used for primitive input editors *
      */
@@ -208,13 +213,16 @@ public abstract class Base extends HBox implements InputEditor {
         m_beastObject = beastObject;
         this.itemNr= itemNr;
         
+        pane = new HBox();
+        
         addInputLabel();
 
         setUpEntry();
 
-        getChildren().add(m_entry);
-        setHgrow(new Region(), Priority.ALWAYS);
-        // getChildren().add(Box.createHorizontalGlue());
+        pane.getChildren().add(m_entry);
+        HBox.setHgrow(new Region(), Priority.ALWAYS);
+        pane.getChildren().add(new Separator());
+        // pane.getChildren().add(Box.createHorizontalGlue());
         addValidationLabel();
     } // init
 
@@ -327,14 +335,14 @@ public abstract class Base extends HBox implements InputEditor {
 //            m_inputLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
             // RRB: temporary
             //m_inputLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-           getChildren().add(m_inputLabel);
+           pane.getChildren().add(m_inputLabel);
         }
     }
 
     protected void addValidationLabel() {
         if (m_bAddButtons) {
             m_validateLabel = new SmallLabel("x", "orange");
-            getChildren().add(m_validateLabel);
+            pane.getChildren().add(m_validateLabel);
             m_validateLabel.setVisible(true);
             validateInput();
         }

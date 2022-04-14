@@ -20,6 +20,8 @@ import javax.swing.JList;
 import beastfx.app.util.Alert;
 import javax.swing.JScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -274,7 +276,7 @@ public class TaxonSetDialog extends JDialog {
         Box cancelOkBox = Box.createHorizontalBox();
         cancelOkBox.setBorder(new EtchedBorder());
         Button okButton = new Button("Ok");
-        okButton.setID("OK");
+        okButton.setId("OK");
         okButton.setOnAction(e -> {
                 taxonSet.setID(id);
                 List<Taxon> taxa = taxonSet.taxonsetInput.get();
@@ -288,7 +290,7 @@ public class TaxonSetDialog extends JDialog {
                 dispose();
             });
         Button cancelButton = new Button("Cancel");
-        cancelButton.setID("Cancel");
+        cancelButton.setId("Cancel");
         cancelButton.setOnAction(e -> {
                 dispose();
             });

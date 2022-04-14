@@ -19,6 +19,8 @@ import beast.pkgmgmt.PackageManager;
 import beastfx.app.inputeditor.InputEditor.ButtonStatus;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beastfx.app.util.Alert;
+import javafx.geometry.Orientation;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 
 
@@ -112,6 +114,10 @@ public class InputEditorFactory {
                 if (!doc.beautiConfig.suppressBEASTObjects.contains(fullInputName)) {
                     InputEditor inputEditor = createInputEditor(input, beastObject, true, ExpandOption.FALSE, ButtonStatus.ALL, editor, doc);
                     box.getChildren().add(inputEditor.getComponent());
+                    Separator separator = new Separator();
+                    separator.setOrientation(Orientation.VERTICAL);
+                    separator.setPrefHeight(5);
+                    box.getChildren().add(separator);
                     // box.add(Box.createVerticalStrut(5));
                     //box.add(Box.createVerticalGlue());
                     if (validateListener != null) {

@@ -22,11 +22,17 @@ import javax.swing.DefaultCellEditor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Separator;
+
 import javax.swing.JComponent;
 import beastfx.app.util.Alert;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -178,31 +184,35 @@ public class AlignmentListInputEditor extends ListInputEditor {
      * Creates the link/unlink button component
      * @return a box containing three link/unlink button pairs.
      */
-	private JComponent createLinkButtons() {
-
-        Box box = Box.createHorizontalBox();
+	private Pane createLinkButtons() {
+        HBox box = new HBox();
 		addLinkUnlinkPair(box, "Site Models");
-        box.add(Box.createHorizontalStrut(STRUT_SIZE));
+		Separator separator = new Separator();
+		separator.setStyle("-fx-width:5;");
+        box.getChildren().add(separator);
         addLinkUnlinkPair(box, "Clock Models");
-        box.add(Box.createHorizontalStrut(STRUT_SIZE));
+        box.getChildren().add(separator);
         addLinkUnlinkPair(box, "Trees");
-		box.add(Box.createHorizontalGlue());
+        box.getChildren().add(new Separator());
 		return box;
 	}
 
-    private JComponent createAddRemoveSplitButtons() {
-        Box buttonBox = Box.createHorizontalBox();
+    private Pane createAddRemoveSplitButtons() {
+        HBox buttonBox = new HBox();
 
         addButton = new SmallButton("+", true, SmallButton.ButtonType.square);
-        addButton.setID("+");
+        addButton.setId("+");
         addButton.setTooltip(new Tooltip("Add item to the list"));
         addButton.setOnAction(e -> addItem());
-        buttonBox.add(Box.createHorizontalStrut(STRUT_SIZE));
-        buttonBox.add(addButton);
-        buttonBox.add(Box.createHorizontalStrut(STRUT_SIZE));
+        Separator separator = new Separator();
+        separator.setPrefWidth(STRUT_SIZE);
+        
+        buttonBox.getChildren().add(separator);
+        buttonBox.getChildren().add(addButton);
+        buttonBox.getChildren().add(separator);
 
         delButton = new SmallButton("-", true, SmallButton.ButtonType.square);
-        delButton.setID("-");
+        delButton.setId("-");
         delButton.setTooltip(new Tooltip("Delete selected items from the list"));
         delButton.setOnAction(e -> {
             if (doc.hasLinkedAtLeastOnce) {
@@ -211,25 +221,25 @@ public class AlignmentListInputEditor extends ListInputEditor {
             }
             delItem();
         });
-        buttonBox.add(delButton);
-        buttonBox.add(Box.createHorizontalStrut(STRUT_SIZE));
+        buttonBox.getChildren().add(delButton);
+        buttonBox.getChildren().add(separator);
 
         replaceButton = new SmallButton("r", true, SmallButton.ButtonType.square);
-        replaceButton.setID("r");
+        replaceButton.setId("r");
         replaceButton.setTooltip(new Tooltip("Replace alignment by one loaded from file"));
         replaceButton.setOnAction(e -> replaceItem());
-        buttonBox.add(Box.createHorizontalStrut(STRUT_SIZE));
-        buttonBox.add(replaceButton);
-        buttonBox.add(Box.createHorizontalStrut(STRUT_SIZE));
+        buttonBox.getChildren().add(separator);
+        buttonBox.getChildren().add(replaceButton);
+        buttonBox.getChildren().add(separator);
 
         
         splitButton = new Button("Split");
-        splitButton.setID("Split");
+        splitButton.setId("Split");
         splitButton.setTooltip(new Tooltip("Split alignment into partitions, for example, codon positions"));
         splitButton.setOnAction(e -> splitItem());
-        buttonBox.add(splitButton);
+        buttonBox.getChildren().add(splitButton);
 
-        buttonBox.add(Box.createHorizontalGlue());
+        buttonBox.getChildren().add(new Separator());
 
         return buttonBox;
     }
@@ -239,28 +249,28 @@ public class AlignmentListInputEditor extends ListInputEditor {
      * @param box
      * @param label
      */
-	private void addLinkUnlinkPair(Box box, String label) {
+	private void addLinkUnlinkPair(HBox box, String label) {
 
         //Label label = new Label(label+":");
         //box.add(label);
         Button linkSModelButton = new Button("Link " + label);
-		linkSModelButton.setID("Link " + label);
+		linkSModelButton.setId("Link " + label);
 		linkSModelButton.setOnAction(e -> {
             Button button = (Button) e.getSource();
             link(columnLabelToNr(button.getText()));
             table.repaint();
         });
-		box.add(linkSModelButton);
-		linkSModelButton.setEnabled(!getDoc().hasLinkedAtLeastOnce);
+		box.getChildren().add(linkSModelButton);
+		linkSModelButton.setDisable(getDoc().hasLinkedAtLeastOnce);
 		Button unlinkSModelButton = new Button("Unlink " + label);
-		unlinkSModelButton.setID("Unlink " + label);
+		unlinkSModelButton.setId("Unlink " + label);
 		unlinkSModelButton.setOnAction(e -> {
             Button button = (Button) e.getSource();
             unlink(columnLabelToNr(button.getText()));
             table.repaint();
         });
-		box.add(unlinkSModelButton);
-		unlinkSModelButton.setEnabled(!getDoc().hasLinkedAtLeastOnce);
+		box.getChildren().add(unlinkSModelButton);
+		unlinkSModelButton.setDisable(getDoc().hasLinkedAtLeastOnce);
 
 		linkButtons.add(linkSModelButton);
 		unlinkButtons.add(unlinkSModelButton);

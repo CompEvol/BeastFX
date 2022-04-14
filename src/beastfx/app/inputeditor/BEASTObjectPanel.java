@@ -16,6 +16,8 @@ import java.util.Scanner;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+
 import javax.swing.JPanel;
 import javafx.scene.control.TextField;
 
@@ -26,6 +28,7 @@ import beast.base.inference.MCMC;
 import beast.base.parser.XMLProducer;
 import beast.pkgmgmt.BEASTClassLoader;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -99,9 +102,11 @@ public class BEASTObjectPanel extends Pane {
 //        g_loggers = new HashSet<>();
 //        g_distributions = new HashSet<>();
     }
-
+    
+    Pane pane;
 
     public BEASTObjectPanel(BEASTInterface beastObject, Class<?> _pluginClass, List<BEASTInterface> beastObjects, BeautiDoc doc) {
+    	pane = new VBox();
         //g_plugins = new HashMap<>();
         for (BEASTInterface beastObject2 : beastObjects) {
             String id = getID(beastObject2);
@@ -160,6 +165,7 @@ public class BEASTObjectPanel extends Pane {
     }
 
     public BEASTObjectPanel(BEASTInterface beastObject, Class<?> _pluginClass, boolean isShowHeader, BeautiDoc doc) {
+    	pane = new VBox();
         initPlugins(beastObject, doc);
         init(beastObject, _pluginClass, isShowHeader, doc);
     }
@@ -182,13 +188,17 @@ public class BEASTObjectPanel extends Pane {
         //setTitle(m_beastObject.getID() + " Editor");
 
         VBox mainBox = new VBox();
-        // mainBox.getChildren().add(Box.createVerticalStrut(5));
+        mainBox.getChildren().add(new Separator());
 
         if (showHeader) {
             /* add beastObject + help button at the top */
             HBox pluginBox = createPluginBox();
             mainBox.getChildren().add(pluginBox);
             // mainBox.getChildren().add(Box.createVerticalStrut(5));
+            Separator separator = new Separator();
+            separator.setOrientation(Orientation.VERTICAL);
+            separator.setPrefHeight(5);
+            mainBox.getChildren().add(separator);
             if (doc != null && m_identry != null) {
             	// we are in Beauti, do not edit IDs
             	m_identry.setDisable(true);
@@ -198,9 +208,12 @@ public class BEASTObjectPanel extends Pane {
         doc.getInputEditorFactory().addInputs(mainBox, m_beastObject, null, null, doc);
 
 
-        // mainBox.getChildren().add(Box.createVerticalStrut(5));
+        Separator separator = new Separator();
+        separator.setOrientation(Orientation.VERTICAL);
+        separator.setPrefHeight(5);
+        mainBox.getChildren().add(separator);
 
-        getChildren().add(mainBox);
+        pane.getChildren().add(mainBox);
         setPrefSize(mainBox.getPrefWidth() + 10, mainBox.getPrefHeight() + 30);
 
         BEASTObjectPanel.m_position.x += 30;
@@ -248,7 +261,7 @@ public class BEASTObjectPanel extends Pane {
         HBox box = new HBox();
         //jLabel icon = new Label();
         // box.add(Box.createHorizontalGlue());
-        box.setHgrow(new Region(), Priority.ALWAYS);
+        box.getChildren().add(new Separator());
 
         Label label = new Label(m_beastObjectClass.getName().replaceAll(".*\\.", "") + ":");
         box.getChildren().add(label);

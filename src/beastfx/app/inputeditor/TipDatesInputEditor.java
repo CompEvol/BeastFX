@@ -11,6 +11,9 @@ import beast.base.core.Log;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.tree.TraitSet;
 import beast.base.evolution.tree.Tree;
+import javafx.scene.control.CheckBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.awt.*;
 import java.text.DateFormat;
@@ -109,11 +112,11 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             m_beastObject = tree;
             traitSet = tree.getDateTrait();
 
-            Box box = Box.createVerticalBox();
+            VBox box = new VBox();
 
-            Button useTipDates = new Button("Use tip dates", traitSet != null);
+            CheckBox useTipDates = new CheckBox("Use tip dates", traitSet != null);
             useTipDates.setOnAction(e -> {
-                    Button checkBox = (Button) e.getSource();
+            	CheckBox checkBox = (CheckBox) e.getSource();
                     try {
                         if (checkBox.isSelected()) {
                             if (traitSet == null) {
@@ -134,16 +137,16 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                     }
 
                 });
-            Box box2 = Box.createHorizontalBox();
-            box2.add(useTipDates);
+            HBox box2 = new HBox();
+            box2.getChildren().add(useTipDates);
             box2.add(Box.createHorizontalGlue());
-            box.add(box2);
+            box.getChildren().add(box2);
 
             if (traitSet != null) {
                 box.add(createButtonBox());
                 box.add(createListBox());
             }
-            add(box);
+            pane.getChildren().add(box);
         }
     } // init
 

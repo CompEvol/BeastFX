@@ -26,7 +26,7 @@ import beast.core.Logger;
 import beast.core.Runnable;
 import beast.core.Logger.LogFileMode;
 import beast.core.util.Log;
-import beast.util.AddOnManager;
+import beast.util.PackageManager;
 import beast.util.JSONParser;
 import beast.util.JSONParserException;
 import beast.util.Randomizer;
@@ -391,7 +391,7 @@ public class BeastFX extends Application implements HTTPRequestHandler {
             System.out.println("Resuming from file");
         }
 
-        AddOnManager.loadExternalJars();
+        PackageManager.loadExternalJars();
         // parse xml
         Randomizer.setSeed(m_nSeed);
         if (beastFile.getName().toLowerCase().endsWith("xml")) {

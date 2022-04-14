@@ -56,6 +56,8 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
         m_input = input;
         m_beastObject = beastObject;
 		this.itemNr = itemNr;
+    	pane = new VBox();
+
         if (isExpandOption == ExpandOption.FALSE) {
             simpleInit(input, beastObject);
         } else {
@@ -73,7 +75,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 
         addInputLabel();
 
-        addComboBox(this, input, beastObject);
+        addComboBox(pane, input, beastObject);
 
         if (m_bAddButtons) {
             if (BEASTObjectPanel.countInputs(m_input.get(), doc) > 0) {
@@ -96,7 +98,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                     validateInput();
                     refreshPanel();
                 });
-                getChildren().add(m_editBEASTObjectButton);
+                pane.getChildren().add(m_editBEASTObjectButton);
             }
         }
         addValidationLabel();
@@ -157,7 +159,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
         // box.setBorder(new EtchedBorder());
         //box.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         
-        getChildren().add(box);
+        pane.getChildren().add(box);
         m_expansionBox = box;
     } // expandedInit
 

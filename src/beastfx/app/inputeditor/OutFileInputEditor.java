@@ -59,7 +59,7 @@ public class OutFileInputEditor extends InputEditor.Base {
 					e2.printStackTrace();
 				}
 		});
-		getChildren().add(button);
+		pane.getChildren().add(button);
 	}
 	
 }

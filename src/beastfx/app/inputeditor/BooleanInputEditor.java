@@ -2,7 +2,7 @@ package beastfx.app.inputeditor;
 
 import javax.swing.Box;
 import javafx.scene.control.CheckBox;
-
+import javafx.scene.control.Separator;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -55,9 +55,9 @@ public class BooleanInputEditor extends InputEditor.Base {
                     Log.err.println("BooleanInputEditor " + ex.getMessage());
                 }
             });
-        getChildren().add(m_entry);
+        pane.getChildren().add(m_entry);
         //getChildren().add(Box.createHorizontalGlue());
-        setHgrow(new Region(), Priority.ALWAYS);
+        pane.getChildren().add(new Separator());
     } // c'tor
 
 } // class BooleanInputEditor
