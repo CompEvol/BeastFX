@@ -13,6 +13,7 @@ import beast.base.core.Description;
 import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.PackageVersion;
+import beastfx.app.util.Alert;
 
 import static beast.pkgmgmt.PackageManager.*;
 
@@ -112,7 +113,7 @@ public class JPackageDialog extends JPanel {
         buttonBox = createButtonBox();
         /*getContentPane().*/add(buttonBox, BorderLayout.SOUTH);
 
-        scrollPane.setPreferredSize(new Dimension(660, 400));
+        scrollPane.setPrefSize(new Dimension(660, 400));
         Dimension dim = scrollPane.getPreferredSize();
         Dimension dim2 = buttonBox.getPreferredSize();
         setSize(dim.width + 30, dim.height + dim2.height + 30);
@@ -239,18 +240,18 @@ public class JPackageDialog extends JPanel {
     }
 
     private Box createButtonBox() {
-        Box box = Box.createHorizontalBox();
+        HBox box = new HBox();
         final Button latestVersionCheckBox = new Button("Latest");
         latestVersionCheckBox.setToolTipText("If selected, only the latest version is installed when hitting the Install/Upgrade button. "
         		+ "Otherwise, you can select from a list of available versions.");
         box.add(latestVersionCheckBox);
-        latestVersionCheckBox.addActionListener(e -> {
+        latestVersionCheckBox.setOnAction(e -> {
         	Button checkBox = (Button) e.getSource();
         	useLatestVersion = checkBox.isSelected();
         });
         latestVersionCheckBox.setSelected(useLatestVersion);
         Button installButton = new Button("Install/Upgrade");
-        installButton.addActionListener(e -> {
+        installButton.setOnAction(e -> {
             // first get rid of existing packages
             int[] selectedRows = dataTable.getSelectedRows();
             String installedPackageNames = "";
@@ -320,7 +321,7 @@ public class JPackageDialog extends JPanel {
         box.add(installButton);
 
         Button uninstallButton = new Button("Uninstall");
-        uninstallButton.addActionListener(e -> {
+        uninstallButton.setOnAction(e -> {
             StringBuilder removedPackageNames = new StringBuilder();
             int[] selectedRows = dataTable.getSelectedRows();
 
@@ -380,10 +381,10 @@ public class JPackageDialog extends JPanel {
         });
         box.add(uninstallButton);
 
-        box.add(Box.createHorizontalGlue());
+        box.add(new Separator());
 
         Button packageRepoButton = new Button("Package repositories");
-        packageRepoButton.addActionListener(e -> {
+        packageRepoButton.setOnAction(e -> {
                 JPackageRepositoryDialog dlg = new JPackageRepositoryDialog(frame);
                 dlg.setVisible(true);
                 resetPackages();
@@ -393,7 +394,7 @@ public class JPackageDialog extends JPanel {
         box.add(Box.createGlue());
 
         Button closeButton = new Button("Close");
-        closeButton.addActionListener(e -> {
+        closeButton.setOnAction(e -> {
             	if (dlg != null) {
             		dlg.setVisible(false);
             	} else {
@@ -404,7 +405,7 @@ public class JPackageDialog extends JPanel {
 
         Button button = new Button("?");
         button.setTooltip(new Tooltip(getPackageUserDir() + " " + getPackageSystemDir()));
-        button.addActionListener(e -> {
+        button.setOnAction(e -> {
                 Alert.showMessageDialog(scrollPane, "<html>By default, packages are installed in <br><br><em>" + getPackageUserDir() +
                         "</em><br><br>and are available only to you.<br>" +
                         "<br>Packages can also be moved manually to <br><br><em>" + getPackageSystemDir() +

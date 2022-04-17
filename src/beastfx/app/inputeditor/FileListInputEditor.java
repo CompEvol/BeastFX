@@ -1,6 +1,6 @@
 package beastfx.app.inputeditor;
 
-import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -14,7 +14,17 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+
+import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import beastfx.app.util.Alert;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -47,7 +57,7 @@ public class FileListInputEditor extends ListInputEditor {
 	
 	private static final long serialVersionUID = 1L;
 
-	JTable filesTable = null;
+	TableView<?> filesTable = null;
     private FilesTableModel filesTableModel = null;
     private List<File> files;
 
@@ -77,12 +87,13 @@ public class FileListInputEditor extends ListInputEditor {
         m_input = input;
         m_beastObject = beastObject;
 		// super.init(input, beastObject, itemNr, isExpandOption, addButtons);
-		
+		pane = new HBox();
 		Object o = input.get();
 		if (o instanceof List) {
 			files = (List<File>) o;
 		}
-		add(fileListPanel());
+		pane.getChildren().add(fileListPanel());
+		getChildren().add(pane);
 	}
 
 	@Override
@@ -139,14 +150,14 @@ public class FileListInputEditor extends ListInputEditor {
 	
 
 
-    public JPanel fileListPanel() {
+    public Pane fileListPanel() {
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setOpaque(false);
+    	BorderPane panel = new BorderPane();//new BorderLayout());
+        // panel.setOpaque(false);
 
         // Taxon Sets
         filesTableModel = new FilesTableModel();
-        filesTable = new JTable(filesTableModel);
+        filesTable = new TableView();//filesTableModel);
 
         filesTable.getColumnModel().getColumn(0).setCellRenderer(
                 new TableRenderer(SwingConstants.LEFT, new Insets(0, 4, 0, 4)));
@@ -164,27 +175,27 @@ public class FileListInputEditor extends ListInputEditor {
             }
         });
 
-        JScrollPane scrollPane1 = new JScrollPane(filesTable,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        //scrollPane1.setMaxSize(new Dimension(10000, 10));
-        scrollPane1.setPrefSize(new Dimension(500, 285));
+        ScrollPane scrollPane1 = new ScrollPane(filesTable);
+                //ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                //ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        //scrollPane1.setMaxSize(10000, 10);
+        scrollPane1.setPrefSize(500, 285);
 
         ActionPanel actionPanel1 = new ActionPanel(false);
         actionPanel1.setAddAction(addFileAction);
         actionPanel1.setRemoveAction(removeFileAction);
         removeFileAction.setEnabled(false);
 
-        JPanel controlPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        FlowPane controlPanel1 = new FlowPane(Orientation.HORIZONTAL);
         controlPanel1.add(actionPanel1);
 
-        panel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+        // panel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
         Label label = new Label(formatName(m_input.getName()) + ":");
         label.setTooltip(new Tooltip(m_input.getTipText()));
-        panel.add(label, BorderLayout.NORTH);
-        panel.add(scrollPane1, BorderLayout.CENTER);
-        panel.add(actionPanel1, BorderLayout.SOUTH);
-        panel.setTooltip(new Tooltip(m_input.getTipText()));
+        panel.setTop(label);//, BorderLayout.NORTH);
+        panel.setCenter(scrollPane1);//, BorderLayout.CENTER);
+        panel.setBottom(actionPanel1);//, BorderLayout.SOUTH);
+        scrollPane1.setTooltip(new Tooltip(m_input.getTipText()));
 
         Color focusColor = UIManager.getColor("Focus.color");
         Border focusBorder = BorderFactory.createMatteBorder(2, 2, 2, 2, focusColor);

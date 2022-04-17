@@ -374,7 +374,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //                public void actionPerformed(ActionEvent e) {
 //                	
 //                	// get a handle of the selected beastObject
-//                    String selected = (String) m_selectPluginBox.getSelectedItem();
+//                    String selected = (String) m_selectPluginBox.getValue();
 //                    BEASTObject beastObject = (BEASTObject) m_input.get();
 //                    if (selected.equals(NO_VALUE)) {
 //                        beastObject = null;

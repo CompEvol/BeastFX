@@ -7,8 +7,10 @@ import java.util.List;
 
 import javax.swing.Box;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.ListInputEditor;
@@ -55,20 +57,20 @@ public class ClockModelListInputEditor extends ListInputEditor {
         //return BranchRateModel.Base.class;
     }
 
-    Button fixMeanRatesCheckBox;
+    CheckBox fixMeanRatesCheckBox;
     
     DeltaExchangeOperator operator;
     protected SmallLabel fixMeanRatesValidateLabel;
     
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
-    	fixMeanRatesCheckBox = new Button("Fix mean rate of clock models");
+    	fixMeanRatesCheckBox = new CheckBox("Fix mean rate of clock models");
     	m_buttonStatus = ButtonStatus.NONE;
     	super.init(input, beastObject, itemNr, isExpandOption, addButtons);
     	
 		List<Operator> operators = ((MCMC) doc.mcmc.get()).operatorsInput.get();
-    	fixMeanRatesCheckBox.addActionListener(e -> {
-				Button averageRatesBox = (Button) e.getSource();
+    	fixMeanRatesCheckBox.setOnAction(e -> {
+    		CheckBox averageRatesBox = (CheckBox) e.getSource();
 				boolean averageRates = averageRatesBox.isSelected();
 				List<Operator> operators2 = ((MCMC) doc.mcmc.get()).operatorsInput.get();
 				if (averageRates) {
@@ -97,15 +99,15 @@ public class ClockModelListInputEditor extends ListInputEditor {
     		doc.addPlugin(operator);
     	}
 		fixMeanRatesCheckBox.setSelected(operators.contains(operator));
-		Box box = Box.createHorizontalBox();
-		box.add(fixMeanRatesCheckBox);
-		box.add(Box.createHorizontalGlue());
-		fixMeanRatesValidateLabel = new SmallLabel("x", Color.GREEN);
+		HBox box = new HBox();
+		box.getChildren().add(fixMeanRatesCheckBox);
+		box.getChildren().add(new Separator());
+		fixMeanRatesValidateLabel = new SmallLabel("x", "green");
 		fixMeanRatesValidateLabel.setVisible(false);
-		box.add(fixMeanRatesValidateLabel);
+		box.getChildren().add(fixMeanRatesValidateLabel);
 		
     	if (((List<?>) input.get()).size() > 1 && operator != null) {
-    		add(box);
+    		pane.getChildren().add(box);
     	}
 		setUpOperator();
     }
@@ -149,7 +151,7 @@ public class ClockModelListInputEditor extends ListInputEditor {
 	    	}
 	    	if (parameters.size() == 0) {
 	    		fixMeanRatesValidateLabel.setVisible(true);
-	    		fixMeanRatesValidateLabel.m_circleColor = Color.red;
+	    		fixMeanRatesValidateLabel.setColor("red");
 	    		fixMeanRatesValidateLabel.setTooltip(new Tooltip("The model is invalid: At least one clock rate should be estimated."));
 	    		return;
 	    	}
@@ -160,15 +162,15 @@ public class ClockModelListInputEditor extends ListInputEditor {
 	    	operator.parameterWeightsInput.setValue(weightParameter, operator);
 	    	if (!isAllClocksAreEqual) {
 	    		fixMeanRatesValidateLabel.setVisible(true);
-	    		fixMeanRatesValidateLabel.m_circleColor = Color.orange;
+	    		fixMeanRatesValidateLabel.setColor("orange");
 	    		fixMeanRatesValidateLabel.setTooltip(new Tooltip("Not all clocks are equal. Are you sure this is what you want?"));
 	    	} else if (parameters.size() == 1) {
 	    		fixMeanRatesValidateLabel.setVisible(true);
-	    		fixMeanRatesValidateLabel.m_circleColor = Color.orange;
+	    		fixMeanRatesValidateLabel.setColor("orange");
 	    		fixMeanRatesValidateLabel.setTooltip(new Tooltip("At least 2 clock models should have their rate estimated"));
 	    	} else if (parameters.size() < doc.alignments.size()) {
 	    		fixMeanRatesValidateLabel.setVisible(true);
-	    		fixMeanRatesValidateLabel.m_circleColor = Color.orange;
+	    		fixMeanRatesValidateLabel.setColor("orange");
 	    		fixMeanRatesValidateLabel.setTooltip(new Tooltip("Not all partitions have their rate estimated"));
 	    	} else {
 	    		fixMeanRatesValidateLabel.setVisible(false);

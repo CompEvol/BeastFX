@@ -129,7 +129,7 @@ public class TaxonSetDialog extends JDialog {
     
 
     private Component createFilterBox() {
-        Box box = Box.createHorizontalBox();
+        HBox box = new HBox();
         Label label = new Label("Filter:");
         box.add(label);
         filterEntry = new TextField();
@@ -142,7 +142,7 @@ public class TaxonSetDialog extends JDialog {
         int fontsize = filterEntry.getFont().getSize();
         filterEntry.setMaxSize(new Dimension(1024 * fontsize / 13, 50 * fontsize / 13));
         box.add(filterEntry);
-        box.add(Box.createHorizontalGlue());
+        box.add(new Separator());
 
         filterEntry.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -178,7 +178,7 @@ public class TaxonSetDialog extends JDialog {
     }
 
     Component createIDBox() {
-        Box box = Box.createHorizontalBox();
+        HBox box = new HBox();
         box.add(new Label("Taxon set label:"));
         idEntry = new TextField();
         idEntry.setID("idEntry");
@@ -219,7 +219,7 @@ public class TaxonSetDialog extends JDialog {
 	}
     
     Component createTaxonSelector() {
-        Box box = Box.createHorizontalBox();
+        HBox box = new HBox();
 
         // list of taxa to select from
         listModel1 = new DefaultListModel<>();
@@ -232,7 +232,7 @@ public class TaxonSetDialog extends JDialog {
         box.add(scroller);
 
         // add buttons to select/deselect taxa
-        Box buttonBox = Box.createVerticalBox();
+        VBox buttonBox = new VBox();
         buttonBox.add(Box.createGlue());
         Button selectButton = new Button(">>");
         selectButton.setID(">>");
@@ -273,7 +273,7 @@ public class TaxonSetDialog extends JDialog {
     } // createTaxonSelector
 
     Component createCancelOKButtons() {
-        Box cancelOkBox = Box.createHorizontalBox();
+        HBox cancelOkBox = new HBox();
         cancelOkBox.setBorder(new EtchedBorder());
         Button okButton = new Button("Ok");
         okButton.setId("OK");
@@ -294,11 +294,11 @@ public class TaxonSetDialog extends JDialog {
         cancelButton.setOnAction(e -> {
                 dispose();
             });
-        cancelOkBox.add(Box.createHorizontalGlue());
+        cancelOkBox.add(new Separator());
         cancelOkBox.add(okButton);
-        cancelOkBox.add(Box.createHorizontalGlue());
+        cancelOkBox.add(new Separator());
         cancelOkBox.add(cancelButton);
-        cancelOkBox.add(Box.createHorizontalGlue());
+        cancelOkBox.add(new Separator());
         return cancelOkBox;
     } // createCancelOKButtons
 

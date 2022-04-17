@@ -11,9 +11,9 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import beast.base.core.Log;
+import beast.pkgmgmt.PackageManager;
 import beastfx.app.beastfx.BeastFX;
-import beast.core.util.Log;
-import beast.util.AddOnManager;
 
 
 
@@ -40,7 +40,7 @@ public class HTTPPostServer extends Thread {
 
 	public HTTPPostServer(Socket client) {
 		connectedClient = client;
-		PKG_DIR = AddOnManager.getPackageUserDir() + "/BeastFX/html/";
+		PKG_DIR = PackageManager.getPackageUserDir() + "/BeastFX/html/";
 	}
 
 	public void run() {

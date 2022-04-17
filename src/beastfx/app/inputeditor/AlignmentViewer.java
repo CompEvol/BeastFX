@@ -9,7 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Box;
+
+import javafx.geometry.Dimension2D;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.layout.HBox;
+
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -151,11 +156,11 @@ public class AlignmentViewer extends JPanel {
         mainTable.setShowGrid(false);
 
         JScrollPane scrollPane = new JScrollPane(mainTable);
-        Dimension fixedSize = fixedTable.getPreferredSize();
+        Dimension2D fixedSize = fixedTable.getPrefSize();
         JViewport viewport = new JViewport();
         viewport.setView(fixedTable);
-        viewport.setPrefSize(fixedSize);
-        viewport.setMaxSize(fixedSize);
+        viewport.setPrefSize(fixedSize.getWidth(), fixedSize.getHeight());
+        viewport.setMaxSize(fixedSize.getWidth(), fixedSize.getHeight());
         scrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, fixedTable.getTableHeader());
         scrollPane.setRowHeaderView(viewport);
 
@@ -333,30 +338,31 @@ public class AlignmentViewer extends JPanel {
     }
 
     public void showInDialog() {
-        JDialog dlg = new JDialog();
-        dlg.setID("AlignmentViewer");
+        Dialog<?> dlg = new Dialog<>();
+        dlg.setId("AlignmentViewer");
         dlg.add(this);
 
-        Box buttonBox = Box.createHorizontalBox();
-        Button useDotsCheckBox = new Button("Use dots", true);
+        HBox buttonBox = new HBox();
+        CheckBox useDotsCheckBox = new CheckBox("Use dots");
+        useDotsCheckBox.setSelected(true);
         useDotsCheckBox.setOnAction(e -> {
-                Button _useDots = (Button) e.getSource();
+        	CheckBox _useDots = (CheckBox) e.getSource();
                 useDots = _useDots.isSelected();
                 updateTableData();
                 repaint();
             });
-        buttonBox.add(useDotsCheckBox);
+        buttonBox.getChildren().add(useDotsCheckBox);
 
-        Button useColorCheckBox = new Button("Use Color");
-        useColorCheckBox.setID("UseColor");
+        CheckBox useColorCheckBox = new CheckBox("Use Color");
+        useColorCheckBox.setId("UseColor");
         useColorCheckBox.setOnAction(e -> {
-                Button hasColor = (Button) e.getSource();
+        	CheckBox hasColor = (CheckBox) e.getSource();
                 useColor = hasColor.isSelected();
                 updateTableData();
                 repaint();
             });
-        buttonBox.add(useColorCheckBox);
-        dlg.add(buttonBox, BorderLayout.SOUTH);
+        buttonBox.getChildren().add(useColorCheckBox);
+        dlg.getChildren().add(buttonBox, BorderLayout.SOUTH);
 
         int size = UIManager.getFont("Label.font").getSize();
         dlg.setSize(1024 * size / 13, 600 * size / 13);

@@ -11,6 +11,7 @@ import beast.base.core.Log;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.tree.TraitSet;
 import beast.base.evolution.tree.Tree;
+import beastfx.app.util.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -139,7 +140,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                 });
             HBox box2 = new HBox();
             box2.getChildren().add(useTipDates);
-            box2.add(Box.createHorizontalGlue());
+            box2.add(new Separator());
             box.getChildren().add(box2);
 
             if (traitSet != null) {
@@ -369,16 +370,16 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
      * create box with comboboxes for selectin units and trait name *
      */
     private Box createButtonBox() {
-        Box buttonBox = Box.createHorizontalBox();
+        HBox buttonBox = new HBox();
 
         Label label = new Label("Dates specified: ");
         label.setAlignmentY(Component.TOP_ALIGNMENT);
         label.setMaxSize(label.getPreferredSize());
         buttonBox.add(label);
 
-        Box formatBox = Box.createVerticalBox();
-        Box formatBoxFirstLine = Box.createHorizontalBox();
-        Box formatBoxSecondLine = Box.createHorizontalBox();
+        VBox formatBox = new VBox();
+        HBox formatBoxFirstLine = new HBox();
+        HBox formatBoxSecondLine = new HBox();
 
         radioButtonGroup = new ButtonGroup();
         numericRadioButton = new RadioButton("numerically as");
@@ -435,7 +436,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         relativeToComboBox.setMaxSize(relativeToComboBox.getPreferredSize());
         relativeToComboBox.setEnabled(numericRadioButton.isSelected());
         formatBoxFirstLine.add(relativeToComboBox);
-        formatBoxFirstLine.add(Box.createHorizontalGlue());
+        formatBoxFirstLine.add(new Separator());
         formatBox.add(formatBoxFirstLine);
 
         formattedDateRadioButton = new RadioButton("as dates with format");
@@ -480,13 +481,13 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                         DATE_FORMAT_HELP_MESSAGE, Font.MONOSPACED));
         formatBoxSecondLine.add(dateFormatHelpButton);
 
-        formatBoxSecondLine.add(Box.createHorizontalGlue());
+        formatBoxSecondLine.add(new Separator());
 
         formatBox.add(formatBoxSecondLine);
         formatBox.setAlignmentY(TOP_ALIGNMENT);
         buttonBox.add(formatBox);
 
-        buttonBox.add(Box.createHorizontalGlue());
+        buttonBox.add(new Separator());
 
         Button guessButton = new Button("Auto-configure");
         guessButton.setAlignmentY(TOP_ALIGNMENT);

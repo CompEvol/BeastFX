@@ -260,7 +260,7 @@ public class BEASTObjectPanel extends Pane {
     HBox createPluginBox() {
         HBox box = new HBox();
         //jLabel icon = new Label();
-        // box.add(Box.createHorizontalGlue());
+        // box.add(new Separator());
         box.getChildren().add(new Separator());
 
         Label label = new Label(m_beastObjectClass.getName().replaceAll(".*\\.", "") + ":");

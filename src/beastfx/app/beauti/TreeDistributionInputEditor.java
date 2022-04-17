@@ -9,6 +9,11 @@ import java.util.List;
 import javax.swing.Box;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
 import javax.swing.SwingUtilities;
 
 import beastfx.app.inputeditor.BeautiDoc;
@@ -60,7 +65,8 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         m_beastObject = beastObject;
         this.itemNr = listItemNr;
 
-        Box itemBox = Box.createHorizontalBox();
+        pane = new VBox();
+        HBox itemBox = new HBox();
 
         TreeDistribution distr = (TreeDistribution) beastObject;
         String text = ""/* beastObject.getID() + ": " */;
@@ -72,9 +78,9 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         Label label = new Label(text);
         Font font = label.getFont();
         Dimension size = new Dimension(font.getSize() * 200 / 12, font.getSize() * 2);
-        label.setMinimumSize(size);
-        label.setPreferredSize(size);
-        itemBox.add(label);
+        label.setMinSize(size.getWidth(), size.getHeight());
+        label.setPrefSize(size.getWidth(), size.getHeight());
+        itemBox.getChildren().add(label);
         // List<String> availableBEASTObjects =
         // PluginPanel.getAvailablePlugins(m_input, m_beastObject, null);
 
@@ -90,7 +96,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         }
         
         ComboBox<BeautiSubTemplate> comboBox = new ComboBox<>(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
-        comboBox.setName("TreeDistribution");
+        comboBox.setId("TreeDistribution");
 
         for (int i = availableBEASTObjects.size() - 1; i >= 0; i--) {
             if (!TreeDistribution.class.isAssignableFrom(availableBEASTObjects.get(i)._class)) {
@@ -112,7 +118,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
             }
         }
 
-        comboBox.addActionListener(e -> {
+        comboBox.setOnAction(e -> {
                 m_e = e;
                 SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -133,14 +139,14 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
                     }
                 });
             });
-        itemBox.add(comboBox);
-        itemBox.add(Box.createGlue());
+        itemBox.getChildren().add(comboBox);
+        itemBox.getChildren().add(new Separator());
 
-        m_validateLabel = new SmallLabel("x", new Color(200, 0, 0));
+        m_validateLabel = new SmallLabel("x", "red");
         m_validateLabel.setVisible(false);
         validateInput();
-        itemBox.add(m_validateLabel);
-        add(itemBox);
+        itemBox.getChildren().add(m_validateLabel);
+        pane.getChildren().add(itemBox);
     }
 
     @Override
@@ -154,7 +160,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         if (tree.hasDateTrait()) {
             if (!distr.canHandleTipDates()) {
                 m_validateLabel.setTooltip(new Tooltip("This tree prior cannot handle dated tips. Choose another tree prior."));
-                m_validateLabel.m_circleColor = Color.red;
+                m_validateLabel.setColor("red");
                 m_validateLabel.setVisible(true);
                 return;
             }

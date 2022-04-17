@@ -222,7 +222,7 @@ public abstract class Base extends Pane implements InputEditor {
         pane.getChildren().add(m_entry);
         HBox.setHgrow(new Region(), Priority.ALWAYS);
         pane.getChildren().add(new Separator());
-        // pane.getChildren().add(Box.createHorizontalGlue());
+        // pane.getChildren().add(new Separator());
         addValidationLabel();
         getChildren().add(pane);
     } // init

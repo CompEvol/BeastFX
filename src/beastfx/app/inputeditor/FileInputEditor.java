@@ -1,14 +1,10 @@
 package beastfx.app.inputeditor;
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 import javafx.scene.control.Button;
 
-import beastfx.app.inputeditor.BeautiDoc;
-import beastfx.app.inputeditor.InputEditor;
 import beast.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -21,8 +17,6 @@ import beast.base.core.ProgramStatus;
 public class FileInputEditor extends InputEditor.Base {
 	final static String SEPARATOR = Utils.isWindows() ? "\\\\" : "/";
 	
-	private static final long serialVersionUID = 1L;
-
 	@Override
 	public Class<?> type() {
 		return File.class;

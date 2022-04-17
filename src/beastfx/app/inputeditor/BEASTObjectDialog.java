@@ -115,7 +115,7 @@ public class BEASTObjectDialog extends Dialog {
 
 
 //        /* add cancel and ok buttons at the bottom */
-//        Box cancelOkBox = Box.createHorizontalBox();
+//        HBox cancelOkBox = new HBox();
 //        cancelOkBox.setBorder(new EtchedBorder());
 //        Button okButton = new Button("Ok");
 //        okButton.setOnAction(new ActionListener() {
@@ -135,11 +135,11 @@ public class BEASTObjectDialog extends Dialog {
 //                dispose();
 //            }
 //        });
-//        cancelOkBox.add(Box.createHorizontalGlue());
+//        cancelOkBox.add(new Separator());
 //        cancelOkBox.add(okButton);
-//        cancelOkBox.add(Box.createHorizontalGlue());
+//        cancelOkBox.add(new Separator());
 //        cancelOkBox.add(cancelButton);
-//        cancelOkBox.add(Box.createHorizontalGlue());
+//        cancelOkBox.add(new Separator());
 //
 //        add(BorderLayout.SOUTH, cancelOkBox);
 //

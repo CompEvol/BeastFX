@@ -139,13 +139,13 @@ public class PriorListInputEditor extends ListInputEditor {
         
         if (m_buttonStatus == ButtonStatus.ALL || m_buttonStatus == ButtonStatus.ADD_ONLY) {
 	        addButton = new SmallButton("+ Add Prior", true);
-	        addButton.setName("addItem");
+	        addButton.setId("addItem");
 	        addButton.setTooltip(new Tooltip("Add new prior (like an MRCA-prior) to the list of priors"));
-	        addButton.addActionListener(e -> {
+	        addButton.setOnAction(e -> {
 	                addItem();
 	            });
 	        buttonBox.add(addButton);
-            buttonBox.add(Box.createHorizontalGlue());
+            buttonBox.add(new Separator());
         }
     }
 

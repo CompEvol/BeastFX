@@ -50,7 +50,7 @@ public class OperatorListInputEditor extends ListInputEditor {
 
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
-    	Box box = Box.createHorizontalBox();
+    	HBox box = new HBox();
     	box.add(Box.createHorizontalStrut(25));
     	box.add(new Label("Operator"));
     	box.add(Box.createGlue());
@@ -72,8 +72,8 @@ public class OperatorListInputEditor extends ListInputEditor {
         Operator operator = (Operator) beastObject;
 
         TextField entry = new TextField(" " + getLabel(operator));
-        entry.setMinimumSize(new Dimension(200, 16));
-        //entry.setMaximumSize(new Dimension(200, 20));
+        entry.setMinSize(new Dimension(200, 16));
+        //entry.setMaxSize(new Dimension(200, 20));
         m_entries.add(entry);
         entry.setBackground(getBackground());
         entry.setBorder(null);
@@ -88,16 +88,16 @@ public class OperatorListInputEditor extends ListInputEditor {
 //        itemBox.add(label);
 
 
-        itemBox.add(Box.createHorizontalGlue());
+        itemBox.add(new Separator());
         TextField weightEntry = new TextField();
         weightEntry.setTooltip(new Tooltip(operator.m_pWeight.getHTMLTipText()));
         weightEntry.setText(operator.m_pWeight.get() + "");
         weightEntry.getDocument().addDocumentListener(new OperatorDocumentListener(operator, weightEntry));
         Dimension size = new Dimension(50, 25);
-        weightEntry.setMinimumSize(size);
-        weightEntry.setPreferredSize(size);
+        weightEntry.setMinSize(size);
+        weightEntry.setPrefSize(size);
         int fontsize = weightEntry.getFont().getSize();
-        weightEntry.setMaximumSize(new Dimension(50 * fontsize/13, 50 * fontsize/13));
+        weightEntry.setMaxSize(new Dimension(50 * fontsize/13, 50 * fontsize/13));
         itemBox.add(weightEntry);
 
         return this;

@@ -64,7 +64,7 @@ public class FrequenciesInputEditor extends BEASTObjectInputEditor {
             alignment = freqs.dataInput.get();
             freqsParameter = (RealParameter) getCandidate(freqs.frequenciesInput, freqs);
         }
-        comboBox.addActionListener(e -> {
+        comboBox.setOnAction(e -> {
                 //@SuppressWarnings("unchecked")
 				//ComboBox<String> comboBox = (ComboBox<String>) e.getSource();
                 int selected = comboBox.getSelectedIndex();

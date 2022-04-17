@@ -11,7 +11,16 @@ import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+
+import javafx.geometry.Orientation;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.SplitPane;
+
 import javax.swing.JList;
 import beastfx.app.util.Alert;
 import javax.swing.JPanel;
@@ -41,7 +50,9 @@ import beast.base.evolution.tree.TreeInterface;
 import beast.base.inference.CompoundDistribution;
 import beast.base.inference.MCMC;
 import beast.base.parser.PartitionContext;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 /**
  * panel making up each of the tabs in Beauti *
@@ -53,7 +64,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
 
     static int partitionListPreferredWidth = 120;
 
-    private JSplitPane splitPane;
+    private SplitPane splitPane;
 
     /**
      * document that this panel applies to *
@@ -93,17 +104,18 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
     /**
      * box containing the list of partitions, to make (in)visible on update *
      */
-    JComponent partitionComponent;
+    BorderPane partitionComponent;
+    BorderPane pane;
     /**
      * list of partitions in m_listBox *
      */
-    JList<String> listOfPartitions;
+    ListView<String> listOfPartitions;
     /**
      * model for m_listOfPartitions *
      */
     DefaultListModel<String> listModel;
 
-    JScrollPane scroller;
+    ScrollPane scroller;
 
     /**
      * component containing main input editor *
@@ -116,14 +128,15 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
     public BeautiPanel(int panelIndex, BeautiDoc doc, BeautiPanelConfig config) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         this.doc = doc;
         this.panelIndex = panelIndex;
-
-        setLayout(new BorderLayout());
+        pane = new BorderPane();
+        //setLayout(new BorderLayout());
 
         this.config = config;
         if (this.config.hasPartition() != Partition.none &&
                 doc.getPartitions(config.hasPartitionsInput.get().toString()).size() > 1) {
-            splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-            add(splitPane,BorderLayout.CENTER);
+            splitPane = new SplitPane();
+            splitPane.setJSplitPane.HORIZONTAL_SPLIT);
+            pane.setCenter(splitPane);
         } else {
             splitPane = null;
         }
@@ -131,20 +144,21 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         refreshPanel();
         addPartitionPanel(this.config.hasPartition(), panelIndex);
 
-        setOpaque(false);
+        //setOpaque(false);
+        
     } // c'tor
 
     void addPartitionPanel(Partition hasPartition, int panelIndex) {
-        Box box = Box.createVerticalBox();
+        VBox box = new VBox();
         if (splitPane != null && hasPartition != Partition.none) {
-            box.add(createList());
+            box.getChildren().add(createList());
         } else {
             return;
         }
-        box.add(Box.createVerticalGlue());
-        box.add(new Label(getIcon(panelIndex, config)));
+        box.getChildren().add(new Separator(Orientation.VERTICAL));
+        box.getChildren().add(new Label(getIcon(panelIndex, config)));
 
-        splitPane.add(box, JSplitPane.LEFT);
+        splitPane.getChildren().add(box, JSplitPane.LEFT);
         if (listOfPartitions != null) {
             listOfPartitions.setSelectedIndex(partitionIndex);
         }
@@ -163,22 +177,22 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
      * Create a list of partitions and return as a JComponent;
      * @return
      */
-    JComponent createList() {
-        partitionComponent = new JPanel();
-        partitionComponent.setLayout(new BorderLayout());
+    Node createList() {
+        partitionComponent = new BorderPane();
+        // partitionComponent.setLayout(new BorderLayout());
         Label partitionLabel = new Label("Partition");
         partitionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        partitionComponent.add(partitionLabel, BorderLayout.NORTH);
+        partitionComponent.getChildren().add(partitionLabel, BorderLayout.NORTH);
         listModel = new DefaultListModel<>();
         listOfPartitions = new JList<>(listModel);
-        listOfPartitions.setID("listOfPartitions");
+        listOfPartitions.setId("listOfPartitions");
         listOfPartitions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         Dimension size = new Dimension(partitionListPreferredWidth, 300);
         //listOfPartitions.setFixedCellWidth(120);
 //    	m_listOfPartitions.setSize(size);
         //listOfPartitions.setPrefSize(size);
-    	listOfPartitions.setMinSize(size);
+    	listOfPartitions.setMinSize(size.getWidth(), size.getHeight());
 //    	m_listOfPartitions.setBounds(0, 0, 100, 100);
 
         listOfPartitions.addListSelectionListener(this);
@@ -187,8 +201,9 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
         //listOfPartitions.setBorder(new BevelBorder(BevelBorder.RAISED));
 
-        JScrollPane listPane = new JScrollPane(listOfPartitions);
-        partitionComponent.add(listPane, BorderLayout.CENTER);
+        ScrollPane listPane = new ScrollPane();
+        listPane.setContent(listOfPartitions);
+        partitionComponent.getChildren().add(listPane, BorderLayout.CENTER);
         // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
         //partitionComponent.setBorder(new EtchedBorder());
         return partitionComponent;
@@ -238,8 +253,8 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         // toggle splitpane
         if (splitPane == null && config.hasPartition() != Partition.none &&
                 doc.getPartitions(config.hasPartitionsInput.get().toString()).size() > 1) {
-            splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-            add(splitPane,BorderLayout.CENTER);
+            splitPane = new SplitPane(JSplitPane.HORIZONTAL_SPLIT);
+            pane.setCenter(splitPane);
             addPartitionPanel(config.hasPartition(), panelIndex);
         }
         if (splitPane != null && (config.hasPartition() == Partition.none ||
@@ -491,7 +506,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
 //			frames[frames.length-1].setSize(size);
 
 //			m_centralComponent.repaint();
-//			m_centralComponent.requestFocusInWindow();
+//			m_centralComponent.requestFocus();
             centralComponent.requestFocus();
         } catch (Exception ex) {
             ex.printStackTrace();

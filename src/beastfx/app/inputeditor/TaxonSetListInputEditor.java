@@ -18,6 +18,16 @@ import javax.swing.tree.*;
 
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.ListInputEditor;
+import beastfx.app.util.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Input;
@@ -40,7 +50,7 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 	List<TaxonSet> m_taxonset;
 	Map<String,Taxon> m_taxonMap;
 	DefaultTreeModel m_treemodel;
-	JTree m_tree;
+	TreeModel m_tree;
 	TextField filterEntry;
 	String m_sFilter = ".*";
 
@@ -57,12 +67,14 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 	@Override
 	public void init(Input<?> input, BEASTInterface plugin, int itemNr, ExpandOption bExpand, boolean bAddButtons) {
 		this.itemNr = itemNr;
+		pane = new HBox();
 		List<TaxonSet> taxonset = (List<TaxonSet>) input.get();
-		add(getContent(taxonset));
+		pane.getChildren().add(getContent(taxonset));
+		getChildren().add(pane);
 	}
 
 
-	private Component getContent(List<TaxonSet> taxonset) {
+	private Pane getContent(List<TaxonSet> taxonset) {
 		m_taxonset = taxonset;
 		m_taxonMap = new HashMap<String, Taxon>();
 		for (Taxon taxonset2 : m_taxonset) {
@@ -118,62 +130,72 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 
 		});
 
-		JScrollPane pane = new JScrollPane(m_tree);
+		ScrollPane pane = new ScrollPane();
+		pane.setConent(m_tree);
 
-		Box box = Box.createVerticalBox();
-		box.add(createFilterBox());
-		box.add(pane);
-		box.add(createButtonBox());
+		VBox box = new VBox();
+		box.getChildren().add(createFilterBox());
+		box.getChildren().add(pane);
+		box.getChildren().add(createButtonBox());
 		return box;
 	}
 
-	private Component createFilterBox() {
-		Box filterBox = Box.createHorizontalBox();
-		filterBox.add(new Label("filter: "));
+	private Pane createFilterBox() {
+		HBox filterBox = new HBox();
+		filterBox.getChildren().add(new Label("filter: "));
 		Dimension size = new Dimension(100,20);
 		filterEntry = new TextField();
-		filterEntry.setMinSize(size);
-		filterEntry.setPrefSize(size);
-		filterEntry.setSize(size);
+		filterEntry.setMinSize(size.getWidth(), size.getHeight());
+		filterEntry.setPrefSize(size.getWidth(), size.getHeight());
+		//filterEntry.setSize(size.getWidth(), size.getHeight());
 		filterEntry.setTooltip(new Tooltip("Enter regular expression to match taxa"));
-		filterEntry.setMaxSize(new Dimension(1024, 20));
-		filterBox.add(filterEntry);
-		filterEntry.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				processFilter();
-			}
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				processFilter();
-			}
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				processFilter();
-			}
-			private void processFilter() {
-				String sFilter = ".*" + filterEntry.getText() + ".*";
-				try {
-					// sanity check: make sure the filter is legit
-					sFilter.matches(sFilter);
-					m_sFilter = sFilter;
-					m_tree.repaint();
-				} catch (PatternSyntaxException e) {
-					// ignore
-				}
-			}
+		filterEntry.setMaxSize(1024, 20);
+		filterBox.getChildren().add(filterEntry);
+		filterEntry.setOnKeyReleased(e -> {
+			String sFilter = ".*" + filterEntry.getText() + ".*";
+			try {
+				// sanity check: make sure the filter is legit
+				sFilter.matches(sFilter);
+				m_sFilter = sFilter;
+				m_tree.repaint();
+			} catch (PatternSyntaxException e) {
+				// ignore
+			}			
 		});
+//		filterEntry.getDocument().addDocumentListener(new DocumentListener() {
+//			@Override
+//			public void removeUpdate(DocumentEvent e) {
+//				processFilter();
+//			}
+//			@Override
+//			public void insertUpdate(DocumentEvent e) {
+//				processFilter();
+//			}
+//			@Override
+//			public void changedUpdate(DocumentEvent e) {
+//				processFilter();
+//			}
+//			private void processFilter() {
+//				String sFilter = ".*" + filterEntry.getText() + ".*";
+//				try {
+//					// sanity check: make sure the filter is legit
+//					sFilter.matches(sFilter);
+//					m_sFilter = sFilter;
+//					m_tree.repaint();
+//				} catch (PatternSyntaxException e) {
+//					// ignore
+//				}
+//			}
+//		});
 		return filterBox;
 	}
 
 	/** for adding and deleting taxon sets **/
-	private Box createButtonBox() {
-		Box buttonBox = Box.createHorizontalBox();
+	private Pane createButtonBox() {
+		HBox buttonBox = new HBox();
 
 		Button delButton = new Button("Delete");
-		delButton.setOnAction(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		delButton.setOnAction(e-> {
 				int[] selRows = m_tree.getSelectionRows();
 				if (selRows.length == 0) {
 					return;
@@ -194,25 +216,22 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 				}
 				m_treemodel.removeNodeFromParent(firstNode);
 				modelToTaxonset();
-			}
 		});
-		buttonBox.add(Box.createHorizontalGlue());
-		buttonBox.add(delButton);
-		buttonBox.add(Box.createHorizontalGlue());
+		buttonBox.getChildren().add(new Separator());
+		buttonBox.getChildren().add(delButton);
+		buttonBox.getChildren().add(new Separator());
 
 
 		Button addButton = new Button("New");
-		addButton.setOnAction(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		addButton.setOnAction(e-> {
 				DefaultMutableTreeNode root = (DefaultMutableTreeNode) m_treemodel.getRoot();
 				DefaultMutableTreeNode Kid = new DefaultMutableTreeNode("New taxonset");
 				m_treemodel.insertNodeInto(Kid, root, m_taxonset.size());
 				modelToTaxonset();
 			}
-		});
-		buttonBox.add(addButton);
-		buttonBox.add(Box.createHorizontalGlue());
+		);
+		buttonBox.getChildren().add(addButton);
+		buttonBox.getChildren().add(new Separator());
 		return buttonBox;
 	}
 

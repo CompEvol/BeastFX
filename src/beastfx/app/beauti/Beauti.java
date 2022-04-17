@@ -3,6 +3,7 @@ package beastfx.app.beauti;
 
 
 import jam.framework.DocumentFrame;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 
 import org.w3c.dom.Document;
@@ -58,7 +59,6 @@ import java.util.List;
 
 
 public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocListener {
-    private static final long serialVersionUID = 1L;
     static final String BEAUTI_ICON = "beast/app/draw/icons/beauti.png";
 
     // ExtensionFileFilter ef0 = new ExtensionFileFilter(".nex", "Nexus files");
@@ -535,7 +535,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
     boolean quit() {
         if (doc.validateModel() == DOC_STATUS.DIRTY) {
-            int result = Alert.showConfirmDialog(null,
+            ButtonType result = Alert.showConfirmDialog(null,
                     "Do you want to save the Beast specification?",
                     "Save before closing?", Alert.YES_NO_CANCEL_OPTION);
             Log.err.println("result=" + result);
@@ -648,12 +648,12 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         				"To show them here, start BEAUti with the -capture argument.</html>");
         	} else {
 	        	String msgs = BeautiDoc.baos.toString();
-	        	JTextArea textArea = new JTextArea(msgs);
-	        	textArea.setRows(40);
-	        	textArea.setColumns(50);
+	        	javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(msgs);
+	        	textArea.setPrefRowCount(40);
+	        	textArea.setPrefColumnCount(50);
 	        	textArea.setEditable(true);
-	        	JScrollPane scroller = new JScrollPane(textArea);
-	        	Alert.showMessageDialog(frame, scroller);
+	        	javafx.scene.control.ScrollPane scroller = new javafx.scene.control.ScrollPane(textArea);
+	        	Alert.showMessageDialog(frame, scroller, "Messages", Alert.WARNING_MESSAGE);
         	}
         }
     }
@@ -742,7 +742,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
         autoSetClockRate = new JCheckBoxMenuItem(
                 "Automatic set clock rate", this.doc.autoSetClockRate);
-        autoSetClockRate.addActionListener(ae -> {
+        autoSetClockRate.setOnAction(ae -> {
                 doc.autoSetClockRate = autoSetClockRate.getState();
                 refreshPanel();
             });
@@ -750,7 +750,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
         allowLinking = new JCheckBoxMenuItem(
                 "Allow parameter linking", this.doc.allowLinking);
-        allowLinking.addActionListener(ae -> {
+        allowLinking.setOnAction(ae -> {
                 doc.allowLinking = allowLinking.getState();
                 doc.determineLinks();
                 refreshPanel();
@@ -759,7 +759,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
         autoUpdateFixMeanSubstRate = new JCheckBoxMenuItem(
                 "Automatic set fix mean substitution rate flag", this.doc.autoUpdateFixMeanSubstRate);
-        autoUpdateFixMeanSubstRate.addActionListener(ae -> {
+        autoUpdateFixMeanSubstRate.setOnAction(ae -> {
                 doc.autoUpdateFixMeanSubstRate = autoUpdateFixMeanSubstRate.getState();
                 refreshPanel();
             });
@@ -767,7 +767,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
         // final JCheckBoxMenuItem muteSound = new
         // JCheckBoxMenuItem("Mute sound", false);
-        // muteSound.addActionListener(new ActionListener() {
+        // muteSound.setOnAction(new ActionListener() {
         // public void actionPerformed(ActionEvent ae) {
         // BeautiPanel.soundIsPlaying = !muteSound.getState();
         // refreshPanel();
@@ -908,12 +908,12 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 		                exx.printStackTrace();
 
 		                String text = "Something went wrong importing the alignment:\n";
-		                JTextArea textArea = new JTextArea(text);
+		                javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(text);
 		                textArea.setColumns(30);
 		                textArea.setLineWrap(true);
 		                textArea.setWrapStyleWord(true);
-		                textArea.append(exx.getMessage());
-		                textArea.setSize(textArea.getPreferredSize().width, 1);
+		                textArea.appendText(exx.getMessage());
+		                textArea.setPrefSize(textArea.getPrefWidth(), 1);
 		                textArea.setOpaque(false);
 		                Alert.showMessageDialog(null, textArea,
 		                        "Error importing alignment",
@@ -937,7 +937,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         for (int panelIndex = 0; panelIndex < doc.beautiConfig.panels.size(); panelIndex++) {
             final ViewPanelCheckBoxMenuItem viewPanelAction = new ViewPanelCheckBoxMenuItem(
                     panelIndex);
-            viewPanelAction.addActionListener(ae -> {
+            viewPanelAction.setOnAction(ae -> {
                     viewPanelAction.doAction();
                 });
             viewMenu.add(viewPanelAction);

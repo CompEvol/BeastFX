@@ -5,7 +5,8 @@ import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import beast.core.util.Log;
+import beast.base.core.Log;
+
 
 
 

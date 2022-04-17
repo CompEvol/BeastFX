@@ -27,10 +27,13 @@ import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -185,6 +188,7 @@ public class IntegerListInputEditor extends ListInputEditor {
             pane.getChildren().add(m_entry);
             pane.getChildren().add(new Separator());
             addValidationLabel();
+            getChildren().add(pane);
         } // init
 
         @Override
@@ -236,7 +240,7 @@ public class IntegerListInputEditor extends ListInputEditor {
                 if (m_validateLabel != null) {
                     m_validateLabel.setVisible(true);
                     m_validateLabel.setTooltip(new Tooltip("<html><p>Parsing error: " + ex.getMessage() + ". Value was left at " + m_input.get() + ".</p></html>"));
-                    m_validateLabel.m_circleColor = Color.orange;
+                    m_validateLabel.setColor("orange");
                 }
                 repaint();
             }
@@ -279,7 +283,7 @@ public class IntegerListInputEditor extends ListInputEditor {
 //                m_inputLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
                 // RRB: temporary
                 //m_inputLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-                add(m_inputLabel);
+                pane.getChildren().add(m_inputLabel);
             }
         }
 
@@ -287,7 +291,7 @@ public class IntegerListInputEditor extends ListInputEditor {
 		protected void addValidationLabel() {
             if (m_bAddButtons) {
                 m_validateLabel = new SmallLabel("x", new Color(200, 0, 0));
-                add(m_validateLabel);
+                pane.getChildren().add(m_validateLabel);
                 m_validateLabel.setVisible(true);
                 validateInput();
             }
@@ -316,7 +320,7 @@ public class IntegerListInputEditor extends ListInputEditor {
                     if (m_validateLabel != null) {
                         m_validateLabel.setVisible(true);
                         m_validateLabel.setTooltip(new Tooltip("<html><p>Recursive error in " + e.getMessage() + "</p></html>"));
-                        m_validateLabel.m_circleColor = Color.orange;
+                        m_validateLabel.setColor("orange");
                     }
                     repaint();
                     return;
@@ -329,7 +333,7 @@ public class IntegerListInputEditor extends ListInputEditor {
                 Log.err.println("Validation message: " + e.getMessage());
                 if (m_validateLabel != null) {
                     m_validateLabel.setTooltip(new Tooltip(e.getMessage()));
-                    m_validateLabel.m_circleColor = Color.red;
+                    m_validateLabel.setColor("red");
                     m_validateLabel.setVisible(true);
                 }
                 notifyValidationListeners(ValidationStatus.IS_INVALID);
@@ -385,7 +389,7 @@ public class IntegerListInputEditor extends ListInputEditor {
 
         @Override
 		public void refreshPanel() {
-            Component c = this;
+            Parent c = this;
             while (c.getParent() != null) {
                 c = c.getParent();
                 if (c instanceof ListSelectionListener) {

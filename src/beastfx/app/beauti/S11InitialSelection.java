@@ -42,7 +42,7 @@ public class S11InitialSelection extends PlainDocument {
         model = comboBox.getModel();
         editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
         editor.setDocument(this);
-        comboBox.addActionListener(e -> {
+        comboBox.setOnAction(e -> {
                 if (!selecting) highlightCompletedText(0);
             });
         editor.addKeyListener(new KeyAdapter() {
@@ -52,7 +52,7 @@ public class S11InitialSelection extends PlainDocument {
             }
         });
         // Handle initially selected object
-        Object selected = comboBox.getSelectedItem();
+        Object selected = comboBox.getValue();
         if (selected!=null) setText(selected.toString());
         highlightCompletedText(0);
     }
@@ -76,7 +76,7 @@ public class S11InitialSelection extends PlainDocument {
             setSelectedItem(item);
         } else {
             // keep old item selected if there is no match
-            item = comboBox.getSelectedItem();
+            item = comboBox.getValue();
             // imitate no insert (later on offs will be incremented by str.length(): selection won't move forward)
             offs = offs-str.length();
             // provide feedback to the user that his input has been received but can not be accepted

@@ -1,7 +1,6 @@
 package beastfx.app.inputeditor;
 
 
-import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -15,8 +14,12 @@ import beast.base.inference.*;
 import beast.base.inference.operator.DeltaExchangeOperator;
 import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 
-import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     ParameterInputEditor inVarEditor;
 
     // vars for dealing with mean-rate delta exchange operator
-    Button fixMeanRatesCheckBox;
+    CheckBox fixMeanRatesCheckBox;
     DeltaExchangeOperator operator;
     protected SmallLabel fixMeanRatesValidateLabel;
 
@@ -49,14 +52,14 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr,
     		ExpandOption isExpandOption, boolean addButtons) {
-    	fixMeanRatesCheckBox = new Button("Fix mean substitution rate");
-    	fixMeanRatesCheckBox.setID("FixMeanMutationRate");
-    	fixMeanRatesCheckBox.setEnabled(!doc.autoUpdateFixMeanSubstRate);
+    	fixMeanRatesCheckBox = new CheckBox("Fix mean substitution rate");
+    	fixMeanRatesCheckBox.setId("FixMeanMutationRate");
+    	fixMeanRatesCheckBox.setDisable(doc.autoUpdateFixMeanSubstRate);
     	super.init(input, beastObject, itemNr, isExpandOption, addButtons);
 
 		List<Operator> operators = ((MCMC) doc.mcmc.get()).operatorsInput.get();
     	fixMeanRatesCheckBox.setOnAction(e -> {
-				Button averageRatesBox = (Button) e.getSource();
+    			CheckBox averageRatesBox = (CheckBox) e.getSource();
 				doFixMeanRates(averageRatesBox.isSelected());
 				if (averageRatesBox.isSelected())
 					// set up relative weights
@@ -74,16 +77,16 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     		doc.addPlugin(operator);
     	}
 		fixMeanRatesCheckBox.setSelected(operators.contains(operator));
-		Box box = Box.createHorizontalBox();
-		box.add(fixMeanRatesCheckBox);
-		box.add(Box.createHorizontalGlue());
+		HBox box = new HBox();
+		box.getChildren().add(fixMeanRatesCheckBox);
+		box.getChildren().add(new Separator());
 		fixMeanRatesValidateLabel = new SmallLabel("x", Color.GREEN);
 		fixMeanRatesValidateLabel.setVisible(false);
-		box.add(fixMeanRatesValidateLabel);
+		box.getChildren().add(fixMeanRatesValidateLabel);
 		
     	if (doc.alignments.size() >= 1 && operator != null) {
         	JComponent component = (JComponent) getComponents()[0];
-    		component.add(box);
+    		component.getChildren().add(box);
     	}
 		setUpOperator();
     }
@@ -113,7 +116,7 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
         final Input<?> input = sitemodel.muParameterInput;
         ParameterInputEditor mutationRateEditor = new ParameterInputEditor(doc);
         mutationRateEditor.init(input, sitemodel, -1, ExpandOption.FALSE, true);
-        mutationRateEditor.getEntry().setEnabled(!doc.autoUpdateFixMeanSubstRate);
+        mutationRateEditor.getEntry().setDisable(doc.autoUpdateFixMeanSubstRate);
         return mutationRateEditor;
     }
 	
@@ -128,7 +131,7 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
         		super.validateInput();
             	SiteModel sitemodel = (SiteModel) m_beastObject; 
                 if (sitemodel.gammaCategoryCount.get() < 2 && sitemodel.shapeParameterInput.get().isEstimatedInput.get()) {
-                	m_validateLabel.m_circleColor = Color.orange;
+                	m_validateLabel.setColor("orange");
                 	m_validateLabel.setTooltip(new Tooltip("shape parameter is estimated, but not used"));
                 	m_validateLabel.setVisible(true);
                 }
@@ -137,22 +140,23 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
         
         categoryCountEditor.init(input, sitemodel, -1, ExpandOption.FALSE, true);
         categoryCountEntry = categoryCountEditor.getEntry();
-        categoryCountEntry.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                processEntry2();
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                processEntry2();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                processEntry2();
-            }
-        });
+        categoryCountEntry.setOnKeyReleased(e -> processEntry2());
+//        categoryCountEntry.getDocument().addDocumentListener(new DocumentListener() {
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {
+//                processEntry2();
+//            }
+//
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {
+//                processEntry2();
+//            }
+//
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {
+//                processEntry2();
+//            }
+//        });
         
        	categoryCountEditor.validateInput();
         return categoryCountEditor;
@@ -322,22 +326,22 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 	    	}
 	    	if (parameters.size() == 0) {
 	    		fixMeanRatesValidateLabel.setVisible(true);
-	    		fixMeanRatesValidateLabel.m_circleColor = Color.red;
+	    		fixMeanRatesValidateLabel.setColor("red");
 	    		fixMeanRatesValidateLabel.setTooltip(new Tooltip("The model is invalid: At least one substitution rate should be estimated."));
 				repaint();
 	    		return;
 	    	}
 	    	if (!isAllClocksAreEqual) {
 	    		fixMeanRatesValidateLabel.setVisible(true);
-	    		fixMeanRatesValidateLabel.m_circleColor = Color.orange;
+	    		fixMeanRatesValidateLabel.setColor("orange");
 	    		fixMeanRatesValidateLabel.setTooltip(new Tooltip("Not all substitution rates are equal. Are you sure this is what you want?"));
 	    	} else if (parameters.size() == 1) {
 	    		fixMeanRatesValidateLabel.setVisible(true);
-	    		fixMeanRatesValidateLabel.m_circleColor = Color.orange;
+	    		fixMeanRatesValidateLabel.setColor("orange");
 	    		fixMeanRatesValidateLabel.setTooltip(new Tooltip("At least 2 clock models should have their rate estimated"));
 	    	} else if (parameters.size() < doc.getPartitions("SiteModel").size()) {
 	    		fixMeanRatesValidateLabel.setVisible(true);
-	    		fixMeanRatesValidateLabel.m_circleColor = Color.orange;
+	    		fixMeanRatesValidateLabel.setColor("orange");
 	    		fixMeanRatesValidateLabel.setTooltip(new Tooltip("Not all partitions have their rate estimated"));
 	    	} else {
 	    		fixMeanRatesValidateLabel.setVisible(false);

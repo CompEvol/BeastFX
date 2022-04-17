@@ -220,12 +220,12 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         header.addMouseListener(new ColumnHeaderListener());
 
         JScrollPane pane = new JScrollPane(m_table);
-        Box tableBox = Box.createHorizontalBox();
-        tableBox.add(Box.createHorizontalGlue());
+        HBox tableBox = new HBox();
+        tableBox.add(new Separator());
         tableBox.add(pane);
-        tableBox.add(Box.createHorizontalGlue());
+        tableBox.add(new Separator());
 
-        Box box = Box.createVerticalBox();
+        VBox box = new VBox();
         box.add(createFilterBox());
         box.add(tableBox);
         box.add(createButtonBox());
@@ -233,7 +233,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
     }
 
     private Component createButtonBox() {
-        Box buttonBox = Box.createHorizontalBox();
+        HBox buttonBox = new HBox();
 
         Button fillDownButton = new Button("Fill down");
         fillDownButton.setID("Fill down");
@@ -256,11 +256,11 @@ public class TaxonSetInputEditor extends InputEditor.Base {
                 guess();
             });
 
-        buttonBox.add(Box.createHorizontalGlue());
+        buttonBox.add(new Separator());
         buttonBox.add(fillDownButton);
-        buttonBox.add(Box.createHorizontalGlue());
+        buttonBox.add(new Separator());
         buttonBox.add(guessButton);
-        buttonBox.add(Box.createHorizontalGlue());
+        buttonBox.add(new Separator());
         return buttonBox;
     }
 
@@ -460,7 +460,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 
 
     private Component createFilterBox() {
-        Box filterBox = Box.createHorizontalBox();
+        HBox filterBox = new HBox();
         filterBox.add(new Label("filter: "));
         // Dimension size = new Dimension(100,20);
         filterEntry = new TextField();
@@ -472,7 +472,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 		int size = filterEntry.getFont().getSize();
         filterEntry.setMaxSize(new Dimension(1024, 20 * size/13));
         filterBox.add(filterEntry);
-        filterBox.add(Box.createHorizontalGlue());
+        filterBox.add(new Separator());
         filterEntry.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void removeUpdate(DocumentEvent e) {

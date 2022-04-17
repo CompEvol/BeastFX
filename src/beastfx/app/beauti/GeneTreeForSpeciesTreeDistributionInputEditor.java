@@ -69,7 +69,7 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
 	            String selectString = input.get().toString();
 	            m_selectBeastObjectBox.setSelectedItem(selectString);
 
-	            m_selectBeastObjectBox.addActionListener(e -> {
+	            m_selectBeastObjectBox.setOnAction(e -> {
 	                    int i = m_selectBeastObjectBox.getSelectedIndex();
 	                    if (i == OTHER) {
 	                    	setSelection();

@@ -58,7 +58,7 @@ public class BooleanInputEditor extends InputEditor.Base {
             });
         pane = new HBox();
         pane.getChildren().add(m_entry);
-        //getChildren().add(Box.createHorizontalGlue());
+        //getChildren().add(new Separator());
         pane.getChildren().add(new Separator());
         getChildren().add(pane);
     } // c'tor

@@ -10,9 +10,15 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.Box;
+
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import beastfx.app.util.Alert;
 
 import beast.base.core.BEASTInterface;
@@ -55,7 +61,8 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         m_beastObject = beastObject;
         this.itemNr= listItemNr;
 		
-        Box itemBox = Box.createHorizontalBox();
+        pane = new VBox();
+        HBox itemBox = new HBox();
 
         MRCAPrior prior = (MRCAPrior) beastObject;
         String text = prior.getID();
@@ -63,7 +70,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         Button taxonButton = new Button(text);
 //        taxonButton.setMinSize(Base.PREFERRED_SIZE);
 //        taxonButton.setPrefSize(Base.PREFERRED_SIZE);
-        itemBox.add(taxonButton);
+        itemBox.getChildren().add(taxonButton);
         taxonButton.setOnAction(e -> {
                 List<?> list = (List<?>) m_input.get();
                 MRCAPrior prior2 = (MRCAPrior) list.get(itemNr);
@@ -112,7 +119,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
 
         List<BeautiSubTemplate> availableBEASTObjects = doc.getInputEditorFactory().getAvailableTemplates(prior.distInput, prior, null, doc);
         ComboBox<BeautiSubTemplate> comboBox = new ComboBox<>(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
-        comboBox.setID(text+".distr");
+        comboBox.setId(text+".distr");
 
         if (prior.distInput.get() != null) {
             String id = prior.distInput.get().getID();
@@ -120,20 +127,18 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
             id = id.substring(0, id.indexOf('.'));
             for (BeautiSubTemplate template : availableBEASTObjects) {
                 if (template.classInput.get() != null && template.shortClassName.equals(id)) {
-                    comboBox.setSelectedItem(template);
+                    comboBox.setValue(template);
                 }
             }
         } else {
-            comboBox.setSelectedItem(BeautiConfig.NULL_TEMPLATE);
+            comboBox.setValue(BeautiConfig.NULL_TEMPLATE);
         }
-        comboBox.setOnAction(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        comboBox.setOnAction(e -> {
                 @SuppressWarnings("unchecked")
-				ComboBox<BeautiSubTemplate> comboBox = (ComboBox<BeautiSubTemplate>) e.getSource();
-                BeautiSubTemplate template = (BeautiSubTemplate) comboBox.getSelectedItem();
+				ComboBox<BeautiSubTemplate> comboBox0 = (ComboBox<BeautiSubTemplate>) e.getSource();
+                BeautiSubTemplate template = (BeautiSubTemplate) comboBox0.getValue();
                 List<?> list = (List<?>) m_input.get();
-                MRCAPrior prior = (MRCAPrior) list.get(itemNr);
+                MRCAPrior prior2 = (MRCAPrior) list.get(itemNr);
 
 //System.err.println("PRIOR" + beastObject2);
 //            	try {
@@ -144,44 +149,39 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
 //				}
                 try {
                     //BEASTObject beastObject2 =
-                    template.createSubNet(new PartitionContext(""), prior, prior.distInput, true);
+                    template.createSubNet(new PartitionContext(""), prior2, prior2.distInput, true);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
                 refreshPanel();
-            }
         });
-        itemBox.add(comboBox);
+        itemBox.getChildren().add(comboBox);
 
-        Button isMonophyleticdBox = new Button(doc.beautiConfig.getInputLabel(prior, prior.isMonophyleticInput.getName()));
-        isMonophyleticdBox.setID(text+".isMonophyletic");
+        CheckBox isMonophyleticdBox = new CheckBox(doc.beautiConfig.getInputLabel(prior, prior.isMonophyleticInput.getName()));
+        isMonophyleticdBox.setId(text+".isMonophyletic");
         isMonophyleticdBox.setSelected(prior.isMonophyleticInput.get());
         isMonophyleticdBox.setTooltip(new Tooltip(prior.isMonophyleticInput.getHTMLTipText()));
-        isMonophyleticdBox.setOnAction(new MRCAPriorActionListener(prior));
-        itemBox.add(isMonophyleticdBox);
+        isMonophyleticdBox.setOnAction(e->new MRCAPriorActionListener(prior));
+        itemBox.getChildren().add(isMonophyleticdBox);
 
         Button deleteButton = new SmallButton("-", true);
         deleteButton.setTooltip(new Tooltip("Delete this calibration"));
-        deleteButton.setOnAction(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+        deleteButton.setOnAction(e-> {
 				Log.warning.println("Trying to delete a calibration");
 				List<?> list = (List<?>) m_input.get();
-				MRCAPrior prior = (MRCAPrior) list.get(itemNr);
-				doc.disconnect(prior, "prior", "distribution");
-				doc.disconnect(prior, "tracelog", "log");
-				if (prior.onlyUseTipsInput.get()) {
+				MRCAPrior prior0 = (MRCAPrior) list.get(itemNr);
+				doc.disconnect(prior0, "prior", "distribution");
+				doc.disconnect(prior0, "tracelog", "log");
+				if (prior0.onlyUseTipsInput.get()) {
 					disableTipSampling(m_beastObject, doc);
 				}
-				doc.unregisterPlugin(prior);
+				doc.unregisterPlugin(prior0);
 				refreshPanel();
-			}
-
         });
-        itemBox.add(Box.createGlue());
-        itemBox.add(deleteButton);
+        itemBox.getChildren().add(new Separator());
+        itemBox.getChildren().add(deleteButton);
 
-        add(itemBox);
+        pane.getChildren().add(itemBox);
 	}
 	
 	public static void customConnector(BeautiDoc doc) {
@@ -250,7 +250,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                m_prior.isMonophyleticInput.setValue(((Button) e.getSource()).isSelected(), m_prior);
+                m_prior.isMonophyleticInput.setValue(((CheckBox) e.getSource()).isSelected(), m_prior);
                 refreshPanel();
             } catch (Exception ex) {
             	Log.warning.println("PriorListInputEditor " + ex.getMessage());
@@ -270,9 +270,9 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         			boolean addButtons) {
         		super.init(input, beastObject, itemNr, isExpandOption, addButtons);
         		// hack to get to Button
-        		Component [] components = getComponents();       		
+        		Node [] components = getComponents();       		
         		((Button) components[0]).setOnAction(e -> {
-                	Button src = (Button) e.getSource();
+                	CheckBox src = (CheckBox) e.getSource();
                 	if (src.isSelected()) {
                 		enableTipSampling();
                 	} else {

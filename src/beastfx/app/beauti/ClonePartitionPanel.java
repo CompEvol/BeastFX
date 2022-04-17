@@ -9,11 +9,14 @@ import javax.swing.DefaultListModel;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+
 import javax.swing.JPanel;
 
 
-public class ClonePartitionPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
+public class ClonePartitionPanel extends VBox {
 
     final BeautiPanel beautiPanel;
     final ComboBox<Object> cloneFromComboBox;
@@ -39,33 +42,33 @@ public class ClonePartitionPanel extends JPanel {
 
 
     public void init() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        // setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel jPanel = new JPanel(new FlowLayout());
+        FlowPane jPanel = new FlowPane();
 
         Label label = new Label("Clone from");
-        jPanel.add(label);
+        jPanel.getChildren().add(label);
 
         cloneFromComboBox.setMaximumRowCount(10);
-        jPanel.add(cloneFromComboBox);
+        jPanel.getChildren().add(cloneFromComboBox);
 
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(jPanel);
-        add(Box.createVerticalGlue());
-        add(Box.createVerticalStrut(5));
+        pane.getChildren().add(Box.createRigidArea(new Dimension(0, 10)));
+        pane.getChildren().add(jPanel);
+        pane.getChildren().add(Box.createVerticalGlue());
+        pane.getChildren().add(Box.createVerticalStrut(5));
 
-        okButton.setName("ok");
-        okButton.setToolTipText("Click to clone configuration from the above selected partition " +
-                "into all selected partitions on the left.");
-        okButton.addActionListener(e -> {
+        okButton.setId("ok");
+        okButton.setTooltip(new Tooltip("Click to clone configuration from the above selected partition " +
+                "into all selected partitions on the left."));
+        okButton.setOnAction(e -> {
                 clonePartitions();
             });
-        add(okButton);
+        pane.getChildren().add(okButton);
 
     } // init
 
     protected void clonePartitions() {
-        String sourceId = cloneFromComboBox.getSelectedItem().toString();
+        String sourceId = cloneFromComboBox.getValue().toString();
 
         for (Object targetId : beautiPanel.listOfPartitions.getSelectedValuesList()) {
              beautiPanel.cloneFrom(sourceId, targetId.toString());

@@ -13,7 +13,12 @@ import javax.swing.Box;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
@@ -159,44 +164,47 @@ public class DoubleListInputEditor extends ListInputEditor {
             m_beastObject = beastObject;
             this.itemNr= itemNr;
             
+            pane = new HBox();
             addInputLabel();
 
             setUpEntry();
 
-            add(m_entry);
-            add(Box.createHorizontalGlue());
+            pane.getChildren().add(m_entry);
+            pane.getChildren().add(new Separator());
             addValidationLabel();
+            getChildren().add(pane);
         } // init
 
         @Override
 		void setUpEntry() {
             m_entry = new TextField();
-            m_entry.setID(m_input.getName());
+            m_entry.setId(m_input.getName());
             int size = m_entry.getFont().getSize();
             PREFERRED_SIZE = new Dimension(200, 25 * size / 13);
-            m_entry.setMinSize(PREFERRED_SIZE);
-            m_entry.setPrefSize(PREFERRED_SIZE);
-            m_entry.setSize(PREFERRED_SIZE);
+            m_entry.setMinSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
+            m_entry.setPrefSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
+            // m_entry.setSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
             initEntry();
             m_entry.setTooltip(new Tooltip(m_input.getHTMLTipText()));
-            m_entry.setMaxSize(new Dimension(1024, 25 * size / 13));
+            m_entry.setMaxSize(1024, 25 * size / 13);
+            m_entry.setOnKeyReleased(e-> processEntry());
 
-            m_entry.getDocument().addDocumentListener(new DocumentListener() {
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    processEntry();
-                }
-
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    processEntry();
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    processEntry();
-                }
-            });
+//            m_entry.getDocument().addDocumentListener(new DocumentListener() {
+//                @Override
+//                public void removeUpdate(DocumentEvent e) {
+//                    processEntry();
+//                }
+//
+//                @Override
+//                public void insertUpdate(DocumentEvent e) {
+//                    processEntry();
+//                }
+//
+//                @Override
+//                public void changedUpdate(DocumentEvent e) {
+//                    processEntry();
+//                }
+//            });
         }
 
         @Override
@@ -225,7 +233,7 @@ public class DoubleListInputEditor extends ListInputEditor {
             try {
             	setValue(m_entry.getText());
                 validateInput();
-                m_entry.requestFocusInWindow();
+                m_entry.requestFocus();
             } catch (Exception ex) {
 //    			Alert.showMessageDialog(null, "Error while setting " + m_input.getName() + ": " + ex.getMessage() +
 //    					" Leaving value at " + m_input.get());
@@ -233,7 +241,7 @@ public class DoubleListInputEditor extends ListInputEditor {
                 if (m_validateLabel != null) {
                     m_validateLabel.setVisible(true);
                     m_validateLabel.setTooltip(new Tooltip("<html><p>Parsing error: " + ex.getMessage() + ". Value was left at " + m_input.get() + ".</p></html>"));
-                    m_validateLabel.m_circleColor = Color.orange;
+                    m_validateLabel.setColor("orange");
                 }
                 repaint();
             }
@@ -267,24 +275,24 @@ public class DoubleListInputEditor extends ListInputEditor {
                 //Dimension size = new Dimension(g_nLabelWidth, 20);
                 int fontsize = m_inputLabel.getFont().getSize();
                 Dimension size = new Dimension(200, 20 * fontsize / 13);
-                m_inputLabel.setMaxSize(size);
-                m_inputLabel.setMinSize(size);
-                m_inputLabel.setPrefSize(size);
+                m_inputLabel.setMaxSize(size.getWidth(),size.getHeight());
+                m_inputLabel.setMinSize(size.getWidth(),size.getHeight());
+                m_inputLabel.setPrefSize(size.getWidth(),size.getHeight());
                 m_inputLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
 //                m_inputLabel.setSize(size);
 //                m_inputLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
                 // RRB: temporary
                 //m_inputLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-                add(m_inputLabel);
+                pane.getChildren().add(m_inputLabel);
             }
         }
 
         @Override
 		protected void addValidationLabel() {
             if (m_bAddButtons) {
-                m_validateLabel = new SmallLabel("x", new Color(200, 0, 0));
-                add(m_validateLabel);
+                m_validateLabel = new SmallLabel("x", "red");
+                pane.getChildren().add(m_validateLabel);
                 m_validateLabel.setVisible(true);
                 validateInput();
             }
@@ -313,7 +321,7 @@ public class DoubleListInputEditor extends ListInputEditor {
                     if (m_validateLabel != null) {
                         m_validateLabel.setVisible(true);
                         m_validateLabel.setTooltip(new Tooltip("<html><p>Recursive error in " + e.getMessage() + "</p></html>"));
-                        m_validateLabel.m_circleColor = Color.orange;
+                        m_validateLabel.setColor("orange");
                     }
                     repaint();
                     return;
@@ -326,7 +334,7 @@ public class DoubleListInputEditor extends ListInputEditor {
             	Log.warning.println("Validation message: " + e.getMessage());
                 if (m_validateLabel != null) {
                     m_validateLabel.setTooltip(new Tooltip(e.getMessage()));
-                    m_validateLabel.m_circleColor = Color.red;
+                    m_validateLabel.setColor("red");
                     m_validateLabel.setVisible(true);
                 }
                 notifyValidationListeners(ValidationStatus.IS_INVALID);
@@ -382,7 +390,7 @@ public class DoubleListInputEditor extends ListInputEditor {
 
         @Override
 		public void refreshPanel() {
-            Component c = this;
+            Parent c = this;
             while (c.getParent() != null) {
                 c = c.getParent();
                 if (c instanceof ListSelectionListener) {
@@ -396,7 +404,7 @@ public class DoubleListInputEditor extends ListInputEditor {
          */
         @Override
 		protected void sync() {
-            Component c = this;
+        	Parent c = this;
             while (c.getParent() != null) {
                 c = c.getParent();
                 if (c instanceof BeautiDocProvider) {
@@ -428,7 +436,7 @@ public class DoubleListInputEditor extends ListInputEditor {
     	}
 
     	@Override
-		public Component getComponent() {
+		public Parent getComponent() {
     		return this;
     	}
 

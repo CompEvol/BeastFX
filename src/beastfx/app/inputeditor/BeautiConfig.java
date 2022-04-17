@@ -10,7 +10,7 @@ import java.util.Set;
 
 import javax.swing.JComponent;
 import beastfx.app.util.Alert;
-
+import javafx.scene.Parent;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;
@@ -174,7 +174,7 @@ public class BeautiConfig extends BEASTObject {
      * @param fileArray
      * @return a list of alignments based on the user selected alignment provider
      */
-    public List<BEASTInterface> selectAlignments(BeautiDoc doc, JComponent parent, File[] fileArray) {
+    public List<BEASTInterface> selectAlignments(BeautiDoc doc, Parent parent, File[] fileArray) {
         List<BeautiAlignmentProvider> providers = alignmentProvider;
         BeautiAlignmentProvider selectedProvider = null;
         if (providers.size() == 1) {

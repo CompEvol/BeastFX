@@ -6,10 +6,15 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 import javax.swing.JComponent;
 import beastfx.app.util.Alert;
@@ -105,8 +110,8 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 
 
     @Override
-    protected void addComboBox(JComponent box, Input<?> input, BEASTInterface beastObject) {
-        Box paramBox = Box.createHorizontalBox();
+    protected void addComboBox(Pane box, Input<?> input, BEASTInterface beastObject) {
+        HBox paramBox = new HBox();
         Parameter.Base<?> parameter = null;
         if (itemNr >= 0) {
         	parameter = (Parameter.Base<?>) ((List<?>) input.get()).get(itemNr);
@@ -118,13 +123,13 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             super.addComboBox(box, input, beastObject);
         } else {
             setUpEntry();
-            paramBox.add(m_entry);
+            paramBox.getChildren().add(m_entry);
             if (doc.allowLinking) {
 	            boolean isLinked = doc.isLinked(m_input);
 				if (isLinked || doc.suggestedLinks((BEASTInterface) m_input.get()).size() > 0) {
 		            Button linkbutton = new Button(Utils.getIcon(ListInputEditor.ICONPATH + 
 		            		(isLinked ? "link.png" : "unlink.png")));
-		            linkbutton.setBorder(BorderFactory.createEmptyBorder());
+		            // linkbutton.setBorder(BorderFactory.createEmptyBorder());
 		            linkbutton.setTooltip(new Tooltip("link/unlink this parameter with another compatible parameter"));
 		            linkbutton.setOnAction(e -> {
 							if (doc.isLinked(m_input)) {
@@ -141,9 +146,12 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 							} else {
 								// create a link
 								List<BEASTInterface> candidates = doc.suggestedLinks((BEASTInterface) m_input.get());
-								ComboBox<BEASTInterface> jcb = new ComboBox<>(candidates.toArray(new BEASTInterface[]{}));
+								ComboBox<BEASTInterface> jcb = new ComboBox<>();
+								for (BEASTInterface candidate : candidates) {
+									jcb.getItems().add(candidate);
+								}
 								Alert.showMessageDialog( null, jcb, "select parameter to link with", Alert.QUESTION_MESSAGE);
-								BEASTInterface candidate = (BEASTInterface) jcb.getSelectedItem();
+								BEASTInterface candidate = (BEASTInterface) jcb.getValue();
 								if (candidate != null) {
 									try {
 										m_input.setValue(candidate, m_beastObject);
@@ -155,11 +163,11 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 							}
 							refreshPanel();
 						});
-		            paramBox.add(linkbutton);
+		            paramBox.getChildren().add(linkbutton);
 				}
             }            
             
-            paramBox.add(Box.createHorizontalGlue());
+            paramBox.getChildren().add(new Separator());
 
             m_isEstimatedBox = new CheckBox(doc.beautiConfig.getInputLabel(parameter, parameter.isEstimatedInput.getName()));
             m_isEstimatedBox.setId(input.getName() + ".isEstimated");
@@ -217,7 +225,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
                         Log.err.println("ParameterInputEditor " + ex.getMessage());
                     }
                 });
-            paramBox.add(m_isEstimatedBox);
+            paramBox.getChildren().add(m_isEstimatedBox);
 
             // only show the estimate flag if there is an operator that works on this parameter
             m_isEstimatedBox.setVisible(doc.isExpertMode());
@@ -249,7 +257,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 	            }
             }
 
-            box.add(paramBox);
+            box.getChildren().add(paramBox);
         }
     }
 

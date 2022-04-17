@@ -134,7 +134,7 @@ public class BeautiPanel extends JPanel implements ListSelectionListener, Beauti
     } // c'tor
 
     void addPartitionPanel(Partition hasPartition, int panelIndex) {
-        Box box = Box.createVerticalBox();
+        VBox box = new VBox();
         if (splitPane != null && hasPartition != Partition.none) {
             box.add(createList());
         } else {
@@ -170,14 +170,14 @@ public class BeautiPanel extends JPanel implements ListSelectionListener, Beauti
         partitionComponent.add(partitionLabel, BorderLayout.NORTH);
         listModel = new DefaultListModel<>();
         listOfPartitions = new JList<>(listModel);
-        listOfPartitions.setName("listOfPartitions");
+        listOfPartitions.setId("listOfPartitions");
         listOfPartitions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         Dimension size = new Dimension(partitionListPreferredWidth, 300);
         //listOfPartitions.setFixedCellWidth(120);
 //    	m_listOfPartitions.setSize(size);
-        //listOfPartitions.setPreferredSize(size);
-    	listOfPartitions.setMinimumSize(size);
+        //listOfPartitions.setPrefSize(size);
+    	listOfPartitions.setMinSize(size);
 //    	m_listOfPartitions.setBounds(0, 0, 100, 100);
 
         listOfPartitions.addListSelectionListener(this);

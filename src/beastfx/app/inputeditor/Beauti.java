@@ -1,9 +1,11 @@
 package beastfx.app.inputeditor;
 
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
 
-abstract public class Beauti extends JTabbedPane {
+import javax.swing.JFrame;
+
+import apple.laf.JRSUIUtils.TabbedPane;
+
+abstract public class Beauti extends TabbedPane {
 
 	public JFrame frame;
 	

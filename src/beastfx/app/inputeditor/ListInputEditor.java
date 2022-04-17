@@ -24,6 +24,7 @@ import beastfx.app.util.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import javax.swing.SwingConstants;
@@ -37,7 +38,6 @@ import beast.pkgmgmt.BEASTClassLoader;
 
 public class ListInputEditor extends InputEditor.Base {
 
-    private static final long serialVersionUID = 1L;
     public final static String ICONPATH = "beastfx.app.beauti/";
     static Image DOWN_ICON;
     static Image RIGHT_ICON;
@@ -175,7 +175,7 @@ public class ListInputEditor extends InputEditor.Base {
         }
 
         // add validation label at the end of a list
-        m_validateLabel = new SmallLabel("x", new Color(200, 0, 0));
+        m_validateLabel = new SmallLabel("x", "red");
         if (m_bAddButtons) {
             buttonBox.getChildren().add(m_validateLabel);
             m_validateLabel.setVisible(true);
@@ -218,17 +218,14 @@ public class ListInputEditor extends InputEditor.Base {
         itemBox.getChildren().add(editButton);
 
 
-        SmallLabel validateLabel = new SmallLabel("x", new Color(200, 0, 0));
+        SmallLabel validateLabel = new SmallLabel("x", "red");
         itemBox.getChildren().add(validateLabel);
         validateLabel.setVisible(true);
         m_validateLabels.add(validateLabel);
 
-        // AJD: This is not consistent with Mac OS X look and feel, and its not necessary
-        //itemBox.setBorder(BorderFactory.createEtchedBorder());
-
         if (m_bExpandOption == ExpandOption.TRUE || m_bExpandOption == ExpandOption.TRUE_START_COLLAPSED ||
                 (m_bExpandOption == ExpandOption.IF_ONE_ITEM && ((List<?>) m_input.get()).size() == 1)) {
-            Box expandBox = Box.createVerticalBox();
+            VBox expandBox = new VBox();
             //box.add(itemBox);
             doc.getInputEditorFactory().addInputs(expandBox, beastObject, editor, null, doc);
             //System.err.print(expandBox.getComponentCount());
@@ -306,7 +303,7 @@ public class ListInputEditor extends InputEditor.Base {
      * @param itemBox box to add components to
      * @param beastObject  beastObject to add
      */
-    protected InputEditor addPluginItem(HBox itemBox, BEASTInterface beastObject) {
+    protected InputEditor addPluginItem(Pane itemBox, BEASTInterface beastObject) {
         String name = beastObject.getID();
         if (name == null || name.length() == 0) {
             name = beastObject.getClass().getName();

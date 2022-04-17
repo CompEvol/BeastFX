@@ -22,6 +22,7 @@ import javax.swing.DefaultCellEditor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 
 import javax.swing.JComponent;
@@ -30,6 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
@@ -102,7 +104,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
     Button delButton;
     protected SmallButton replaceButton;
 
-	private JScrollPane scrollPane;
+	private ScrollPane scrollPane;
 
 	public AlignmentListInputEditor(BeautiDoc doc) {
 		super(doc);
@@ -146,12 +148,14 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		partitionCount = alignments.size();
 
         // override BoxLayout in superclass
-        setLayout(new BorderLayout());
+        // setLayout(new BorderLayout());
+		BorderPane bpane = new BorderPane();
+		pane = bpane;
 
-        add(createLinkButtons(), BorderLayout.NORTH);
-        add(createListBox(), BorderLayout.CENTER);
+        bpane.setTop(createLinkButtons());
+        bpane.setCenter(createListBox());
 
-        //Box box = Box.createVerticalBox();
+        //VBox box = new VBox();
 		//box.add(Box.createVerticalStrut(STRUT_SIZE));
 		//box.add(createLinkButtons());
 		//box.add(Box.createVerticalStrut(STRUT_SIZE));
@@ -175,7 +179,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
         }); // end FileDrop.Listener
 
         // this should place the add/remove/split buttons at the bottom of the window.
-        add(createAddRemoveSplitButtons(), BorderLayout.SOUTH);
+        bpane.setBottom(createAddRemoveSplitButtons());
 
         updateStatus();
 	}
@@ -693,7 +697,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		return partition;
 	}
 
-	protected Component createListBox() {
+	protected Pane createListBox() {
 		String[] columnData = new String[] { "Name", "File", "Taxa", "Sites", "Data Type", "Site Model", "Clock Model",
 				"Tree", "Ambiguities" };
 		initTableData();
@@ -750,7 +754,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setColumnSelectionAllowed(false);
 		table.setRowSelectionAllowed(true);
-		table.setID("alignmenttable");
+		table.setId("alignmenttable");
 
 		setUpComboBoxes();
 
@@ -881,12 +885,13 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			}
 		});
 
-		scrollPane = new JScrollPane(table);
+		scrollPane = new ScrollPane();
+		scrollPane.setContenc(table);
 
         int rowsToDisplay = 3;
         Dimension d = table.getPreferredSize();
         scrollPane.setPrefSize(
-                new Dimension(d.width,table.getRowHeight()*rowsToDisplay+table.getTableHeader().getHeight()));
+                d.width,table.getRowHeight()*rowsToDisplay+table.getTableHeader().getHeight());
 
 		return scrollPane;
 	} // createListBox
@@ -942,7 +947,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		col.setPreferredWidth(30);
 		
 		col = table.getColumnModel().getColumn(USE_AMBIGUITIES_COLUMN);
-		Button checkBox = new Button();
+		CheckBox checkBox = new CheckBox();
 		checkBox.setOnAction(e -> {
 				if (table.getSelectedRow() >= 0 && table.getSelectedColumn() >= 0) {
 					Log.warning.println(" " + table.getValueAt(table.getSelectedRow(), table.getSelectedColumn()));
@@ -1083,10 +1088,10 @@ public class AlignmentListInputEditor extends ListInputEditor {
 					setForeground(table.getForeground());
 					setBackground(table.getBackground());
 				}
-				setEnabled(true);
+				setDisable(false);
 				setSelected((Boolean) value);
 			} else {
-				setEnabled(false);
+				setDisable(true);
 			}
 			return this;
 		}
@@ -1224,7 +1229,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		if (alignments.size() > 1) {
 			ComboBox<Alignment> jcb = new ComboBox<Alignment>(alignments.toArray(new Alignment[]{}));
 			Alert.showMessageDialog( null, jcb, "Select a replacement alignment", Alert.QUESTION_MESSAGE);
-			replacement = (Alignment) jcb.getSelectedItem();
+			replacement = (Alignment) jcb.getValue();
 		} else if (alignments.size() == 1) {
 			replacement = alignments.get(0);
 		}
@@ -1338,15 +1343,15 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			status = false;
 		}
 		for (Button button : linkButtons) {
-			button.setEnabled(status);
+			button.setDisable(!status);
 		}
 		for (Button button : unlinkButtons) {
-			button.setEnabled(status);
+			button.setDisable(!status);
 		}
 		status = (getTableRowSelection().length > 0);
-		splitButton.setEnabled(status);
-		delButton.setEnabled(status);
-		replaceButton.setEnabled(getTableRowSelection().length == 1);
+		splitButton.setDisable(!status);
+		delButton.setDisable(!status);
+		replaceButton.setDisable(getTableRowSelection().length != 1);
 	}
 	
 } // class AlignmentListInputEditor

@@ -32,16 +32,23 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 
 import beast.pkgmgmt.PackageManager;
+import beastfx.app.util.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 /**
  * @author Tim Vaughan <tgvaughan@gmail.com>
  */
-public class JPackageRepositoryDialog extends JDialog {
+public class JPackageRepositoryDialog extends Dialog {
 
 	private static final long serialVersionUID = 1L;
 
-	public JPackageRepositoryDialog(final JFrame frame) {
-        super(frame);
+	public JPackageRepositoryDialog(final Pane frame) {
+        // super(frame);
 
         setModal(true);
         setTitle("BEAST 2 Package Repository Manager");
@@ -62,19 +69,20 @@ public class JPackageRepositoryDialog extends JDialog {
 
         // Assemble table
         final RepoTableModel repoTableModel = new RepoTableModel(urls);
-        final JTable repoTable = new JTable(repoTableModel);
+        final TableView repoTable = new TableView();
 		int size = repoTable.getFont().getSize();
 		repoTable.setRowHeight(20 * size/13);
         repoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane scrollPane = new JScrollPane(repoTable);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(repoTable);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
         
         // Add buttons
-        Box box = Box.createHorizontalBox();
+        HBox box = new HBox();
         
         // ADD URL
         Button addURLButton = new Button("Add URL");
-        addURLButton.addActionListener(e -> {
+        addURLButton.setOnAction(e -> {
             String newURLString = (String)Alert.showInputDialog(frame,
                     "Enter package repository URL",
                     "Add repository URL",Alert.PLAIN_MESSAGE, null, null, "http://");
@@ -115,7 +123,7 @@ public class JPackageRepositoryDialog extends JDialog {
         
         // DELETE URL
         Button deleteURLButton = new Button("Delete selected URL");
-        deleteURLButton.addActionListener(e -> {
+        deleteURLButton.setOnAction(e -> {
             if (Alert.showConfirmDialog(frame, "Really delete this repository?") ==Alert.YES_OPTION) {
                 repoTableModel.urls.remove(repoTable.getSelectedRow());
                 repoTableModel.fireTableDataChanged();
@@ -126,7 +134,7 @@ public class JPackageRepositoryDialog extends JDialog {
         
         // DONE
         Button OKButton = new Button("Done");
-        OKButton.addActionListener(e -> {
+        OKButton.setOnAction(e -> {
             PackageManager.saveRepositoryURLs(repoTableModel.urls);
             setVisible(false);
         });
@@ -146,8 +154,8 @@ public class JPackageRepositoryDialog extends JDialog {
         });
 
         // Set size and location of dialog
-        Dimension dim = scrollPane.getPreferredSize();
-        Dimension dim2 = box.getPreferredSize();
+        Dimension2D dim = scrollPane.getPreferredSize();
+        Dimension2D dim2 = box.getPreferredSize();
         setSize(dim.width + 30, dim.height + dim2.height + 30);
         Point frameLocation = frame.getLocation();
         Dimension frameSize = frame.getSize();

@@ -1,7 +1,7 @@
 package beastfxml.app;
 	
 
-import beast.app.BEASTVersion;
+import beast.pkgmgmt.BEASTVersion;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;

@@ -2,7 +2,7 @@ package beastfx.app.inputeditor;
 
 
 
-import java.awt.*;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -19,6 +19,12 @@ import beast.base.core.Input;
 import beast.base.evolution.tree.MRCAPrior;
 import beast.base.evolution.tree.TreeDistribution;
 import beast.base.inference.distribution.ParametricDistribution;
+import javafx.geometry.Dimension2D;
+import javafx.scene.Parent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 
@@ -53,16 +59,20 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         if (input.get() != null) {
             super.init(input, beastObject, itemNr, ExpandOption.TRUE, addButtons);
         }
-        add(createGraph());
+        Pane pane1 = pane;
+        pane = new VBox();
+        pane.getChildren().add(pane1);
+        pane.getChildren().add(createGraph());
+        getChildren().add(pane);
 //    	}
     } // init
 
 
     @Override
     /** suppress combobox **/
-    protected void addComboBox(JComponent box, Input<?> input, BEASTInterface beastObject) {
+    protected void addComboBox(Pane box, Input<?> input, BEASTInterface beastObject0) {
         if (useDefaultBehavior) {
-            super.addComboBox(box, input, beastObject);
+        	super.addComboBox(box, input, beastObject0);
         }
     }
 
@@ -80,7 +90,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
     final static int[] NR_OF_TICKS = new int[]{5, 10, 8, 6, 8, 10, 6, 7, 8, 9, 10};
 
     /* class for drawing information for a parametric distribution **/
-    class PDPanel extends JPanel {
+    class PDPanel extends javafx.scene.canvas.Canvas {
         // the length in pixels of a tick
         private static final int TICK_LENGTH = 5;
 
@@ -360,16 +370,16 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         }
     }
 
-    private Component createGraph() {
-        JPanel panel = new PDPanel();
+    private Parent createGraph() {
+        Canvas panel = new PDPanel();
         int fsize = UIManager.getFont("Label.font").getSize();
-        Dimension size = new Dimension(200 * fsize / 13, 200 * fsize / 13);
-        panel.setSize(size);
-        panel.setPrefSize(size);
-        panel.setMinSize(size);
-        Box box = Box.createHorizontalBox();
-        box.setBorder(BorderFactory.createEmptyBorder());
-        box.add(panel);        
+        Dimension2D size = new Dimension2D(200 * fsize / 13, 200 * fsize / 13);
+        //panel.setSize(size);
+        HBox box = new HBox();
+        //box.setBorder(BorderFactory.createEmptyBorder());
+        box.getChildren().add(panel);        
+        box.setPrefSize(size.getHeight(), size.getWidth());
+        box.setMinSize(size.getHeight(), size.getWidth());
         return box;
     }
 

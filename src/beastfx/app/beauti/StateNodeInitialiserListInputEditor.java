@@ -10,6 +10,9 @@ import java.util.List;
 import javax.swing.Box;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.Pane;
+
 import javax.swing.SwingUtilities;
 
 import beastfx.app.inputeditor.BeautiDoc;
@@ -53,13 +56,13 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 	}
 
 	@Override
-	protected InputEditor addPluginItem(Box itemBox, BEASTInterface beastObject) {
+	protected InputEditor addPluginItem(Pane itemBox, BEASTInterface beastObject) {
 		final StateNodeInitialiser currentInitialiser = (StateNodeInitialiser) beastObject;
 		Input initialInput = beastObject.getInput("initial");
 		List<BeautiSubTemplate> sAvailablePlugins = doc.getInputEditorFactory().getAvailableTemplates(initialInput,
 				(BEASTInterface) beastObject, null, doc);
 
-		ComboBox<?> comboBox = null;
+		ComboBox<BeautiSubTemplate> comboBox = null;
 
 		if (sAvailablePlugins.size() > 0) {
 			sAvailablePlugins.remove(sAvailablePlugins.size() - 1);
@@ -73,19 +76,17 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 			}
 			for (BeautiSubTemplate template : sAvailablePlugins) {
 				if (template.matchesName(sID)) {
-					comboBox.setSelectedItem(template);
+					comboBox.setValue(template);
 				}
 			}
-			comboBox.setName("Initialiser");
+			comboBox.setId("Initialiser");
 
-			comboBox.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
+			comboBox.setOnAction(e->{
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
 							ComboBox<?> currentComboBox = (ComboBox<?>) e.getSource();
-							BeautiSubTemplate template = (BeautiSubTemplate) currentComboBox.getSelectedItem();
+							BeautiSubTemplate template = (BeautiSubTemplate) currentComboBox.getValue();
 							PartitionContext partitionContext;
 							partitionContext = doc.getContextFor(beastObject);
 
@@ -103,7 +104,6 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 							refreshPanel();
 						}
 					});
-				}
 			});
 
 		}
@@ -120,12 +120,12 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 		}
 		Label label = new Label("Initial " + name + ":");
 
-		itemBox.add(Box.createRigidArea(new Dimension(5, 1)));
-		itemBox.add(label);
+		itemBox.getChildren().add(Box.createRigidArea(new Dimension(5, 1)));
+		itemBox.getChildren().add(label);
 		if (comboBox != null) {
-			itemBox.add(comboBox);
+			itemBox.getChildren().add(comboBox);
 		}
-		itemBox.add(Box.createHorizontalGlue());
+		itemBox.getChildren().add(new Separator());
 		return this;
 	}
 

@@ -1,6 +1,6 @@
 package beastfx.app.inputeditor;
 
-import java.awt.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,9 +11,13 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import javax.swing.ButtonGroup;
+
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+
 import javax.swing.JDialog;
 import javafx.scene.control.Label;
 import beastfx.app.util.Alert;
@@ -21,6 +25,10 @@ import javax.swing.JPanel;
 import javafx.scene.control.RadioButton;
 import javax.swing.JSeparator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -31,7 +39,7 @@ import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
 
 
-public class GuessPatternDialog extends JDialog {
+public class GuessPatternDialog extends Dialog {
     private static final long serialVersionUID = 1L;
 
     private static String TRAIT_FILE_HELP_MESSAGE =
@@ -88,8 +96,8 @@ public class GuessPatternDialog extends JDialog {
        return sb.toString();
     }
 
-    Component m_parent;
-    JPanel guessPanel;
+    Parent m_parent;
+    GridPane guessPanel;
     ButtonGroup group;
     RadioButton useEverything = new RadioButton("use everything");
     RadioButton isSplitOnChar = new RadioButton("split on character");
@@ -114,8 +122,8 @@ public class GuessPatternDialog extends JDialog {
     private TextField textAddValue;
     private TextField textUnlessLessThan;
     private TextField textThenAdd;
-    Button chckbxAddFixedValue;
-    Button chckbxUnlessLessThan;
+    CheckBox chckbxAddFixedValue;
+    CheckBox chckbxUnlessLessThan;
     Label lblThenAdd;
     Label lblAndTakeGroups;
     Button btnBrowse;
@@ -124,10 +132,10 @@ public class GuessPatternDialog extends JDialog {
     private JSeparator separator_4;
     private JSeparator separator_5;
 
-    public GuessPatternDialog(Component parent, String pattern) {
+    public GuessPatternDialog(Parent parent, String pattern) {
         m_parent = parent;
         this.pattern = pattern;
-        guessPanel = new JPanel();
+        guessPanel = new GridPane();
         GridBagLayout gbl_guessPanel = new GridBagLayout();
         gbl_guessPanel.rowHeights = new int[]{0, 0, 0, 20, 0, 0, 20, 0, 0, 20, 0, 29, 0, 0, 0, 0};
         gbl_guessPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
@@ -144,19 +152,19 @@ public class GuessPatternDialog extends JDialog {
         useEverything.setOnAction(e -> {
                 updateFields();
             });
-        useEverything.setID(useEverything.getText());
+        useEverything.setId(useEverything.getText());
         isSplitOnChar.setOnAction(e -> {
                 updateFields();
             });
-        isSplitOnChar.setID(isSplitOnChar.getText());
+        isSplitOnChar.setId(isSplitOnChar.getText());
         useRegexp.setOnAction(e -> {
                 updateFields();
             });
-        useRegexp.setID(useRegexp.getText());
+        useRegexp.setId(useRegexp.getText());
         readFromFile.setOnAction(e -> {
                 updateFields();
             });
-        readFromFile.setID(readFromFile.getText());
+        readFromFile.setId(readFromFile.getText());
 
         createDelimiterBox(useEverything);
         createSplitBox(isSplitOnChar);
@@ -175,22 +183,23 @@ public class GuessPatternDialog extends JDialog {
         gbc2.gridx = 1;
         gbc2.gridy = 7;
         guessPanel.add(textRegExp, gbc2);
-        textRegExp.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                useRegexp.setSelected(true);
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                useRegexp.setSelected(true);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                useRegexp.setSelected(true);
-            }
-        });
+        textRegExp.setOnKeyPressed(e ->useRegexp.setSelected(true));
+//        textRegExp.getDocument().addDocumentListener(new DocumentListener() {
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {
+//                useRegexp.setSelected(true);
+//            }
+//
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {
+//                useRegexp.setSelected(true);
+//            }
+//
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {
+//                useRegexp.setSelected(true);
+//            }
+//        });
 
         separator_4 = new JSeparator();
         separator_4.setPrefSize(new Dimension(5,1));
@@ -246,8 +255,8 @@ public class GuessPatternDialog extends JDialog {
         guessPanel.add(btnHelp, gbc_btnHelp);
 
 
-        chckbxAddFixedValue = new Button("Add fixed value");
-        chckbxAddFixedValue.setID("Add fixed value");
+        chckbxAddFixedValue = new CheckBox("Add fixed value");
+        chckbxAddFixedValue.setId("Add fixed value");
         chckbxAddFixedValue.setOnAction(e -> updateFields());
 
         separator_5 = new JSeparator();
@@ -276,8 +285,8 @@ public class GuessPatternDialog extends JDialog {
         guessPanel.add(textAddValue, gbc_textField);
         textAddValue.setColumns(10);
 
-        chckbxUnlessLessThan = new Button("Unless less than...");
-        chckbxUnlessLessThan.setID("Unless less than");
+        chckbxUnlessLessThan = new CheckBox("Unless less than...");
+        chckbxUnlessLessThan.setId("Unless less than");
         chckbxUnlessLessThan.setOnAction(e -> {
                 updateFields();
             });
@@ -338,47 +347,47 @@ public class GuessPatternDialog extends JDialog {
 
     protected void updateFields() {
         if (chckbxAddFixedValue.isSelected()) {
-            textAddValue.setEnabled(true);
-            chckbxUnlessLessThan.setEnabled(true);
-            lblThenAdd.setEnabled(true);
+            textAddValue.setDisable(false);
+            chckbxUnlessLessThan.setDisable(false);
+            lblThenAdd.setDisable(false);
             if (chckbxUnlessLessThan.isSelected()) {
-                textUnlessLessThan.setEnabled(true);
-                textThenAdd.setEnabled(true);
+                textUnlessLessThan.setDisable(false);
+                textThenAdd.setDisable(false);
             } else {
-                textUnlessLessThan.setEnabled(false);
-                textThenAdd.setEnabled(false);
+                textUnlessLessThan.setDisable(true);
+                textThenAdd.setDisable(true);
             }
         } else {
-            textAddValue.setEnabled(false);
-            chckbxUnlessLessThan.setEnabled(false);
-            lblThenAdd.setEnabled(false);
-            textUnlessLessThan.setEnabled(false);
-            textThenAdd.setEnabled(false);
+            textAddValue.setDisable(true);
+            chckbxUnlessLessThan.setDisable(true);
+            lblThenAdd.setDisable(true);
+            textUnlessLessThan.setDisable(true);
+            textThenAdd.setDisable(true);
         }
 
-        txtFile.setEnabled(false);
-        textSplitChar.setEnabled(false);
-        textSplitChar2.setEnabled(false);
-        textRegExp.setEnabled(false);
-        combo.setEnabled(false);
-        combo_1.setEnabled(false);
-        lblAndTakeGroups.setEnabled(false);
-        btnBrowse.setEnabled(false);
+        txtFile.setDisable(true);
+        textSplitChar.setDisable(true);
+        textSplitChar2.setDisable(true);
+        textRegExp.setDisable(true);
+        combo.setDisable(true);
+        combo_1.setDisable(true);
+        lblAndTakeGroups.setDisable(true);
+        btnBrowse.setDisable(true);
         if (useEverything.isSelected()) {
-            textSplitChar.setEnabled(true);
-            combo.setEnabled(true);
+            textSplitChar.setDisable(false);
+            combo.setDisable(false);
         }
         if (isSplitOnChar.isSelected()) {
-            textSplitChar2.setEnabled(true);
-            combo_1.setEnabled(true);
-            lblAndTakeGroups.setEnabled(true);
+            textSplitChar2.setDisable(false);
+            combo_1.setDisable(false);
+            lblAndTakeGroups.setDisable(false);
         }
         if (useRegexp.isSelected()) {
-            textRegExp.setEnabled(true);
+            textRegExp.setDisable(false);
         }
         if (readFromFile.isSelected()) {
-            btnBrowse.setEnabled(true);
-            txtFile.setEnabled(true);
+            btnBrowse.setDisable(false);
+            txtFile.setDisable(false);
         }
     }
 
@@ -391,7 +400,7 @@ public class GuessPatternDialog extends JDialog {
         guessPanel.add(b, gbc);
 
         combo = new ComboBox<>(new String[] { "after first", "after last", "before first", "before last" });
-        combo.setID("delimiterCombo");
+        combo.setId("delimiterCombo");
         GridBagConstraints gbc2 = new GridBagConstraints();
         gbc2.anchor = GridBagConstraints.WEST;
         gbc2.gridwidth = 2;
@@ -411,7 +420,7 @@ public class GuessPatternDialog extends JDialog {
     private void createSplitBox(RadioButton b) {
 
         textSplitChar = new TextField("_");
-        textSplitChar.setID("SplitChar");
+        textSplitChar.setId("SplitChar");
         GridBagConstraints gbc_textField = new GridBagConstraints();
         gbc_textField.anchor = GridBagConstraints.WEST;
         gbc_textField.insets = new Insets(0, 0, 5, 5);
@@ -441,7 +450,7 @@ public class GuessPatternDialog extends JDialog {
     public void createRegExtpBox(RadioButton b) {
 
         textSplitChar2 = new TextField("_");
-        textSplitChar2.setID("SplitChar2");
+        textSplitChar2.setId("SplitChar2");
         GridBagConstraints gbc_textField_1 = new GridBagConstraints();
         gbc_textField_1.anchor = GridBagConstraints.WEST;
         gbc_textField_1.insets = new Insets(0, 0, 5, 5);
@@ -469,7 +478,7 @@ public class GuessPatternDialog extends JDialog {
         combo_1.setOnAction(e -> {
                 @SuppressWarnings("unchecked")
 				ComboBox<String> combo = (ComboBox<String>) e.getSource();
-                m_splitlocation = combo.getSelectedIndex();
+                m_splitlocation = combo.getSelectionModel().getSelectedIndex();
                 isSplitOnChar.setSelected(true);
                 updateFields();
             });

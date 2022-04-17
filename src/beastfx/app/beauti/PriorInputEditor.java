@@ -6,9 +6,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
+
+import javafx.geometry.Dimension2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.HBox;
+
 import javax.swing.JPanel;
 import javax.swing.text.StyledEditorKit.FontSizeAction;
 
@@ -48,36 +53,36 @@ public class PriorInputEditor extends InputEditor.Base {
         m_beastObject = beastObject;
         this.itemNr= listItemNr;
 		
-        Box itemBox = Box.createHorizontalBox();
+        HBox itemBox = new HBox();
 
         Prior prior = (Prior) beastObject;
         String text = prior.getParameterName();
         Label label = new Label(text);
         Font font = label.getFont();
-        Dimension size = new Dimension(font.getSize() * 200 / 13, font.getSize() * 25/13);
-        label.setMinimumSize(size);
-        label.setPreferredSize(size);
-        itemBox.add(label);
+        Dimension2D size = new Dimension2D(font.getSize() * 200 / 13, font.getSize() * 25/13);
+        label.setMinSize(size.getWidth(), size.getHeight());
+        label.setPrefSize(size.getWidth(), size.getHeight());
+        itemBox.getChildren().add(label);
 
         List<BeautiSubTemplate> availableBEASTObjects = doc.getInputEditorFactory().getAvailableTemplates(prior.distInput, prior, null, doc);
         ComboBox<BeautiSubTemplate> comboBox = new ComboBox<BeautiSubTemplate>(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
-        comboBox.setName(text+".distr");
+        comboBox.setId(text+".distr");
 
         String id = prior.distInput.get().getID();
         //Log.warning.println("id=" + id);
         id = id.substring(0, id.indexOf('.'));
         for (BeautiSubTemplate template : availableBEASTObjects) {
             if (template.classInput.get() != null && template.shortClassName.equals(id)) {
-                comboBox.setSelectedItem(template);
+                comboBox.setValue(template);
             }
         }
-        comboBox.addActionListener(e -> {
+        comboBox.setOnAction(e -> {
             @SuppressWarnings("unchecked")
 			ComboBox<BeautiSubTemplate> comboBox1 = (ComboBox<BeautiSubTemplate>) e.getSource();
 
             List<?> list = (List<?>) m_input.get();
 
-            BeautiSubTemplate template = (BeautiSubTemplate) comboBox1.getSelectedItem();
+            BeautiSubTemplate template = (BeautiSubTemplate) comboBox1.getValue();
             //String id = ((BEASTObject) list.get(item)).getID();
             //String partition = BeautiDoc.parsePartition(id);
             PartitionContext context = doc.getContextFor((BEASTInterface) list.get(itemNr));
@@ -93,14 +98,14 @@ public class PriorInputEditor extends InputEditor.Base {
         });
         JPanel panel = new JPanel();
         panel.add(comboBox);
-        panel.setMaximumSize(size);
+        panel.setMaxSize(size);
         itemBox.add(panel);
         
         if (prior.m_x.get() instanceof RealParameter) {
             // add range button for real parameters
             RealParameter p = (RealParameter) prior.m_x.get();
             Button rangeButton = new Button(paramToString(p));
-            rangeButton.addActionListener(e -> {
+            rangeButton.setOnAction(e -> {
                 Button rangeButton1 = (Button) e.getSource();
 
                 List<?> list = (List<?>) m_input.get();
@@ -113,13 +118,13 @@ public class PriorInputEditor extends InputEditor.Base {
                     refreshPanel();
                 }
             });
-            itemBox.add(Box.createHorizontalStrut(10));
-            itemBox.add(rangeButton);
+            itemBox.getChildren().add(new Separator());
+            itemBox.getChildren().add(rangeButton);
         } else if (prior.m_x.get() instanceof IntegerParameter) {
             // add range button for real parameters
             IntegerParameter p = (IntegerParameter) prior.m_x.get();
             Button rangeButton = new Button(paramToString(p));
-            rangeButton.addActionListener(e -> {
+            rangeButton.setOnAction(e -> {
                 Button rangeButton1 = (Button) e.getSource();
 
                 List<?> list = (List<?>) m_input.get();
@@ -132,21 +137,21 @@ public class PriorInputEditor extends InputEditor.Base {
                     refreshPanel();
                 }
             });
-            itemBox.add(Box.createHorizontalStrut(10));
-            itemBox.add(rangeButton);
+            itemBox.getChildren().add(new Separator());
+            itemBox.getChildren().add(rangeButton);
         }
         int fontsize = comboBox.getFont().getSize();
-        comboBox.setMaximumSize(new Dimension(1024 * fontsize / 13, 24 * fontsize / 13));
+        comboBox.setMaxSize(1024 * fontsize / 13, 24 * fontsize / 13);
 
         String tipText = getDoc().tipTextMap.get(beastObject.getID());
         //System.out.println(beastObject.getID());
         if (tipText != null) {
             Label tipTextLabel = new Label(" " + tipText);
-            itemBox.add(tipTextLabel);
+            itemBox.getChildren().add(tipTextLabel);
         }
-        itemBox.add(Box.createGlue());
+        itemBox.getChildren().add(new Separator());
 
-        add(itemBox);
+        pane.getChildren().add(itemBox);
 	}
 
     String paramToString(RealParameter p) {

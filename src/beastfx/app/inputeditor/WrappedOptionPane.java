@@ -1,14 +1,18 @@
 package beastfx.app.inputeditor;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.UIManager;
+
+import beastfx.app.util.Alert;
+import javafx.scene.Parent;
+import javafx.scene.control.Dialog;
+import javafx.scene.text.Font;
 
 /**
  * Alert but with text wrapping.
  *
  * @author Tim Vaughan <tgvaughan@gmail.com>
  */
-public class WrappedOptionPane extends Alert {
+public class WrappedOptionPane extends Dialog {
 
     @Override
     public int getMaxCharactersPerLineCount() {
@@ -32,7 +36,7 @@ public class WrappedOptionPane extends Alert {
      * @param parentComponent parent component
      * @param message message to display
      */
-    static public void showWrappedMessageDialog(Component parentComponent, Object message) {
+    static public void showWrappedMessageDialog(Parent parentComponent, Object message) {
         showWrappedMessageDialog(parentComponent, message, null);
     }
 
@@ -44,7 +48,7 @@ public class WrappedOptionPane extends Alert {
      * @param message      message to display
      * @param fontName     name of font used to display message
      */
-    static public void showWrappedMessageDialog(Component parentComponent, Object message, String fontName) {
+    static public void showWrappedMessageDialog(Parent parentComponent, Object message, String fontName) {
         Object oldFont = null;
         if (fontName != null) {
             oldFont = UIManager.get("OptionPane.messageFont");
@@ -56,12 +60,13 @@ public class WrappedOptionPane extends Alert {
         }
 
         WrappedOptionPane pane = new WrappedOptionPane();
-        pane.setMessage(message);
-        pane.setMessageType(INFORMATION_MESSAGE);
+        pane.setContentText(message);
+        pane.setMessageType(Alert.INFORMATION_MESSAGE);
 
-        JDialog dialog = pane.createDialog(parentComponent, "Message");
-        dialog.setModal(true);
-        dialog.setVisible(true);
+//        JDialog dialog = pane.createDialog(parentComponent, "Message");
+//        dialog.setModal(true);
+//        dialog.setVisible(true);
+        pane.show();
 
         if (oldFont != null)
             UIManager.put("OptionPane.messageFont", oldFont);

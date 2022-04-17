@@ -1,5 +1,6 @@
 package beastfxml.app;
 
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +15,10 @@ import org.w3c.dom.Element;
 
 import beagle.BeagleFlag;
 import beagle.BeagleInfo;
-import beast.app.BeastMCMC;
+import beast.app.beastapp.BeastMCMC;
 import beast.app.beastapp.BeastMain;
-import beast.core.util.Log;
-import beast.util.Randomizer;
+import beast.base.core.Log;
+import beast.base.util.Randomizer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
