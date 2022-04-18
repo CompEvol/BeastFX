@@ -31,7 +31,6 @@ import beast.base.core.Log;
 
 
 public class DoubleListInputEditor extends ListInputEditor {
-	private static final long serialVersionUID = 1L;
 
 	public DoubleListInputEditor(BeautiDoc doc) {
 		super(doc);
@@ -179,14 +178,14 @@ public class DoubleListInputEditor extends ListInputEditor {
 		void setUpEntry() {
             m_entry = new TextField();
             m_entry.setId(m_input.getName());
-            int size = m_entry.getFont().getSize();
-            PREFERRED_SIZE = new Dimension(200, 25 * size / 13);
-            m_entry.setMinSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
-            m_entry.setPrefSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
-            // m_entry.setSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
+//            int size = m_entry.getFont().getSize();
+//            PREFERRED_SIZE = new Dimension(200, 25 * size / 13);
+//            m_entry.setMinSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
+//            m_entry.setPrefSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
+//            // m_entry.setSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
             initEntry();
             m_entry.setTooltip(new Tooltip(m_input.getHTMLTipText()));
-            m_entry.setMaxSize(1024, 25 * size / 13);
+//            m_entry.setMaxSize(1024, 25 * size / 13);
             m_entry.setOnKeyReleased(e-> processEntry());
 
 //            m_entry.getDocument().addDocumentListener(new DocumentListener() {
@@ -271,17 +270,15 @@ public class DoubleListInputEditor extends ListInputEditor {
             if (m_bAddButtons) {
                 m_inputLabel = new Label(label);
                 m_inputLabel.setTooltip(new Tooltip(tipText));
-                m_inputLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
-                //Dimension size = new Dimension(g_nLabelWidth, 20);
-                int fontsize = m_inputLabel.getFont().getSize();
-                Dimension size = new Dimension(200, 20 * fontsize / 13);
-                m_inputLabel.setMaxSize(size.getWidth(),size.getHeight());
-                m_inputLabel.setMinSize(size.getWidth(),size.getHeight());
-                m_inputLabel.setPrefSize(size.getWidth(),size.getHeight());
-                m_inputLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+//                m_inputLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
+//                //Dimension size = new Dimension(g_nLabelWidth, 20);
+//                int fontsize = m_inputLabel.getFont().getSize();
+//                Dimension size = new Dimension(200, 20 * fontsize / 13);
+//                m_inputLabel.setMaxSize(size.getWidth(),size.getHeight());
+//                m_inputLabel.setMinSize(size.getWidth(),size.getHeight());
+//                m_inputLabel.setPrefSize(size.getWidth(),size.getHeight());
+//                m_inputLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
-//                m_inputLabel.setSize(size);
-//                m_inputLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
                 // RRB: temporary
                 //m_inputLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
                 pane.getChildren().add(m_inputLabel);
@@ -416,11 +413,11 @@ public class DoubleListInputEditor extends ListInputEditor {
         }
 
         // we should leave it to the component to set its own border
-        @Override
-		@Deprecated
-        public void setBorder(Border border) {
-    		super.setBorder(border);
-        }
+//        @Override
+//		@Deprecated
+//        public void setBorder(Border border) {
+//    		super.setBorder(border);
+//        }
 
         @Override
         public void setDoc(BeautiDoc doc) {
@@ -428,12 +425,12 @@ public class DoubleListInputEditor extends ListInputEditor {
         }
 
         // what is this method for? We should leave repainting to the standard mechanism
-        @Override
-		@Deprecated
-    	public void repaint() {
-    	this.repaint(0);
-    		super.repaint();
-    	}
+//        @Override
+//		@Deprecated
+//    	public void repaint() {
+//    	this.repaint(0);
+//    		super.repaint();
+//    	}
 
     	@Override
 		public Parent getComponent() {

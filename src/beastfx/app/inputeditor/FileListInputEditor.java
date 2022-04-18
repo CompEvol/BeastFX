@@ -1,51 +1,36 @@
 package beastfx.app.inputeditor;
 
 
+
+
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.table.AbstractTableModel;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.Clipboard;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.BorderPane;
-import beastfx.app.util.Alert;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
 
-import beastfx.app.inputeditor.BeautiDoc;
-import beastfx.app.inputeditor.ListInputEditor;
-import beast.app.treeannotator.FileDrop;
 import beast.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.ProgramStatus;
-import jam.panels.ActionPanel;
-import jam.table.TableRenderer;
 
 
 /** for opening files for reading
@@ -55,7 +40,6 @@ public class FileListInputEditor extends ListInputEditor {
 
 	final static String SEPARATOR = Utils.isWindows() ? "\\\\" : "/";
 	
-	private static final long serialVersionUID = 1L;
 
 	TableView<?> filesTable = null;
     private FilesTableModel filesTableModel = null;
@@ -148,7 +132,7 @@ public class FileListInputEditor extends ListInputEditor {
 
 	
 	
-
+	private ActionPanel actionPanel1;
 
     public Pane fileListPanel() {
 
@@ -159,21 +143,17 @@ public class FileListInputEditor extends ListInputEditor {
         filesTableModel = new FilesTableModel();
         filesTable = new TableView();//filesTableModel);
 
-        filesTable.getColumnModel().getColumn(0).setCellRenderer(
-                new TableRenderer(SwingConstants.LEFT, new Insets(0, 4, 0, 4)));
-        filesTable.getColumnModel().getColumn(0).setPreferredWidth(120);
+//        filesTable.getColumnModel().getColumn(0).setCellRenderer(
+//                new TableRenderer(SwingConstants.LEFT, new Insets(0, 4, 0, 4)));
+//        filesTable.getColumnModel().getColumn(0).setPreferredWidth(120);
         //filesTable.getColumnModel().getColumn(0).setPreferredWidth(80);
 
         // This causes superfluous TabelModel.setValue events to fire.
         // Is this still needed?  I guess we'll see...
         //TableEditorStopper.ensureEditingStopWhenTableLosesFocus(filesTable);
 
-        filesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-			public void valueChanged(ListSelectionEvent evt) {
-                filesTableSelectionChanged();
-            }
-        });
+        filesTable.getSelectionModel().selectedIndexProperty().
+        	addListener(e ->filesTableSelectionChanged());
 
         ScrollPane scrollPane1 = new ScrollPane(filesTable);
                 //ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
@@ -181,13 +161,13 @@ public class FileListInputEditor extends ListInputEditor {
         //scrollPane1.setMaxSize(10000, 10);
         scrollPane1.setPrefSize(500, 285);
 
-        ActionPanel actionPanel1 = new ActionPanel(false);
+        ActionPanel actionPanel1 = new ActionPanel();
         actionPanel1.setAddAction(addFileAction);
         actionPanel1.setRemoveAction(removeFileAction);
-        removeFileAction.setEnabled(false);
+        actionPanel1.delButton.setDisable(true);
 
         FlowPane controlPanel1 = new FlowPane(Orientation.HORIZONTAL);
-        controlPanel1.add(actionPanel1);
+        controlPanel1.getChildren().add(actionPanel1);
 
         // panel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
         Label label = new Label(formatName(m_input.getName()) + ":");
@@ -199,22 +179,26 @@ public class FileListInputEditor extends ListInputEditor {
 
         Color focusColor = UIManager.getColor("Focus.color");
         Border focusBorder = BorderFactory.createMatteBorder(2, 2, 2, 2, focusColor);
-        new FileDrop(null, scrollPane1, focusBorder, new FileDrop.Listener() {
-            @Override
-			public void filesDropped(java.io.File[] files) {
-                addFiles(files);
-            }   // end filesDropped
-        }); // end FileDrop.Listener
+//        new FileDrop(null, scrollPane1, focusBorder, new FileDrop.Listener() {
+//            @Override
+//			public void filesDropped(java.io.File[] files) {
+//                addFiles(files);
+//            }   // end filesDropped
+//        }); // end FileDrop.Listener
         
+        filesTable.setOnDragDropped(e -> {
+        	List<File> files = Clipboard.getSystemClipboard().getFiles();
+        	addFiles(files.toArray(new File[] {}));
+        });
         return panel;
     }
 
 
     private void filesTableSelectionChanged() {
-        if (filesTable.getSelectedRowCount() == 0) {
-            removeFileAction.setEnabled(false);
+        if (filesTable.getSelectionModel().getSelectedIndices().size() == 0) {
+            actionPanel1.delButton.setDisable(true);
         } else {
-            removeFileAction.setEnabled(true);
+            actionPanel1.delButton.setDisable(false);
         }
     }
 
@@ -238,37 +222,35 @@ public class FileListInputEditor extends ListInputEditor {
         filesTableModel.fireTableDataChanged();
 
         int sel2 = files.size() - 1;
-        filesTable.setRowSelectionInterval(sel1, sel2);
+        filesTable.getSelectionModel().selectRange(sel1, sel2);
 
     }
 
-    Action addFileAction = new AbstractAction("+") {
-        private static final long serialVersionUID = 7602227478402204088L;
+    EventHandler<ActionEvent> addFileAction = new EventHandler<ActionEvent>() {
 
-        @Override
-		public void actionPerformed(ActionEvent ae) {
+    	@Override
+    	public void handle(ActionEvent event) {
             File[] files = Utils.getLoadFiles("Select file", new File(ProgramStatus.g_sDir), "XML, trace or tree log files", "log", "trees", "xml");
             if (files != null) {
                 addFiles(files);
             }
-        }
-    };
+    		
+    	};
+	};
 
-    Action removeFileAction = new AbstractAction("-") {
-        private static final long serialVersionUID = 5934278375005327047L;
+    EventHandler<ActionEvent> removeFileAction = new EventHandler<ActionEvent>() {
 
-        @Override
-		public void actionPerformed(ActionEvent ae) {
-            int row = filesTable.getSelectedRow();
+    	@Override
+    	public void handle(ActionEvent event) {
+            int row = filesTable.getSelectionModel().getSelectedIndex();
             if (row != -1) {
                 files.remove(row);
+                filesTable.getItems().remove(row);
             }
-
-            filesTableModel.fireTableDataChanged();
 
             if (row >= files.size()) row = files.size() - 1;
             if (row >= 0) {
-                filesTable.setRowSelectionInterval(row, row);
+                filesTable.getSelectionModel().select(row);
             }
         }
     };
@@ -278,7 +260,6 @@ public class FileListInputEditor extends ListInputEditor {
         /**
          *
          */
-        private static final long serialVersionUID = 4153326364833213013L;
         private final String[] columns = {"File"};//, "Burnin (percentage)"};
 
         public FilesTableModel() {

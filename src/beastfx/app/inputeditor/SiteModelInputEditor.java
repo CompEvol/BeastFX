@@ -14,11 +14,14 @@ import beast.base.inference.*;
 import beast.base.inference.operator.DeltaExchangeOperator;
 import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -80,12 +83,12 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 		HBox box = new HBox();
 		box.getChildren().add(fixMeanRatesCheckBox);
 		box.getChildren().add(new Separator());
-		fixMeanRatesValidateLabel = new SmallLabel("x", Color.GREEN);
+		fixMeanRatesValidateLabel = new SmallLabel("x", "green");
 		fixMeanRatesValidateLabel.setVisible(false);
 		box.getChildren().add(fixMeanRatesValidateLabel);
 		
     	if (doc.alignments.size() >= 1 && operator != null) {
-        	JComponent component = (JComponent) getComponents()[0];
+        	Pane component = (Pane) getComponents()[0];
     		component.getChildren().add(box);
     	}
 		setUpOperator();

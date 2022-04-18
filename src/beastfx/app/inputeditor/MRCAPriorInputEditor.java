@@ -82,7 +82,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
                     TaxonSetDialog dlg = new TaxonSetDialog(taxonset, candidates, doc);
                     if (dlg.showDialog()) {
         	            if (dlg.taxonSet.taxonsetInput.get().size() == 0) {
-        	            	Alert.showMessageDialog(doc.beauti, "At least one taxon should be included in the taxon set",
+        	            	Alert.showMessageDialog(doc.getFrame(), "At least one taxon should be included in the taxon set",
         	            			"Error specifying taxon set", Alert.ERROR_MESSAGE);
         	            	taxonset.taxonsetInput.get().addAll(originalTaxa);
         	            	return;
@@ -118,7 +118,8 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         }
 
         List<BeautiSubTemplate> availableBEASTObjects = doc.getInputEditorFactory().getAvailableTemplates(prior.distInput, prior, null, doc);
-        ComboBox<BeautiSubTemplate> comboBox = new ComboBox<>(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
+        ComboBox<BeautiSubTemplate> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
         comboBox.setId(text+".distr");
 
         if (prior.distInput.get() != null) {

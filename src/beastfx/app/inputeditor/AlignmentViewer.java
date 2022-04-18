@@ -14,6 +14,7 @@ import javafx.geometry.Dimension2D;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -32,7 +33,7 @@ import beast.base.evolution.datatype.DataType;
 import beast.base.parser.NexusParser;
 
 
-public class AlignmentViewer extends JPanel {
+public class AlignmentViewer extends Pane {
     private static final long serialVersionUID = 1L;
 
     Object[][] tableData;
@@ -339,8 +340,8 @@ public class AlignmentViewer extends JPanel {
 
     public void showInDialog() {
         Dialog<?> dlg = new Dialog<>();
-        dlg.setId("AlignmentViewer");
-        dlg.add(this);
+        dlg.getDialogPane().setId("AlignmentViewer");
+        dlg.getDialogPane().getChildren().add(this);
 
         HBox buttonBox = new HBox();
         CheckBox useDotsCheckBox = new CheckBox("Use dots");

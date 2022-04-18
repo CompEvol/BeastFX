@@ -1,5 +1,6 @@
 package beastfx.app.inputeditor;
 
+
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellEditor;
@@ -12,11 +13,22 @@ import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.tree.TraitSet;
 import beast.base.evolution.tree.Tree;
 import beastfx.app.util.Alert;
+import javafx.geometry.Dimension2D;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
-import java.awt.*;
 import java.text.DateFormat;
 import java.time.format.DateTimeParseException;
 import java.util.EventObject;
@@ -87,11 +99,11 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
     boolean[] recordValid;
     JTable table;
     String m_sPattern = ".*(\\d\\d\\d\\d).*";
-    JScrollPane scrollPane;
+    ScrollPane scrollPane;
     List<Taxon> taxonsets;
 
     RadioButton numericRadioButton, formattedDateRadioButton;
-    ButtonGroup radioButtonGroup;
+    ToggleGroup radioButtonGroup;
     ComboBox<String> dateFormatComboBox;
 
     @Override
@@ -115,7 +127,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 
             VBox box = new VBox();
 
-            CheckBox useTipDates = new CheckBox("Use tip dates", traitSet != null);
+            CheckBox useTipDates = new CheckBox("Use tip dates");
+            useTipDates.setSelected(traitSet != null);
             useTipDates.setOnAction(e -> {
             	CheckBox checkBox = (CheckBox) e.getSource();
                     try {
@@ -140,18 +153,18 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                 });
             HBox box2 = new HBox();
             box2.getChildren().add(useTipDates);
-            box2.add(new Separator());
+            box2.getChildren().add(new Separator());
             box.getChildren().add(box2);
 
             if (traitSet != null) {
-                box.add(createButtonBox());
-                box.add(createListBox());
+                box.getChildren().add(createButtonBox());
+                box.getChildren().add(createListBox());
             }
             pane.getChildren().add(box);
         }
     } // init
 
-    private Component createListBox() {
+    private Node createListBox() {
         taxa = traitSet.taxaInput.get().asStringList();
         String[] columnData = new String[]{"Name", "Date (raw value)", "Height"};
         tableData = new Object[taxa.size()][3];
@@ -241,7 +254,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         });
         int fontsize = table.getFont().getSize();
         table.setRowHeight(24 * fontsize / 13);
-        scrollPane = new JScrollPane(table);
+        scrollPane = new ScrollPane();
+        scrollPane.setContent(table);
 
         return scrollPane;
     } // createListBox
@@ -369,7 +383,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
     /**
      * create box with comboboxes for selectin units and trait name *
      */
-    private Box createButtonBox() {
+    private HBox createButtonBox() {
         HBox buttonBox = new HBox();
 
         Label label = new Label("Dates specified: ");
@@ -381,7 +395,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         HBox formatBoxFirstLine = new HBox();
         HBox formatBoxSecondLine = new HBox();
 
-        radioButtonGroup = new ButtonGroup();
+        radioButtonGroup = new ToggleGroup();
         numericRadioButton = new RadioButton("numerically as");
         numericRadioButton.setTooltip(new Tooltip("Interpret values as numerical times."));
 
@@ -393,13 +407,13 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             refreshPanel();
         });
 
-        radioButtonGroup.add(numericRadioButton);
-        formatBoxFirstLine.add(numericRadioButton);
+        numericRadioButton.setToggleGroup(radioButtonGroup);
+        formatBoxFirstLine.getChildren().add(numericRadioButton);
 
         unitsComboBox = new ComboBox<>(TraitSet.Units.values());
-        unitsComboBox.setSelectedItem(traitSet.unitsInput.get());
+        unitsComboBox.setValue(traitSet.unitsInput.get());
         unitsComboBox.setOnAction(e -> {
-                String selected = unitsComboBox.getSelectedItem().toString();
+                String selected = unitsComboBox.getValue().toString();
                 try {
                     traitSet.unitsInput.setValue(selected, traitSet);
                     //System.err.println("Traitset is now: " + m_traitSet.m_sUnits.get());
@@ -407,22 +421,22 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                     ex.printStackTrace();
                 }
             });
-        Dimension d = unitsComboBox.getPreferredSize();
-        unitsComboBox.setMaxSize(unitsComboBox.getPreferredSize());
-        unitsComboBox.setSize(d);
-        unitsComboBox.setEnabled(numericRadioButton.isSelected());
-        formatBoxFirstLine.add(unitsComboBox);
+        Dimension2D d = unitsComboBox.getPrefSize();
+        unitsComboBox.setMaxSize(d.getWidth(), d.getHeight());
+        unitsComboBox.setPrefSize(d.getWidth(), d.getHeight());
+        unitsComboBox.setDisable(!numericRadioButton.isSelected());
+        formatBoxFirstLine.getChildren().add(unitsComboBox);
 
         relativeToComboBox = new ComboBox<>(new String[]{"Since some time in the past", "Before the present"});
         relativeToComboBox.setTooltip(new Tooltip("Whether dates go forward or backward"));
         if (traitSet.traitNameInput.get().equals(TraitSet.DATE_BACKWARD_TRAIT)) {
-            relativeToComboBox.setSelectedIndex(1);
+            relativeToComboBox.getSelectionModel().select(1);
         } else {
-            relativeToComboBox.setSelectedIndex(0);
+            relativeToComboBox.getSelectionModel().select(0);
         }
         relativeToComboBox.setOnAction(e -> {
                 String selected = TraitSet.DATE_BACKWARD_TRAIT;
-                if (relativeToComboBox.getSelectedIndex() == 0) {
+                if (relativeToComboBox.getSelectionModel().getSelectedIndex() == 0) {
                     selected = TraitSet.DATE_FORWARD_TRAIT;
                 }
                 try {
@@ -435,9 +449,9 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             });
         relativeToComboBox.setMaxSize(relativeToComboBox.getPreferredSize());
         relativeToComboBox.setEnabled(numericRadioButton.isSelected());
-        formatBoxFirstLine.add(relativeToComboBox);
-        formatBoxFirstLine.add(new Separator());
-        formatBox.add(formatBoxFirstLine);
+        formatBoxFirstLine.getChildren().add(relativeToComboBox);
+        formatBoxFirstLine.getChildren().add(new Separator());
+        formatBox.getChildren().add(formatBoxFirstLine);
 
         formattedDateRadioButton = new RadioButton("as dates with format");
         formattedDateRadioButton.setTooltip(new Tooltip("Interpret values as dates with the given format."));
@@ -449,8 +463,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             traitSet.dateTimeFormatInput.setValue(dateFormatComboBox.getSelectedItem(), traitSet);
             refreshPanel();
         });
-        radioButtonGroup.add(formattedDateRadioButton);
-        formatBoxSecondLine.add(formattedDateRadioButton);
+        formattedDateRadioButton.setToggleGroup(radioButtonGroup);
+        formatBoxSecondLine.getChildren().add(formattedDateRadioButton);
 
         String[] dateFormatExamples = {
                 "dd/M/yyyy",
@@ -464,35 +478,35 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         dateFormatComboBox.setTooltip(new Tooltip("Set format used to parse date values"));
         dateFormatComboBox.setEditable(true);
         if (traitSet.dateTimeFormatInput.get() != null)
-            dateFormatComboBox.setSelectedItem(traitSet.dateTimeFormatInput.get());
+            dateFormatComboBox.setValue(traitSet.dateTimeFormatInput.get());
         else
-            dateFormatComboBox.setSelectedItem(dateFormatExamples[0]);
-        dateFormatComboBox.setMaxSize(dateFormatComboBox.getPreferredSize());
-        dateFormatComboBox.setEnabled(formattedDateRadioButton.isSelected());
+            dateFormatComboBox.setValue(dateFormatExamples[0]);
+        dateFormatComboBox.setMaxSize(dateFormatComboBox.getPrefSize());
+        dateFormatComboBox.setDisabe(!formattedDateRadioButton.isSelected());
         dateFormatComboBox.setOnAction(e -> {
-            traitSet.dateTimeFormatInput.setValue(dateFormatComboBox.getSelectedItem(), traitSet);
+            traitSet.dateTimeFormatInput.setValue(dateFormatComboBox.getValue(), traitSet);
             refreshPanel();
         });
-        formatBoxSecondLine.add(dateFormatComboBox);
+        formatBoxSecondLine.getChildren().add(dateFormatComboBox);
 
         Button dateFormatHelpButton = new Button("?");
         dateFormatHelpButton.setOnAction(e ->
                 WrappedOptionPane.showWrappedMessageDialog(this,
                         DATE_FORMAT_HELP_MESSAGE, Font.MONOSPACED));
-        formatBoxSecondLine.add(dateFormatHelpButton);
+        formatBoxSecondLine.getChildren().add(dateFormatHelpButton);
 
-        formatBoxSecondLine.add(new Separator());
+        formatBoxSecondLine.getChildren().add(new Separator());
 
-        formatBox.add(formatBoxSecondLine);
+        formatBox.getChildren().add(formatBoxSecondLine);
         formatBox.setAlignmentY(TOP_ALIGNMENT);
-        buttonBox.add(formatBox);
+        buttonBox.getChildren().add(formatBox);
 
-        buttonBox.add(new Separator());
+        buttonBox.getChildren().add(new Separator());
 
         Button guessButton = new Button("Auto-configure");
         guessButton.setAlignmentY(TOP_ALIGNMENT);
         guessButton.setTooltip(new Tooltip("Automatically configure dates based on taxon names"));
-        guessButton.setID("Guess");
+        guessButton.setId("Guess");
         guessButton.setOnAction(e -> {
                 GuessPatternDialog dlg = new GuessPatternDialog(null, m_sPattern);
                 dlg.allowAddingValues();
@@ -536,7 +550,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                 }
                 refreshPanel();
             });
-        buttonBox.add(guessButton);
+        buttonBox.getChildren().add(guessButton);
 
 
         Button clearButton = new Button("Clear");
@@ -550,7 +564,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                 }
                 refreshPanel();
             });
-        buttonBox.add(clearButton);
+        buttonBox.getChildren().add(clearButton);
 
         return buttonBox;
     } // createButtonBox

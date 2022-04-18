@@ -1,11 +1,8 @@
 package beastfx.app.inputeditor;
 
 
-import java.awt.BorderLayout;
-import java.awt.Dialog;
-import java.awt.Frame;
+
 import java.io.File;
-import java.net.URL;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,7 +17,12 @@ import beast.base.core.Input;
 import beast.base.inference.MCMC;
 import beast.base.parser.XMLProducer;
 import beast.pkgmgmt.BEASTClassLoader;
-import beastfx.app.util.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Dialog for editing BEASTObjects.
@@ -31,10 +33,6 @@ import beastfx.app.util.Alert;
  */
 
 public class BEASTObjectDialog extends Dialog {
-    private static final long serialVersionUID = 1L;
-    /**
-     * plug in to be edited *
-     */
 
     private boolean m_bOK = false;
 
@@ -58,28 +56,24 @@ public class BEASTObjectDialog extends Dialog {
     final public static String ICONPATH = "/beastfx/app/inputeditor/icons/";
     
     public boolean showDialog() {
-        URL url = BEASTObjectDialog.class.getClassLoader().getResource(ICONPATH + "beast.png");
-        Icon icon = new ImageIcon(url);
-        Alert optionPane = new Alert(m_panel,
-                Alert.QUESTION_MESSAGE,
-                Alert.OK_CANCEL_OPTION,
-                icon,
-                null,
-                null);
-        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+        Image image = new Image(this.getClass().getResource("icons/beast.png").toString());
+        
+		Dialog<ButtonType> alert = new Dialog<>();
+		DialogPane pane = alert.getDialogPane();
+		pane.getChildren().add(m_panel);
+		pane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+		alert.setHeaderText(m_panel.m_beastObject.getClass().getName());
+		Stage stage = (Stage) pane.getScene().getWindow();
+		stage.getIcons().add(image);
+		
+//		if (parent != null) {
+//			Scene node = parent.getScene();
+//			alert.setX(node.getX() + node.getWidth()/2);
+//			alert.setY(node.getY() + node.getHeight()/2);
+//		}
+		ButtonType result = alert.showAndWait().get();
 
-        Frame frame = (doc != null ? doc.getFrame(): Frame.getFrames()[0]);
-        final Dialog dialog = optionPane.createDialog(frame, this.getTitle());
-        dialog.pack();
-
-        dialog.setVisible(true);
-
-        int result = Alert.CANCEL_OPTION;
-        Integer value = (Integer) optionPane.getValue();
-        if (value != null && value != -1) {
-            result = value;
-        }
-        m_bOK = (result != Alert.CANCEL_OPTION);
+		m_bOK = (result != ButtonType.CANCEL);
         return m_bOK;
     }
     
@@ -107,9 +101,10 @@ public class BEASTObjectDialog extends Dialog {
     void init(BEASTObjectPanel panel) {
         this.m_panel = panel;
 
-        setModal(true);
+        initModality(Modality.APPLICATION_MODAL);
 
-        add(BorderLayout.CENTER, panel);
+        getDialogPane().getChildren().add(panel);
+        // add(BorderLayout.CENTER, panel);
 
         setTitle(panel.m_beastObject.getID() + " Editor");
 
@@ -197,7 +192,7 @@ public class BEASTObjectDialog extends Dialog {
                     "");
             System.exit(1);
         }
-        dlg.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        dlg.setOnCloseRequest(e->{System.exit(0);});
         if (dlg.showDialog()) {
             BEASTInterface beastObject = dlg.m_panel.m_beastObject;
             String xml = new XMLProducer().modelToXML(beastObject);

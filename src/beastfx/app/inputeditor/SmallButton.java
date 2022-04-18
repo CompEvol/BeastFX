@@ -6,6 +6,7 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import beastfx.app.util.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -44,6 +45,10 @@ public class SmallButton extends Button {
     public void setButtonType(ButtonType buttonType) {
     	// RRB TODO not sure what to do here
         //setClientProperty("Button.buttonType", buttonType.toString());    
+    }
+
+    public void setImg(java.awt.Image image) {
+    	setGraphic(new ImageView(Alert.jswingIconToImage(image)));
     }
     
     public void setImg(Image image) {

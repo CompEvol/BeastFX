@@ -13,6 +13,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
@@ -127,7 +128,8 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             if (doc.allowLinking) {
 	            boolean isLinked = doc.isLinked(m_input);
 				if (isLinked || doc.suggestedLinks((BEASTInterface) m_input.get()).size() > 0) {
-		            Button linkbutton = new Button(Utils.getIcon(ListInputEditor.ICONPATH + 
+		            Button linkbutton = new Button();
+		            linkbutton.setGraphic(new ImageView(ListInputEditor.ICONPATH + 
 		            		(isLinked ? "link.png" : "unlink.png")));
 		            // linkbutton.setBorder(BorderFactory.createEmptyBorder());
 		            linkbutton.setTooltip(new Tooltip("link/unlink this parameter with another compatible parameter"));

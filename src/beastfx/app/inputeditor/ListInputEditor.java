@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,12 +15,15 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import beastfx.app.util.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -74,7 +75,7 @@ public class ListInputEditor extends InputEditor.Base {
     static protected Set<String> g_collapsedIDs = new HashSet<>();
     static Set<String> g_initiallyCollapsedIDs = new HashSet<>();
 
-    public abstract class ActionListenerObject implements ActionListener {
+    public abstract class ActionListenerObject implements EventHandler<ActionEvent> {
         public Object m_o;
 
         public ActionListenerObject(Object o) {
@@ -83,11 +84,11 @@ public class ListInputEditor extends InputEditor.Base {
         }
     }
 
-    public abstract class ExpandActionListener implements ActionListener {
-        Box m_box;
+    public abstract class ExpandActionListener implements EventHandler<ActionEvent> {
+        VBox m_box;
         BEASTInterface m_beastObject;
 
-        public ExpandActionListener(Box box, BEASTInterface beastObject) {
+        public ExpandActionListener(VBox box, BEASTInterface beastObject) {
             super();
             m_box = box;
             m_beastObject = beastObject;
@@ -102,7 +103,7 @@ public class ListInputEditor extends InputEditor.Base {
         m_editButton = new ArrayList<>();
         m_validateLabels = new ArrayList<>();
         m_bExpandOption = ExpandOption.FALSE;
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        // setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
     public ListInputEditor() {
@@ -136,10 +137,10 @@ public class ListInputEditor extends InputEditor.Base {
         this.itemNr = -1;
         addInputLabel();
         if (m_inputLabel != null) {
-            m_inputLabel.setMaxSize(m_inputLabel.getSize().width, 1000);
-            m_inputLabel.setAlignmentY(1.0f);
-            m_inputLabel.setVerticalAlignment(SwingConstants.TOP);
-            m_inputLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            //m_inputLabel.setMaxSize(m_inputLabel.getSize().width, 1000);
+            //m_inputLabel.setAlignmentY(1.0f);
+            //m_inputLabel.setVerticalAlignment(SwingConstants.TOP);
+            //m_inputLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
 
         m_listBox = new VBox();
@@ -151,8 +152,8 @@ public class ListInputEditor extends InputEditor.Base {
             }
         }
 
-        setLayout(new BorderLayout());
-        add(m_listBox, BorderLayout.NORTH);
+        pane = new BorderPane();
+        ((BorderPane)pane).setTop(m_listBox);
 
         buttonBox = new HBox();
         if (m_buttonStatus == ButtonStatus.ALL || m_buttonStatus == ButtonStatus.ADD_ONLY) {
@@ -186,6 +187,7 @@ public class ListInputEditor extends InputEditor.Base {
 
         updateState();
         
+        getChildren().add(pane);
 //        // RRB: is there a better way to ensure lists are not spaced out across all available space?
 //    	JFrame frame = doc.getFrame();
 //    	if (frame != null) {
@@ -195,7 +197,7 @@ public class ListInputEditor extends InputEditor.Base {
     } // init
 
     protected void addSingleItem(BEASTInterface beastObject) {
-        HBox itemBox = new HBox();
+        Pane itemBox = new HBox();
 
         InputEditor editor = addPluginItem(itemBox, beastObject);
         
@@ -203,12 +205,12 @@ public class ListInputEditor extends InputEditor.Base {
         editButton.setId(beastObject.getID() + ".editButton");
         if (m_bExpandOption == ExpandOption.FALSE || m_bExpandOption == ExpandOption.IF_ONE_ITEM && ((List<?>) m_input.get()).size() > 1) {
             editButton.setTooltip(new Tooltip("Edit item in the list"));
-            editButton.setOnAction(new ActionListenerObject(beastObject) {
-                @Override
-				public void actionPerformed(ActionEvent e) {
+			editButton.setOnAction(new ActionListenerObject(beastObject) {
+				@Override
+				public void handle(ActionEvent event) {
                     m_o = editItem(m_o);
-                }
-            });
+				}
+			});
         } else {
             editButton.setText("");
             editButton.setTooltip(new Tooltip("Expand/collapse item in the list"));
@@ -229,13 +231,13 @@ public class ListInputEditor extends InputEditor.Base {
             //box.add(itemBox);
             doc.getInputEditorFactory().addInputs(expandBox, beastObject, editor, null, doc);
             //System.err.print(expandBox.getComponentCount());
-            if (expandBox.getComponentCount() > 1) {
+            if (expandBox.getChildren().size() > 1) {
                 // only go here if it is worth showing expanded box
                 //expandBox.setBorder(BorderFactory.createMatteBorder(1, 5, 1, 1, Color.gray));
                 //itemBox = box;
                 VBox box2 = new VBox();
                 box2.getChildren().add(itemBox);
-                itemBox.getChildren().add(editButton, 0);
+                itemBox.getChildren().add(0, editButton);
                 box2.getChildren().add(expandBox);
 //        		expandBox.setVisible(false);
 //        		//itemBox.remove(editButton);
@@ -247,7 +249,7 @@ public class ListInputEditor extends InputEditor.Base {
             }
             editButton.setOnAction(new ExpandActionListener(expandBox, beastObject) {
                 @Override
-				public void actionPerformed(ActionEvent e) {
+				public void handle(ActionEvent e) {
                     SmallButton editButton = (SmallButton) e.getSource();
                     m_box.setVisible(!m_box.isVisible());
                     if (m_box.isVisible()) {
@@ -388,25 +390,23 @@ public class ListInputEditor extends InputEditor.Base {
         }
         BEASTObjectPanel.m_position.x -= 20;
         BEASTObjectPanel.m_position.y -= 20;
-        //checkValidation();
         validateAllEditors();
         updateState();
-        doLayout();
+        //doLayout();
         return o;
     } // editItem
 
     protected void deleteItem(Object o) {
         int i = ((List<?>) m_input.get()).indexOf(o);
-        m_listBox.remove(i);
+        m_listBox.getChildren().remove(i);
         ((List<?>) m_input.get()).remove(i);
-        //safeRemove(m_labels, i);
         safeRemove(m_entries, i);
         safeRemove(delButtonList, i);
         safeRemove(m_editButton, i);
         safeRemove(m_validateLabels, i);
         validateInput();
         updateState();
-        doLayout();
+        //doLayout();
         repaint();
     } // deleteItem
 

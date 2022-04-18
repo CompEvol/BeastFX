@@ -52,7 +52,7 @@
 				<provider classname="beastfx.app.inputeditor.XMLImporter"/>
 			</service>
 	
-		    <service type="beastfx.base.core.BEASTInterface">
+		    <service type="beast.base.core.BEASTInterface">
     		    <provider classname="beastfx.app.beauti.Fragment"/>
 		        <provider classname="beastfx.app.draw.BEASTObjectSet"/>
         		<provider classname="beastfx.app.inputeditor.BeautiAlignmentProvider"/>

@@ -137,10 +137,18 @@ public class Alert {
 		showMessageDialog(parent, pane, header, informationMessage);
 	}
 	
-	private static Image jswingIconToImage(javax.swing.Icon jswingIcon) {
+	public static Image jswingIconToImage(javax.swing.Icon jswingIcon) {
 		  BufferedImage bufferedImage = new BufferedImage(jswingIcon.getIconWidth(),
 		    jswingIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 		  jswingIcon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
+		  return SwingFXUtils.toFXImage(bufferedImage, null);
+	}
+
+	public static Image jswingIconToImage(java.awt.Image awtIcon) {
+		int w = awtIcon.getWidth(null);
+		int h = awtIcon.getHeight(null);
+		  BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		  bufferedImage.getGraphics().drawImage(awtIcon, 0, 0, 0, 0, w, h, w, h, null);
 		  return SwingFXUtils.toFXImage(bufferedImage, null);
 	}
 

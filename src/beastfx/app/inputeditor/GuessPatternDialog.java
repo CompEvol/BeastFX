@@ -1,6 +1,7 @@
 package beastfx.app.inputeditor;
 
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,30 +11,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import javax.swing.ButtonGroup;
-
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 
 import javax.swing.JDialog;
 import javafx.scene.control.Label;
 import beastfx.app.util.Alert;
 import javax.swing.JPanel;
 import javafx.scene.control.RadioButton;
-import javax.swing.JSeparator;
+import javafx.scene.control.Separator;
+
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
+import javafx.scene.layout.RowConstraints;
 import beastfx.app.beauti.Beauti;
+import beastfx.app.treeannotator.TreeAnnotator;
 import beast.app.util.Utils;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
@@ -97,18 +99,26 @@ public class GuessPatternDialog extends Dialog {
     }
 
     Parent m_parent;
+    @FXML
     GridPane guessPanel;
-    ButtonGroup group;
+    ToggleGroup group;
+    @FXML
     RadioButton useEverything = new RadioButton("use everything");
+    @FXML
     RadioButton isSplitOnChar = new RadioButton("split on character");
+    @FXML
     RadioButton useRegexp = new RadioButton("use regular expression");
+    @FXML
     RadioButton readFromFile = new RadioButton("read from file");
 
     int m_location = 0;
     int m_splitlocation = 0;
     String m_sDelimiter = ".";
+    @FXML
     TextField textRegExp;
+    @FXML
     ComboBox<String> combo;
+    @FXML
     ComboBox<String> combo_1;
     String pattern;
 
@@ -116,39 +126,55 @@ public class GuessPatternDialog extends Dialog {
         return pattern;
     }
 
+    @FXML
     private TextField txtFile;
+    @FXML
     private TextField textSplitChar;
+    @FXML
     private TextField textSplitChar2;
+    @FXML
     private TextField textAddValue;
+    @FXML
     private TextField textUnlessLessThan;
+    @FXML
     private TextField textThenAdd;
+    @FXML
     CheckBox chckbxAddFixedValue;
+    @FXML
     CheckBox chckbxUnlessLessThan;
+    @FXML
     Label lblThenAdd;
+    @FXML
     Label lblAndTakeGroups;
+    @FXML
     Button btnBrowse;
-    private JSeparator separator_2;
-    private JSeparator separator_3;
-    private JSeparator separator_4;
-    private JSeparator separator_5;
+    private Separator separator_2;
+    private Separator separator_3;
+    private Separator separator_4;
+    private Separator separator_5;
 
     public GuessPatternDialog(Parent parent, String pattern) {
         m_parent = parent;
         this.pattern = pattern;
-        guessPanel = new GridPane();
-        GridBagLayout gbl_guessPanel = new GridBagLayout();
-        gbl_guessPanel.rowHeights = new int[]{0, 0, 0, 20, 0, 0, 20, 0, 0, 20, 0, 29, 0, 0, 0, 0};
-        gbl_guessPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
-        gbl_guessPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-        gbl_guessPanel.columnWeights = new double[] { 1.0, 1.0, 1.0, 0.0, 1.0, 0.0 };
-        guessPanel.setLayout(gbl_guessPanel);
+        
+	    FXMLLoader fl = new FXMLLoader();
+	    fl.setLocation(this.getClass().getResource("GuessPatternDialog.fxml"));
+	    DialogPane root = fl.load();
 
-        group = new ButtonGroup();
-        group.add(useEverything);
-        group.add(isSplitOnChar);
-        group.add(useRegexp);
-        group.add(readFromFile);
-        group.setSelected(useEverything.getModel(), true);
+        guessPanel = new GridPane();
+//        GridBagLayout gbl_guessPanel = new GridBagLayout();
+//        gbl_guessPanel.rowHeights = new int[]{0, 0, 0, 20, 0, 0, 20, 0, 0, 20, 0, 29, 0, 0, 0, 0};
+//        gbl_guessPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
+//        gbl_guessPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//        gbl_guessPanel.columnWeights = new double[] { 1.0, 1.0, 1.0, 0.0, 1.0, 0.0 };
+//        guessPanel.setLayout(gbl_guessPanel);
+
+        group = new ToggleGroup();
+        useEverything.setToggleGroup(group);
+        isSplitOnChar.setToggleGroup(group);
+        useRegexp.setToggleGroup(group);
+        readFromFile.setToggleGroup(group);
+        group.selectToggle(useEverything);
         useEverything.setOnAction(e -> {
                 updateFields();
             });
@@ -172,10 +198,11 @@ public class GuessPatternDialog extends Dialog {
 
         textRegExp = new TextField();
         textRegExp.setText(pattern);
-        textRegExp.setColumns(10);
+        textRegExp.setPrefColumnCount(10);
         textRegExp.setTooltip(new Tooltip("Enter regular expression to match taxa"));
         int fontsize = textRegExp.getFont().getSize();
-        textRegExp.setMaxSize(new Dimension(1024 * fontsize/13, 25 * fontsize/13));
+        textRegExp.setMaxSize(1024 * fontsize/13, 25 * fontsize/13);
+        
         GridBagConstraints gbc2 = new GridBagConstraints();
         gbc2.insets = new Insets(0, 0, 5, 5);
         gbc2.anchor = GridBagConstraints.WEST;
@@ -201,8 +228,8 @@ public class GuessPatternDialog extends Dialog {
 //            }
 //        });
 
-        separator_4 = new JSeparator();
-        separator_4.setPrefSize(new Dimension(5,1));
+        separator_4 = new Separator();
+        separator_4.setPrefSize(5,1);
         GridBagConstraints gbc_separator_4 = new GridBagConstraints();
         gbc_separator_4.gridwidth = 5;
         gbc_separator_4.insets = new Insets(5, 0, 15, 5);
@@ -237,7 +264,7 @@ public class GuessPatternDialog extends Dialog {
         gbc_txtFile.gridx = 1;
         gbc_txtFile.gridy = 10;
         guessPanel.add(txtFile, gbc_txtFile);
-        txtFile.setColumns(10);
+        txtFile.setPrefColumnCount(10);
         GridBagConstraints gbc_btnReadFromFile = new GridBagConstraints();
         gbc_btnReadFromFile.insets = new Insets(0, 0, 5, 5);
         gbc_btnReadFromFile.gridx = 3;
@@ -259,8 +286,8 @@ public class GuessPatternDialog extends Dialog {
         chckbxAddFixedValue.setId("Add fixed value");
         chckbxAddFixedValue.setOnAction(e -> updateFields());
 
-        separator_5 = new JSeparator();
-        separator_5.setPrefSize(new Dimension(5,1));
+        separator_5 = new Separator();
+        separator_5.setPrefSize(5,1);
         GridBagConstraints gbc_separator_5 = new GridBagConstraints();
         gbc_separator_5.gridwidth = 5;
         gbc_separator_5.insets = new Insets(5, 0, 15, 5);
@@ -283,7 +310,7 @@ public class GuessPatternDialog extends Dialog {
         gbc_textField.gridx = 1;
         gbc_textField.gridy = 13;
         guessPanel.add(textAddValue, gbc_textField);
-        textAddValue.setColumns(10);
+        textAddValue.setPrefColumnCount(10);
 
         chckbxUnlessLessThan = new CheckBox("Unless less than...");
         chckbxUnlessLessThan.setId("Unless less than");
@@ -305,7 +332,7 @@ public class GuessPatternDialog extends Dialog {
         gbc_textField_1.gridx = 1;
         gbc_textField_1.gridy = 14;
         guessPanel.add(textUnlessLessThan, gbc_textField_1);
-        textUnlessLessThan.setColumns(10);
+        textUnlessLessThan.setPrefColumnCount(10);
 
         lblThenAdd = new Label("...then add");
         GridBagConstraints gbc_lblThenAdd = new GridBagConstraints();
@@ -323,7 +350,7 @@ public class GuessPatternDialog extends Dialog {
         gbc_textField_2.gridx = 1;
         gbc_textField_2.gridy = 15;
         guessPanel.add(textThenAdd, gbc_textField_2);
-        textThenAdd.setColumns(10);
+        textThenAdd.setPrefColumnCount(10);
 
 
         chckbxAddFixedValue.setVisible(false);
@@ -333,6 +360,8 @@ public class GuessPatternDialog extends Dialog {
         chckbxUnlessLessThan.setVisible(false);
         textUnlessLessThan.setVisible(false);
         textThenAdd.setVisible(false);
+        
+
     }
 
     public void allowAddingValues() {
@@ -427,10 +456,10 @@ public class GuessPatternDialog extends Dialog {
         gbc_textField.gridx = 3;
         gbc_textField.gridy = 1;
         guessPanel.add(textSplitChar, gbc_textField);
-        textSplitChar.setColumns(2);
+        textSplitChar.setPrefColumnCount(2);
 
-        separator_2 = new JSeparator();
-        separator_2.setPrefSize(new Dimension(5,1));
+        separator_2 = new Separator();
+        separator_2.setPrefSize(5,1);
         GridBagConstraints gbc_separator_2 = new GridBagConstraints();
         gbc_separator_2.gridwidth = 5;
         gbc_separator_2.insets = new Insets(5, 0, 15, 5);
@@ -457,7 +486,7 @@ public class GuessPatternDialog extends Dialog {
         gbc_textField_1.gridx = 1;
         gbc_textField_1.gridy = 4;
         guessPanel.add(textSplitChar2, gbc_textField_1);
-        textSplitChar2.setColumns(2);
+        textSplitChar2.setPrefColumnCount(2);
 
         lblAndTakeGroups = new Label("and take group(s):");
         GridBagConstraints gbc_lblAndTakeGroups = new GridBagConstraints();
@@ -468,7 +497,7 @@ public class GuessPatternDialog extends Dialog {
         guessPanel.add(lblAndTakeGroups, gbc_lblAndTakeGroups);
 
         combo_1 = new ComboBox<>(new String[] { "1", "2", "3", "4", "1-2", "2-3", "3-4", "1-3", "2-4" });
-        combo_1.setID("splitCombo");
+        combo_1.setId("splitCombo");
         GridBagConstraints gbc_combo_1 = new GridBagConstraints();
         gbc_combo_1.anchor = GridBagConstraints.WEST;
         gbc_combo_1.insets = new Insets(0, 0, 5, 5);
@@ -483,8 +512,8 @@ public class GuessPatternDialog extends Dialog {
                 updateFields();
             });
 
-        separator_3 = new JSeparator();
-        separator_3.setPrefSize(new Dimension(5,1));
+        separator_3 = new Separator();
+        separator_3.setPrefSize(5,1);
         GridBagConstraints gbc_separator_3 = new GridBagConstraints();
         gbc_separator_3.gridwidth = 5;
         gbc_separator_3.insets = new Insets(5, 0, 15, 5);
@@ -508,7 +537,7 @@ public class GuessPatternDialog extends Dialog {
         optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
 
         final JDialog dialog = optionPane.createDialog(m_parent, title);
-        dialog.setID("GuessTaxonSets");
+        dialog.setId("GuessTaxonSets");
         // dialog.setResizable(true);
         dialog.pack();
         updateFields();

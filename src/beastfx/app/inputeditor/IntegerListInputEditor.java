@@ -17,16 +17,11 @@
 
 package beastfx.app.inputeditor;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -35,10 +30,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 
 import beast.base.core.BEASTInterface;
@@ -47,7 +38,6 @@ import beast.base.core.Log;
 
 
 public class IntegerListInputEditor extends ListInputEditor {
-	private static final long serialVersionUID = 1L;
 
 	public IntegerListInputEditor(BeautiDoc doc) {
 		super(doc);
@@ -270,14 +260,14 @@ public class IntegerListInputEditor extends ListInputEditor {
             if (m_bAddButtons) {
                 m_inputLabel = new Label(label);
                 m_inputLabel.setTooltip(new Tooltip(tipText));
-                m_inputLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
+                //m_inputLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
                 //Dimension size = new Dimension(g_nLabelWidth, 20);
-                int fontsize = m_inputLabel.getFont().getSize();
-                Dimension size = new Dimension(200 * fontsize / 13, 20 * fontsize / 13);
-                m_inputLabel.setMaxSize(size.getWidth(), size.getHeight());
-                m_inputLabel.setMinSize(size.getWidth(), size.getHeight())
-                m_inputLabel.setPrefSize(size.getWidth(), size.getHeight());
-                m_inputLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+                // int fontsize = m_inputLabel.getFont().getSize();
+                //Dimension size = new Dimension(200 * fontsize / 13, 20 * fontsize / 13);
+                //m_inputLabel.setMaxSize(size.getWidth(), size.getHeight());
+                //m_inputLabel.setMinSize(size.getWidth(), size.getHeight());
+                //m_inputLabel.setPrefSize(size.getWidth(), size.getHeight());
+                // m_inputLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
 //                m_inputLabel.setSize(size);
 //                m_inputLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
@@ -290,7 +280,7 @@ public class IntegerListInputEditor extends ListInputEditor {
         @Override
 		protected void addValidationLabel() {
             if (m_bAddButtons) {
-                m_validateLabel = new SmallLabel("x", new Color(200, 0, 0));
+                m_validateLabel = new SmallLabel("x", "red");
                 pane.getChildren().add(m_validateLabel);
                 m_validateLabel.setVisible(true);
                 validateInput();
@@ -415,11 +405,11 @@ public class IntegerListInputEditor extends ListInputEditor {
 //        }
 
         // we should leave it to the component to set its own border
-        @Override
-		@Deprecated
-        public void setBorder(Border border) {
-    		super.setBorder(border);
-        }
+//        @Override
+//		@Deprecated
+//        public void setBorder(Border border) {
+//    		super.setBorder(border);
+//        }
 
         @Override
         public void setDoc(BeautiDoc doc) {
@@ -427,15 +417,15 @@ public class IntegerListInputEditor extends ListInputEditor {
         }
 
         // what is this method for? We should leave repainting to the standard mechanism
-        @Override
-		@Deprecated
-    	public void repaint() {
-    	this.repaint(0);
-    		super.repaint();
-    	}
+//        @Override
+//		@Deprecated
+//    	public void repaint() {
+//    	this.repaint(0);
+//    		super.repaint();
+//    	}
 
     	@Override
-		public Component getComponent() {
+		public Parent getComponent() {
     		return this;
     	}
 
