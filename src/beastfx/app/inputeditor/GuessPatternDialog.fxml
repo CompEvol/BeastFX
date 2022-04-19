@@ -38,28 +38,28 @@
       <RadioButton fx:id="useRegexp" mnemonicParsing="false" text="use regular expression" GridPane.rowIndex="3" />
       <RadioButton fx:id="readFromFile" mnemonicParsing="false" text="read from file" GridPane.rowIndex="4" />
       <ComboBox fx:id="combo" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <TextField prefColumnCount="3" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <TextField fx:id="textSplitChar" prefColumnCount="3" text="_" GridPane.columnIndex="2" GridPane.rowIndex="1" />
       <ComboBox fx:id="combo_1" prefWidth="50.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-      <TextField prefColumnCount="3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField prefHeight="25.0" prefWidth="355.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+      <TextField fx:id="textSplitChar2" prefColumnCount="3" text="_" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <TextField fx:id="textRegExp" prefHeight="25.0" prefWidth="355.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
       <Label text="and take group(s):" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
          <padding>
             <Insets right="5.0" />
          </padding>
       </Label>
-      <Button mnemonicParsing="false" text="?" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+      <Button fx:id="btnHelp" mnemonicParsing="false" text="?" GridPane.columnIndex="3" GridPane.rowIndex="4" />
       <Button mnemonicParsing="false" text="Browse" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
          <GridPane.margin>
             <Insets left="5.0" />
          </GridPane.margin>
       </Button>
-      <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <TextField fx:id="txtFile" GridPane.columnIndex="1" GridPane.rowIndex="4" />
       <CheckBox fx:id="chckbxAddFixedValue" mnemonicParsing="false" text="Add fixed value" GridPane.rowIndex="5" />
-      <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <TextField fx:id="textAddValue" text="1900" GridPane.columnIndex="1" GridPane.rowIndex="5" />
       <CheckBox fx:id="chckbxUnlessLessThan" mnemonicParsing="false" text="Unless less than..." GridPane.rowIndex="6" />
-      <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      <Label text="...then add " GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
-      <TextField GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      <TextField fx:id="textUnlessLessThan" text="20" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <Label fx:id="lblThenAdd" text="...then add " GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+      <TextField fx:id="textThenAdd" text="2000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
    </children>
 </GridPane>
           </content>

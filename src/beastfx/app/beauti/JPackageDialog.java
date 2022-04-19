@@ -1,6 +1,7 @@
 package beastfx.app.beauti;
 
 
+
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
@@ -14,6 +15,7 @@ import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.PackageVersion;
 import beastfx.app.util.Alert;
+import javafx.scene.control.Separator;
 
 import static beast.pkgmgmt.PackageManager.*;
 

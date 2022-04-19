@@ -1,5 +1,6 @@
 package beastfx.app.beastfx;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,21 +18,19 @@ import org.json.JSONObject;
 
 import beagle.BeagleFlag;
 import beagle.BeagleInfo;
+import beast.base.core.Input;
+import beast.base.core.Log;
+import beast.base.inference.Logger;
+import beast.base.inference.Logger.LogFileMode;
+import beast.base.parser.JSONParser;
+import beast.base.parser.XMLParser;
+import beast.base.parser.XMLParserException;
+import beast.base.util.Randomizer;
+import beast.pkgmgmt.PackageManager;
 import beastfx.app.util.Application;
 import beastfx.app.util.HTMLPrintStream;
 import beastfx.app.util.HTTPPostServer;
 import beastfx.app.util.HTTPRequestHandler;
-import beast.core.Input;
-import beast.core.Logger;
-import beast.core.Runnable;
-import beast.core.Logger.LogFileMode;
-import beast.core.util.Log;
-import beast.util.PackageManager;
-import beast.util.JSONParser;
-import beast.util.JSONParserException;
-import beast.util.Randomizer;
-import beast.util.XMLParser;
-import beast.util.XMLParserException;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -99,7 +98,7 @@ public class BeastFX extends Application implements HTTPRequestHandler {
     /**
      * MCMC object to execute *
      */
-    Runnable m_runnable;
+    beast.base.inference.Runnable m_runnable;
 
     public BeastFX() {
     	defaultInput = inputfileInput;

@@ -5,44 +5,42 @@ package beastfx.app.inputeditor;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 
-import javax.swing.JDialog;
 import javafx.scene.control.Label;
 import beastfx.app.util.Alert;
-import javax.swing.JPanel;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Separator;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
-import beastfx.app.beauti.Beauti;
-import beastfx.app.treeannotator.TreeAnnotator;
 import beast.app.util.Utils;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
 
 
-public class GuessPatternDialog extends Dialog {
-    private static final long serialVersionUID = 1L;
+public class GuessPatternDialog implements Initializable {
 
     private static String TRAIT_FILE_HELP_MESSAGE =
             "This option allows trait values (such as species, tip dates and sample locations) " +
@@ -100,8 +98,8 @@ public class GuessPatternDialog extends Dialog {
 
     Parent m_parent;
     @FXML
-    GridPane guessPanel;
-    ToggleGroup group;
+    GridPane guessPanel = new GridPane();
+    ToggleGroup group = new ToggleGroup();
     @FXML
     RadioButton useEverything = new RadioButton("use everything");
     @FXML
@@ -111,15 +109,15 @@ public class GuessPatternDialog extends Dialog {
     @FXML
     RadioButton readFromFile = new RadioButton("read from file");
 
-    int m_location = 0;
+    String m_location = "after first";
     int m_splitlocation = 0;
     String m_sDelimiter = ".";
     @FXML
-    TextField textRegExp;
+    TextField textRegExp = new TextField();
     @FXML
-    ComboBox<String> combo;
+    ComboBox<String> combo = new ComboBox<String>();
     @FXML
-    ComboBox<String> combo_1;
+    ComboBox<String> combo_1 = new ComboBox<String>();
     String pattern;
 
     public String getPattern() {
@@ -127,41 +125,60 @@ public class GuessPatternDialog extends Dialog {
     }
 
     @FXML
-    private TextField txtFile;
+    private TextField txtFile = new TextField();
     @FXML
-    private TextField textSplitChar;
+    private TextField textSplitChar = new TextField();
     @FXML
-    private TextField textSplitChar2;
+    private TextField textSplitChar2 = new TextField();
     @FXML
-    private TextField textAddValue;
+    private TextField textAddValue = new TextField();
     @FXML
-    private TextField textUnlessLessThan;
+    private TextField textUnlessLessThan = new TextField();
     @FXML
-    private TextField textThenAdd;
+    private TextField textThenAdd = new TextField();
     @FXML
-    CheckBox chckbxAddFixedValue;
+    CheckBox chckbxAddFixedValue = new CheckBox();
     @FXML
-    CheckBox chckbxUnlessLessThan;
+    CheckBox chckbxUnlessLessThan = new CheckBox();
     @FXML
-    Label lblThenAdd;
+    Label lblThenAdd = new Label();
     @FXML
-    Label lblAndTakeGroups;
+    Label lblAndTakeGroups = new Label();
     @FXML
-    Button btnBrowse;
-    private Separator separator_2;
-    private Separator separator_3;
-    private Separator separator_4;
-    private Separator separator_5;
+    Button btnBrowse = new Button();
+    @FXML
+    Button btnHelp = new Button("?");
+    
+    DialogPane root;
+    
 
+    public GuessPatternDialog() {
+    }
+    
+    public GuessPatternDialog(String pattern) {
+    	this(null, pattern);
+    }
+    
     public GuessPatternDialog(Parent parent, String pattern) {
         m_parent = parent;
         this.pattern = pattern;
+        initialize(null, null);
         
 	    FXMLLoader fl = new FXMLLoader();
 	    fl.setLocation(this.getClass().getResource("GuessPatternDialog.fxml"));
-	    DialogPane root = fl.load();
+	    try {
+			root = fl.load();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
+    }
+    
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
 
-        guessPanel = new GridPane();
+//        guessPanel = new GridPane();
 //        GridBagLayout gbl_guessPanel = new GridBagLayout();
 //        gbl_guessPanel.rowHeights = new int[]{0, 0, 0, 20, 0, 0, 20, 0, 0, 20, 0, 29, 0, 0, 0, 0};
 //        gbl_guessPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
@@ -196,20 +213,20 @@ public class GuessPatternDialog extends Dialog {
         createSplitBox(isSplitOnChar);
         createRegExtpBox(useRegexp);
 
-        textRegExp = new TextField();
+//        textRegExp = new TextField();
         textRegExp.setText(pattern);
-        textRegExp.setPrefColumnCount(10);
+//        textRegExp.setPrefColumnCount(10);
         textRegExp.setTooltip(new Tooltip("Enter regular expression to match taxa"));
-        int fontsize = textRegExp.getFont().getSize();
-        textRegExp.setMaxSize(1024 * fontsize/13, 25 * fontsize/13);
-        
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.insets = new Insets(0, 0, 5, 5);
-        gbc2.anchor = GridBagConstraints.WEST;
-        gbc2.gridwidth = 4;
-        gbc2.gridx = 1;
-        gbc2.gridy = 7;
-        guessPanel.add(textRegExp, gbc2);
+//        int fontsize = textRegExp.getFont().getSize();
+//        textRegExp.setMaxSize(1024 * fontsize/13, 25 * fontsize/13);
+//        
+//        GridBagConstraints gbc2 = new GridBagConstraints();
+//        gbc2.insets = new Insets(0, 0, 5, 5);
+//        gbc2.anchor = GridBagConstraints.WEST;
+//        gbc2.gridwidth = 4;
+//        gbc2.gridx = 1;
+//        gbc2.gridy = 7;
+//        guessPanel.add(textRegExp, gbc2);
         textRegExp.setOnKeyPressed(e ->useRegexp.setSelected(true));
 //        textRegExp.getDocument().addDocumentListener(new DocumentListener() {
 //            @Override
@@ -228,24 +245,24 @@ public class GuessPatternDialog extends Dialog {
 //            }
 //        });
 
-        separator_4 = new Separator();
-        separator_4.setPrefSize(5,1);
-        GridBagConstraints gbc_separator_4 = new GridBagConstraints();
-        gbc_separator_4.gridwidth = 5;
-        gbc_separator_4.insets = new Insets(5, 0, 15, 5);
-        gbc_separator_4.gridx = 0;
-        gbc_separator_4.gridy = 8;
-        gbc_separator_4.fill = GridBagConstraints.HORIZONTAL;
-        guessPanel.add(separator_4, gbc_separator_4);
+//        separator_4 = new Separator();
+//        separator_4.setPrefSize(5,1);
+//        GridBagConstraints gbc_separator_4 = new GridBagConstraints();
+//        gbc_separator_4.gridwidth = 5;
+//        gbc_separator_4.insets = new Insets(5, 0, 15, 5);
+//        gbc_separator_4.gridx = 0;
+//        gbc_separator_4.gridy = 8;
+//        gbc_separator_4.fill = GridBagConstraints.HORIZONTAL;
+//        guessPanel.add(separator_4, gbc_separator_4);
 
-        GridBagConstraints gbc_rdbtnReadFromFile = new GridBagConstraints();
-        gbc_rdbtnReadFromFile.anchor = GridBagConstraints.WEST;
-        gbc_rdbtnReadFromFile.insets = new Insets(0, 0, 5, 5);
-        gbc_rdbtnReadFromFile.gridx = 0;
-        gbc_rdbtnReadFromFile.gridy = 10;
-        guessPanel.add(readFromFile, gbc_rdbtnReadFromFile);
+//        GridBagConstraints gbc_rdbtnReadFromFile = new GridBagConstraints();
+//        gbc_rdbtnReadFromFile.anchor = GridBagConstraints.WEST;
+//        gbc_rdbtnReadFromFile.insets = new Insets(0, 0, 5, 5);
+//        gbc_rdbtnReadFromFile.gridx = 0;
+//        gbc_rdbtnReadFromFile.gridy = 10;
+//        guessPanel.add(readFromFile, gbc_rdbtnReadFromFile);
 
-        btnBrowse = new Button("Browse");
+//        btnBrowse = new Button("Browse");
         btnBrowse.setOnAction(e -> {
                 File file = Utils.getLoadFile("Load trait from file", new File(ProgramStatus.g_sDir), "Select trait file", "dat","txt");
                 if (file != null) {
@@ -255,102 +272,103 @@ public class GuessPatternDialog extends Dialog {
                 }
             });
 
-        txtFile = new TextField();
-        txtFile.setText("File");
-        GridBagConstraints gbc_txtFile = new GridBagConstraints();
-        gbc_txtFile.gridwidth = 2;
-        gbc_txtFile.insets = new Insets(0, 0, 5, 5);
-        gbc_txtFile.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txtFile.gridx = 1;
-        gbc_txtFile.gridy = 10;
-        guessPanel.add(txtFile, gbc_txtFile);
-        txtFile.setPrefColumnCount(10);
-        GridBagConstraints gbc_btnReadFromFile = new GridBagConstraints();
-        gbc_btnReadFromFile.insets = new Insets(0, 0, 5, 5);
-        gbc_btnReadFromFile.gridx = 3;
-        gbc_btnReadFromFile.gridy = 10;
-        guessPanel.add(btnBrowse, gbc_btnReadFromFile);
+//        txtFile = new TextField();
+//        txtFile.setText("File");
+//        GridBagConstraints gbc_txtFile = new GridBagConstraints();
+//        gbc_txtFile.gridwidth = 2;
+//        gbc_txtFile.insets = new Insets(0, 0, 5, 5);
+//        gbc_txtFile.fill = GridBagConstraints.HORIZONTAL;
+//        gbc_txtFile.gridx = 1;
+//        gbc_txtFile.gridy = 10;
+//        guessPanel.add(txtFile, gbc_txtFile);
+//        txtFile.setPrefColumnCount(10);
+//        GridBagConstraints gbc_btnReadFromFile = new GridBagConstraints();
+//        gbc_btnReadFromFile.insets = new Insets(0, 0, 5, 5);
+//        gbc_btnReadFromFile.gridx = 3;
+//        gbc_btnReadFromFile.gridy = 10;
+//        guessPanel.add(btnBrowse, gbc_btnReadFromFile);
 
-        Button btnHelp = new Button("?");
+//        Button btnHelp = new Button("?");
         btnHelp.setTooltip(new Tooltip("Show format of trait file"));
+        
         btnHelp.setOnAction(e -> WrappedOptionPane.showWrappedMessageDialog(
                 guessPanel, TRAIT_FILE_HELP_MESSAGE));
-        GridBagConstraints gbc_btnHelp = new GridBagConstraints();
-        gbc_btnHelp.insets = new Insets(0, 0, 5, 5);
-        gbc_btnHelp.gridx = 4;
-        gbc_btnHelp.gridy = 10;
-        guessPanel.add(btnHelp, gbc_btnHelp);
+//        GridBagConstraints gbc_btnHelp = new GridBagConstraints();
+//        gbc_btnHelp.insets = new Insets(0, 0, 5, 5);
+//        gbc_btnHelp.gridx = 4;
+//        gbc_btnHelp.gridy = 10;
+//        guessPanel.add(btnHelp, gbc_btnHelp);
 
 
-        chckbxAddFixedValue = new CheckBox("Add fixed value");
+        // chckbxAddFixedValue = new CheckBox("Add fixed value");
         chckbxAddFixedValue.setId("Add fixed value");
         chckbxAddFixedValue.setOnAction(e -> updateFields());
 
-        separator_5 = new Separator();
-        separator_5.setPrefSize(5,1);
-        GridBagConstraints gbc_separator_5 = new GridBagConstraints();
-        gbc_separator_5.gridwidth = 5;
-        gbc_separator_5.insets = new Insets(5, 0, 15, 5);
-        gbc_separator_5.gridx = 0;
-        gbc_separator_5.gridy = 12;
-        gbc_separator_5.fill = GridBagConstraints.HORIZONTAL;
-        guessPanel.add(separator_5, gbc_separator_5);
-        GridBagConstraints gbc_chckbxAddFixedValue = new GridBagConstraints();
-        gbc_chckbxAddFixedValue.anchor = GridBagConstraints.WEST;
-        gbc_chckbxAddFixedValue.insets = new Insets(0, 0, 5, 5);
-        gbc_chckbxAddFixedValue.gridx = 0;
-        gbc_chckbxAddFixedValue.gridy = 13;
-        guessPanel.add(chckbxAddFixedValue, gbc_chckbxAddFixedValue);
+//        separator_5 = new Separator();
+//        separator_5.setPrefSize(5,1);
+//        GridBagConstraints gbc_separator_5 = new GridBagConstraints();
+//        gbc_separator_5.gridwidth = 5;
+//        gbc_separator_5.insets = new Insets(5, 0, 15, 5);
+//        gbc_separator_5.gridx = 0;
+//        gbc_separator_5.gridy = 12;
+//        gbc_separator_5.fill = GridBagConstraints.HORIZONTAL;
+//        guessPanel.add(separator_5, gbc_separator_5);
+//        GridBagConstraints gbc_chckbxAddFixedValue = new GridBagConstraints();
+//        gbc_chckbxAddFixedValue.anchor = GridBagConstraints.WEST;
+//        gbc_chckbxAddFixedValue.insets = new Insets(0, 0, 5, 5);
+//        gbc_chckbxAddFixedValue.gridx = 0;
+//        gbc_chckbxAddFixedValue.gridy = 13;
+//        guessPanel.add(chckbxAddFixedValue, gbc_chckbxAddFixedValue);
+//
+//        textAddValue = new TextField("1900");
+//        GridBagConstraints gbc_textField = new GridBagConstraints();
+//        gbc_textField.gridwidth = 2;
+//        gbc_textField.insets = new Insets(0, 0, 5, 5);
+//        gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+//        gbc_textField.gridx = 1;
+//        gbc_textField.gridy = 13;
+//        guessPanel.add(textAddValue, gbc_textField);
+//        textAddValue.setPrefColumnCount(10);
 
-        textAddValue = new TextField("1900");
-        GridBagConstraints gbc_textField = new GridBagConstraints();
-        gbc_textField.gridwidth = 2;
-        gbc_textField.insets = new Insets(0, 0, 5, 5);
-        gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textField.gridx = 1;
-        gbc_textField.gridy = 13;
-        guessPanel.add(textAddValue, gbc_textField);
-        textAddValue.setPrefColumnCount(10);
-
-        chckbxUnlessLessThan = new CheckBox("Unless less than...");
+//        chckbxUnlessLessThan = new CheckBox("Unless less than...");
         chckbxUnlessLessThan.setId("Unless less than");
         chckbxUnlessLessThan.setOnAction(e -> {
                 updateFields();
             });
-        GridBagConstraints gbc_chckbxUnlessLargerThan = new GridBagConstraints();
-        gbc_chckbxUnlessLargerThan.anchor = GridBagConstraints.WEST;
-        gbc_chckbxUnlessLargerThan.insets = new Insets(0, 0, 5, 5);
-        gbc_chckbxUnlessLargerThan.gridx = 0;
-        gbc_chckbxUnlessLargerThan.gridy = 14;
-        guessPanel.add(chckbxUnlessLessThan, gbc_chckbxUnlessLargerThan);
+//        GridBagConstraints gbc_chckbxUnlessLargerThan = new GridBagConstraints();
+//        gbc_chckbxUnlessLargerThan.anchor = GridBagConstraints.WEST;
+//        gbc_chckbxUnlessLargerThan.insets = new Insets(0, 0, 5, 5);
+//        gbc_chckbxUnlessLargerThan.gridx = 0;
+//        gbc_chckbxUnlessLargerThan.gridy = 14;
+//        guessPanel.add(chckbxUnlessLessThan, gbc_chckbxUnlessLargerThan);
 
-        textUnlessLessThan = new TextField("13");
-        GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-        gbc_textField_1.gridwidth = 2;
-        gbc_textField_1.insets = new Insets(0, 0, 5, 5);
-        gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textField_1.gridx = 1;
-        gbc_textField_1.gridy = 14;
-        guessPanel.add(textUnlessLessThan, gbc_textField_1);
-        textUnlessLessThan.setPrefColumnCount(10);
+//        textUnlessLessThan = new TextField("13");
+//        GridBagConstraints gbc_textField_1 = new GridBagConstraints();
+//        gbc_textField_1.gridwidth = 2;
+//        gbc_textField_1.insets = new Insets(0, 0, 5, 5);
+//        gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
+//        gbc_textField_1.gridx = 1;
+//        gbc_textField_1.gridy = 14;
+//        guessPanel.add(textUnlessLessThan, gbc_textField_1);
+//        textUnlessLessThan.setPrefColumnCount(10);
 
-        lblThenAdd = new Label("...then add");
-        GridBagConstraints gbc_lblThenAdd = new GridBagConstraints();
-        gbc_lblThenAdd.anchor = GridBagConstraints.EAST;
-        gbc_lblThenAdd.insets = new Insets(0, 0, 0, 5);
-        gbc_lblThenAdd.gridx = 0;
-        gbc_lblThenAdd.gridy = 15;
-        guessPanel.add(lblThenAdd, gbc_lblThenAdd);
+//        lblThenAdd = new Label("...then add");
+//        GridBagConstraints gbc_lblThenAdd = new GridBagConstraints();
+//        gbc_lblThenAdd.anchor = GridBagConstraints.EAST;
+//        gbc_lblThenAdd.insets = new Insets(0, 0, 0, 5);
+//        gbc_lblThenAdd.gridx = 0;
+//        gbc_lblThenAdd.gridy = 15;
+//        guessPanel.add(lblThenAdd, gbc_lblThenAdd);
 
-        textThenAdd = new TextField("2000");
-        GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-        gbc_textField_2.gridwidth = 2;
-        gbc_textField_2.insets = new Insets(0, 0, 0, 5);
-        gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textField_2.gridx = 1;
-        gbc_textField_2.gridy = 15;
-        guessPanel.add(textThenAdd, gbc_textField_2);
-        textThenAdd.setPrefColumnCount(10);
+//        textThenAdd = new TextField("2000");
+//        GridBagConstraints gbc_textField_2 = new GridBagConstraints();
+//        gbc_textField_2.gridwidth = 2;
+//        gbc_textField_2.insets = new Insets(0, 0, 0, 5);
+//        gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
+//        gbc_textField_2.gridx = 1;
+//        gbc_textField_2.gridy = 15;
+//        guessPanel.add(textThenAdd, gbc_textField_2);
+//        textThenAdd.setPrefColumnCount(10);
 
 
         chckbxAddFixedValue.setVisible(false);
@@ -421,26 +439,26 @@ public class GuessPatternDialog extends Dialog {
     }
 
     private void createDelimiterBox(RadioButton b) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 0, 5, 5);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        guessPanel.add(b, gbc);
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.insets = new Insets(0, 0, 5, 5);
+//        gbc.anchor = GridBagConstraints.WEST;
+//        gbc.gridx = 0;
+//        gbc.gridy = 1;
+//        guessPanel.add(b, gbc);
 
-        combo = new ComboBox<>(new String[] { "after first", "after last", "before first", "before last" });
+        combo.getItems().addAll("after first", "after last", "before first", "before last");
         combo.setId("delimiterCombo");
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.anchor = GridBagConstraints.WEST;
-        gbc2.gridwidth = 2;
-        gbc2.insets = new Insets(0, 0, 5, 5);
-        gbc2.gridx = 1;
-        gbc2.gridy = 1;
-        guessPanel.add(combo, gbc2);
+//        GridBagConstraints gbc2 = new GridBagConstraints();
+//        gbc2.anchor = GridBagConstraints.WEST;
+//        gbc2.gridwidth = 2;
+//        gbc2.insets = new Insets(0, 0, 5, 5);
+//        gbc2.gridx = 1;
+//        gbc2.gridy = 1;
+//        guessPanel.add(combo, gbc2);
         combo.setOnAction(e -> {
                 @SuppressWarnings("unchecked")
 				ComboBox<String> combo = (ComboBox<String>) e.getSource();
-                m_location = combo.getSelectedIndex();
+                m_location = combo.getValue();
                 useEverything.setSelected(true);
                 updateFields();
             });
@@ -448,62 +466,62 @@ public class GuessPatternDialog extends Dialog {
 
     private void createSplitBox(RadioButton b) {
 
-        textSplitChar = new TextField("_");
+        //textSplitChar = new TextField("_");
         textSplitChar.setId("SplitChar");
-        GridBagConstraints gbc_textField = new GridBagConstraints();
-        gbc_textField.anchor = GridBagConstraints.WEST;
-        gbc_textField.insets = new Insets(0, 0, 5, 5);
-        gbc_textField.gridx = 3;
-        gbc_textField.gridy = 1;
-        guessPanel.add(textSplitChar, gbc_textField);
-        textSplitChar.setPrefColumnCount(2);
-
-        separator_2 = new Separator();
-        separator_2.setPrefSize(5,1);
-        GridBagConstraints gbc_separator_2 = new GridBagConstraints();
-        gbc_separator_2.gridwidth = 5;
-        gbc_separator_2.insets = new Insets(5, 0, 15, 5);
-        gbc_separator_2.gridx = 0;
-        gbc_separator_2.gridy = 2;
-        gbc_separator_2.fill = GridBagConstraints.HORIZONTAL;
-        guessPanel.add(separator_2, gbc_separator_2);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 0, 5, 5);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        guessPanel.add(b, gbc);
+//        GridBagConstraints gbc_textField = new GridBagConstraints();
+//        gbc_textField.anchor = GridBagConstraints.WEST;
+//        gbc_textField.insets = new Insets(0, 0, 5, 5);
+//        gbc_textField.gridx = 3;
+//        gbc_textField.gridy = 1;
+//        guessPanel.add(textSplitChar, gbc_textField);
+//        textSplitChar.setPrefColumnCount(2);
+//
+//        separator_2 = new Separator();
+//        separator_2.setPrefSize(5,1);
+//        GridBagConstraints gbc_separator_2 = new GridBagConstraints();
+//        gbc_separator_2.gridwidth = 5;
+//        gbc_separator_2.insets = new Insets(5, 0, 15, 5);
+//        gbc_separator_2.gridx = 0;
+//        gbc_separator_2.gridy = 2;
+//        gbc_separator_2.fill = GridBagConstraints.HORIZONTAL;
+//        guessPanel.add(separator_2, gbc_separator_2);
+//
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.insets = new Insets(0, 0, 5, 5);
+//        gbc.anchor = GridBagConstraints.WEST;
+//        gbc.gridx = 0;
+//        gbc.gridy = 4;
+//        guessPanel.add(b, gbc);
     }
 
     public void createRegExtpBox(RadioButton b) {
 
-        textSplitChar2 = new TextField("_");
+        //textSplitChar2 = new TextField("_");
         textSplitChar2.setId("SplitChar2");
-        GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-        gbc_textField_1.anchor = GridBagConstraints.WEST;
-        gbc_textField_1.insets = new Insets(0, 0, 5, 5);
-        gbc_textField_1.gridx = 1;
-        gbc_textField_1.gridy = 4;
-        guessPanel.add(textSplitChar2, gbc_textField_1);
-        textSplitChar2.setPrefColumnCount(2);
+//        GridBagConstraints gbc_textField_1 = new GridBagConstraints();
+//        gbc_textField_1.anchor = GridBagConstraints.WEST;
+//        gbc_textField_1.insets = new Insets(0, 0, 5, 5);
+//        gbc_textField_1.gridx = 1;
+//        gbc_textField_1.gridy = 4;
+//        guessPanel.add(textSplitChar2, gbc_textField_1);
+//        textSplitChar2.setPrefColumnCount(2);
 
-        lblAndTakeGroups = new Label("and take group(s):");
-        GridBagConstraints gbc_lblAndTakeGroups = new GridBagConstraints();
-        gbc_lblAndTakeGroups.gridwidth = 2;
-        gbc_lblAndTakeGroups.insets = new Insets(0, 0, 5, 5);
-        gbc_lblAndTakeGroups.gridx = 2;
-        gbc_lblAndTakeGroups.gridy = 4;
-        guessPanel.add(lblAndTakeGroups, gbc_lblAndTakeGroups);
+//        lblAndTakeGroups = new Label("and take group(s):");
+//        GridBagConstraints gbc_lblAndTakeGroups = new GridBagConstraints();
+//        gbc_lblAndTakeGroups.gridwidth = 2;
+//        gbc_lblAndTakeGroups.insets = new Insets(0, 0, 5, 5);
+//        gbc_lblAndTakeGroups.gridx = 2;
+//        gbc_lblAndTakeGroups.gridy = 4;
+//        guessPanel.add(lblAndTakeGroups, gbc_lblAndTakeGroups);
 
-        combo_1 = new ComboBox<>(new String[] { "1", "2", "3", "4", "1-2", "2-3", "3-4", "1-3", "2-4" });
+        combo_1.getItems().addAll("1", "2", "3", "4", "1-2", "2-3", "3-4", "1-3", "2-4");
         combo_1.setId("splitCombo");
-        GridBagConstraints gbc_combo_1 = new GridBagConstraints();
-        gbc_combo_1.anchor = GridBagConstraints.WEST;
-        gbc_combo_1.insets = new Insets(0, 0, 5, 5);
-        gbc_combo_1.gridx = 4;
-        gbc_combo_1.gridy = 4;
-        guessPanel.add(combo_1, gbc_combo_1);
+//        GridBagConstraints gbc_combo_1 = new GridBagConstraints();
+//        gbc_combo_1.anchor = GridBagConstraints.WEST;
+//        gbc_combo_1.insets = new Insets(0, 0, 5, 5);
+//        gbc_combo_1.gridx = 4;
+//        gbc_combo_1.gridy = 4;
+//        guessPanel.add(combo_1, gbc_combo_1);
         combo_1.setOnAction(e -> {
                 @SuppressWarnings("unchecked")
 				ComboBox<String> combo = (ComboBox<String>) e.getSource();
@@ -512,59 +530,58 @@ public class GuessPatternDialog extends Dialog {
                 updateFields();
             });
 
-        separator_3 = new Separator();
-        separator_3.setPrefSize(5,1);
-        GridBagConstraints gbc_separator_3 = new GridBagConstraints();
-        gbc_separator_3.gridwidth = 5;
-        gbc_separator_3.insets = new Insets(5, 0, 15, 5);
-        gbc_separator_3.gridx = 0;
-        gbc_separator_3.gridy = 5;
-        gbc_separator_3.fill = GridBagConstraints.HORIZONTAL;
-        guessPanel.add(separator_3, gbc_separator_3);
+//        separator_3 = new Separator();
+//        separator_3.setPrefSize(5,1);
+//        GridBagConstraints gbc_separator_3 = new GridBagConstraints();
+//        gbc_separator_3.gridwidth = 5;
+//        gbc_separator_3.insets = new Insets(5, 0, 15, 5);
+//        gbc_separator_3.gridx = 0;
+//        gbc_separator_3.gridy = 5;
+//        gbc_separator_3.fill = GridBagConstraints.HORIZONTAL;
+//        guessPanel.add(separator_3, gbc_separator_3);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 0, 5, 5);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        guessPanel.add(b, gbc);
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.insets = new Insets(0, 0, 5, 5);
+//        gbc.anchor = GridBagConstraints.WEST;
+//        gbc.gridx = 0;
+//        gbc.gridy = 7;
+//        guessPanel.add(b, gbc);
     }
 
     public Status showDialog(String title) {
 
-        Alert optionPane = new Alert(guessPanel, Alert.PLAIN_MESSAGE, Alert.OK_CANCEL_OPTION,
-                null, new String[] { "Cancel", "OK" }, "OK");
-        optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-        final JDialog dialog = optionPane.createDialog(m_parent, title);
-        dialog.setId("GuessTaxonSets");
-        // dialog.setResizable(true);
-        dialog.pack();
+        final Dialog dialog = new Dialog();
+        dialog.setDialogPane(root);
+        dialog.getDialogPane().setId("GuessTaxonSets");
+        dialog.setResizable(true);
+        // dialog.pack();
         updateFields();
-        dialog.setVisible(true);
-
-        if (optionPane.getValue() == null || !optionPane.getValue().equals("OK")) {
+        // dialog.setVisible(true);
+        dialog.getDialogPane().getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
+        ButtonType result = (ButtonType) dialog.showAndWait().get();
+        
+        if (result != Alert.OK_OPTION) {
             return Status.canceled;
         }
 
-        if (useEverything.getModel() == group.getSelection()) {
+        if (group.getSelectedToggle() == useEverything) {
             String delimiter = normalise(textSplitChar.getText());
             switch (m_location) {
-                case 0: // "after first",
+                case "after first":
                     pattern = "^[^" + delimiter + "]+" + delimiter + "(.*)$";
                     break;
-                case 1: // "after last",
+                case "after last":
                     pattern = "^.*" + delimiter + "(.*)$";
                     break;
-                case 2: // "before first",
+                case "before first":
                     pattern = "^([^" + delimiter + "]+)" + delimiter + ".*$";
                     break;
-                case 3: // "before last"
+                case "before last":
                     pattern = "^(.*)" + delimiter + ".*$";
                     break;
             }
         }
-        if (isSplitOnChar.getModel() == group.getSelection()) {
+        if (group.getSelectedToggle() == isSplitOnChar) {
             String delimiter = normalise(textSplitChar2.getText());
             switch (m_splitlocation) {
                 case 0: // "1"
@@ -601,10 +618,10 @@ public class GuessPatternDialog extends Dialog {
                             + delimiter + "]*" + delimiter + "[^" + delimiter + "]*)" + ".*$";
             }
         }
-        if (useRegexp.getModel() == group.getSelection()) {
+        if (group.getSelectedToggle() == useRegexp) {
             pattern = textRegExp.getText();
         }
-        if (readFromFile.getModel() == group.getSelection()) {
+        if (group.getSelectedToggle() == readFromFile) {
             traitMap = new HashMap<>();
             try {
                 BufferedReader fin = new BufferedReader(new FileReader(txtFile.getText()));
@@ -623,11 +640,11 @@ public class GuessPatternDialog extends Dialog {
                 fin.close();
 
                if (traitMap.isEmpty()) {
-            	   Alert.showMessageDialog(m_parent, "Could not find trait information in the file. " +
+            	   Alert.showMessageDialog(dialog.getDialogPane(), "Could not find trait information in the file. " +
             			   "Perhaps this is not a tab-delimited but space file?");
                }
             } catch (Exception e) {
-                Alert.showMessageDialog(m_parent, "Loading trait from file failed:" + e.getMessage());
+                Alert.showMessageDialog(dialog.getDialogPane(), "Loading trait from file failed:" + e.getMessage());
                 return Status.canceled;
             }
             return Status.trait;
@@ -637,16 +654,12 @@ public class GuessPatternDialog extends Dialog {
         try {
             pattern.matches(pattern);
         } catch (PatternSyntaxException e) {
-            Alert.showMessageDialog(this, "This is not a valid regular expression");
+            Alert.showMessageDialog(null, "This is not a valid regular expression");
             return Status.canceled;
         }
 
-        if (optionPane.getValue() != null && optionPane.getValue().equals("OK")) {
-        	Log.warning.println("Pattern = " + pattern);
-            return Status.pattern;
-        } else {
-            return Status.canceled;
-        }
+    	Log.warning.println("Pattern = " + pattern);
+        return Status.pattern;
     }
 
     /**
@@ -695,4 +708,19 @@ public class GuessPatternDialog extends Dialog {
         }
         return null;
     }
+    
+    
+    public static void main(String[] args) {
+    	// initialised javafx
+		new JFXPanel();
+    	Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				GuessPatternDialog dlg = new GuessPatternDialog(null, ".*");
+				dlg.showDialog("Choose a pattern");				
+			}
+    	});
+	}
+
 }
