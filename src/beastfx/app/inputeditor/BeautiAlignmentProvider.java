@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javafx.scene.control.ComboBox;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -109,7 +111,7 @@ public class BeautiAlignmentProvider extends BEASTObject {
 				extensions.add(extension);
 			}
 		}
-        File [] files = beast.app.util.Utils.getLoadFiles("Load Alignment File",
+        File [] files = FXUtils.getLoadFiles("Load Alignment File",
                 new File(ProgramStatus.g_sDir), "Alignment files", extensions.toArray(new String[]{}));
         if (files != null && files.length > 0) {
         	ProgramStatus.setCurrentDir(files[0].getPath().substring(0,

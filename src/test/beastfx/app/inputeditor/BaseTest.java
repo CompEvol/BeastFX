@@ -5,6 +5,11 @@ import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import beast.base.core.BEASTObject;
 import beast.base.core.Input;
 import javafx.scene.Scene;
@@ -28,6 +33,9 @@ public class BaseTest extends javafx.application.Application {
 		final public Input<Double> doubleInput = new Input<>("double", "double valued input for test class", 3.12);
 		final public Input<Long> longInput = new Input<>("long", "long valued input for test class", 123L);
 		final public Input<String> strInput = new Input<>("string", "string valued input for test class", "string");
+		final public Input<File> fileInput = new Input<>("file", "file valued input for test class");
+		final public Input<List<File>> filesInput = new Input<>("files", "file valued input for test class", new ArrayList<>());
+		
 		
 		@Override
 		public void initAndValidate() {

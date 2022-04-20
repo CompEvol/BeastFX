@@ -10,17 +10,23 @@ import javax.swing.table.AbstractTableModel;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -31,6 +37,7 @@ import beast.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.ProgramStatus;
+import beastfx.app.util.FXUtils;
 
 
 /** for opening files for reading
@@ -40,10 +47,29 @@ public class FileListInputEditor extends ListInputEditor {
 
 	final static String SEPARATOR = Utils.isWindows() ? "\\\\" : "/";
 	
+	
+	public class File0 {
+		SimpleStringProperty name;
+		File file;
+		File0(File file) {
+			this.file = file;
+			name = new SimpleStringProperty(file.getPath());
+		}
+		
+		public String getFile() {
+			return name.get();
+		}
 
-	TableView<?> filesTable = null;
-    private FilesTableModel filesTableModel = null;
+		public void setFile(String fname) {
+			name.set(fname);
+			file = new File(fname);
+		}
+	}
+
+	TableView<File0> filesTable = null;
+    // private FilesTableModel filesTableModel = null;
     private List<File> files;
+    private ObservableList<File0> files0;
 
 	@Override
 	public Class<?> type() {
@@ -74,9 +100,17 @@ public class FileListInputEditor extends ListInputEditor {
 		pane = new HBox();
 		Object o = input.get();
 		if (o instanceof List) {
+			List<File0> o2 = new ArrayList<>();
 			files = (List<File>) o;
+			for (File f : files) {
+				o2.add(new File0(f));
+			}
+			files0 = FXCollections.observableArrayList(o2);
 		}
 		pane.getChildren().add(fileListPanel());
+		
+		filesTable.setItems(files0);
+				
 		getChildren().add(pane);
 	}
 
@@ -140,9 +174,18 @@ public class FileListInputEditor extends ListInputEditor {
         // panel.setOpaque(false);
 
         // Taxon Sets
-        filesTableModel = new FilesTableModel();
+        // filesTableModel = new FilesTableModel();
         filesTable = new TableView();//filesTableModel);
+        filesTable.setPrefWidth(500);
+        filesTable.setEditable(true);
 
+        TableColumn col = new TableColumn<>("Files");
+        col.setPrefWidth(500);
+        col.setCellValueFactory(
+        	    new PropertyValueFactory<File0,String>("File")
+        	);
+        filesTable.getColumns().add(col);
+        
 //        filesTable.getColumnModel().getColumn(0).setCellRenderer(
 //                new TableRenderer(SwingConstants.LEFT, new Insets(0, 4, 0, 4)));
 //        filesTable.getColumnModel().getColumn(0).setPreferredWidth(120);
@@ -161,7 +204,7 @@ public class FileListInputEditor extends ListInputEditor {
         //scrollPane1.setMaxSize(10000, 10);
         scrollPane1.setPrefSize(500, 285);
 
-        ActionPanel actionPanel1 = new ActionPanel();
+        actionPanel1 = new ActionPanel();
         actionPanel1.setAddAction(addFileAction);
         actionPanel1.setRemoveAction(removeFileAction);
         actionPanel1.delButton.setDisable(true);
@@ -208,6 +251,7 @@ public class FileListInputEditor extends ListInputEditor {
 			try {
 	        	File File = (File) baseType().getConstructor(String.class).newInstance(file.getAbsolutePath());
 	            files.add(File);
+	            files0.add(new File0(file));
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
@@ -219,7 +263,7 @@ public class FileListInputEditor extends ListInputEditor {
             }
         }
 
-        filesTableModel.fireTableDataChanged();
+        // filesTableModel.fireTableDataChanged();
 
         int sel2 = files.size() - 1;
         filesTable.getSelectionModel().selectRange(sel1, sel2);
@@ -230,7 +274,7 @@ public class FileListInputEditor extends ListInputEditor {
 
     	@Override
     	public void handle(ActionEvent event) {
-            File[] files = Utils.getLoadFiles("Select file", new File(ProgramStatus.g_sDir), "XML, trace or tree log files", "log", "trees", "xml");
+            File[] files = FXUtils.getLoadFiles("Select file", new File(ProgramStatus.g_sDir), "XML, trace or tree log files", "log", "trees", "xml");
             if (files != null) {
                 addFiles(files);
             }

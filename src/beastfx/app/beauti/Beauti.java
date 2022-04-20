@@ -17,6 +17,7 @@ import beastfx.app.inputeditor.BeautiDocListener;
 import beastfx.app.inputeditor.BeautiPanelConfig;
 import beastfx.app.inputeditor.MyAction;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import beastfx.app.inputeditor.BeautiDoc.ActionOnExit;
 import beastfx.app.inputeditor.BeautiDoc.DOC_STATUS;
 import beast.app.tools.AppLauncher;
@@ -242,7 +243,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             fileSep = "\\\\";
         }
         String defaultFile = ProgramStatus.g_sDir + (doc.getFileName().equals("") ? "" : fileSep + new File(doc.getFileName()).getName());
-        File file = beast.app.util.Utils.getSaveFile("Save Model As", new File(
+        File file = FXUtils.getSaveFile("Save Model As", new File(
                 defaultFile), null, FILE_EXT, FILE_EXT2);
         if (file != null) {
             if (file.exists() && !Utils.isMac()) {
@@ -313,7 +314,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
         @Override
 		public void actionPerformed(ActionEvent ae) {
-            File file = beast.app.util.Utils.getLoadFile("Load Beast XML File",
+            File file = FXUtils.getLoadFile("Load Beast XML File",
                     new File(ProgramStatus.g_sDir), "Beast XML files", "xml");//, "BEAST json file", "json");
             // JFileChooser fileChooser = new JFileChooser(g_sDir);
             // fileChooser.addChoosableFileFilter(ef1);

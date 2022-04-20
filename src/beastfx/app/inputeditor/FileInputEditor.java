@@ -9,6 +9,7 @@ import beast.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.ProgramStatus;
+import beastfx.app.util.FXUtils;
 
 
 /** for opening files for reading
@@ -46,7 +47,7 @@ public class FileInputEditor extends InputEditor.Base {
 		Button button = new Button("browse");
 		button.setOnAction(e -> {
 				File defaultFile = getDefaultFile((File) m_input.get());
-				File file = Utils.getLoadFile(m_input.getTipText(), defaultFile, "All files", Utils.isWindows() ? "*" : "");
+				File file = FXUtils.getLoadFile(m_input.getTipText(), defaultFile, "All files", Utils.isWindows() ? "*" : "");
 				try {
 					if (file != null) {	
 						m_entry.setText(file.getName());
@@ -90,6 +91,9 @@ public class FileInputEditor extends InputEditor.Base {
 
 	static File getDefaultFile(File file) {
 		File defaultFile;
+		if (file == null) {
+			file = new File("[[none]]");
+		}
 		if (file.exists()) {
 			defaultFile = file;
 			if (defaultFile.getParent() == null) {

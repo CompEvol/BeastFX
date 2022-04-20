@@ -25,7 +25,6 @@ public class EnumInputEditor extends InputEditor.Base {
 		super();
 	}
 
-	private static final long serialVersionUID = 1L;
     ComboBox<String> m_selectPluginBox;
 
     @Override
@@ -55,10 +54,12 @@ public class EnumInputEditor extends InputEditor.Base {
             m_selectPluginBox = new ComboBox<>();
             m_selectPluginBox.getItems().addAll(availableValues.toArray(new String[]{}));
             // Dimension2D maxDim = m_selectPluginBox.getPrefHeight();
-            m_selectPluginBox.setMaxSize(m_selectPluginBox.getWidth(), m_selectPluginBox.getPrefHeight());
+            // m_selectPluginBox.setMaxSize(m_selectPluginBox.getPrefWidth(), m_selectPluginBox.getPrefHeight());
+            m_selectPluginBox.setMaxSize(10000, m_selectPluginBox.getPrefHeight());
 
             String selectString = input.get().toString();
             m_selectPluginBox.setValue(selectString);
+            m_selectPluginBox.getSelectionModel().select(selectString);
 
             m_selectPluginBox.setOnAction(e -> {
                     String selected = (String) m_selectPluginBox.getValue();

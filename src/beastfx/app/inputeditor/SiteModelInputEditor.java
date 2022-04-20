@@ -1,8 +1,8 @@
 package beastfx.app.inputeditor;
 
 
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+//import javax.swing.event.DocumentEvent;
+//import javax.swing.event.DocumentListener;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -14,8 +14,6 @@ import beast.base.inference.*;
 import beast.base.inference.operator.DeltaExchangeOperator;
 import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
@@ -28,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SiteModelInputEditor extends BEASTObjectInputEditor {
-    private static final long serialVersionUID = 1L;
 
     IntegerInputEditor categoryCountEditor;
     TextField categoryCountEntry;
@@ -88,7 +85,7 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 		box.getChildren().add(fixMeanRatesValidateLabel);
 		
     	if (doc.alignments.size() >= 1 && operator != null) {
-        	Pane component = (Pane) getComponents()[0];
+        	Pane component = (Pane) getChildren().get(0);
     		component.getChildren().add(box);
     	}
 		setUpOperator();

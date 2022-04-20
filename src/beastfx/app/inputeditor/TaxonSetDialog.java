@@ -14,13 +14,22 @@ import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
+
 import javax.swing.JDialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+
 import javax.swing.JList;
 import beastfx.app.util.Alert;
 import javax.swing.JScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -33,7 +42,7 @@ import beast.base.evolution.alignment.TaxonSet;
 
 
 
-public class TaxonSetDialog extends JDialog {
+public class TaxonSetDialog extends DialogPane {
     private static final long serialVersionUID = 1L;
     public boolean isOK = false;
     public TaxonSet taxonSet;
@@ -50,7 +59,7 @@ public class TaxonSetDialog extends JDialog {
     DefaultListModel<Taxon> listModel2;
 
 
-    Box box;
+    VBox box;
     BeautiDoc doc;
     
     public TaxonSetDialog(TaxonSet taxonSet, Set<Taxon> candidates, BeautiDoc doc) {
@@ -59,11 +68,11 @@ public class TaxonSetDialog extends JDialog {
         this.doc = doc;
         id = taxonSet.getID();
         // create components
-        box = Box.createVerticalBox();
-        box.add(createIDBox());
-        box.add(createFilterBox());
-        box.add(createTaxonSelector());
-        box.add(Box.createVerticalGlue());
+        box = new VBox();
+        box.getChildren().add(createIDBox());
+        box.getChildren().add(createFilterBox());
+        box.getChildren().add(createTaxonSelector());
+        box.getChildren().add(new Separator());
         //box.add(createCancelOKButtons());
 
         // initialise lists
@@ -84,10 +93,10 @@ public class TaxonSetDialog extends JDialog {
             listModel1.removeElement(listModel2.get(i));
         }
 
-        add(box);
+        getChildren().add(box);
         int size = UIManager.getFont("Label.font").getSize();
-        setSize(400 * size / 13, 600 * size / 13);
-        setModal(true);
+        setPrefSize(400 * size / 13, 600 * size / 13);
+        //setModal(true);
     } // c'tor
     
     public boolean showDialog() {
@@ -105,7 +114,7 @@ public class TaxonSetDialog extends JDialog {
 
         dialog.setVisible(true);
 
-        int result = Alert.CANCEL_OPTION;
+        ButtonType result = Alert.CANCEL_OPTION;
         Integer value = (Integer) optionPane.getValue();
         if (value != null && value != -1) {
             result = value;
@@ -128,38 +137,39 @@ public class TaxonSetDialog extends JDialog {
 
     
 
-    private Component createFilterBox() {
+    private Pane createFilterBox() {
         HBox box = new HBox();
         Label label = new Label("Filter:");
-        box.add(label);
+        box.getChildren().add(label);
         filterEntry = new TextField();
-        filterEntry.setColumns(17);
+        filterEntry.setPrefColumnCount(17);
         //Dimension size = new Dimension(100, 20);
         //filterEntry.setMinSize(size);
         //filterEntry.setPrefSize(size);
         //filterEntry.setSize(size);
         filterEntry.setTooltip(new Tooltip("Enter regular expression to match taxa"));
-        int fontsize = filterEntry.getFont().getSize();
-        filterEntry.setMaxSize(new Dimension(1024 * fontsize / 13, 50 * fontsize / 13));
-        box.add(filterEntry);
-        box.add(new Separator());
-
-        filterEntry.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                processEntry();
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                processEntry();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                processEntry();
-            }
-        });
+        //int fontsize = filterEntry.getFont().getSize();
+        //filterEntry.setMaxSize(new Dimension(1024 * fontsize / 13, 50 * fontsize / 13));
+        box.getChildren().add(filterEntry);
+        box.getChildren().add(new Separator());
+        filterEntry.setOnKeyReleased(e -> processEntry());
+        
+//        filterEntry.getDocument().addDocumentListener(new DocumentListener() {
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {
+//                processEntry();
+//            }
+//
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {
+//                processEntry();
+//            }
+//
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {
+//                processEntry();
+//            }
+//        });
         return box;
     }
 
@@ -177,32 +187,33 @@ public class TaxonSetDialog extends JDialog {
         }
     }
 
-    Component createIDBox() {
+    Pane createIDBox() {
         HBox box = new HBox();
-        box.add(new Label("Taxon set label:"));
+        box.getChildren().add(new Label("Taxon set label:"));
         idEntry = new TextField();
-        idEntry.setID("idEntry");
+        idEntry.setId("idEntry");
         idEntry.setText(id);
-        box.add(idEntry);
-        idEntry.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                id = idEntry.getText();
-            }
+        box.getChildren().add(idEntry);
+        idEntry.setOnKeyReleased(e->{id = idEntry.getText();});
+//        idEntry.getDocument().addDocumentListener(new DocumentListener() {
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {
+//                id = idEntry.getText();
+//            }
+//
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {
+//                id = idEntry.getText();
+//            }
+//
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {
+//                id = idEntry.getText();
+//            }
+//        });
 
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                id = idEntry.getText();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                id = idEntry.getText();
-            }
-        });
-
-        int fontsize = idEntry.getFont().getSize();
-        box.setMaxSize(new Dimension(400 * fontsize / 13, 100 * fontsize / 13));
+//        int fontsize = idEntry.getFont().getSize();
+//        box.setMaxSize(new Dimension(400 * fontsize / 13, 100 * fontsize / 13));
         return box;
     }
     
@@ -218,24 +229,25 @@ public class TaxonSetDialog extends JDialog {
 		}
 	}
     
-    Component createTaxonSelector() {
+    Pane createTaxonSelector() {
         HBox box = new HBox();
 
         // list of taxa to select from
         listModel1 = new DefaultListModel<>();
         listOfTaxonCandidates = new JList<>(listModel1);
-        listOfTaxonCandidates.setID("listOfTaxonCandidates");
+        listOfTaxonCandidates.setId("listOfTaxonCandidates");
         listOfTaxonCandidates.setBorder(BorderFactory.createEtchedBorder());
         listOfTaxonCandidates.setCellRenderer(new TaxonCellRenderer());
         
-        JScrollPane scroller = new JScrollPane(listOfTaxonCandidates);
-        box.add(scroller);
+        ScrollPane scroller = new ScrollPane();
+        scroller.setContent(listOfTaxonCandidates);
+        box.getChildren().add(scroller);
 
         // add buttons to select/deselect taxa
         VBox buttonBox = new VBox();
-        buttonBox.add(Box.createGlue());
+        buttonBox.getChildren().add(new Separator());
         Button selectButton = new Button(">>");
-        selectButton.setID(">>");
+        selectButton.setId(">>");
         selectButton.setOnAction(e -> {
                 int[] selected = listOfTaxonCandidates.getSelectedIndices();
                 for (int i : selected) {
@@ -245,9 +257,9 @@ public class TaxonSetDialog extends JDialog {
                     listModel1.removeElement(listModel2.get(i));
                 }
             });
-        buttonBox.add(selectButton);
+        buttonBox.getChildren().add(selectButton);
         Button deselectButton = new Button("<<");
-        deselectButton.setID("<<");
+        deselectButton.setId("<<");
         deselectButton.setOnAction(e -> {
                 int[] selected = listOfTaxonSet.getSelectedIndices();
                 for (int i : selected) {
@@ -257,9 +269,9 @@ public class TaxonSetDialog extends JDialog {
                     listModel2.removeElement(listModel1.get(i));
                 }
             });
-        buttonBox.add(deselectButton);
-        buttonBox.add(Box.createGlue());
-        box.add(buttonBox);
+        buttonBox.getChildren().add(deselectButton);
+        buttonBox.getChildren().add(new Separator());
+        box.getChildren().add(buttonBox);
 
         // list of taxa in taxon set
         listModel2 = new DefaultListModel<>();
@@ -267,12 +279,13 @@ public class TaxonSetDialog extends JDialog {
         listOfTaxonSet.setBorder(BorderFactory.createEtchedBorder());
         listOfTaxonSet.setCellRenderer(new TaxonCellRenderer());
 
-        JScrollPane scroller2 = new JScrollPane(listOfTaxonSet);
-        box.add(scroller2);
+        ScrollPane scroller2 = new ScrollPane();
+        scroller2.setConent(listOfTaxonSet);
+        box.getChildren().add(scroller2);
         return box;
     } // createTaxonSelector
 
-    Component createCancelOKButtons() {
+    Pane createCancelOKButtons() {
         HBox cancelOkBox = new HBox();
         cancelOkBox.setBorder(new EtchedBorder());
         Button okButton = new Button("Ok");
@@ -294,11 +307,11 @@ public class TaxonSetDialog extends JDialog {
         cancelButton.setOnAction(e -> {
                 dispose();
             });
-        cancelOkBox.add(new Separator());
-        cancelOkBox.add(okButton);
-        cancelOkBox.add(new Separator());
-        cancelOkBox.add(cancelButton);
-        cancelOkBox.add(new Separator());
+        cancelOkBox.getChildren().add(new Separator());
+        cancelOkBox.getChildren().add(okButton);
+        cancelOkBox.getChildren().add(new Separator());
+        cancelOkBox.getChildren().add(cancelButton);
+        cancelOkBox.getChildren().add(new Separator());
         return cancelOkBox;
     } // createCancelOKButtons
 

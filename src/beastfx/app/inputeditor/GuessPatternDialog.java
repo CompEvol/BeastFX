@@ -29,6 +29,7 @@ import javafx.scene.control.DialogPane;
 
 import javafx.scene.control.Label;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.RadioButton;
 
 import javafx.scene.control.TextField;
@@ -264,7 +265,7 @@ public class GuessPatternDialog implements Initializable {
 
 //        btnBrowse = new Button("Browse");
         btnBrowse.setOnAction(e -> {
-                File file = Utils.getLoadFile("Load trait from file", new File(ProgramStatus.g_sDir), "Select trait file", "dat","txt");
+                File file = FXUtils.getLoadFile("Load trait from file", new File(ProgramStatus.g_sDir), "Select trait file", "dat","txt");
                 if (file != null) {
                     txtFile.setText(file.getPath());
                     readFromFile.setSelected(true);
@@ -447,6 +448,7 @@ public class GuessPatternDialog implements Initializable {
 //        guessPanel.add(b, gbc);
 
         combo.getItems().addAll("after first", "after last", "before first", "before last");
+        combo.getSelectionModel().selectFirst();
         combo.setId("delimiterCombo");
 //        GridBagConstraints gbc2 = new GridBagConstraints();
 //        gbc2.anchor = GridBagConstraints.WEST;
@@ -467,6 +469,7 @@ public class GuessPatternDialog implements Initializable {
     private void createSplitBox(RadioButton b) {
 
         //textSplitChar = new TextField("_");
+    	textSplitChar.setText("_");
         textSplitChar.setId("SplitChar");
 //        GridBagConstraints gbc_textField = new GridBagConstraints();
 //        gbc_textField.anchor = GridBagConstraints.WEST;
@@ -497,6 +500,7 @@ public class GuessPatternDialog implements Initializable {
     public void createRegExtpBox(RadioButton b) {
 
         //textSplitChar2 = new TextField("_");
+    	textSplitChar2.setText("_");
         textSplitChar2.setId("SplitChar2");
 //        GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 //        gbc_textField_1.anchor = GridBagConstraints.WEST;
@@ -515,6 +519,7 @@ public class GuessPatternDialog implements Initializable {
 //        guessPanel.add(lblAndTakeGroups, gbc_lblAndTakeGroups);
 
         combo_1.getItems().addAll("1", "2", "3", "4", "1-2", "2-3", "3-4", "1-3", "2-4");
+        combo_1.getSelectionModel().selectFirst();
         combo_1.setId("splitCombo");
 //        GridBagConstraints gbc_combo_1 = new GridBagConstraints();
 //        gbc_combo_1.anchor = GridBagConstraints.WEST;

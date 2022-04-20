@@ -21,10 +21,16 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.Box;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import beastfx.app.util.Alert;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -221,22 +227,22 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 
         JScrollPane pane = new JScrollPane(m_table);
         HBox tableBox = new HBox();
-        tableBox.add(new Separator());
-        tableBox.add(pane);
-        tableBox.add(new Separator());
+        tableBox.getChildren().add(new Separator());
+        tableBox.getChildren().add(pane);
+        tableBox.getChildren().add(new Separator());
 
         VBox box = new VBox();
-        box.add(createFilterBox());
-        box.add(tableBox);
-        box.add(createButtonBox());
+        box.getChildren().add(createFilterBox());
+        box.getChildren().add(tableBox);
+        box.getChildren().add(createButtonBox());
         return box;
     }
 
-    private Component createButtonBox() {
+    private Pane createButtonBox() {
         HBox buttonBox = new HBox();
 
         Button fillDownButton = new Button("Fill down");
-        fillDownButton.setID("Fill down");
+        fillDownButton.setId("Fill down");
         fillDownButton.setTooltip(new Tooltip("replaces all taxons in selection with the one that is selected at the top"));
         fillDownButton.setOnAction(e -> {
                 int[] rows = m_table.getSelectedRows();
@@ -251,16 +257,16 @@ public class TaxonSetInputEditor extends InputEditor.Base {
             });
 
         Button guessButton = new Button("Guess");
-        guessButton.setID("Guess");
+        guessButton.setId("Guess");
         guessButton.setOnAction(e -> {
                 guess();
             });
 
-        buttonBox.add(new Separator());
-        buttonBox.add(fillDownButton);
-        buttonBox.add(new Separator());
-        buttonBox.add(guessButton);
-        buttonBox.add(new Separator());
+        buttonBox.getChildren().add(new Separator());
+        buttonBox.getChildren().add(fillDownButton);
+        buttonBox.getChildren().add(new Separator());
+        buttonBox.getChildren().add(guessButton);
+        buttonBox.getChildren().add(new Separator());
         return buttonBox;
     }
 
@@ -459,50 +465,53 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 	String m_sPattern = "^(.+)[-_\\. ](.*)$";
 
 
-    private Component createFilterBox() {
+    private Pane createFilterBox() {
         HBox filterBox = new HBox();
-        filterBox.add(new Label("filter: "));
+        filterBox.getChildren().add(new Label("filter: "));
         // Dimension size = new Dimension(100,20);
         filterEntry = new TextField();
-        filterEntry.setColumns(20);
+        filterEntry.setPrefColumnCount(20);
         // filterEntry.setMinSize(size);
         // filterEntry.setPrefSize(size);
         // filterEntry.setSize(size);
         filterEntry.setTooltip(new Tooltip("Enter regular expression to match taxa"));
-		int size = filterEntry.getFont().getSize();
-        filterEntry.setMaxSize(new Dimension(1024, 20 * size/13));
-        filterBox.add(filterEntry);
-        filterBox.add(new Separator());
-        filterEntry.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                processFilter();
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                processFilter();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                processFilter();
-            }
-
-            private void processFilter() {
-                String filter = ".*" + filterEntry.getText() + ".*";
-                try {
-                    // sanity check: make sure the filter is legit
-                    filter.matches(filter);
-                    m_sFilter = filter;
-                    taxonSetToModel();
-                    m_table.repaint();
-                } catch (PatternSyntaxException e) {
-                    // ignore
-                }
-            }
-        });
+//		int size = filterEntry.getFont().getSize();
+//        filterEntry.setMaxSize(new Dimension(1024, 20 * size/13));
+        filterBox.getChildren().add(filterEntry);
+        filterBox.getChildren().add(new Separator());
+        filterBox.setOnKeyReleased(e->processFilter());
+        
+//        filterEntry.getDocument().addDocumentListener(new DocumentListener() {
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {
+//                processFilter();
+//            }
+//
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {
+//                processFilter();
+//            }
+//
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {
+//                processFilter();
+//            }
+//
+//        });
         return filterBox;
+    }
+
+    private void processFilter() {
+        String filter = ".*" + filterEntry.getText() + ".*";
+        try {
+            // sanity check: make sure the filter is legit
+            filter.matches(filter);
+            m_sFilter = filter;
+            taxonSetToModel();
+            m_table.repaint();
+        } catch (PatternSyntaxException e) {
+            // ignore
+        }
     }
 
     /**

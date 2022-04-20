@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
+import beastfx.app.util.FXUtils;
 import beast.app.util.OutFile;
 import beast.app.util.Utils;
 import beast.base.core.BEASTInterface;
@@ -46,7 +47,7 @@ public class OutFileInputEditor extends InputEditor.Base {
 		Button button = new Button("browse");
 		button.setOnAction(e -> {				
 				File defaultFile = FileInputEditor.getDefaultFile((File) m_input.get());
-				File file = Utils.getSaveFile(m_input.getTipText(), defaultFile, "All files", Utils.isWindows() ? "*" : "");
+				File file = FXUtils.getSaveFile(m_input.getTipText(), defaultFile, "All files", Utils.isWindows() ? "*" : "");
 				if (file != null) 
 					file = new OutFile(file.getPath());
 				try {

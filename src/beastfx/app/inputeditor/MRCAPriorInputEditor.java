@@ -1,15 +1,10 @@
 package beastfx.app.inputeditor;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.Box;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -37,9 +32,7 @@ import beast.base.inference.distribution.OneOnX;
 import beast.base.parser.PartitionContext;
 
 
-
 public class MRCAPriorInputEditor extends InputEditor.Base {
-	private static final long serialVersionUID = 1L;
 
 	public MRCAPriorInputEditor(BeautiDoc doc) {
 		super(doc);
@@ -162,7 +155,15 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         isMonophyleticdBox.setId(text+".isMonophyletic");
         isMonophyleticdBox.setSelected(prior.isMonophyleticInput.get());
         isMonophyleticdBox.setTooltip(new Tooltip(prior.isMonophyleticInput.getHTMLTipText()));
-        isMonophyleticdBox.setOnAction(e->new MRCAPriorActionListener(prior));
+        isMonophyleticdBox.setOnAction(e->{
+            try {
+                prior.isMonophyleticInput.setValue(((CheckBox) e.getSource()).isSelected(), prior);
+                refreshPanel();
+            } catch (Exception ex) {
+            	Log.warning.println("PriorListInputEditor " + ex.getMessage());
+            }
+        });
+        // }new MRCAPriorActionListener(prior));
         itemBox.getChildren().add(isMonophyleticdBox);
 
         Button deleteButton = new SmallButton("-", true);
@@ -241,45 +242,49 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
     /**
      * class to deal with toggling monophyletic flag on an MRCAPrior *
      */
-    class MRCAPriorActionListener implements ActionListener {
-        MRCAPrior m_prior;
-
-        MRCAPriorActionListener(MRCAPrior prior) {
-            m_prior = prior;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                m_prior.isMonophyleticInput.setValue(((CheckBox) e.getSource()).isSelected(), m_prior);
-                refreshPanel();
-            } catch (Exception ex) {
-            	Log.warning.println("PriorListInputEditor " + ex.getMessage());
-            }
-        }
-    }
+//    class MRCAPriorActionListener implements ActionListener {
+//        MRCAPrior m_prior;
+//
+//        MRCAPriorActionListener(MRCAPrior prior) {
+//            m_prior = prior;
+//        }
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            try {
+//                m_prior.isMonophyleticInput.setValue(((CheckBox) e.getSource()).isSelected(), m_prior);
+//                refreshPanel();
+//            } catch (Exception ex) {
+//            	Log.warning.println("PriorListInputEditor " + ex.getMessage());
+//            }
+//        }
+//    }
     
     
     InputEditor tipsonlyEditor;
     
     public InputEditor createTipsonlyEditor() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         BooleanInputEditor e = new BooleanInputEditor (doc) {
-			private static final long serialVersionUID = 1L;
 
 			@Override
         	public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption,
         			boolean addButtons) {
         		super.init(input, beastObject, itemNr, isExpandOption, addButtons);
         		// hack to get to Button
-        		Node [] components = getComponents();       		
-        		((Button) components[0]).setOnAction(e -> {
-                	CheckBox src = (CheckBox) e.getSource();
-                	if (src.isSelected()) {
-                		enableTipSampling();
-                	} else {
-                		disableTipSampling(m_beastObject, doc);
-                	}
-                });
+        		//Node [] components = getComponents();       		
+        		//((Button) components[0])
+        		for (Node o : getChildren()) {
+        			if (o instanceof CheckBox) {
+        				((CheckBox)o).setOnAction(e -> {
+		                	CheckBox src = (CheckBox) e.getSource();
+		                	if (src.isSelected()) {
+		                		enableTipSampling();
+		                	} else {
+		                		disableTipSampling(m_beastObject, doc);
+		                	}
+        				});
+        			}
+        		}
         	}
         	
         };
