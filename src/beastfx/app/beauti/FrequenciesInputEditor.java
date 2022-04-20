@@ -4,6 +4,8 @@ package beastfx.app.beauti;
 import java.awt.event.ActionEvent;
 
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.Pane;
+
 import javax.swing.JComponent;
 
 import beastfx.app.inputeditor.BEASTObjectInputEditor;
@@ -47,27 +49,28 @@ public class FrequenciesInputEditor extends BEASTObjectInputEditor {
 
     @Override
     /** suppress combobox **/
-    protected void addComboBox(JComponent box, Input<?> input, BEASTInterface beastObject) {
+    protected void addComboBox(Pane box, Input<?> input, BEASTInterface beastObject) {
         Frequencies freqs = (Frequencies) input.get();
 
-        ComboBox<String> comboBox = new ComboBox<>(new String[]{"Estimated", "Empirical", "All equal"});
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(new String[]{"Estimated", "Empirical", "All equal"});
         if (freqs.frequenciesInput.get() != null) {
-            comboBox.setSelectedIndex(0);
+            comboBox.getSelectionModel().select(0);
             freqsParameter = freqs.frequenciesInput.get();
             alignment = (Alignment) getCandidate(freqs.dataInput, freqs);
         } else if (freqs.estimateInput.get()) {
-            comboBox.setSelectedIndex(1);
+            comboBox.getSelectionModel().select(1);
             alignment = freqs.dataInput.get();
             freqsParameter = (RealParameter) getCandidate(freqs.frequenciesInput, freqs);
         } else {
-            comboBox.setSelectedIndex(2);
+            comboBox.getSelectionModel().select(2);
             alignment = freqs.dataInput.get();
             freqsParameter = (RealParameter) getCandidate(freqs.frequenciesInput, freqs);
         }
         comboBox.setOnAction(e -> {
                 //@SuppressWarnings("unchecked")
 				//ComboBox<String> comboBox = (ComboBox<String>) e.getSource();
-                int selected = comboBox.getSelectedIndex();
+                int selected =  comboBox.getSelectionModel().getSelectedIndex();
                 //Frequencies freqs = (Frequencies) m_input.get();
                 try {
                     switch (selected) {
@@ -91,7 +94,7 @@ public class FrequenciesInputEditor extends BEASTObjectInputEditor {
                 }
                 //System.err.println(freqs.frequencies.get() + " " + freqs.m_data.get() + " " + freqs.m_bEstimate.get());
             });
-        box.add(comboBox);
+        box.getChildren().add(comboBox);
     }
 
     private BEASTInterface getCandidate(Input<?> input, Frequencies freqs) {

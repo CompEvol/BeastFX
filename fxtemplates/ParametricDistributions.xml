@@ -1,0 +1,104 @@
+<beast version='2.0'
+       namespace='beastfx.app.beauti:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.branchratemodel:beast.base.evolution.speciation:beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood:beast.evolution:beast.base.inference.distribution'>
+
+
+    <mergewith point='parametricDistributions'>
+        <!-- Parametric distributions, all without hyperpriors -->
+
+        <!-- Uniform -->
+        <subtemplate id='Uniform' class='beast.base.inference.distribution.Uniform' mainid='[top]'>
+            <![CDATA[
+        <distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='Infinity'/>
+]]>
+        </subtemplate>
+
+        <!-- Normal -->
+        <subtemplate id='Normal' class='beast.base.inference.distribution.Normal' mainid='[top]' suppressInputs='beast.base.inference.distribution.Normal.tau'>
+            <![CDATA[
+    <distr offset="0.0" spec="beast.base.inference.distribution.Normal">
+        <parameter name='mean' value='0' estimate='false'/>
+        <parameter name='sigma' value='1' estimate='false'/>
+    </distr>
+]]>
+        </subtemplate>
+
+        <!-- OneOnX -->
+        <subtemplate id='1/X' class='beast.base.inference.distribution.OneOnX' mainid='[top]'>
+            <![CDATA[
+        <distr spec="beast.base.inference.distribution.OneOnX"/>
+]]>
+        </subtemplate>
+
+        <!-- lognormal -->
+        <subtemplate id='LogNormal' class='beast.base.inference.distribution.LogNormalDistributionModel' mainid='[top]'>
+            <![CDATA[
+        <distr name='distr' spec="beast.base.inference.distribution.LogNormalDistributionModel">
+            <parameter name='M' value="1" estimate='false'/>
+            <parameter name='S' value="1.25" lower="0" upper="5" estimate='false'/>
+        </distr>
+]]>
+        </subtemplate>
+
+        <!-- Exponential -->
+        <subtemplate id='Exponential' class='beast.base.inference.distribution.Exponential' mainid='[top]'>
+            <![CDATA[
+        <distr offset="0.0" spec="beast.base.inference.distribution.Exponential">
+            <parameter name='mean' value="1" estimate='false'/>
+        </distr>
+]]>
+        </subtemplate>
+
+        <!-- Gamma -->
+        <subtemplate id='Gamma' class='beast.base.inference.distribution.Gamma' mainid='[top]'>
+            <![CDATA[
+        <distr offset="0.0" spec="beast.base.inference.distribution.Gamma">
+            <parameter name='alpha' value="2" estimate='false'/>
+            <parameter name='beta' value="2" estimate='false'/>
+        </distr>
+]]>
+        </subtemplate>
+
+        <!-- Beta -->
+        <subtemplate id='Beta' class='beast.base.inference.distribution.Beta' mainid='[top]'>
+            <![CDATA[
+        <distr offset="0.0" spec="beast.base.inference.distribution.Beta">
+            <parameter name='alpha' value="2" estimate='false'/>
+            <parameter name='beta' value="2" estimate='false'/>
+        </distr>
+]]>
+        </subtemplate>
+
+        <!-- Laplace -->
+        <subtemplate id='LaplaceDistribution' class='beast.base.inference.distribution.LaplaceDistribution' mainid='[top]'>
+            <![CDATA[
+        <distr offset="0.0" spec="beast.base.inference.distribution.LaplaceDistribution">
+            <parameter name='mu' value="0" estimate='false'/>
+            <parameter name='scale' value="1" estimate='false'/>
+        </distr>
+]]>
+        </subtemplate>
+
+        <!-- InverseGamma -->
+        <subtemplate id='InverseGamma' class='beast.base.inference.distribution.InverseGamma' mainid='[top]'>
+            <![CDATA[
+        <distr offset="0.0" spec="beast.base.inference.distribution.InverseGamma">
+            <parameter name='alpha' value="2" estimate='false'/>
+            <parameter name='beta' value="2" estimate='false'/>
+        </distr>
+]]>
+        </subtemplate>
+
+        <!-- Poisson -->
+        <subtemplate id='Poisson' class='beast.base.inference.distribution.Poisson' mainid='[top]'>
+            <![CDATA[
+		<distr spec='beast.base.inference.distribution.Poisson' offset="0.0">
+			<parameter name="lambda" value="0.693"/>
+		</distr>
+]]>
+        </subtemplate>
+
+
+    </mergewith>
+
+
+</beast>

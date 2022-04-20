@@ -2,7 +2,7 @@ package beastfx.app.beauti;
 
 
 
-import jam.framework.DocumentFrame;
+// import jam.framework.DocumentFrame;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 

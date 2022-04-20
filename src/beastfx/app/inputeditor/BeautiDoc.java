@@ -525,7 +525,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                 mainTemplate = new File(dirName + fileSep + fileName);
             }
             if (!mainTemplate.exists()) {
-                mainTemplate = new File(dirName + fileSep + "templates" + fileSep + fileName);
+                mainTemplate = new File(dirName + fileSep + BeautiConfig.TEMPLATE_DIR + fileSep + fileName);
             }
         }
         Log.warning.println("Loading template " + mainTemplate.getAbsolutePath());
@@ -554,7 +554,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         Set<String> loadedTemplates = new HashSet<>();
         for (String dirName : dirs) {
             Log.info.println("Investigating " + dirName);
-            File templates = new File(dirName + fileSep + "templates");
+            File templates = new File(dirName + fileSep + BeautiConfig.TEMPLATE_DIR);
             File[] files = templates.listFiles();
             if (files != null) {
                 for (File template : files) {
@@ -940,6 +940,11 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
     }
 
     public void loadTemplate(String xml) throws XMLParserException, SAXException, IOException, ParserConfigurationException  {
+//    	
+//        FileWriter outfile = new FileWriter("/tmp/beauti.xml");
+//        outfile.write(xml);
+//        outfile.close();
+        
         // load the template and its beauti configuration parts
         XMLParser parser = new XMLParser();
         BEASTObjectPanel.init();

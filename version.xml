@@ -3,7 +3,6 @@
 	<depends on='BEAST.app' atleast='2.7.0' atmost="2.7.9"/>
 
 			<service type="beastfx.app.inputeditor.InputEditor">
-				<provider classname="beastfx.app.inputeditor.AlignmentListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.BEASTObjectInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.BooleanInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.DoubleInputEditor"/>
@@ -14,35 +13,38 @@
 				<provider classname="beastfx.app.inputeditor.IntegerInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.IntegerListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.ListInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.LogFileInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.LogFileListInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.LoggerListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.LongInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.MRCAPriorInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.OutFileInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.OutFileListInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.ParameterInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.ParametricDistributionInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.SiteModelInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.StringInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.TaxonSetInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.TaxonSetListInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.TipDatesInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.TreeFileInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.TreeFileListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.XMLFileInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.XMLFileListInputEditor"/>
-				<provider classname="beastfx.app.beauti.ClockModelListInputEditor"/>
-				<provider classname="beastfx.app.beauti.ConstantPopulationInputEditor"/>
 				<provider classname="beastfx.app.beauti.FrequenciesInputEditor"/>
-				<provider classname="beastfx.app.beauti.GeneTreeForSpeciesTreeDistributionInputEditor"/>
-				<provider classname="beastfx.app.beauti.OperatorListInputEditor"/>
 				<provider classname="beastfx.app.beauti.PriorInputEditor"/>
 				<provider classname="beastfx.app.beauti.PriorListInputEditor"/>
+<!--
+				<provider classname="beastfx.app.inputeditor.AlignmentListInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.LogFileInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.LogFileListInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.LoggerListInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.MRCAPriorInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.ParameterInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.ParametricDistributionInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.TaxonSetInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.TaxonSetListInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.TipDatesInputEditor"/>
+				<provider classname="beastfx.app.beauti.ClockModelListInputEditor"/>
+				<provider classname="beastfx.app.beauti.ConstantPopulationInputEditor"/>
+				<provider classname="beastfx.app.beauti.GeneTreeForSpeciesTreeDistributionInputEditor"/>
+				<provider classname="beastfx.app.beauti.OperatorListInputEditor"/>
 				<provider classname="beastfx.app.beauti.SpeciesTreePriorInputEditor"/>
 				<provider classname="beastfx.app.beauti.StateNodeInitialiserListInputEditor"/>
 				<provider classname="beastfx.app.beauti.StateNodeListInputEditor"/>
 				<provider classname="beastfx.app.beauti.TreeDistributionInputEditor"/>
+-->				
 			</service>
 	
 			<!-- AlignmentImporter declares classes for parsing different alignment formats -->

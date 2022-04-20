@@ -1,18 +1,21 @@
 package beastfx.app.beauti;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 import javax.swing.Box;
+
+import javafx.event.ActionEvent;
+import javafx.geometry.Dimension2D;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import javax.swing.SwingUtilities;
 
@@ -77,7 +80,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         }
         Label label = new Label(text);
         Font font = label.getFont();
-        Dimension size = new Dimension(font.getSize() * 200 / 12, font.getSize() * 2);
+        Dimension2D size = new Dimension2D(font.getSize() * 200 / 12, font.getSize() * 2);
         label.setMinSize(size.getWidth(), size.getHeight());
         label.setPrefSize(size.getWidth(), size.getHeight());
         itemBox.getChildren().add(label);
@@ -95,7 +98,8 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         	}
         }
         
-        ComboBox<BeautiSubTemplate> comboBox = new ComboBox<>(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
+        ComboBox<BeautiSubTemplate> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
         comboBox.setId("TreeDistribution");
 
         for (int i = availableBEASTObjects.size() - 1; i >= 0; i--) {
@@ -114,7 +118,8 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         for (BeautiSubTemplate template : availableBEASTObjects) {
             if (template.matchesName(id)) { // getMainID().replaceAll(".\\$\\(n\\)",
                 // "").equals(id)) {
-                comboBox.setSelectedItem(template);
+                comboBox.setValue(template);
+                comboBox.getSelectionModel().select(template);
             }
         }
 
@@ -127,7 +132,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
 						ComboBox<BeautiSubTemplate> currentComboBox = (ComboBox<BeautiSubTemplate>) m_e.getSource();
                         @SuppressWarnings("unchecked")
 						List<BEASTInterface> list = (List<BEASTInterface>) m_input.get();
-                        BeautiSubTemplate template = (BeautiSubTemplate) currentComboBox.getSelectedItem();
+                        BeautiSubTemplate template = (BeautiSubTemplate) currentComboBox.getValue();
                         PartitionContext partitionContext = doc.getContextFor(list.get(itemNr));
                         try {
                             template.createSubNet(partitionContext, list, itemNr, true);
