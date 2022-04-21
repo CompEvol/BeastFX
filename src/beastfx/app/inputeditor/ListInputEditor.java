@@ -135,6 +135,7 @@ public class ListInputEditor extends InputEditor.Base {
         m_input = input;
         m_beastObject = beastObject;
         this.itemNr = -1;
+        pane = new BorderPane();
         addInputLabel();
         if (m_inputLabel != null) {
             //m_inputLabel.setMaxSize(m_inputLabel.getSize().width, 1000);
@@ -152,7 +153,6 @@ public class ListInputEditor extends InputEditor.Base {
             }
         }
 
-        pane = new BorderPane();
         ((BorderPane)pane).setTop(m_listBox);
 
         buttonBox = new HBox();

@@ -1,13 +1,9 @@
 package beastfx.app.inputeditor;
 
 
-import java.awt.Color;
+
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -17,10 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
-import javax.swing.JComponent;
 import beastfx.app.util.Alert;
 
-import beast.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -45,7 +39,6 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 		super(doc);
 	}
 
-	private static final long serialVersionUID = 1L;
     public CheckBox m_isEstimatedBox;
 
     @Override

@@ -84,9 +84,11 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 		fixMeanRatesValidateLabel.setVisible(false);
 		box.getChildren().add(fixMeanRatesValidateLabel);
 		
+		
     	if (doc.alignments.size() >= 1 && operator != null) {
-        	Pane component = (Pane) getChildren().get(0);
-    		component.getChildren().add(box);
+    		pane.getChildren().add(box);
+        	//Pane component = (Pane) getChildren().get(0);
+    		//component.getChildren().add(box);
     	}
 		setUpOperator();
     }

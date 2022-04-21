@@ -58,7 +58,7 @@ public class WrappedOptionPane extends DialogPane {
         	pane.setStyle("-fx-font:" + fontName);
         }
         Stage stage = (Stage) pane.getScene().getWindow();
-        String str = WrappedOptionPane.class.getResource("/beastfx/app/inputeditor/icon/beast.png").toString();
+        String str = WrappedOptionPane.class.getResource("/beastfx/app/inputeditor/icons/beast.png").toString();
         stage.getIcons().add(new Image(str));
         pane.setHeader(new ImageView(str));
         pane.setHeaderText("Information");

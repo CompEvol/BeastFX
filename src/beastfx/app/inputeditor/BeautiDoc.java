@@ -2233,7 +2233,9 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
             partition = parsePartition(id);
         }
 
+        
         for (PartitionContext context : partitionNames) {
+        	System.out.println(context.toString());
             switch (partitionID) {
                 case ALIGNMENT_PARTITION:
                     if (context.partition.equals(partition)) {

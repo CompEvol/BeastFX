@@ -225,7 +225,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                 // get a handle of the selected beastObject
                 BeautiSubTemplate selected = (BeautiSubTemplate) m_selectBEASTObjectBox.getValue();
                 BEASTInterface beastObject = (BEASTInterface) m_input.get();
-                String id = beastObject.getID();
+                String id = beastObject==null ? "no_id" : beastObject.getID();
                 String partition = id.indexOf('.') >= 0 ? 
                 		id.substring(id.indexOf('.') + 1) : "";
                 if (partition.indexOf(':') >= 0) {
@@ -315,7 +315,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                     if (m_expansionBox != null) {
                         // remove items from Expansion Box
                         //for (int i = 1; i < m_expansionBox.getChildren().size(); ) {
-                            m_expansionBox.getChildren().remove(1, m_expansionBox.getChildren().size()-1);
+                            m_expansionBox.getChildren().removeAll();//(1, m_expansionBox.getChildren().size()-1);
                         //}
                         // add new items to Expansion Box
                         if (beastObject != null) {

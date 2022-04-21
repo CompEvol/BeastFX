@@ -16,6 +16,8 @@
 				<provider classname="beastfx.app.inputeditor.LongInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.OutFileInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.OutFileListInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.ParameterInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.ParametricDistributionInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.SiteModelInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.StringInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.TreeFileInputEditor"/>
@@ -31,8 +33,6 @@
 				<provider classname="beastfx.app.inputeditor.LogFileListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.LoggerListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.MRCAPriorInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.ParameterInputEditor"/>
-				<provider classname="beastfx.app.inputeditor.ParametricDistributionInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.TaxonSetInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.TaxonSetListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.TipDatesInputEditor"/>

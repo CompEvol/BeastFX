@@ -2,34 +2,26 @@ package beastfx.app.beauti;
 
 
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.Set;
 
-import javax.swing.Box;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Pane;
 import beastfx.app.util.Alert;
 
-import beastfx.app.inputeditor.BEASTObjectPanel;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiPanelConfig;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.ListInputEditor;
 import beastfx.app.inputeditor.SmallButton;
-import beastfx.app.inputeditor.TaxonSetDialog;
 import beast.app.util.Utils;
-import beastfx.app.inputeditor.InputEditor.ButtonStatus;
-import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
-import beast.base.core.Log;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.alignment.TaxonSet;
 import beast.base.evolution.tree.MRCAPrior;
@@ -37,19 +29,13 @@ import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeDistribution;
 import beast.base.evolution.tree.TreeInterface;
 import beast.base.inference.Distribution;
-import beast.base.inference.Logger;
-import beast.base.inference.State;
-import beast.base.inference.StateNode;
-import beast.base.inference.distribution.OneOnX;
 import beast.base.inference.distribution.Prior;
 import beast.base.inference.parameter.RealParameter;
 import beast.pkgmgmt.BEASTClassLoader;
-import beast.pkgmgmt.PackageManager;
 
 
 
 public class PriorListInputEditor extends ListInputEditor {
-    private static final long serialVersionUID = 1L;
 
     List<Button> rangeButtons;
 
@@ -144,8 +130,8 @@ public class PriorListInputEditor extends ListInputEditor {
 	        addButton.setOnAction(e -> {
 	                addItem();
 	            });
-	        buttonBox.add(addButton);
-            buttonBox.add(new Separator());
+	        buttonBox.getChildren().add(addButton);
+            buttonBox.getChildren().add(new Separator());
         }
     }
 
@@ -158,11 +144,11 @@ public class PriorListInputEditor extends ListInputEditor {
      * @param beastObject  beastObject to add
      */
     @Override
-    protected InputEditor addPluginItem(Box itemBox, BEASTInterface beastObject) {
+    protected InputEditor addPluginItem(Pane itemBox, BEASTInterface beastObject) {
 		try {
 	    	int listItemNr = ((List<?>) m_input.get()).indexOf(beastObject);
 	    	InputEditor editor = doc.getInputEditorFactory().createInputEditor(m_input, listItemNr, beastObject, false, ExpandOption.FALSE, ButtonStatus.NONE, null, doc);
-	    	itemBox.add((Component) editor);
+	    	itemBox.getChildren().add((Pane) editor);
 	    	return editor;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -205,23 +191,23 @@ public class PriorListInputEditor extends ListInputEditor {
     /**
      * class to deal with toggling monophyletic flag on an MRCAPrior *
      */
-    class MRCAPriorActionListener implements ActionListener {
-        MRCAPrior m_prior;
-
-        MRCAPriorActionListener(MRCAPrior prior) {
-            m_prior = prior;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                m_prior.isMonophyleticInput.setValue(((Button) e.getSource()).isSelected(), m_prior);
-                refreshPanel();
-            } catch (Exception ex) {
-                Log.err.println("PriorListInputEditor " + ex.getMessage());
-            }
-        }
-    }
+//    class MRCAPriorActionListener implements ActionListener {
+//        MRCAPrior m_prior;
+//
+//        MRCAPriorActionListener(MRCAPrior prior) {
+//            m_prior = prior;
+//        }
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            try {
+//                m_prior.isMonophyleticInput.setValue(((CheckBox) e.getSource()).isSelected(), m_prior);
+//                refreshPanel();
+//            } catch (Exception ex) {
+//                Log.err.println("PriorListInputEditor " + ex.getMessage());
+//            }
+//        }
+//    }
 
     @Override
     protected void addItem() {

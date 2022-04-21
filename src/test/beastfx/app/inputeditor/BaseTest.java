@@ -12,6 +12,8 @@ import java.util.List;
 
 import beast.base.core.BEASTObject;
 import beast.base.core.Input;
+import beast.base.inference.distribution.LogNormalDistributionModel;
+import beast.base.inference.distribution.ParametricDistribution;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
@@ -34,6 +36,7 @@ public class BaseTest extends javafx.application.Application {
 		final public Input<Long> longInput = new Input<>("long", "long valued input for test class", 123L);
 		final public Input<String> strInput = new Input<>("string", "string valued input for test class", "string");
 		final public Input<File> fileInput = new Input<>("file", "file valued input for test class");
+		final public Input<ParametricDistribution> paramDistrInput = new Input<>("paramDistr", "parametric distribution valued input for test class");
 		final public Input<List<File>> filesInput = new Input<>("files", "file valued input for test class", new ArrayList<>());
 		
 		
@@ -54,7 +57,13 @@ public class BaseTest extends javafx.application.Application {
 		VBox box = new VBox();
 		InputClass2 beastObject = new InputClass2();
 		beastObject.setID("inputClass2");
-		beastObject.InputClassInput.get().setID("inputClass");
+		InputClass oi = beastObject.InputClassInput.get(); 
+		oi.setID("inputClass");
+		LogNormalDistributionModel distr = new LogNormalDistributionModel();
+		distr.setID("LogNormalDistributionModel.0");
+		distr.initByName("M","1","S","0.15");
+		oi.paramDistrInput.setValue(distr, oi);
+
 		InputEditor e = new BEASTObjectInputEditor(doc);
 		e.init(beastObject.InputClassInput, beastObject, -1, ExpandOption.TRUE, true);
 		box.getChildren().add((Pane) e);

@@ -44,7 +44,7 @@ import javafx.scene.text.TextAlignment;
 /** note that it is assumed that any InputEditor is a java.awt.Component **/
 public interface InputEditor {
 
-    final public static String NO_VALUE = "<none>";
+    final public static String NO_VALUE = "[none]";
 
     public enum ExpandOption {TRUE, TRUE_START_COLLAPSED, FALSE, IF_ONE_ITEM}
 
