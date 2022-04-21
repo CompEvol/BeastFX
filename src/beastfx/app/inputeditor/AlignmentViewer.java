@@ -157,7 +157,7 @@ public class AlignmentViewer extends Pane {
         mainTable.setShowGrid(false);
 
         JScrollPane scrollPane = new JScrollPane(mainTable);
-        Dimension2D fixedSize = fixedTable.getPrefSize();
+        Dimension2D fixedSize = new Dimension2D(fixedTable.getPrefWidth(), fixedTable.getPrefHeight());
         JViewport viewport = new JViewport();
         viewport.setView(fixedTable);
         viewport.setPrefSize(fixedSize.getWidth(), fixedSize.getHeight());

@@ -38,9 +38,14 @@ public class MRCAPriorProvider implements PriorProvider {
                 for (int j = 0; j < treeIDs.length; j++) {
                     treeIDs[j] = trees.get(j).getID();
                 }
-                treeIndex = Alert.showOptionDialog(null, "Select a tree", "MRCA selector",
-                        Alert.OK_CANCEL_OPTION, Alert.QUESTION_MESSAGE, null,
-                        treeIDs, trees.get(0));
+                String treeID = (String) Alert.showInputDialog(null, "Select a tree", "MRCA selector", Alert.QUESTION_MESSAGE, null, treeIDs, trees.get(0));
+                treeIndex = 0;
+                while (treeIndex < treeIDs.length && !treeIDs[treeIndex].equals(treeID)) {
+                	treeIndex++;
+                }
+                if (treeIndex == treeIDs.length) {
+                	treeIndex = -1;
+                }
             }
             if (treeIndex < 0) {
                 return null;

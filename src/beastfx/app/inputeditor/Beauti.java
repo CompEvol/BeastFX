@@ -1,13 +1,12 @@
 package beastfx.app.inputeditor;
 
 
-import javax.swing.JFrame;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.Pane;
 
-import apple.laf.JRSUIUtils.TabbedPane;
+abstract public class Beauti extends TabPane {
 
-abstract public class Beauti extends TabbedPane {
-
-	public JFrame frame;
+	public Pane frame;
 	
     abstract public void autoSetClockRate(boolean flag);
     abstract public void allowLinking(boolean flag);

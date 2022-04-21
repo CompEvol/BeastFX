@@ -1,7 +1,6 @@
 package beastfx.app.beauti;
 
-import java.awt.Dimension;
-import java.awt.Font;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,6 +12,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import javax.swing.JPanel;
 import javax.swing.text.StyledEditorKit.FontSizeAction;
@@ -53,6 +55,7 @@ public class PriorInputEditor extends InputEditor.Base {
         m_beastObject = beastObject;
         this.itemNr= listItemNr;
 		
+        pane = new VBox();
         HBox itemBox = new HBox();
 
         Prior prior = (Prior) beastObject;
@@ -65,7 +68,8 @@ public class PriorInputEditor extends InputEditor.Base {
         itemBox.getChildren().add(label);
 
         List<BeautiSubTemplate> availableBEASTObjects = doc.getInputEditorFactory().getAvailableTemplates(prior.distInput, prior, null, doc);
-        ComboBox<BeautiSubTemplate> comboBox = new ComboBox<BeautiSubTemplate>(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
+        ComboBox<BeautiSubTemplate> comboBox = new ComboBox<BeautiSubTemplate>();
+        comboBox.getItems().addAll(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
         comboBox.setId(text+".distr");
 
         String id = prior.distInput.get().getID();
@@ -96,10 +100,10 @@ public class PriorInputEditor extends InputEditor.Base {
             sync();
             refreshPanel();
         });
-        JPanel panel = new JPanel();
-        panel.add(comboBox);
-        panel.setMaxSize(size);
-        itemBox.add(panel);
+        Pane panel = new Pane();
+        panel.getChildren().add(comboBox);
+        panel.setMaxSize(size.getWidth(), size.getHeight());
+        itemBox.getChildren().add(panel);
         
         if (prior.m_x.get() instanceof RealParameter) {
             // add range button for real parameters
@@ -140,7 +144,7 @@ public class PriorInputEditor extends InputEditor.Base {
             itemBox.getChildren().add(new Separator());
             itemBox.getChildren().add(rangeButton);
         }
-        int fontsize = comboBox.getFont().getSize();
+        int fontsize = (int) comboBox.getEditor().getFont().getSize();
         comboBox.setMaxSize(1024 * fontsize / 13, 24 * fontsize / 13);
 
         String tipText = getDoc().tipTextMap.get(beastObject.getID());
@@ -152,6 +156,7 @@ public class PriorInputEditor extends InputEditor.Base {
         itemBox.getChildren().add(new Separator());
 
         pane.getChildren().add(itemBox);
+        getChildren().add(pane);
 	}
 
     String paramToString(RealParameter p) {

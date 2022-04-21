@@ -110,7 +110,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         }
     }
 
-    private Component getContent(List<Taxon> taxonset) {
+    private Pane getContent(List<Taxon> taxonset) {
         m_taxonset = taxonset;
         m_taxonMap = new HashMap<>();
         m_lineageset = new ArrayList<>();

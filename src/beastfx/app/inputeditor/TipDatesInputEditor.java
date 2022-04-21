@@ -388,8 +388,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 
         Label label = new Label("Dates specified: ");
         label.setAlignmentY(Component.TOP_ALIGNMENT);
-        label.setMaxSize(label.getPreferredSize());
-        buttonBox.add(label);
+        label.setMaxSize(label.getPrefWidth(), label.getPrefHeight());
+        buttonBox.getChildren().add(label);
 
         VBox formatBox = new VBox();
         HBox formatBoxFirstLine = new HBox();
@@ -410,7 +410,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         numericRadioButton.setToggleGroup(radioButtonGroup);
         formatBoxFirstLine.getChildren().add(numericRadioButton);
 
-        unitsComboBox = new ComboBox<>(TraitSet.Units.values());
+        unitsComboBox = new ComboBox<>();
+        unitsComboBox.getItems().addAll(TraitSet.Units.values());
         unitsComboBox.setValue(traitSet.unitsInput.get());
         unitsComboBox.setOnAction(e -> {
                 String selected = unitsComboBox.getValue().toString();
@@ -421,13 +422,14 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                     ex.printStackTrace();
                 }
             });
-        Dimension2D d = unitsComboBox.getPrefSize();
+        Dimension2D d = new Dimension2D(unitsComboBox.getPrefWidth(), unitsComboBox.getPrefHeight());
         unitsComboBox.setMaxSize(d.getWidth(), d.getHeight());
         unitsComboBox.setPrefSize(d.getWidth(), d.getHeight());
         unitsComboBox.setDisable(!numericRadioButton.isSelected());
         formatBoxFirstLine.getChildren().add(unitsComboBox);
 
-        relativeToComboBox = new ComboBox<>(new String[]{"Since some time in the past", "Before the present"});
+        relativeToComboBox = new ComboBox<>();
+        relativeToComboBox.getItems().addAll(new String[]{"Since some time in the past", "Before the present"});
         relativeToComboBox.setTooltip(new Tooltip("Whether dates go forward or backward"));
         if (traitSet.traitNameInput.get().equals(TraitSet.DATE_BACKWARD_TRAIT)) {
             relativeToComboBox.getSelectionModel().select(1);
@@ -447,8 +449,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                 }
                 convertTraitToTableData();
             });
-        relativeToComboBox.setMaxSize(relativeToComboBox.getPreferredSize());
-        relativeToComboBox.setEnabled(numericRadioButton.isSelected());
+        relativeToComboBox.setMaxSize(relativeToComboBox.getPrefWidth(), relativeToComboBox.getPrefHeight());
+        relativeToComboBox.setDisable(!numericRadioButton.isSelected());
         formatBoxFirstLine.getChildren().add(relativeToComboBox);
         formatBoxFirstLine.getChildren().add(new Separator());
         formatBox.getChildren().add(formatBoxFirstLine);
@@ -460,7 +462,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             formattedDateRadioButton.setSelected(true);
 
         formattedDateRadioButton.setOnAction(e -> {
-            traitSet.dateTimeFormatInput.setValue(dateFormatComboBox.getSelectedItem(), traitSet);
+            traitSet.dateTimeFormatInput.setValue(dateFormatComboBox.getValue(), traitSet);
             refreshPanel();
         });
         formattedDateRadioButton.setToggleGroup(radioButtonGroup);
@@ -474,15 +476,16 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                 "M-dd-yyyy",
                 "yyyy-M-dd"};
 
-        dateFormatComboBox = new ComboBox<>(dateFormatExamples);
+        dateFormatComboBox = new ComboBox<>();
+        dateFormatComboBox.getItems().addAll(dateFormatExamples);
         dateFormatComboBox.setTooltip(new Tooltip("Set format used to parse date values"));
         dateFormatComboBox.setEditable(true);
         if (traitSet.dateTimeFormatInput.get() != null)
             dateFormatComboBox.setValue(traitSet.dateTimeFormatInput.get());
         else
             dateFormatComboBox.setValue(dateFormatExamples[0]);
-        dateFormatComboBox.setMaxSize(dateFormatComboBox.getPrefSize());
-        dateFormatComboBox.setDisabe(!formattedDateRadioButton.isSelected());
+        dateFormatComboBox.setMaxSize(dateFormatComboBox.getPrefWidth(), dateFormatComboBox.getPrefHeight());
+        dateFormatComboBox.setDisable(!formattedDateRadioButton.isSelected());
         dateFormatComboBox.setOnAction(e -> {
             traitSet.dateTimeFormatInput.setValue(dateFormatComboBox.getValue(), traitSet);
             refreshPanel();

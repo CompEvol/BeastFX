@@ -108,7 +108,7 @@ public class TaxonSetDialog extends DialogPane {
                 null);
         optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-        Frame frame = (doc != null ? doc.getFrame(): Frame.getFrames()[0]);
+        Pane frame = (doc != null ? doc.getFrame(): null); //Frame.getFrames()[0]);
         final JDialog dialog = optionPane.createDialog(frame, "Taxon set editor");
         dialog.pack();
 

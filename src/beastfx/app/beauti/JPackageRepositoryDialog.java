@@ -33,8 +33,10 @@ import javax.swing.table.AbstractTableModel;
 
 import beast.pkgmgmt.PackageManager;
 import beastfx.app.util.Alert;
+import javafx.geometry.Dimension2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
@@ -43,7 +45,7 @@ import javafx.scene.layout.Pane;
 /**
  * @author Tim Vaughan <tgvaughan@gmail.com>
  */
-public class JPackageRepositoryDialog extends Dialog {
+public class JPackageRepositoryDialog extends DialogPane {
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,7 +53,7 @@ public class JPackageRepositoryDialog extends Dialog {
         // super(frame);
 
         setModal(true);
-        setTitle("BEAST 2 Package Repository Manager");
+        setHeader("BEAST 2 Package Repository Manager");
         
         // Get current list of URLs:
         List<URL> urls;
@@ -119,7 +121,7 @@ public class JPackageRepositoryDialog extends Dialog {
             repoTableModel.urls.add(newURL);
             repoTableModel.fireTableDataChanged();
         });
-        box.add(addURLButton);
+        box.getChildren().add(addURLButton);
         
         // DELETE URL
         Button deleteURLButton = new Button("Delete selected URL");
@@ -130,7 +132,7 @@ public class JPackageRepositoryDialog extends Dialog {
             }
         });
         deleteURLButton.setEnabled(false);
-        box.add(deleteURLButton);
+        box.getChildren().add(deleteURLButton);
         
         // DONE
         Button OKButton = new Button("Done");
@@ -138,7 +140,7 @@ public class JPackageRepositoryDialog extends Dialog {
             PackageManager.saveRepositoryURLs(repoTableModel.urls);
             setVisible(false);
         });
-        box.add(OKButton);
+        box.getChildren().add(OKButton);
         getContentPane().add(box, BorderLayout.PAGE_END);
 
         // Action listeners to disable/enable delete button
@@ -156,11 +158,11 @@ public class JPackageRepositoryDialog extends Dialog {
         // Set size and location of dialog
         Dimension2D dim = scrollPane.getPreferredSize();
         Dimension2D dim2 = box.getPreferredSize();
-        setSize(dim.width + 30, dim.height + dim2.height + 30);
+        pane.setPrefSize(dim.getWidth() + 30, dim.getHeight() + dim2.getHeight() + 30);
         Point frameLocation = frame.getLocation();
         Dimension frameSize = frame.getSize();
-        setLocation(frameLocation.x + frameSize.width / 2 - dim.width / 2,
-                frameLocation.y + frameSize.height / 2 - dim.height / 2);
+        setLocation(frameLocation.x + frameSize.width / 2 - dim.getWidth() / 2,
+                frameLocation.y + frameSize.height / 2 - dim.getWidth() / 2);
     }
 
     /**

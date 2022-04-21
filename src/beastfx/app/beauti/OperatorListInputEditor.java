@@ -8,7 +8,13 @@ import java.util.Vector;
 import javax.swing.Box;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -51,12 +57,13 @@ public class OperatorListInputEditor extends ListInputEditor {
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
     	HBox box = new HBox();
-    	box.add(Box.createHorizontalStrut(25));
-    	box.add(new Label("Operator"));
-    	box.add(Box.createGlue());
-    	box.add(new Label("Weight"));
-    	box.add(Box.createHorizontalStrut(20));
-    	add(box);
+    	pane = new VBox();
+    	box.getChildren().add(new Separator());
+    	box.getChildren().add(new Label("Operator"));
+    	box.getChildren().add(new Separator());
+    	box.getChildren().add(new Label("Weight"));
+    	box.getChildren().add(new Separator());
+    	pane.getChildren().add(box);
     	
 
     	m_buttonStatus = ButtonStatus.NONE;
@@ -64,21 +71,22 @@ public class OperatorListInputEditor extends ListInputEditor {
     	
     	BEASTObjectInputEditor osEditor = new BEASTObjectInputEditor(doc);
     	osEditor.init(((BEASTInterface) doc.mcmc.get()).getInput("operatorschedule"), (BEASTInterface) doc.mcmc.get(), -1, isExpandOption, addButtons);
-    	add(osEditor);
+    	pane.getChildren().add(osEditor);
+    	getChildren().add(pane);
     }
     
     @Override
-    protected InputEditor addPluginItem(Box itemBox, BEASTInterface beastObject) {
+    protected InputEditor addPluginItem(Pane itemBox, BEASTInterface beastObject) {
         Operator operator = (Operator) beastObject;
 
         TextField entry = new TextField(" " + getLabel(operator));
-        entry.setMinSize(new Dimension(200, 16));
+        entry.setMinSize(200, 16);
         //entry.setMaxSize(new Dimension(200, 20));
         m_entries.add(entry);
         entry.setBackground(getBackground());
         entry.setBorder(null);
-        itemBox.add(Box.createRigidArea(new Dimension(5, 1)));
-        itemBox.add(entry);
+        itemBox.getChildren().add(new Separator());//Box.createRigidArea(new Dimension(5, 1)));
+        itemBox.getChildren().add(entry);
         entry.setEditable(false);
 
 //        Label label = new Label(getLabel(operator));
@@ -88,17 +96,18 @@ public class OperatorListInputEditor extends ListInputEditor {
 //        itemBox.add(label);
 
 
-        itemBox.add(new Separator());
+        itemBox.getChildren().add(new Separator());
         TextField weightEntry = new TextField();
         weightEntry.setTooltip(new Tooltip(operator.m_pWeight.getHTMLTipText()));
         weightEntry.setText(operator.m_pWeight.get() + "");
-        weightEntry.getDocument().addDocumentListener(new OperatorDocumentListener(operator, weightEntry));
+        weightEntry.setOnKeyReleased(e->new OperatorDocumentListener(operator, weightEntry));
+        // weightEntry.getDocument().addDocumentListener(new OperatorDocumentListener(operator, weightEntry));
         Dimension size = new Dimension(50, 25);
-        weightEntry.setMinSize(size);
-        weightEntry.setPrefSize(size);
-        int fontsize = weightEntry.getFont().getSize();
-        weightEntry.setMaxSize(new Dimension(50 * fontsize/13, 50 * fontsize/13));
-        itemBox.add(weightEntry);
+        weightEntry.setMinSize(size.getWidth(), size.getHeight());
+        weightEntry.setPrefSize(size.getWidth(), size.getHeight());
+        //int fontsize = weightEntry.getFont().getSize();
+        //weightEntry.setMaxSize(new Dimension(50 * fontsize/13, 50 * fontsize/13));
+        itemBox.getChildren().add(weightEntry);
 
         return this;
     }
@@ -140,7 +149,7 @@ public class OperatorListInputEditor extends ListInputEditor {
             } catch (Exception e) {
                 // ignore
             }
-            validate();
+            validateInput();
         }
     }
 

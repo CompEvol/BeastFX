@@ -20,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
@@ -877,7 +878,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 				} else if (e.getButton() == e.BUTTON3) {
 					int alignmemt = table.rowAtPoint(e.getPoint());
 					Alignment alignment = alignments.get(alignmemt);
-					int result = Alert.showConfirmDialog(null, "Do you want to replace alignment " + alignment.getID());
+					ButtonType result = Alert.showConfirmDialog(null, "Do you want to replace alignment " + alignment.getID(), "Replace alignment?", Alert.YES_NO_OPTION);
 					if (result == Alert.YES_OPTION) {
 						replaceItem(alignment);
 					}
@@ -918,9 +919,10 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			}
 		}
 		TableColumn col = table.getColumnModel().getColumn(SITEMODEL_COLUMN);
-		ComboBox<String> siteModelComboBox = new ComboBox<>(partitionNameStrings[0]);
+		ComboBox<String> siteModelComboBox = new ComboBox<>();
+		siteModelComboBox.getItems().addAll(partitionNameStrings[0]);
 		siteModelComboBox.setEditable(true);
-		siteModelComboBox.setOnAction(new ComboActionListener(SITEMODEL_COLUMN));
+		siteModelComboBox.setOnAction(e->new ComboActionListener(SITEMODEL_COLUMN));
 
 		col.setCellEditor(new DefaultCellEditor(siteModelComboBox));
 		// If the cell should appear like a combobox in its
@@ -928,17 +930,19 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		col.setCellRenderer(new MyComboBoxRenderer(partitionNameStrings[0]));
 		col = table.getColumnModel().getColumn(CLOCKMODEL_COLUMN);
 
-		ComboBox<String> clockModelComboBox = new ComboBox<>(partitionNameStrings[1]);
+		ComboBox<String> clockModelComboBox = new ComboBox<>();
+		clockModelComboBox.getItems().addAll(partitionNameStrings[1]);
 		clockModelComboBox.setEditable(true);
-		clockModelComboBox.setOnAction(new ComboActionListener(CLOCKMODEL_COLUMN));
+		clockModelComboBox.setOnAction(e->new ComboActionListener(CLOCKMODEL_COLUMN));
 
 		col.setCellEditor(new DefaultCellEditor(clockModelComboBox));
 		col.setCellRenderer(new MyComboBoxRenderer(partitionNameStrings[1]));
 		col = table.getColumnModel().getColumn(TREE_COLUMN);
 
-		ComboBox<String> treeComboBox = new ComboBox<>(partitionNameStrings[2]);
+		ComboBox<String> treeComboBox = new ComboBox<>();
+		treeComboBox.getItems().addAll(partitionNameStrings[2]);
 		treeComboBox.setEditable(true);
-		treeComboBox.setOnAction(new ComboActionListener(TREE_COLUMN));
+		treeComboBox.setOnAction(a->new ComboActionListener(TREE_COLUMN));
 		col.setCellEditor(new DefaultCellEditor(treeComboBox));
 		col.setCellRenderer(new MyComboBoxRenderer(partitionNameStrings[2]));
 		col = table.getColumnModel().getColumn(TAXA_COLUMN);
@@ -1227,7 +1231,8 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		}
 		Alignment replacement = null;
 		if (alignments.size() > 1) {
-			ComboBox<Alignment> jcb = new ComboBox<Alignment>(alignments.toArray(new Alignment[]{}));
+			ComboBox<Alignment> jcb = new ComboBox<Alignment>();
+			jcb.getItems().addAll(alignments.toArray(new Alignment[]{}));
 			Alert.showMessageDialog( null, jcb, "Select a replacement alignment", Alert.QUESTION_MESSAGE);
 			replacement = (Alignment) jcb.getValue();
 		} else if (alignments.size() == 1) {
