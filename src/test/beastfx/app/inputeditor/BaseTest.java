@@ -5,13 +5,15 @@ import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
+import beastfx.app.inputeditor.TaxonSetDialog;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import beast.base.core.BEASTObject;
 import beast.base.core.Input;
+import beast.base.evolution.alignment.Taxon;
+import beast.base.evolution.alignment.TaxonSet;
 import beast.base.inference.distribution.LogNormalDistributionModel;
 import beast.base.inference.distribution.ParametricDistribution;
 import javafx.scene.Scene;
@@ -54,6 +56,27 @@ public class BaseTest extends javafx.application.Application {
 		doc.beautiConfig = new BeautiConfig();
 		doc.beautiConfig.initAndValidate();
 	    
+		Set<Taxon> candidates = new HashSet<>();
+		Taxon t1 = new Taxon("human");
+		Taxon t2 = new Taxon("chimp");
+		Taxon t3 = new Taxon("bonobo");
+		candidates.add(t1);
+		candidates.add(t2);
+		candidates.add(t3);
+		for (int i = 0; i < 50; i++) {
+			Taxon t = new Taxon("taxon" + i);
+			candidates.add(t);
+		}
+		TaxonSet taxonSet = new TaxonSet();
+		taxonSet.taxonsetInput.get().add(t2);
+		
+		
+		TaxonSetDialog dlg = new TaxonSetDialog(taxonSet, candidates, doc);
+		if (dlg.showDialog()) {
+			System.out.println(taxonSet.toString());
+		}
+		System.out.println(taxonSet.toString());
+		
 		VBox box = new VBox();
 		InputClass2 beastObject = new InputClass2();
 		beastObject.setID("inputClass2");
