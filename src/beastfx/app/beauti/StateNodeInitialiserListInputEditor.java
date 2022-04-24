@@ -67,7 +67,8 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 		if (sAvailablePlugins.size() > 0) {
 			sAvailablePlugins.remove(sAvailablePlugins.size() - 1);
 
-			comboBox = new ComboBox<>(sAvailablePlugins.toArray());
+			comboBox = new ComboBox<>();
+			comboBox.getItems().addAll(sAvailablePlugins);
 			String sID = beastObject.getID();
 			try {
 				sID = sID.substring(0, sID.indexOf('.'));
@@ -120,7 +121,7 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 		}
 		Label label = new Label("Initial " + name + ":");
 
-		itemBox.getChildren().add(Box.createRigidArea(new Dimension(5, 1)));
+		itemBox.getChildren().add(new Separator());// Box.createRigidArea(new Dimension(5, 1)));
 		itemBox.getChildren().add(label);
 		if (comboBox != null) {
 			itemBox.getChildren().add(comboBox);

@@ -13,7 +13,6 @@ import beast.base.evolution.speciation.GeneTreeForSpeciesTreeDistribution;
 
 
 public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.Base {
-	private static final long serialVersionUID = 1L;
 
 	public GeneTreeForSpeciesTreeDistributionInputEditor(BeautiDoc doc) {
 		super(doc);

@@ -446,7 +446,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
     } // cloneFrom
 
     private boolean isToClone() {
-        return listOfPartitions != null && listOfPartitions.getSelectedIndices().length > 1;
+        return listOfPartitions != null && listOfPartitions.getSelectionModel().getSelectedIndices().size() > 1;
     }
 
 //    public static boolean soundIsPlaying = false;
@@ -483,7 +483,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         if (e != null) {
             config.sync(partitionIndex);
             if (listOfPartitions != null) {
-                partitionIndex = Math.max(0, listOfPartitions.getSelectedIndex());
+                partitionIndex = Math.max(0, listOfPartitions.getSelectionModel().getSelectedIndex());
             }
         }
 //        BeautiPanel.playSound("woosh.wav");

@@ -253,8 +253,7 @@ public class BeautiAlignmentProvider extends BEASTObject {
 	/** provide GUI for manipulating the alignment **/
 	public void editAlignment(Alignment alignment, BeautiDoc doc) {
 		try {
-			AlignmentViewer viewer = new AlignmentViewer(alignment);
-			viewer.showInDialog();
+			AlignmentViewer.showInDialog(alignment);
 		} catch (Exception e) {
 			Alert.showMessageDialog(null, "Something went wrong viewing the alignment: " + e.getMessage());
 			e.printStackTrace();

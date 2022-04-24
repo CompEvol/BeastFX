@@ -2,7 +2,7 @@ package beastfx.app.beauti;
 
 
 
-import javax.swing.*;
+
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -15,11 +15,19 @@ import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.PackageVersion;
 import beastfx.app.util.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 import static beast.pkgmgmt.PackageManager.*;
 
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -38,12 +46,12 @@ import java.util.stream.Collectors;
  * @author  Walter Xie
  */
 @Description("BEAUti package manager")
-public class JPackageDialog extends JPanel {
+public class JPackageDialog extends DialogPane {
     private static final long serialVersionUID = 1L;
-    JScrollPane scrollPane;
+    // JScrollPane scrollPane;
     Label jLabel;
-    Box buttonBox;
-    JFrame frame;
+    HBox buttonBox;
+    // JFrame frame;
     PackageTable dataTable = null;
     boolean useLatestVersion = true;
 
@@ -122,7 +130,7 @@ public class JPackageDialog extends JPanel {
     }
 
 
-    private void createTable() {
+    private Pane createTable() {
         DataTableModel dataTableModel = new DataTableModel();
         dataTable = new PackageTable(dataTableModel);
         dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
@@ -189,6 +197,7 @@ public class JPackageDialog extends JPanel {
 
 		int size = dataTable.getFont().getSize();
 		dataTable.setRowHeight(20 * size/13);
+		return dataTable;
     }
 
 
@@ -241,14 +250,14 @@ public class JPackageDialog extends JPanel {
                 Alert.PLAIN_MESSAGE);
     }
 
-    private Box createButtonBox() {
+    private Pane createButtonBox() {
         HBox box = new HBox();
-        final Button latestVersionCheckBox = new Button("Latest");
-        latestVersionCheckBox.setToolTipText("If selected, only the latest version is installed when hitting the Install/Upgrade button. "
-        		+ "Otherwise, you can select from a list of available versions.");
-        box.add(latestVersionCheckBox);
+        final CheckBox latestVersionCheckBox = new CheckBox("Latest");
+        latestVersionCheckBox.setTooltip(new Tooltip("If selected, only the latest version is installed when hitting the Install/Upgrade button. "
+        		+ "Otherwise, you can select from a list of available versions."));
+        box.getChildren().add(latestVersionCheckBox);
         latestVersionCheckBox.setOnAction(e -> {
-        	Button checkBox = (Button) e.getSource();
+        	CheckBox checkBox = (CheckBox) e.getSource();
         	useLatestVersion = checkBox.isSelected();
         });
         latestVersionCheckBox.setSelected(useLatestVersion);
@@ -320,12 +329,12 @@ public class JPackageDialog extends JPanel {
                         + "new document is created or BEAUti is "
                         + "restarted.");
         });
-        box.add(installButton);
+        box.getChildren().add(installButton);
 
         Button uninstallButton = new Button("Uninstall");
         uninstallButton.setOnAction(e -> {
             StringBuilder removedPackageNames = new StringBuilder();
-            int[] selectedRows = dataTable.getSelectedRows();
+            List<Integer> selectedRows = dataTable.getSelectionModel().getSelectedIndices();
 
             for (int selRow : selectedRows) {
                 Package selPackage = getSelectedPackage(selRow);
@@ -381,9 +390,9 @@ public class JPackageDialog extends JPanel {
                         + "new document is created or BEAUti is "
                         + "restarted.");
         });
-        box.add(uninstallButton);
+        box.getChildren().add(uninstallButton);
 
-        box.add(new Separator());
+        box.getChildren().add(new Separator());
 
         Button packageRepoButton = new Button("Package repositories");
         packageRepoButton.setOnAction(e -> {
@@ -391,9 +400,9 @@ public class JPackageDialog extends JPanel {
                 dlg.setVisible(true);
                 resetPackages();
             });
-        box.add(packageRepoButton);
+        box.getChildren().add(packageRepoButton);
 
-        box.add(Box.createGlue());
+        box.getChildren().add(new Separator());
 
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
@@ -403,7 +412,7 @@ public class JPackageDialog extends JPanel {
             		setVisible(false);
             	}
             });
-        box.add(closeButton);
+        box.getChildren().add(closeButton);
 
         Button button = new Button("?");
         button.setTooltip(new Tooltip(getPackageUserDir() + " " + getPackageSystemDir()));
@@ -414,7 +423,7 @@ public class JPackageDialog extends JPanel {
                         "</em><br><br>which makes them available to all users<br>"
                         + "on your system.</html>");
             });
-        box.add(button);
+        box.getChildren().add(button);
         return box;
     }
 
@@ -510,7 +519,7 @@ public class JPackageDialog extends JPanel {
 	}
 
 
-	JDialog dlg = null;
+	Dialog<Package> dlg = null;
 	@Override
 	public void setCursor(Cursor cursor) {
 		if (dlg != null) {
@@ -520,7 +529,7 @@ public class JPackageDialog extends JPanel {
 		}
 	}
 
-    class PackageTable extends JTable {
+    class PackageTable extends TableView<Package> {
 		private static final long serialVersionUID = 1L;
 
         Map<Package, PackageVersion> packagesToInstall = new HashMap<>();

@@ -134,7 +134,8 @@ public class S11InitialSelection extends PlainDocument {
 
     private static void createAndShowGUI() {
         // the combo box (add/modify items if you like to)
-        ComboBox<Object> comboBox = new ComboBox<>(new Object[] {"Ester", "Jordi", "Jordina", "Jorge", "Sergi"});
+        ComboBox<Object> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(new Object[] {"Ester", "Jordi", "Jordina", "Jorge", "Sergi"});
         // has to be editable
         comboBox.setEditable(true);
         // change the editor's document

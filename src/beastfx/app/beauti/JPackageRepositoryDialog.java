@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.plaf.multi.MultiMenuItemUI;
 import javax.swing.table.AbstractTableModel;
 
 import beast.pkgmgmt.PackageManager;
@@ -37,10 +38,13 @@ import javafx.geometry.Dimension2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 /**
  * @author Tim Vaughan <tgvaughan@gmail.com>
@@ -52,9 +56,9 @@ public class JPackageRepositoryDialog extends DialogPane {
 	public JPackageRepositoryDialog(final Pane frame) {
         // super(frame);
 
-        setModal(true);
-        setHeader("BEAST 2 Package Repository Manager");
-        
+        //setModal(true);
+		Dialog dlg = new Dialog();
+        dlg.setTitle("BEAST 2 Package Repository Manager");
         // Get current list of URLs:
         List<URL> urls;
         try {
@@ -70,14 +74,17 @@ public class JPackageRepositoryDialog extends DialogPane {
         }
 
         // Assemble table
+        VBox pane = new VBox();
         final RepoTableModel repoTableModel = new RepoTableModel(urls);
-        final TableView repoTable = new TableView();
-		int size = repoTable.getFont().getSize();
-		repoTable.setRowHeight(20 * size/13);
-        repoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(repoTable);
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
+        final ListView<URL> repoTable = new ListView<>();
+        pane.getChildren().add(repoTable);
+        repoTable.getItems().addAll(urls);
+//		int size = repoTable.getFont().getSize();
+//		repoTable.setRowHeight(20 * size/13);
+//        repoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        ScrollPane scrollPane = new ScrollPane();
+//        scrollPane.setContent(repoTable);
+//        getContentPane().add(scrollPane, BorderLayout.CENTER);
         
         // Add buttons
         HBox box = new HBox();
@@ -126,12 +133,12 @@ public class JPackageRepositoryDialog extends DialogPane {
         // DELETE URL
         Button deleteURLButton = new Button("Delete selected URL");
         deleteURLButton.setOnAction(e -> {
-            if (Alert.showConfirmDialog(frame, "Really delete this repository?") ==Alert.YES_OPTION) {
-                repoTableModel.urls.remove(repoTable.getSelectedRow());
+            if (Alert.showConfirmDialog(dlg.getDialogPane(), "Really delete this repository?", "Delete?", Alert.YES_NO_OPTION) ==Alert.YES_OPTION) {
+                repoTableModel.urls.remove(repoTable.getSelectionModel().getSelectedIndex());
                 repoTableModel.fireTableDataChanged();
             }
         });
-        deleteURLButton.setEnabled(false);
+        deleteURLButton.setDisable(true);
         box.getChildren().add(deleteURLButton);
         
         // DONE
@@ -141,28 +148,32 @@ public class JPackageRepositoryDialog extends DialogPane {
             setVisible(false);
         });
         box.getChildren().add(OKButton);
-        getContentPane().add(box, BorderLayout.PAGE_END);
+        // getContentPane().add(box, BorderLayout.PAGE_END);
 
         // Action listeners to disable/enable delete button
-        ListSelectionModel listSelectionModel = repoTable.getSelectionModel();
-        listSelectionModel.addListSelectionListener(e -> {
-            if (e.getValueIsAdjusting())
-                return;
-
-            if (listSelectionModel.isSelectedIndex(0))
-                deleteURLButton.setEnabled(false);
+        repoTable.getSelectionModel().selectedIndexProperty().
+    	addListener(e -> {
+            if (repoTable.getSelectionModel().getSelectedIndex() == 0)
+                deleteURLButton.setDisable(true);
             else
-                deleteURLButton.setEnabled(true);
+                deleteURLButton.setDisable(false);
         });
 
         // Set size and location of dialog
-        Dimension2D dim = scrollPane.getPreferredSize();
-        Dimension2D dim2 = box.getPreferredSize();
-        pane.setPrefSize(dim.getWidth() + 30, dim.getHeight() + dim2.getHeight() + 30);
-        Point frameLocation = frame.getLocation();
-        Dimension frameSize = frame.getSize();
-        setLocation(frameLocation.x + frameSize.width / 2 - dim.getWidth() / 2,
-                frameLocation.y + frameSize.height / 2 - dim.getWidth() / 2);
+//        Dimension2D dim = scrollPane.getPreferredSize();
+//        Dimension2D dim2 = box.getPreferredSize();
+//        pane.setPrefSize(dim.getWidth() + 30, dim.getHeight() + dim2.getHeight() + 30);
+//        Point frameLocation = frame.getLocation();
+//        Dimension frameSize = frame.getSize();
+//        setLocation(frameLocation.x + frameSize.width / 2 - dim.getWidth() / 2,
+//                frameLocation.y + frameSize.height / 2 - dim.getWidth() / 2);
+        
+        
+        pane.getChildren().add(box);
+        
+        dlg.getDialogPane().setContent(pane);
+        dlg.showAndWait();
+
     }
 
     /**

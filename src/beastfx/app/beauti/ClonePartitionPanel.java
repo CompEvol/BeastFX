@@ -1,10 +1,5 @@
 package beastfx.app.beauti;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -12,8 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-
-import javax.swing.JPanel;
 
 
 public class ClonePartitionPanel extends VBox {
@@ -31,7 +24,8 @@ public class ClonePartitionPanel extends VBox {
             models[i] = listModel.getElementAt(i);
         }
 
-        cloneFromComboBox = new ComboBox<>(models);
+        cloneFromComboBox = new ComboBox<>();
+        cloneFromComboBox.getItems().addAll(models);
         // has to be editable
         cloneFromComboBox.setEditable(true);
         // change the editor's document
@@ -44,18 +38,18 @@ public class ClonePartitionPanel extends VBox {
     public void init() {
         // setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        FlowPane jPanel = new FlowPane();
+        FlowPane pane = new FlowPane();
 
         Label label = new Label("Clone from");
-        jPanel.getChildren().add(label);
+        pane.getChildren().add(label);
 
-        cloneFromComboBox.setMaximumRowCount(10);
-        jPanel.getChildren().add(cloneFromComboBox);
+        // cloneFromComboBox.setMaximumRowCount(10);
+        pane.getChildren().add(cloneFromComboBox);
 
-        pane.getChildren().add(Box.createRigidArea(new Dimension(0, 10)));
-        pane.getChildren().add(jPanel);
-        pane.getChildren().add(Box.createVerticalGlue());
-        pane.getChildren().add(Box.createVerticalStrut(5));
+//        pane.getChildren().add(Box.createRigidArea(new Dimension(0, 10)));
+//        pane.getChildren().add(jPanel);
+//        pane.getChildren().add(Box.createVerticalGlue());
+//        pane.getChildren().add(Box.createVerticalStrut(5));
 
         okButton.setId("ok");
         okButton.setTooltip(new Tooltip("Click to clone configuration from the above selected partition " +
@@ -64,7 +58,7 @@ public class ClonePartitionPanel extends VBox {
                 clonePartitions();
             });
         pane.getChildren().add(okButton);
-
+        getChildren().add(pane);
     } // init
 
     protected void clonePartitions() {

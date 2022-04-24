@@ -1,43 +1,35 @@
 package beastfx.app.inputeditor;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import javax.swing.Box;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import beastfx.app.util.Alert;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -50,12 +42,36 @@ import beast.base.evolution.alignment.TaxonSet;
 
 
 public class TaxonSetInputEditor extends InputEditor.Base {
-    private static final long serialVersionUID = 1L;
     List<Taxon> m_taxonset;
     List<Taxon> m_lineageset;
     Map<String, String> m_taxonMap;
-    JTable m_table;
-    DefaultTableModel m_model = new DefaultTableModel();
+
+    class TaxonMap {
+		String taxon;
+    	String taxon2;
+
+    	TaxonMap(String taxon, String taxon2) {
+    		this.taxon = taxon;
+    		this.taxon2 = taxon2;
+    	}
+    	
+    	public String getTaxon() {
+			return taxon;
+		}
+		public void setTaxon(String taxon) {
+			this.taxon = taxon;
+		}
+		public String getTaxon2() {
+			return taxon2;
+		}
+		public void setTaxon2(String taxon2) {
+			this.taxon2 = taxon2;
+		}
+    }
+    
+    TableView<TaxonMap> m_table;
+    ObservableList<TaxonMap> taxonMapping;
+    // DefaultTableModel m_model = new DefaultTableModel();
 
     TextField filterEntry;
     String m_sFilter = ".*";
@@ -80,6 +96,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         m_input = input;
         m_beastObject = beastObject;
 		this.itemNr = itemNr;
+		pane = new VBox();
         TaxonSet taxonset = (TaxonSet) m_input.get();
         if (taxonset == null) {
             return;
@@ -90,7 +107,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         for (Taxon taxon : taxa) {
             taxonsets.add(taxon);
         }
-        add(getContent(taxonsets));
+        pane.getChildren().add(getContent(taxonsets));
         if (taxa.size() == 1 && taxa.get(0).getID().equals("Beauti2DummyTaxonSet") || taxa.size() == 0) {
             taxa.clear();
             try {
@@ -108,17 +125,20 @@ public class TaxonSetInputEditor extends InputEditor.Base {
             taxonSetToModel();
             modelToTaxonset();
         }
+        getChildren().add(pane);
     }
 
     private Pane getContent(List<Taxon> taxonset) {
         m_taxonset = taxonset;
         m_taxonMap = new HashMap<>();
         m_lineageset = new ArrayList<>();
+        taxonMapping = FXCollections.observableArrayList();
         for (Taxon taxonset2 : m_taxonset) {
         	if (taxonset2 instanceof TaxonSet) {
 		        for (Taxon taxon : ((TaxonSet) taxonset2).taxonsetInput.get()) {
 		            m_lineageset.add(taxon);
 		            m_taxonMap.put(taxon.getID(), taxonset2.getID());
+		            taxonMapping.add(new TaxonMap(taxon.getID(), taxonset2.getID()));
 		        }
         	}
         }
@@ -126,114 +146,168 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         // set up table.
         // special features: background shading of rows
         // custom editor allowing only Date column to be edited.
-        m_model = new DefaultTableModel();
-        m_model.addColumn("Taxon");
-        m_model.addColumn("Species/Population");
+        m_table = new TableView<>();        
+        m_table.setPrefWidth(1024);
+        m_table.setEditable(true);
+
+        TableColumn<TaxonMap, String> col1 = new TableColumn<>("Taxon");
+        col1.setPrefWidth(500);
+        col1.setEditable(false);
+        col1.setCellValueFactory(
+        	    new PropertyValueFactory<TaxonMap,String>("Taxon")
+        	);
+        m_table.getColumns().add(col1);
+        col1.getSortNode().setOnMouseClicked(e -> {
+            // The index of the column whose header was clicked
+			int vColIndex = 0;
+            if (vColIndex != m_sortByColumn) {
+                m_sortByColumn = vColIndex;
+                m_bIsAscending = true;
+            } else {
+                m_bIsAscending = !m_bIsAscending;
+            }
+            taxonSetToModel();
+        });
+
+        TableColumn<TaxonMap, String> col2 = new TableColumn<>("Species/Population");
+        col2.setPrefWidth(500);
+        col2.setEditable(true);
+        col2.setCellValueFactory(
+        	    new PropertyValueFactory<TaxonMap,String>("Taxon2")
+        	);
+        col2.getSortNode().setOnMouseClicked(e -> {
+                    // The index of the column whose header was clicked
+        			int vColIndex = 1;
+                    if (vColIndex != m_sortByColumn) {
+                        m_sortByColumn = vColIndex;
+                        m_bIsAscending = true;
+                    } else {
+                        m_bIsAscending = !m_bIsAscending;
+                    }
+                    taxonSetToModel();
+            });
+        m_table.getColumns().add(col2);
+        m_table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        
         taxonSetToModel();
 
-        m_table = new JTable(m_model) {
-            private static final long serialVersionUID = 1L;
+        col2.setOnEditCommit(
+                new EventHandler<CellEditEvent<TaxonMap, String>>() {
+					@Override
+					public void handle(CellEditEvent<TaxonMap, String> event) {
+						String newValue = event.getNewValue();
+						TaxonMap tipDate = event.getRowValue();
+						tipDate.setTaxon2(newValue);
+						modelToTaxonset();
+					}
+				}                
+            );
 
-            // method that induces table row shading
-            @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int Index_row, int Index_col) {
-                Component comp = super.prepareRenderer(renderer, Index_row, Index_col);
-                // even index, selected or not selected
-                if (isCellSelected(Index_row, Index_col)) {
-                    comp.setBackground(Color.gray);
-                } else if (Index_row % 2 == 0) {
-                    comp.setBackground(new Color(237, 243, 255));
-                } else {
-                    comp.setBackground(Color.white);
-                }
-                return comp;
-            }
-        };
+        
+        
+        
+//        		new JTable(m_model) {
+//            private static final long serialVersionUID = 1L;
+//
+//            // method that induces table row shading
+//            @Override
+//            public Component prepareRenderer(TableCellRenderer renderer, int Index_row, int Index_col) {
+//                Component comp = super.prepareRenderer(renderer, Index_row, Index_col);
+//                // even index, selected or not selected
+//                if (isCellSelected(Index_row, Index_col)) {
+//                    comp.setBackground(Color.gray);
+//                } else if (Index_row % 2 == 0) {
+//                    comp.setBackground(new Color(237, 243, 255));
+//                } else {
+//                    comp.setBackground(Color.white);
+//                }
+//                return comp;
+//            }
+//        };
 
-        // set up editor that makes sure only doubles are accepted as entry
-        // and only the Date column is editable.
-        m_table.setDefaultEditor(Object.class, new TableCellEditor() {
-            TextField m_textField = new TextField();
-            int m_iRow
-                    ,
-                    m_iCol;
+//        m_table.setDefaultEditor(Object.class, new TableCellEditor() {
+//            TextField m_textField = new TextField();
+//            int m_iRow
+//                    ,
+//                    m_iCol;
+//
+//            @Override
+//            public boolean stopCellEditing() {
+//                m_table.removeEditor();
+//                String text = m_textField.getText();
+//                //Log.warning.println(text);
+//                m_model.setValueAt(text, m_iRow, m_iCol);
+//
+//                // try {
+//                // Double.parseDouble(text);
+//                // } catch (Exception e) {
+//                // return false;
+//                // }
+//                modelToTaxonset();
+//                return true;
+//            }
+//            
+//
+//            @Override
+//            public boolean isCellEditable(EventObject anEvent) {
+//                return m_table.getSelectedColumn() == 1;
+//            }
+//
+//            @Override
+//            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowNr,
+//                                                         int colNr) {
+//                if (!isSelected) {
+//                    return null;
+//                }
+//                m_iRow = rowNr;
+//                m_iCol = colNr;
+//                m_textField.setText((String) value);
+//                return m_textField;
+//            }
+//
+//            @Override
+//            public boolean shouldSelectCell(EventObject anEvent) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void removeCellEditorListener(CellEditorListener l) {
+//            }
+//
+//            @Override
+//            public Object getCellEditorValue() {
+//                return null;
+//            }
+//
+//            @Override
+//            public void cancelCellEditing() {
+//            }
+//
+//            @Override
+//            public void addCellEditorListener(CellEditorListener l) {
+//            }
+//
+//        });
 
-            @Override
-            public boolean stopCellEditing() {
-                m_table.removeEditor();
-                String text = m_textField.getText();
-                //Log.warning.println(text);
-                m_model.setValueAt(text, m_iRow, m_iCol);
+//        m_table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+//        m_table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//		int size = m_table.getFont().getSize();
+//		m_table.setRowHeight(20 * size/13);
+//        m_table.getColumnModel().getColumn(0).setPreferredWidth(250 * size/13);
+//        m_table.getColumnModel().getColumn(1).setPreferredWidth(250 * size/13);
 
-                // try {
-                // Double.parseDouble(text);
-                // } catch (Exception e) {
-                // return false;
-                // }
-                modelToTaxonset();
-                return true;
-            }
-            
+//        JTableHeader header = m_table.getTableHeader();
+//        header.addMouseListener(new ColumnHeaderListener());
 
-            @Override
-            public boolean isCellEditable(EventObject anEvent) {
-                return m_table.getSelectedColumn() == 1;
-            }
-
-            @Override
-            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowNr,
-                                                         int colNr) {
-                if (!isSelected) {
-                    return null;
-                }
-                m_iRow = rowNr;
-                m_iCol = colNr;
-                m_textField.setText((String) value);
-                return m_textField;
-            }
-
-            @Override
-            public boolean shouldSelectCell(EventObject anEvent) {
-                return false;
-            }
-
-            @Override
-            public void removeCellEditorListener(CellEditorListener l) {
-            }
-
-            @Override
-            public Object getCellEditorValue() {
-                return null;
-            }
-
-            @Override
-            public void cancelCellEditing() {
-            }
-
-            @Override
-            public void addCellEditorListener(CellEditorListener l) {
-            }
-
-        });
-        m_table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
-        m_table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		int size = m_table.getFont().getSize();
-		m_table.setRowHeight(20 * size/13);
-        m_table.getColumnModel().getColumn(0).setPreferredWidth(250 * size/13);
-        m_table.getColumnModel().getColumn(1).setPreferredWidth(250 * size/13);
-
-        JTableHeader header = m_table.getTableHeader();
-        header.addMouseListener(new ColumnHeaderListener());
-
-        JScrollPane pane = new JScrollPane(m_table);
-        HBox tableBox = new HBox();
-        tableBox.getChildren().add(new Separator());
-        tableBox.getChildren().add(pane);
-        tableBox.getChildren().add(new Separator());
+        //JScrollPane pane = new JScrollPane(m_table);
+        //HBox tableBox = new HBox();
+        //tableBox.getChildren().add(new Separator());
+        //tableBox.getChildren().add(pane);
+        //tableBox.getChildren().add(new Separator());
 
         VBox box = new VBox();
         box.getChildren().add(createFilterBox());
-        box.getChildren().add(tableBox);
+        box.getChildren().add(m_table);
         box.getChildren().add(createButtonBox());
         return box;
     }
@@ -245,13 +319,13 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         fillDownButton.setId("Fill down");
         fillDownButton.setTooltip(new Tooltip("replaces all taxons in selection with the one that is selected at the top"));
         fillDownButton.setOnAction(e -> {
-                int[] rows = m_table.getSelectedRows();
-                if (rows.length < 2) {
+                List<Integer> rows = m_table.getSelectionModel().getSelectedIndices();
+                if (rows.size() < 2) {
                     return;
                 }
-                String taxon = (String) ((Vector<?>) m_model.getDataVector().elementAt(rows[0])).elementAt(1);
-                for (int i = 1; i < rows.length; i++) {
-                    m_model.setValueAt(taxon, rows[i], 1);
+                String taxon = taxonMapping.get(rows.get(0)).getTaxon2();
+                for (int i = 1; i < rows.size(); i++) {
+                    taxonMapping.get(rows.get(i)).setTaxon2(taxon);
                 }
                 modelToTaxonset();
             });
@@ -270,23 +344,23 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         return buttonBox;
     }
 
-    public class ColumnHeaderListener extends MouseAdapter {
-        @Override
-		public void mouseClicked(MouseEvent evt) {
-            // The index of the column whose header was clicked
-            int vColIndex = m_table.getColumnModel().getColumnIndexAtX(evt.getX());
-            if (vColIndex == -1) {
-                return;
-            }
-            if (vColIndex != m_sortByColumn) {
-                m_sortByColumn = vColIndex;
-                m_bIsAscending = true;
-            } else {
-                m_bIsAscending = !m_bIsAscending;
-            }
-            taxonSetToModel();
-        }
-    }
+//    public class ColumnHeaderListener extends MouseAdapter {
+//        @Override
+//		public void mouseClicked(MouseEvent evt) {
+//            // The index of the column whose header was clicked
+//            int vColIndex = m_table.getColumnModel().getColumnIndexAtX(evt.getX());
+//            if (vColIndex == -1) {
+//                return;
+//            }
+//            if (vColIndex != m_sortByColumn) {
+//                m_sortByColumn = vColIndex;
+//                m_bIsAscending = true;
+//            } else {
+//                m_bIsAscending = !m_bIsAscending;
+//            }
+//            taxonSetToModel();
+//        }
+//    }
 
     private void guess() {
         GuessPatternDialog dlg = new GuessPatternDialog(this, m_sPattern);
@@ -508,7 +582,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
             filter.matches(filter);
             m_sFilter = filter;
             taxonSetToModel();
-            m_table.repaint();
+            // m_table.repaint();
         } catch (PatternSyntaxException e) {
             // ignore
         }
@@ -517,41 +591,53 @@ public class TaxonSetInputEditor extends InputEditor.Base {
     /**
      * for convert taxon sets to table model *
      */
-    @SuppressWarnings("unchecked")
     private void taxonSetToModel() {
-        // clear table model
-        while (m_model.getRowCount() > 0) {
-            m_model.removeRow(0);
-        }
-
-        // fill table model with lineages matching the filter
-        for (String lineageID : m_taxonMap.keySet()) {
-            if (lineageID.matches(m_sFilter)) {
-                Object[] rowData = new Object[2];
-                rowData[0] = lineageID;
-                rowData[1] = m_taxonMap.get(lineageID);
-                m_model.addRow(rowData);
+        TaxonSet taxonset = (TaxonSet) m_input.get();
+        int i = 0;
+        for (Taxon taxon : m_taxonset) {
+            try {
+                taxonMapping.get(i).setTaxon(taxon.getID());
+                taxonMapping.get(i).setTaxon2(taxonset.getID());
+                i++;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
-        @SuppressWarnings("rawtypes")
-        Vector data = m_model.getDataVector();
-        Collections.sort(data, (Vector<?> v1, Vector<?> v2) -> {
-                String o1 = (String) v1.get(m_sortByColumn);
-                String o2 = (String) v2.get(m_sortByColumn);
-                if (o1.equals(o2)) {
-                    o1 = (String) v1.get(1 - m_sortByColumn);
-                    o2 = (String) v2.get(1 - m_sortByColumn);
-                }
-                if (m_bIsAscending) {
-                    return o1.compareTo(o2);
-                } else {
-                    return o2.compareTo(o1);
-                }
-            }
-
-        );
-        m_model.fireTableRowsInserted(0, m_model.getRowCount());
+    	
+//        // clear table model
+//        while (m_model.getRowCount() > 0) {
+//            m_model.removeRow(0);
+//        }
+//
+//        // fill table model with lineages matching the filter
+//        for (String lineageID : m_taxonMap.keySet()) {
+//            if (lineageID.matches(m_sFilter)) {
+//                Object[] rowData = new Object[2];
+//                rowData[0] = lineageID;
+//                rowData[1] = m_taxonMap.get(lineageID);
+//                m_model.addRow(rowData);
+//            }
+//        }
+//
+//        @SuppressWarnings("rawtypes")
+//        Vector data = m_model.getDataVector();
+//        Collections.sort(data, (Vector<?> v1, Vector<?> v2) -> {
+//                String o1 = (String) v1.get(m_sortByColumn);
+//                String o2 = (String) v2.get(m_sortByColumn);
+//                if (o1.equals(o2)) {
+//                    o1 = (String) v1.get(1 - m_sortByColumn);
+//                    o2 = (String) v2.get(1 - m_sortByColumn);
+//                }
+//                if (m_bIsAscending) {
+//                    return o1.compareTo(o2);
+//                } else {
+//                    return o2.compareTo(o1);
+//                }
+//            }
+//
+//        );
+//        m_model.fireTableRowsInserted(0, m_model.getRowCount());
     }
 
     /**
@@ -560,9 +646,9 @@ public class TaxonSetInputEditor extends InputEditor.Base {
     private void modelToTaxonset() {
 
         // update map
-        for (int i = 0; i < m_model.getRowCount(); i++) {
-            String lineageID = (String) ((Vector<?>) m_model.getDataVector().elementAt(i)).elementAt(0);
-            String taxonSetID = (String) ((Vector<?>) m_model.getDataVector().elementAt(i)).elementAt(1);
+        for (int i = 0; i < taxonMapping.size(); i++) {
+            String lineageID = taxonMapping.get(i).getTaxon();
+            String taxonSetID = taxonMapping.get(i).getTaxon2();
 
             // new taxon set?
             if (!m_taxonMap.containsValue(taxonSetID)) {
@@ -609,9 +695,13 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 
         TaxonSet taxonset = (TaxonSet) m_input.get();
         taxonset.taxonsetInput.get().clear();
+        int i = 0;
         for (Taxon taxon : m_taxonset) {
             try {
                 taxonset.taxonsetInput.setValue(taxon, taxonset);
+                taxonMapping.get(i).setTaxon(taxon.getID());
+                taxonMapping.get(i).setTaxon2(taxonset.getID());
+                i++;
             } catch (Exception e) {
                 e.printStackTrace();
             }

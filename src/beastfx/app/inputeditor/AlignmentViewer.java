@@ -1,5 +1,6 @@
 package beastfx.app.inputeditor;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,21 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Box;
-
-import javafx.geometry.Dimension2D;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-
-import javax.swing.JDialog;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -31,9 +24,18 @@ import javax.swing.table.TableModel;
 import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.datatype.DataType;
 import beast.base.parser.NexusParser;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.embed.swing.SwingNode;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 
 
-public class AlignmentViewer extends Pane {
+// RRB: note that this is still using swing components
+// but since this does not seem to require testing, it should be fine.
+
+public class AlignmentViewer extends JPanel {
     private static final long serialVersionUID = 1L;
 
     Object[][] tableData;
@@ -157,17 +159,39 @@ public class AlignmentViewer extends Pane {
         mainTable.setShowGrid(false);
 
         JScrollPane scrollPane = new JScrollPane(mainTable);
-        Dimension2D fixedSize = new Dimension2D(fixedTable.getPrefWidth(), fixedTable.getPrefHeight());
+        Dimension fixedSize = fixedTable.getPreferredSize();
         JViewport viewport = new JViewport();
         viewport.setView(fixedTable);
-        viewport.setPrefSize(fixedSize.getWidth(), fixedSize.getHeight());
-        viewport.setMaxSize(fixedSize.getWidth(), fixedSize.getHeight());
+        viewport.setPreferredSize(fixedSize);
+        viewport.setMaximumSize(fixedSize);
         scrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, fixedTable.getTableHeader());
         scrollPane.setRowHeaderView(viewport);
 
 
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
+        
+        
+	      Box buttonBox = Box.createHorizontalBox();
+	      JCheckBox useDotsCheckBox = new JCheckBox("Use dots", true);
+	      useDotsCheckBox.addActionListener(e -> {
+	              JCheckBox _useDots = (JCheckBox) e.getSource();
+	              useDots = _useDots.isSelected();
+	              updateTableData();
+	              repaint();
+	          });
+	      buttonBox.add(useDotsCheckBox);
+	
+	      JCheckBox useColorCheckBox = new JCheckBox("Use Color");
+	      useColorCheckBox.setName("UseColor");
+	      useColorCheckBox.addActionListener(e -> {
+	              JCheckBox hasColor = (JCheckBox) e.getSource();
+	              useColor = hasColor.isSelected();
+	              updateTableData();
+	              repaint();
+	          });
+	      buttonBox.add(useColorCheckBox);
+	      add(buttonBox, BorderLayout.SOUTH);
     }
 
     private char[] updateTableData() {
@@ -338,38 +362,17 @@ public class AlignmentViewer extends Pane {
         return mostFrequentChar;
     }
 
-    public void showInDialog() {
-        Dialog<?> dlg = new Dialog<>();
-        dlg.getDialogPane().setId("AlignmentViewer");
-        dlg.getDialogPane().getChildren().add(this);
-
-        HBox buttonBox = new HBox();
-        CheckBox useDotsCheckBox = new CheckBox("Use dots");
-        useDotsCheckBox.setSelected(true);
-        useDotsCheckBox.setOnAction(e -> {
-        	CheckBox _useDots = (CheckBox) e.getSource();
-                useDots = _useDots.isSelected();
-                updateTableData();
-                repaint();
-            });
-        buttonBox.getChildren().add(useDotsCheckBox);
-
-        CheckBox useColorCheckBox = new CheckBox("Use Color");
-        useColorCheckBox.setId("UseColor");
-        useColorCheckBox.setOnAction(e -> {
-        	CheckBox hasColor = (CheckBox) e.getSource();
-                useColor = hasColor.isSelected();
-                updateTableData();
-                repaint();
-            });
-        buttonBox.getChildren().add(useColorCheckBox);
-        dlg.getChildren().add(buttonBox, BorderLayout.SOUTH);
-
-        int size = UIManager.getFont("Label.font").getSize();
-        dlg.setSize(1024 * size / 13, 600 * size / 13);
-        dlg.setModal(true);
-        dlg.setVisible(true);
-        dlg.dispose();
+    public static void showInDialog(Alignment data) {
+    	Dialog dialog = new Dialog<>();
+    	DialogPane pane = dialog.getDialogPane();
+    	pane.getButtonTypes().add(ButtonType.CLOSE);
+    	pane.setId("AlignmentViewer");
+    	SwingNode panel = new SwingNode();
+    	panel.setContent(new AlignmentViewer(data));
+    	pane.setContent(panel);
+    	pane.setPrefSize(1024, 600);
+    	dialog.setResizable(true);
+    	dialog.showAndWait();
     }
 
     public static void main(String[] args) {
@@ -378,7 +381,13 @@ public class AlignmentViewer extends Pane {
             parser.parseFile(new File(args[0]));
             Alignment data = parser.m_alignment;
             AlignmentViewer panel = new AlignmentViewer(data);
-            panel.showInDialog();
+            new JFXPanel();
+            Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+		            AlignmentViewer.showInDialog(data);
+				}
+			});
         } catch (Exception e) {
             e.printStackTrace();
         }

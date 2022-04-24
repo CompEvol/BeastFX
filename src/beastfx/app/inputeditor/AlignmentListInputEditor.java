@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.Clipboard;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -70,7 +71,6 @@ import beast.base.parser.PartitionContext;
 // TODO: add warning if useAmbiguities=false and nr of patterns=1 (happens when all data is ambiguous)
 
 public class AlignmentListInputEditor extends ListInputEditor {
-	private static final long serialVersionUID = 1L;
 
 	final static int NAME_COLUMN = 0;
 	final static int FILE_COLUMN = 1;
@@ -165,23 +165,29 @@ public class AlignmentListInputEditor extends ListInputEditor {
         //box.add(Box.createVerticalGlue());
 		//add(box, BorderLayout.CENTER);
 
-        Color focusColor = UIManager.getColor("Focus.color");
-        Border focusBorder = BorderFactory.createMatteBorder(2, 2, 2, 2, focusColor);
-        new FileDrop(null, scrollPane, focusBorder, new FileDrop.Listener() {
-            @Override
-			public void filesDropped(java.io.File[] files) {
-            	SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						addItem(files);
-					}
-				});
-            }   // end filesDropped
-        }); // end FileDrop.Listener
+//        Color focusColor = UIManager.getColor("Focus.color");
+//        Border focusBorder = BorderFactory.createMatteBorder(2, 2, 2, 2, focusColor);
+//        new FileDrop(null, scrollPane, focusBorder, new FileDrop.Listener() {
+//            @Override
+//			public void filesDropped(java.io.File[] files) {
+//            	SwingUtilities.invokeLater(new Runnable() {
+//					@Override
+//					public void run() {
+//						addItem(files);
+//					}
+//				});
+//            }   // end filesDropped
+//        }); // end FileDrop.Listener
 
+        bpane.setOnDragDropped(e -> {
+        	List<File> files = Clipboard.getSystemClipboard().getFiles();
+        	addItem(files.toArray(new File[]{}));
+        });
+        
+        
         // this should place the add/remove/split buttons at the bottom of the window.
         bpane.setBottom(createAddRemoveSplitButtons());
-
+        getChildren().add(pane);
         updateStatus();
 	}
 

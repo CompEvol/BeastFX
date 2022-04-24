@@ -12,8 +12,14 @@ import beast.base.core.Log;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.tree.TraitSet;
 import beast.base.evolution.tree.Tree;
+import beastfx.app.inputeditor.FileListInputEditor.File0;
 import beastfx.app.util.Alert;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -22,15 +28,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import java.text.DateFormat;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 import java.util.Map;
@@ -95,9 +108,42 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
     ComboBox<TraitSet.Units> unitsComboBox;
     ComboBox<String> relativeToComboBox;
     List<String> taxa;
-    Object[][] tableData;
+    // Object[][] tableData;
     boolean[] recordValid;
-    JTable table;
+    
+    class TipDate {
+    	String taxon;
+    	String date;
+    	Double age;
+
+    	TipDate(String taxon, String date, Double age) {
+    		this.taxon = taxon;
+    		this.date = date;
+    		this.age = age;
+    	}
+
+    	public String getTaxon() {
+			return taxon;
+		}
+		public void setTaxon(String taxon) {
+			this.taxon = taxon;
+		}
+		public String getDate() {
+			return date;
+		}
+		public void setDate(String date) {
+			this.date = date;
+		}
+		public Double getAge() {
+			return age;
+		}
+		public void setAge(Double age) {
+			this.age = age;
+		}
+    } // class TipDate
+
+    ObservableList<TipDate> tipDateEntries;
+    TableView<TipDate> table;
     String m_sPattern = ".*(\\d\\d\\d\\d).*";
     ScrollPane scrollPane;
     List<Taxon> taxonsets;
@@ -166,94 +212,155 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 
     private Node createListBox() {
         taxa = traitSet.taxaInput.get().asStringList();
-        String[] columnData = new String[]{"Name", "Date (raw value)", "Height"};
-        tableData = new Object[taxa.size()][3];
+        List<TipDate> list = new ArrayList<>();
+        for (String taxon : taxa) {
+        	list.add(new TipDate(taxon, "0", 0.0));
+        }
+        tipDateEntries = FXCollections.observableArrayList(list);
+        
+        // String[] columnData = new String[]{"Name", "Date (raw value)", "Height"};
+        // tableData = new Object[taxa.size()][3];
+        
+        table = new TableView<>();
+        table.setPrefWidth(1024);
+        table.setEditable(true);
+
+        TableColumn<TipDate,String> col1 = new TableColumn<>("Taxon");
+        col1.setPrefWidth(500);
+        col1.setEditable(false);
+        col1.setCellValueFactory(
+        	    new PropertyValueFactory<TipDate,String>("Taxon")
+        	);
+        table.getColumns().add(col1);
+        
+        TableColumn<TipDate,String> col2 = new TableColumn<>("Date (raw value)");
+        col2.setPrefWidth(500);
+        col2.setEditable(true);
+        col2.setCellValueFactory(
+        	    new PropertyValueFactory<TipDate,String>("Date")
+        	);
+        table.getColumns().add(col2);
+        
+        col2.setCellFactory(TextFieldTableCell.forTableColumn());
+        col2.setOnEditCommit(
+                new EventHandler<CellEditEvent<TipDate, String>>() {
+					@Override
+					public void handle(CellEditEvent<TipDate, String> event) {
+						String newValue = event.getNewValue();
+						TipDate tipDate = event.getRowValue();
+						tipDate.setDate(newValue);
+						convertTableDataToTrait();
+						convertTraitToTableData();
+					}
+				}
+                
+//                <CellEditEvent<TipDate<CellEditEvent<TipDate, String>>() {
+//                    public void handle(CellEditEvent<GasRatioMeasureBean, String> measure) {
+//                        ((GasRatioMeasureBean) measure.getTableView().getItems().get(
+//                        measure.getTablePosition().getRow())
+//                        ).setMeasure(measure.getNewValue());
+//                    }
+//                }
+            );
+        
+        TableColumn<TipDate,Double> col3 = new TableColumn<>("Age/Height");
+        col3.setPrefWidth(500);
+        col3.setEditable(false);
+        col3.setCellValueFactory(
+        	    new PropertyValueFactory<TipDate,Double>("Age")
+        	);
+        table.getColumns().add(col3);
+        
+        table.setItems(tipDateEntries);
+
+        
         recordValid = new boolean[taxa.size()];
         convertTraitToTableData();
+        
         // set up table.
         // special features: background shading of rows
         // custom editor allowing only Date column to be edited.
-        table = new JTable(tableData, columnData) {
-            private static final long serialVersionUID = 1L;
+//        table = new JTable(tableData, columnData) {
+//            private static final long serialVersionUID = 1L;
+//
+//            // method that induces table row shading
+//            @Override
+//            public Component prepareRenderer(TableCellRenderer renderer, int Index_row, int Index_col) {
+//                Component comp = super.prepareRenderer(renderer, Index_row, Index_col);
+//                //even index, selected or not selected
+//                comp.setForeground(Color.black);
+//                if (isCellSelected(Index_row, Index_col)) {
+//                    comp.setBackground(Color.lightGray);
+//                } else if (!recordValid[Index_row]) {
+//                    comp.setForeground(Color.WHITE);
+//                    comp.setBackground(Color.RED);
+//                } else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)) {
+//                    comp.setBackground(new Color(237, 243, 255));
+//                } else {
+//                    comp.setBackground(Color.white);
+//                }
+//                return comp;
+//            }
+//        };
 
-            // method that induces table row shading
-            @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int Index_row, int Index_col) {
-                Component comp = super.prepareRenderer(renderer, Index_row, Index_col);
-                //even index, selected or not selected
-                comp.setForeground(Color.black);
-                if (isCellSelected(Index_row, Index_col)) {
-                    comp.setBackground(Color.lightGray);
-                } else if (!recordValid[Index_row]) {
-                    comp.setForeground(Color.WHITE);
-                    comp.setBackground(Color.RED);
-                } else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)) {
-                    comp.setBackground(new Color(237, 243, 255));
-                } else {
-                    comp.setBackground(Color.white);
-                }
-                return comp;
-            }
-        };
-
-        // set up editor that makes sure only doubles are accepted as entry
-        // and only the Date column is editable.
-        table.setDefaultEditor(Object.class, new TableCellEditor() {
-            TextField m_textField = new TextField();
-            int m_iRow,
-                    m_iCol;
-
-            @Override
-            public boolean stopCellEditing() {
-                table.removeEditor();
-                String text = m_textField.getText();
-
-                tableData[m_iRow][m_iCol] = text;
-                convertTableDataToTrait();
-                convertTraitToTableData();
-                return true;
-            }
-
-            @Override
-            public boolean isCellEditable(EventObject anEvent) {
-                return table.getSelectedColumn() == 1;
-            }
-
-            @Override
-            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowNr, int colNr) {
-                if (!isSelected) {
-                    return null;
-                }
-                m_iRow = rowNr;
-                m_iCol = colNr;
-                m_textField.setText((String) value);
-                return m_textField;
-            }
-
-            @Override
-            public boolean shouldSelectCell(EventObject anEvent) {
-                return false;
-            }
-
-            @Override
-            public void removeCellEditorListener(CellEditorListener l) {
-            }
-
-            @Override
-            public Object getCellEditorValue() {
-                return null;
-            }
-
-            @Override
-            public void cancelCellEditing() {
-            }
-
-            @Override
-            public void addCellEditorListener(CellEditorListener l) {
-            }
-        });
-        int fontsize = table.getFont().getSize();
-        table.setRowHeight(24 * fontsize / 13);
+//        // set up editor that makes sure only doubles are accepted as entry
+//        // and only the Date column is editable.
+//        table.setDefaultEditor(Object.class, new TableCellEditor() {
+//            TextField m_textField = new TextField();
+//            int m_iRow,
+//                    m_iCol;
+//
+//            @Override
+//            public boolean stopCellEditing() {
+//                table.removeEditor();
+//                String text = m_textField.getText();
+//
+//                tableData[m_iRow][m_iCol] = text;
+//                convertTableDataToTrait();
+//                convertTraitToTableData();
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean isCellEditable(EventObject anEvent) {
+//                return table.getSelectedColumn() == 1;
+//            }
+//
+//            @Override
+//            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowNr, int colNr) {
+//                if (!isSelected) {
+//                    return null;
+//                }
+//                m_iRow = rowNr;
+//                m_iCol = colNr;
+//                m_textField.setText((String) value);
+//                return m_textField;
+//            }
+//
+//            @Override
+//            public boolean shouldSelectCell(EventObject anEvent) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void removeCellEditorListener(CellEditorListener l) {
+//            }
+//
+//            @Override
+//            public Object getCellEditorValue() {
+//                return null;
+//            }
+//
+//            @Override
+//            public void cancelCellEditing() {
+//            }
+//
+//            @Override
+//            public void addCellEditorListener(CellEditorListener l) {
+//            }
+//        });
+//        // int fontsize = table.getFont().getSize();
+        // table.setRowHeight(24 * fontsize / 13);
         scrollPane = new ScrollPane();
         scrollPane.setContent(table);
 
@@ -261,11 +368,12 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
     } // createListBox
 
     private void clearTable(boolean heightsOnly) {
-         for (int i = 0; i < tableData.length; i++) {
-            tableData[i][0] = taxa.get(i);
+         for (int i = 0; i < tipDateEntries.size(); i++) {
+        	 TipDate entry = tipDateEntries.get(i);
+        	 entry.setTaxon(taxa.get(i));
             if (!heightsOnly)
-                tableData[i][1] = "0";
-             tableData[i][2] = "0";
+                entry.setDate("0");
+            entry.setAge(0.0);
         }
     }
 
@@ -285,8 +393,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             int taxonIndex = taxa.indexOf(taxonID);
 
             if (taxonIndex >= 0) {
-                tableData[taxonIndex][1] = normalize(strs[1]);
-                tableData[taxonIndex][0] = taxonID;
+                tipDateEntries.get(taxonIndex).setDate(normalize(strs[1]));
+                tipDateEntries.get(taxonIndex).setTaxon(taxonID);
             } else {
             	Log.warning.println("WARNING: File contains taxon " + taxonID + " that cannot be found in alignment");
             }
@@ -296,11 +404,11 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         boolean dateParseError = false;
         double [] convertedValues = new double[taxa.size()];
 
-        for (int i=0; i<tableData.length; i++) {
+        for (int i=0; i< tipDateEntries.size(); i++) {
             recordValid[i] = true;
 
             try {
-                convertedValues[i] = traitSet.convertValueToDouble((String) tableData[i][1]);
+                convertedValues[i] = traitSet.convertValueToDouble((String) tipDateEntries.get(i).getDate());
             } catch (DateTimeParseException ex) {
                 dateParseError = true;
                 recordValid[i] = false;
@@ -327,29 +435,29 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         } else {
             if (traitSet.traitNameInput.get().equals(TraitSet.DATE_BACKWARD_TRAIT)) {
                 Double minDate = Double.MAX_VALUE;
-                for (int i = 0; i < tableData.length; i++) {
+                for (int i = 0; i < tipDateEntries.size(); i++) {
                     minDate = Math.min(minDate, convertedValues[i]);
                 }
-                for (int i = 0; i < tableData.length; i++) {
-                    tableData[i][2] = convertedValues[i] - minDate;
+                for (int i = 0; i < tipDateEntries.size(); i++) {
+                	tipDateEntries.get(i).setAge(convertedValues[i] - minDate);
                 }
             } else {
                 Double maxDate = 0.0;
-                for (int i = 0; i < tableData.length; i++) {
+                for (int i = 0; i < tipDateEntries.size(); i++) {
                     maxDate = Math.max(maxDate, convertedValues[i]);
                 }
-                for (int i = 0; i < tableData.length; i++) {
-                    tableData[i][2] = maxDate - convertedValues[i];
+                for (int i = 0; i < tipDateEntries.size(); i++) {
+                	tipDateEntries.get(i).setAge(maxDate - convertedValues[i]);
                 }
             }
         }
 
-        if (table != null) {
-            for (int i = 0; i < tableData.length; i++) {
-                table.setValueAt(tableData[i][1], i, 1);
-                table.setValueAt(tableData[i][2], i, 2);
-            }
-        }
+//        if (table != null) {
+//            for (int i = 0; i < tipDateEntries.size(); i++) {
+//                table.setValueAt(tipDateEntries.get(i).getDate(), i, 1);
+//                table.setValueAt(tipDateEntries.get(i).getAge(), i, 2);
+//            }
+//        }
     } // convertTraitToTableData
 
     private String normalize(String str) {
@@ -367,9 +475,9 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
      */
     private void convertTableDataToTrait() {
         String trait = "";
-        for (int i = 0; i < tableData.length; i++) {
-            trait += taxa.get(i) + "=" + tableData[i][1];
-            if (i < tableData.length - 1) {
+        for (int i = 0; i < tipDateEntries.size(); i++) {
+            trait += taxa.get(i) + "=" + tipDateEntries.get(i).getDate();
+            if (i < tipDateEntries.size() - 1) {
                 trait += ",\n";
             }
         }
@@ -387,7 +495,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         HBox buttonBox = new HBox();
 
         Label label = new Label("Dates specified: ");
-        label.setAlignmentY(Component.TOP_ALIGNMENT);
+        label.setAlignment(Pos.TOP_CENTER);
         label.setMaxSize(label.getPrefWidth(), label.getPrefHeight());
         buttonBox.getChildren().add(label);
 
@@ -495,19 +603,19 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         Button dateFormatHelpButton = new Button("?");
         dateFormatHelpButton.setOnAction(e ->
                 WrappedOptionPane.showWrappedMessageDialog(this,
-                        DATE_FORMAT_HELP_MESSAGE, Font.MONOSPACED));
+                        DATE_FORMAT_HELP_MESSAGE, "Menlo"));
         formatBoxSecondLine.getChildren().add(dateFormatHelpButton);
 
         formatBoxSecondLine.getChildren().add(new Separator());
 
         formatBox.getChildren().add(formatBoxSecondLine);
-        formatBox.setAlignmentY(TOP_ALIGNMENT);
+        formatBox.setAlignment(Pos.TOP_CENTER);
         buttonBox.getChildren().add(formatBox);
 
         buttonBox.getChildren().add(new Separator());
 
         Button guessButton = new Button("Auto-configure");
-        guessButton.setAlignmentY(TOP_ALIGNMENT);
+        guessButton.setAlignment(Pos.TOP_CENTER);
         guessButton.setTooltip(new Tooltip("Automatically configure dates based on taxon names"));
         guessButton.setId("Guess");
         guessButton.setOnAction(e -> {
@@ -557,7 +665,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 
 
         Button clearButton = new Button("Clear");
-        clearButton.setAlignmentY(TOP_ALIGNMENT);
+        clearButton.setAlignment(Pos.TOP_CENTER);
         clearButton.setTooltip(new Tooltip("Set all dates to zero"));
         clearButton.setOnAction(e -> {
                 try {

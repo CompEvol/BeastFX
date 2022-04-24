@@ -5,6 +5,8 @@ import javax.swing.JComponent;
 
 import beastfx.app.inputeditor.BEASTObjectInputEditor;
 import beastfx.app.inputeditor.BeautiDoc;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.Pane;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.speciation.SpeciesTreePrior;
@@ -12,7 +14,6 @@ import beast.base.evolution.speciation.SpeciesTreePrior;
 
 
 public class SpeciesTreePriorInputEditor extends BEASTObjectInputEditor {
-	private static final long serialVersionUID = 1L;
 
 	public SpeciesTreePriorInputEditor() {
 		super();
@@ -32,11 +33,11 @@ public class SpeciesTreePriorInputEditor extends BEASTObjectInputEditor {
 	}
 
     @Override
-	protected void addComboBox(JComponent box, Input<?> input, BEASTInterface beastObject) {
+	protected void addComboBox(Pane box, Input<?> input, BEASTInterface beastObject) {
     	m_bAddButtons = true;
     	String label = "Species Tree Population Size";
     	addInputLabel(label, label);
     	m_bAddButtons = false;
-    	add(new Separator());
+    	getChildren().add(new Separator());
     }
 }
