@@ -158,9 +158,9 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         box.getChildren().add(new Separator(Orientation.VERTICAL));
         box.getChildren().add(new Label(getIcon(panelIndex, config)));
 
-        splitPane.getChildren().add(box, JSplitPane.LEFT);
+        splitPane.add(box, JSplitPane.LEFT);
         if (listOfPartitions != null) {
-            listOfPartitions.setSelectedIndex(partitionIndex);
+            listOfPartitions.getSelectionModel().select(partitionIndex);
         }
     }
     

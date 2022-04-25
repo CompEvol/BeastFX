@@ -1,9 +1,6 @@
 package beastfx.app.util;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import beast.app.util.Utils;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 
 import java.io.*;
@@ -79,5 +76,10 @@ public class FXUtils {
     		return new File[] {file};
     	}
     }
+
+	public static ImageView getIcon(String string) {
+		ImageView img = new ImageView(string);
+		return img;
+	}
 
 }

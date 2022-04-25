@@ -1,9 +1,11 @@
 package beastfx.app.beauti;
 
-import javax.swing.Box;
+
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-
+import javafx.scene.control.Separator;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beast.base.core.BEASTInterface;
@@ -29,6 +31,7 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
 
 	@Override
 	public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
+        pane = new HBox();
         m_bAddButtons = addButtons;
         m_input = input;
         m_beastObject = beastObject;
@@ -37,8 +40,9 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
         if (id.contains(".t:")) {
         	id = id.substring(id.indexOf(".t:") + 3);
         }
-        add(new Label("Gene Tree " + id));
-        add(Box.createGlue());
+        pane.getChildren().add(new Label("Gene Tree " + id));
+        pane.getChildren().add(new Separator());
+        getChildren().add(pane);
 	}
 	
 	static final int OTHER = 3;
@@ -63,13 +67,14 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
 				this.itemNr = itemNr;
 				addInputLabel();
 				
-	            m_selectBeastObjectBox = new ComboBox<>(valuesString);
+	            m_selectBeastObjectBox = new ComboBox<>();
+	            m_selectBeastObjectBox.getItems().addAll(valuesString);
 	            setSelection();
 	            String selectString = input.get().toString();
-	            m_selectBeastObjectBox.setSelectedItem(selectString);
+	            m_selectBeastObjectBox.getSelectionModel().select(selectString);
 
 	            m_selectBeastObjectBox.setOnAction(e -> {
-	                    int i = m_selectBeastObjectBox.getSelectedIndex();
+	                    int i = m_selectBeastObjectBox.getSelectionModel().getSelectedIndex();
 	                    if (i == OTHER) {
 	                    	setSelection();
 	                    	return;
@@ -82,16 +87,16 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
 	                    }
 	                });
 	            m_selectBeastObjectBox.setTooltip(new Tooltip(input.getHTMLTipText()));
-	            add(m_selectBeastObjectBox);
-	            add(Box.createGlue());
+	            pane.getChildren().add(m_selectBeastObjectBox);
+	            pane.getChildren().add(new Separator());
 			}
 
 			private void setSelection() {
 				Double value = (Double) m_input.get();
-				m_selectBeastObjectBox.setSelectedIndex(OTHER);
+				m_selectBeastObjectBox.getSelectionModel().select(OTHER);
 				for (int i = 0; i < _values.length; i++) {
 					if (value.equals(_values[i])) {
-						m_selectBeastObjectBox.setSelectedIndex(i);
+						m_selectBeastObjectBox.getSelectionModel().select(i);
 					}
 				}
 			}

@@ -6,36 +6,53 @@ package beastfx.app.beauti;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
 import beast.app.util.Utils;
 import beast.base.core.Description;
 import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.PackageVersion;
+import beastfx.app.inputeditor.FileListInputEditor.File0;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Dimension2D;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.stage.Window;
 
 import static beast.pkgmgmt.PackageManager.*;
 
+import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +69,41 @@ public class JPackageDialog extends DialogPane {
     Label jLabel;
     HBox buttonBox;
     // JFrame frame;
-    PackageTable dataTable = null;
+    TableView<Package> dataTable = null;
+    private List<Package> packageList = null;
+    private ObservableList<Package0> packages;
+
+    class Package0 {
+    	Package pkg;
+    	public Package0(Package pkg) {
+    		this.pkg = pkg;
+    	}
+    	
+    	public String getName() {
+    		return pkg.getName();
+    	}
+    	
+    	public String getInstalledVersion() {
+    		return pkg.getInstalledVersion().getVersion();
+    	}
+    	
+    	public String getLatestVersion() {
+    		return pkg.getLatestVersion().getVersion();
+    	}
+    	
+        public String getDependencies() {
+                return pkg.getDependenciesString();
+        }
+        
+        public String getProjectURL() {
+                return pkg.getProjectURL().toString();
+        }
+        
+        public String getDescription() {
+                return pkg.getDescription();
+        }
+    }
+    
     boolean useLatestVersion = true;
 
     TreeMap<String, Package> packageMap = new TreeMap<>((s1,s2)->{
@@ -68,15 +119,17 @@ public class JPackageDialog extends DialogPane {
     	return s1.compareToIgnoreCase(s2);
     });
 
-    List<Package> packageList = null;
 
     boolean isRunning;
     Thread t;
+    BorderPane pane;
     
     public JPackageDialog() {
         jLabel = new Label("List of available packages for BEAST v" + beastVersion.getMajorVersion() + ".*");
-        frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        setLayout(new BorderLayout());
+        //frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        //setLayout(new BorderLayout());
+        pane = new BorderPane();
+        pane.setTop(jLabel);
 
 		createTable();
         // update packages using a 30 second time out
@@ -85,7 +138,7 @@ public class JPackageDialog extends DialogPane {
         	@Override
 			public void run() {
                 resetPackages();
-                dataTable.updateWidths();
+                // dataTable.updateWidths();
         		isRunning = false;
         	}
         };
@@ -98,7 +151,7 @@ public class JPackageDialog extends DialogPane {
 					sleep(30000);
 	    			if (isRunning) {
 	    				t.interrupt();
-	    				Alert.showMessageDialog(frame, "<html>Download of file " +
+	    				Alert.showMessageDialog(null, "<html>Download of file " +
 	    						PackageManager.PACKAGES_XML + " timed out.<br>" +
 	    								"Perhaps this is due to lack of internet access</br>" +
 	    								"or some security settings not allowing internet access.</html>"
@@ -116,37 +169,46 @@ public class JPackageDialog extends DialogPane {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        	
-        scrollPane = new JScrollPane(dataTable);
-        /*getContentPane().*/add(BorderLayout.CENTER, scrollPane);
+
+        
+        pane.setCenter(dataTable);
 
         buttonBox = createButtonBox();
-        /*getContentPane().*/add(buttonBox, BorderLayout.SOUTH);
+        pane.setBottom(buttonBox);
 
-        scrollPane.setPrefSize(new Dimension(660, 400));
-        Dimension dim = scrollPane.getPreferredSize();
-        Dimension dim2 = buttonBox.getPreferredSize();
-        setSize(dim.width + 30, dim.height + dim2.height + 30);
+        setPrefSize(dataTable.getPrefWidth() + 30, dataTable.getPrefHeight() + buttonBox.getPrefHeight() + 30);
     }
 
 
-    private Pane createTable() {
-        DataTableModel dataTableModel = new DataTableModel();
-        dataTable = new PackageTable(dataTableModel);
-        dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+    private TableView<Package> createTable() {
+        dataTable = new TableView<>();
+                
+        final int linkColumn = 4;
 
-        // TODO:
-        // The following would work ...
-        //dataTable.setAutoCreateRowSorter(true);
-        // ...if all processing was done based on the data in the table, 
-        // instead of the row number alone.
+        
+		String[] columnNames = {"Name", "Installed", "Latest", "Dependencies", "Link", "Detail"};
+		int[] columnWidth = {200, 50, 50, 200, 30, 400};
+		String[] names = {"Name", "InstalledVersion", "LatestVersion", "Dependencies", "ProjectURL", "Description"};
 
-        dataTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        dataTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (dataTable.getSelectedColumn() == dataTableModel.linkColumn) {
-                    URL url = getSelectedPackage(dataTable.getSelectedRow()).getProjectURL();
+		for (int i = 0; i < columnNames.length; i++) {
+			TableColumn<Package, String> col1 = new TableColumn<>(columnNames[i]);
+			col1.setPrefWidth(columnWidth[i]);
+			col1.setCellValueFactory(new PropertyValueFactory<Package,String>(names[i]));
+			dataTable.getColumns().add(col1);
+		}
+
+        
+//        dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+
+        
+        
+        
+        
+        
+        dataTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        dataTable.setOnMouseClicked(e -> {
+                if (dataTable.getSelectionModel().getSelectedCells().get(0).getColumn() == linkColumn) {
+                    URL url = getSelectedPackage(dataTable.getSelectionModel().getSelectedIndex()).getProjectURL();
                     if (url != null) {
                         try {
                             Desktop.getDesktop().browse(url.toURI());
@@ -157,26 +219,23 @@ public class JPackageDialog extends DialogPane {
 
                 } else {
                     if (e.getClickCount() == 2) {
-                        Package selPackage = getSelectedPackage(dataTable.getSelectedRow());
+                        Package selPackage = getSelectedPackage(dataTable.getSelectionModel().getSelectedIndex());
                         showDetail(selPackage);
                     }
                 }
-            }
         });
 
-        dataTable.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                super.mouseMoved(e);
+        dataTable.setOnMouseMoved(e -> {
+                // super.mouseMoved(e);
+        		TablePosition<Package, String> tc = dataTable.getFocusModel().getFocusedCell();
+                int row = tc.getRow();//dataTable.rowAtPoint(e.getPoint());
+                int col = tc.getColumn();//dataTable.columnAtPoint(e.getPoint());
 
-                int row = dataTable.rowAtPoint(e.getPoint());
-                int col = dataTable.columnAtPoint(e.getPoint());
+                Cursor currentCursorType = dataTable.getCursor();
 
-                int currentCursorType = dataTable.getCursor().getType();
-
-                if (col != dataTableModel.linkColumn) {
-                    if (currentCursorType == Cursor.HAND_CURSOR)
-                        dataTable.setCursor(Cursor.getDefaultCursor());
+                if (col != linkColumn) {
+                    if (currentCursorType == Cursor.HAND)
+                        dataTable.setCursor(Cursor.DEFAULT);
 
                     return;
                 }
@@ -184,19 +243,17 @@ public class JPackageDialog extends DialogPane {
                 Package thisPkg = getSelectedPackage(row);
 
                 if (thisPkg.getProjectURL() == null) {
-                    if (currentCursorType == Cursor.HAND_CURSOR)
-                        dataTable.setCursor(Cursor.getDefaultCursor());
+                    if (currentCursorType == Cursor.HAND)
+                        dataTable.setCursor(Cursor.DEFAULT);
 
                     return;
                 }
 
-                dataTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-            }
+                dataTable.setCursor(Cursor.HAND);
         });
 
-		int size = dataTable.getFont().getSize();
-		dataTable.setRowHeight(20 * size/13);
+//		int size = dataTable.getFont().getSize();
+//		dataTable.setRowHeight(20 * size/13);
 		return dataTable;
     }
 
@@ -209,9 +266,16 @@ public class JPackageDialog extends DialogPane {
 
             // Create list of packages excluding beast2
             packageList = new ArrayList<>();
-            for (Package pkg : packageMap.values())
-                if (!pkg.getName().equals("beast2"))
+            List<Package0> list = new ArrayList<>();
+            for (Package pkg : packageMap.values()) {
+                if (!pkg.getName().equals("beast2")) {
                     packageList.add(pkg);
+                    list.add(new Package0(pkg));
+                } else {
+                	list.add(0, new Package0(pkg));
+                }
+            }
+            packages = FXCollections.observableArrayList(list);
 
         } catch (PackageManager.PackageListRetrievalException e) {
         	StringBuilder msgBuilder = new StringBuilder("<html>" + e.getMessage() + "<br>");
@@ -220,19 +284,13 @@ public class JPackageDialog extends DialogPane {
             msgBuilder.append("</html>");
 
         	try {
-        	SwingUtilities.invokeLater(() -> Alert.showMessageDialog(null, msgBuilder));
+        		Alert.showMessageDialog(null, msgBuilder.toString());
         	} catch (Exception e0) {
         		e0.printStackTrace();
         	}
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        dataTable.tableChanged(new TableModelEvent(dataTable.getModel()));
-
-        if (dataTable.getRowCount() > 0)
-            dataTable.setRowSelectionInterval(0, 0);
-
     }
 
     private Package getSelectedPackage(int selectedRow) {
@@ -250,7 +308,7 @@ public class JPackageDialog extends DialogPane {
                 Alert.PLAIN_MESSAGE);
     }
 
-    private Pane createButtonBox() {
+    private HBox createButtonBox() {
         HBox box = new HBox();
         final CheckBox latestVersionCheckBox = new CheckBox("Latest");
         latestVersionCheckBox.setTooltip(new Tooltip("If selected, only the latest version is installed when hitting the Install/Upgrade button. "
@@ -264,10 +322,10 @@ public class JPackageDialog extends DialogPane {
         Button installButton = new Button("Install/Upgrade");
         installButton.setOnAction(e -> {
             // first get rid of existing packages
-            int[] selectedRows = dataTable.getSelectedRows();
+            List<Integer> selectedRows = dataTable.getSelectionModel().getSelectedIndices();
             String installedPackageNames = "";
 
-            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            setCursor(Cursor.WAIT);
 
             Map<Package, PackageVersion> packagesToInstall = new HashMap<>();
             PackageManager.useArchive(!useLatestVersion);
@@ -295,7 +353,7 @@ public class JPackageDialog extends DialogPane {
                 prepareForInstall(packagesToInstall, false, null);
 
                 if (getToDeleteListFile().exists()) {
-                    Alert.showMessageDialog(frame,
+                    Alert.showMessageDialog(box,
                             "<html><body><p style='width: 200px'>Upgrading packages on your machine requires BEAUti " +
                                     "to restart. Shutting down now.</p></body></html>");
                     System.exit(0);
@@ -311,15 +369,15 @@ public class JPackageDialog extends DialogPane {
                                 .map(Package::toString)
                                 .collect(Collectors.toList()));
 
-                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                setCursor(Cursor.DEFAULT);
 
             } catch (DependencyResolutionException | IOException ex) {
                 Alert.showMessageDialog(null, "Install failed because: " + ex.getMessage());
-                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                setCursor(Cursor.DEFAULT);
             }
 
             resetPackages();
-            dataTable.setRowSelectionInterval(selectedRows[0], selectedRows[0]);
+            dataTable.getSelectionModel().select(selectedRows.get(0));
 
             if (installedPackageNames.length()>0)
                 Alert.showMessageDialog(null, "Package(s) "
@@ -341,7 +399,7 @@ public class JPackageDialog extends DialogPane {
                 if (selPackage != null) {
                     try {
                         if (selPackage.isInstalled()) {
-                            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                            setCursor(Cursor.WAIT);
                             List<String> deps = getInstalledDependencyNames(selPackage, packageMap);
 
                             if (deps.isEmpty()) {
@@ -363,20 +421,20 @@ public class JPackageDialog extends DialogPane {
                                 + "Remove those packages first.");
                             }
 
-                            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                            setCursor(Cursor.DEFAULT);
                         }
 
                         resetPackages();
-                        dataTable.setRowSelectionInterval(selectedRows[0], selectedRows[0]);
+                        dataTable.getSelectionModel().select(selectedRows.get(0));
                     } catch (IOException | DependencyResolutionException ex) {
                         Alert.showMessageDialog(null, "Uninstall failed because: " + ex.getMessage());
-                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        setCursor(Cursor.DEFAULT);
                     }
                 }
             }
 
             if (getToDeleteListFile().exists()) {
-                Alert.showMessageDialog(frame,
+                Alert.showMessageDialog(dataTable,
                         "<html><body><p style='width: 200px'>Removing packages on your machine requires BEAUti " +
                                 "to restart. Shutting down now.</p></body></html>");
                 System.exit(0);
@@ -396,7 +454,7 @@ public class JPackageDialog extends DialogPane {
 
         Button packageRepoButton = new Button("Package repositories");
         packageRepoButton.setOnAction(e -> {
-                JPackageRepositoryDialog dlg = new JPackageRepositoryDialog(frame);
+                JPackageRepositoryDialog dlg = new JPackageRepositoryDialog(this.dlg.getDialogPane());
                 dlg.setVisible(true);
                 resetPackages();
             });
@@ -407,7 +465,7 @@ public class JPackageDialog extends DialogPane {
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
             	if (dlg != null) {
-            		dlg.setVisible(false);
+            		dlg.close();
             	} else {
             		setVisible(false);
             	}
@@ -417,7 +475,7 @@ public class JPackageDialog extends DialogPane {
         Button button = new Button("?");
         button.setTooltip(new Tooltip(getPackageUserDir() + " " + getPackageSystemDir()));
         button.setOnAction(e -> {
-                Alert.showMessageDialog(scrollPane, "<html>By default, packages are installed in <br><br><em>" + getPackageUserDir() +
+                Alert.showMessageDialog(dataTable, "<html>By default, packages are installed in <br><br><em>" + getPackageUserDir() +
                         "</em><br><br>and are available only to you.<br>" +
                         "<br>Packages can also be moved manually to <br><br><em>" + getPackageSystemDir() +
                         "</em><br><br>which makes them available to all users<br>"
@@ -427,223 +485,216 @@ public class JPackageDialog extends DialogPane {
         return box;
     }
 
-	class DataTableModel extends AbstractTableModel {
-		private static final long serialVersionUID = 1L;
+//	class DataTableModel extends AbstractTableModel {
+//		private static final long serialVersionUID = 1L;
+//
+//		String[] columnNames = {"Name", "Installed", "Latest", "Dependencies", "Link", "Detail"};
+//
+//		ImageView linkIcon = FXUtils.getIcon(BeautiPanel.ICONPATH + "link.png");
+//
+//        @Override
+//		public int getColumnCount() {
+//            return columnNames.length;
+//        }
+//
+//        @Override
+//		public int getRowCount() {
+//            return packageList.size();
+//        }
+//
+//        @Override
+//		public Object getValueAt(int row, int col) {
+//            Package aPackage = packageList.get(row);
+//            switch (col) {
+//                case 0:
+//                    return aPackage.getName();
+//                case 1:
+//                    return aPackage.getInstalledVersion();
+//                case 2:
+//                    return aPackage.getLatestVersion();
+//                case 3:
+//                    return aPackage.getDependenciesString();
+//                case 4:
+//                    return aPackage.getProjectURL() != null ? linkIcon : null ;
+//                case 5:
+//                    return aPackage.getDescription();
+//                default:
+//                    throw new IllegalArgumentException("unknown column, " + col);
+//            }
+//        }
+//
+//        @Override
+//		public String getColumnName(int column) {
+//            return columnNames[column];
+//        }
+//
+//        @Override
+//		public String toString() {
+//            StringBuffer buffer = new StringBuffer();
+//
+//            buffer.append(getColumnName(0));
+//            for (int j = 1; j < getColumnCount(); j++) {
+//                buffer.append("\t");
+//                buffer.append(getColumnName(j));
+//            }
+//            buffer.append("\n");
+//
+//            for (int i = 0; i < getRowCount(); i++) {
+//                buffer.append(getValueAt(i, 0));
+//                for (int j = 1; j < getColumnCount(); j++) {
+//                    buffer.append("\t");
+//                    buffer.append(getValueAt(i, j));
+//                }
+//                buffer.append("\n");
+//            }
+//
+//            return buffer.toString();
+//        }
+//    }
+//
 
-		String[] columnNames = {"Name", "Installed", "Latest", "Dependencies", "Link", "Detail"};
 
-        public final int linkColumn = 4;
-		ImageIcon linkIcon = Utils.getIcon(BeautiPanel.ICONPATH + "link.png");
-
-        @Override
-		public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        @Override
-		public int getRowCount() {
-            return packageList.size();
-        }
-
-        @Override
-		public Object getValueAt(int row, int col) {
-            Package aPackage = packageList.get(row);
-            switch (col) {
-                case 0:
-                    return aPackage.getName();
-                case 1:
-                    return aPackage.getInstalledVersion();
-                case 2:
-                    return aPackage.getLatestVersion();
-                case 3:
-                    return aPackage.getDependenciesString();
-                case 4:
-                    return aPackage.getProjectURL() != null ? linkIcon : null ;
-                case 5:
-                    return aPackage.getDescription();
-                default:
-                    throw new IllegalArgumentException("unknown column, " + col);
-            }
-        }
-
-        @Override
-		public String getColumnName(int column) {
-            return columnNames[column];
-        }
-
-        @Override
-		public String toString() {
-            StringBuffer buffer = new StringBuffer();
-
-            buffer.append(getColumnName(0));
-            for (int j = 1; j < getColumnCount(); j++) {
-                buffer.append("\t");
-                buffer.append(getColumnName(j));
-            }
-            buffer.append("\n");
-
-            for (int i = 0; i < getRowCount(); i++) {
-                buffer.append(getValueAt(i, 0));
-                for (int j = 1; j < getColumnCount(); j++) {
-                    buffer.append("\t");
-                    buffer.append(getValueAt(i, j));
-                }
-                buffer.append("\n");
-            }
-
-            return buffer.toString();
-        }
-    }
-
-
-
-	public JDialog asDialog(JFrame frame) {
-		if (frame == null) {
-	        frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+	public Dialog<Package> asDialog(Pane pane) {
+		
+		dlg.setDialogPane(new JPackageDialog());
+		dlg.setTitle("BEAST 2 Package Manager");
+		dlg.getDialogPane().getButtonTypes().add(Alert.CLOSED_OPTION);
+		
+		Window stage = null;
+		
+		if (pane == null) {
+			stage = dlg.getDialogPane().getScene().getWindow();
+		} else {
+			stage = pane.getScene().getWindow();
 		}
-		this.frame = frame;
-    	dlg = new JDialog(frame, "BEAST 2 Package Manager", true);
-		dlg.getContentPane().add(scrollPane, BorderLayout.CENTER);  
-		dlg.getContentPane().add(jLabel, BorderLayout.NORTH);  
-		dlg.getContentPane().add(buttonBox, BorderLayout.SOUTH);  
-		dlg.pack();  
-        Point frameLocation = frame.getLocation();
-        Dimension frameSize = frame.getSize();
-        Dimension dim = getPreferredSize();
-        int size = UIManager.getFont("Label.font").getSize();
-        dlg.setSize(690 * size / 13, 430 * size / 13);
-        dlg.setLocation(frameLocation.x + frameSize.width / 2 - dim.width / 2, frameLocation.y + frameSize.height / 2 - dim.height / 2);
+//        int size = UIManager.getFont("Label.font").getSize();
+//        dlg.setSize(690 * size / 13, 430 * size / 13);
+        
+        dlg.setX(stage.getX() + stage.getWidth() / 2 - dlg.getWidth() / 2);
+        dlg.setY(stage.getY() + stage.getHeight() / 2 - dlg.getHeight() / 2);
 
-        frame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        pane.setCursor(Cursor.DEFAULT);
         return dlg;
 	}
 
 
 	Dialog<Package> dlg = null;
-	@Override
-	public void setCursor(Cursor cursor) {
-		if (dlg != null) {
-			dlg.setCursor(cursor);
-		} else {
-			super.setCursor(cursor);
-		}
-	}
 
-    class PackageTable extends TableView<Package> {
-		private static final long serialVersionUID = 1L;
-
-        Map<Package, PackageVersion> packagesToInstall = new HashMap<>();
-
-        public PackageTable(TableModel dm) {
-            super(dm);
-        }
-
-        @Override
-        public Class<?> getColumnClass(int column) {
-            if (column != ((DataTableModel)getModel()).linkColumn)
-                return String.class;
-            else
-                return ImageIcon.class;
-        }
-
-        @Override
-        public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-            Component c =  super.prepareRenderer(renderer, row, column);
-
-            Font font = c.getFont();
-            font.getFamily();
-            Font boldFont = new Font(font.getName(), Font.BOLD | Font.ITALIC, font.getSize());
-
-            Package pkg = packageList.get(row);
-
-            if (! isRowSelected(row)) {
-                if (pkg.newVersionAvailable()) {
-                    if (pkg.isInstalled())
-                        c.setFont(boldFont);
-
-                    if (column == 2) {
-                        packagesToInstall.clear();
-                        packagesToInstall.put(pkg, pkg.getLatestVersion());
-                        try {
-                            populatePackagesToInstall(packageMap, packagesToInstall);
-                            c.setForeground(new Color(0, 150, 0));
-                        } catch (DependencyResolutionException ex) {
-                            c.setForeground(new Color(150, 0, 0));
-                        }
-                    } else {
-                        c.setForeground(Color.BLACK);
-                    }
-                } else {
-                    c.setForeground(Color.BLACK);
-                }
-            }
-
-            return c;
-        }
-
-        /**
-         *  Calculate the width based on the widest cell renderer for the
-         *  given column.
-         *
-         * @param cIdx column index
-         * @return maximum width.
-         */
-        private int getColumnDataWidth(int cIdx)
-        {
-            int preferredWidth = 0;
-            int maxWidth = getColumnModel().getColumn(cIdx).getMaxWidth();
-
-            for (int row = 0; row < getRowCount(); row++)
-            {
-                preferredWidth = Math.max(preferredWidth, getCellDataWidth(row, cIdx));
-
-                //  We've exceeded the maximum width, no need to check other rows
-
-                if (preferredWidth >= maxWidth)
-                    break;
-            }
-
-            preferredWidth = Math.max(preferredWidth, getHeaderWidth(cIdx));
-
-            return preferredWidth;
-        }
-
-        /*
-         *  Get the preferred width for the specified cell
-         */
-        private int getCellDataWidth(int row, int column)
-        {
-            //  Inovke the renderer for the cell to calculate the preferred width
-
-            TableCellRenderer cellRenderer = getCellRenderer(row, column);
-            Component c = prepareRenderer(cellRenderer, row, column);
-
-            return c.getPreferredSize().width + 2*getIntercellSpacing().width;
-        }
-
-        /*
-         *  Get the preferred width for the specified header
-         */
-        private int getHeaderWidth(int cIdx)
-        {
-            //  Inovke the renderer for the cell to calculate the preferred width
-
-            TableColumn column = getColumnModel().getColumn(cIdx);
-            TableCellRenderer cellRenderer = getDefaultRenderer(String.class);
-            Component c = cellRenderer.getTableCellRendererComponent(this, column.getHeaderValue(), false, false, -1, cIdx);
-
-            return c.getPreferredSize().width + 2*getIntercellSpacing().width;
-        }
-
-
-        void updateWidths() {
-            for (int cIdx = 0; cIdx < getColumnCount(); cIdx++) {
-                int width = getColumnDataWidth(cIdx);
-
-                TableColumn column = getColumnModel().getColumn(cIdx);
-                getTableHeader().setResizingColumn(column);
-                column.setWidth(width);
-            }
-        }
-    }
+//    class PackageTable extends TableView<Package> {
+//		private static final long serialVersionUID = 1L;
+//
+//        Map<Package, PackageVersion> packagesToInstall = new HashMap<>();
+//
+//        public PackageTable(TableModel dm) {
+//            super(dm);
+//        }
+//
+//        @Override
+//        public Class<?> getColumnClass(int column) {
+//            if (column != ((DataTableModel)getModel()).linkColumn)
+//                return String.class;
+//            else
+//                return ImageIcon.class;
+//        }
+//
+//        @Override
+//        public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+//            Component c =  super.prepareRenderer(renderer, row, column);
+//
+//            Font font = c.getFont();
+//            font.getFamily();
+//            Font boldFont = Font.font(font.getName(), FontWeight.BOLD, FontPosture.ITALIC, font.getSize());
+//
+//            Package pkg = packageList.get(row);
+//
+//            if (! isRowSelected(row)) {
+//                if (pkg.newVersionAvailable()) {
+//                    if (pkg.isInstalled())
+//                        c.setFont(boldFont);
+//
+//                    if (column == 2) {
+//                        packagesToInstall.clear();
+//                        packagesToInstall.put(pkg, pkg.getLatestVersion());
+//                        try {
+//                            populatePackagesToInstall(packageMap, packagesToInstall);
+//                            c.setForeground(new Color(0, 150, 0));
+//                        } catch (DependencyResolutionException ex) {
+//                            c.setForeground(new Color(150, 0, 0));
+//                        }
+//                    } else {
+//                        c.setForeground(Color.BLACK);
+//                    }
+//                } else {
+//                    c.setForeground(Color.BLACK);
+//                }
+//            }
+//
+//            return c;
+//        }
+//
+//        /**
+//         *  Calculate the width based on the widest cell renderer for the
+//         *  given column.
+//         *
+//         * @param cIdx column index
+//         * @return maximum width.
+//         */
+//        private int getColumnDataWidth(int cIdx)
+//        {
+//            int preferredWidth = 0;
+//            int maxWidth = getColumnModel().getColumn(cIdx).getMaxWidth();
+//
+//            for (int row = 0; row < getRowCount(); row++)
+//            {
+//                preferredWidth = Math.max(preferredWidth, getCellDataWidth(row, cIdx));
+//
+//                //  We've exceeded the maximum width, no need to check other rows
+//
+//                if (preferredWidth >= maxWidth)
+//                    break;
+//            }
+//
+//            preferredWidth = Math.max(preferredWidth, getHeaderWidth(cIdx));
+//
+//            return preferredWidth;
+//        }
+//
+//        /*
+//         *  Get the preferred width for the specified cell
+//         */
+//        private int getCellDataWidth(int row, int column)
+//        {
+//            //  Inovke the renderer for the cell to calculate the preferred width
+//
+//            TableCellRenderer cellRenderer = getCellRenderer(row, column);
+//            Component c = prepareRenderer(cellRenderer, row, column);
+//
+//            return c.getPreferredSize().width + 2*getIntercellSpacing().width;
+//        }
+//
+//        /*
+//         *  Get the preferred width for the specified header
+//         */
+//        private int getHeaderWidth(int cIdx)
+//        {
+//            //  Inovke the renderer for the cell to calculate the preferred width
+//
+//            TableColumn column = getColumnModel().getColumn(cIdx);
+//            TableCellRenderer cellRenderer = getDefaultRenderer(String.class);
+//            Component c = cellRenderer.getTableCellRendererComponent(this, column.getHeaderValue(), false, false, -1, cIdx);
+//
+//            return c.getPreferredSize().width + 2*getIntercellSpacing().width;
+//        }
+//
+//
+//        void updateWidths() {
+//            for (int cIdx = 0; cIdx < getColumnCount(); cIdx++) {
+//                int width = getColumnDataWidth(cIdx);
+//
+//                TableColumn column = getColumnModel().getColumn(cIdx);
+//                getTableHeader().setResizingColumn(column);
+//                column.setWidth(width);
+//            }
+//        }
+//    }
 }

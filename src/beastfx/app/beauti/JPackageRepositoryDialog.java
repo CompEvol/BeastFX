@@ -51,8 +51,6 @@ import javafx.scene.layout.VBox;
  */
 public class JPackageRepositoryDialog extends DialogPane {
 
-	private static final long serialVersionUID = 1L;
-
 	public JPackageRepositoryDialog(final Pane frame) {
         // super(frame);
 

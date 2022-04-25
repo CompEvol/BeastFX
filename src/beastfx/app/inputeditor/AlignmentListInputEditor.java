@@ -19,12 +19,25 @@ import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
+
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableView;
 
 import javax.swing.JComponent;
 import beastfx.app.util.Alert;
@@ -32,6 +45,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.Clipboard;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -46,7 +63,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 
 import beast.app.util.FileDrop;
 import beast.app.util.PartitionContextUtil;
@@ -58,14 +74,17 @@ import beast.base.evolution.alignment.FilteredAlignment;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.branchratemodel.BranchRateModel;
 import beast.base.evolution.likelihood.GenericTreeLikelihood;
+import beast.base.evolution.likelihood.TreeLikelihood;
 import beast.base.evolution.sitemodel.SiteModel;
 import beast.base.evolution.sitemodel.SiteModelInterface;
+import beast.base.evolution.tree.Node;
 import beast.base.evolution.tree.TreeInterface;
 import beast.base.inference.CompoundDistribution;
 import beast.base.inference.MCMC;
 import beast.base.inference.State;
 import beast.base.inference.StateNode;
 import beast.base.parser.PartitionContext;
+import beast.pkgmgmt.Package;
 
 // TODO: add useAmbiguities flag 
 // TODO: add warning if useAmbiguities=false and nr of patterns=1 (happens when all data is ambiguous)
@@ -93,7 +112,8 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	int partitionCount;
 	GenericTreeLikelihood[] likelihoods;
 	Object[][] tableData;
-	JTable table;
+	ObservableList<Partition0> tableEntries;
+	TableView<Partition0> table;
 	TextField nameEditor;
 	List<Button> linkButtons;
 	List<Button> unlinkButtons;
@@ -300,11 +320,11 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	}
 
 	private void link(int columnNr) {
-		int[] selected = getTableRowSelection();
+		List<Integer> selected = getTableRowSelection();
 		// do the actual linking
-		for (int i = 1; i < selected.length; i++) {
-			int rowNr = selected[i];
-			link(columnNr, rowNr, selected[0]);
+		for (int i = 1; i < selected.size(); i++) {
+			int rowNr = selected.get(i);
+			link(columnNr, rowNr, selected.get(0));
 		}
 	}
 	
@@ -332,9 +352,9 @@ public class AlignmentListInputEditor extends ListInputEditor {
 
 	
 	private void unlink(int columnNr) {
-		int[] selected = getTableRowSelection();
-		for (int i = 1; i < selected.length; i++) {
-			int rowNr = selected[i];
+		List<Integer> selected = getTableRowSelection();
+		for (int i = 1; i < selected.size(); i++) {
+			int rowNr = selected.get(i);
 			tableData[rowNr][columnNr] = getDoc().partitionNames.get(rowNr).partition;
 			try {
 				updateModel(columnNr, rowNr);
@@ -346,13 +366,13 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	}
 
 
-    int[] getTableRowSelection() {
-        return table.getSelectedRows();
+    List<Integer> getTableRowSelection() {
+        return table.getSelectionModel().getSelectedIndices();
 	}
 
 	/** set partition of type columnNr to partition model nr rowNr **/
 	void updateModel(int columnNr, int rowNr) {
-		Log.warning.println("updateModel: " + rowNr + " " + columnNr + " " + table.getSelectedRow() + " "
+		Log.warning.println("updateModel: " + rowNr + " " + columnNr + " " +  + " "
 				+ table.getSelectedColumn());
 		for (int i = 0; i < partitionCount; i++) {
 			Log.warning.println(i + " " + tableData[i][0] + " " + tableData[i][SITEMODEL_COLUMN] + " "
@@ -641,11 +661,12 @@ public class AlignmentListInputEditor extends ListInputEditor {
 
 	void initTableData() {
 		this.likelihoods = new GenericTreeLikelihood[partitionCount];
-		if (tableData == null) {
-			tableData = new Object[partitionCount][NR_OF_COLUMNS];
-		}
+//		if (tableData == null) {
+//			tableData = new Object[partitionCount][NR_OF_COLUMNS];
+//		}
 		CompoundDistribution likelihoods = (CompoundDistribution) doc.pluginmap.get("likelihood");
 
+		List<Partition0> list = new ArrayList<>();
 		for (int i = 0; i < partitionCount; i++) {
 			Alignment data = alignments.get(i);
 			// partition name
@@ -681,7 +702,9 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			} catch (Exception e) {
 				// ignore
 			}
+			list.add(new Partition0(likelihood));
 		}
+		tableEntries = FXCollections.observableArrayList(list);
 	}
 
 	private boolean hasUseAmbiguitiesInput(int i) {
@@ -704,7 +727,128 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		return partition;
 	}
 
-	protected Pane createListBox() {
+	
+	
+	public class Partition0 {
+		SimpleStringProperty name, file, taxa, sites, dataType, siteModel, clockModel,
+		tree;
+		SimpleBooleanProperty ambiguities;
+		
+		public Partition0(GenericTreeLikelihood likelihood)  {
+			Alignment data = likelihood.dataInput.get();
+			name = new SimpleStringProperty(likelihood.getID());
+			if (data instanceof FilteredAlignment) {
+				file = new SimpleStringProperty(((FilteredAlignment) data).alignmentInput.get().getID());
+			} else {
+				file = new SimpleStringProperty(data.getID());
+			}
+			// # taxa
+			taxa = new SimpleStringProperty(data.getTaxonCount() + "");
+			// # sites
+			sites = new SimpleStringProperty(data.getSiteCount() + "");
+			// Data type
+			dataType = new SimpleStringProperty(data.getDataType().toString());
+			// site model
+			// this.likelihoods[i] = likelihood;
+			siteModel = new SimpleStringProperty(getPartition(likelihood.siteModelInput));
+			// clock model
+			clockModel = new SimpleStringProperty(getPartition(likelihood.branchRateModelInput));
+			// tree
+			tree = new SimpleStringProperty(getPartition(likelihood.treeInput));
+			// useAmbiguities
+			ambiguities = new SimpleBooleanProperty();
+			try {
+				ambiguities.set((Boolean) likelihood.getInputValue("useAmbiguities"));
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+		
+		public String getName() {
+			return name.get();
+		}
+
+		public void setName(String name) {
+			this.name.set(name);
+		}
+
+		public String getFile() {
+			return file.get();
+		}
+
+		public void setFile(String file) {
+			this.file.set(file);
+		}
+
+		public String getTaxa() {
+			return taxa.get();
+		}
+
+		public void setTaxa(String taxa) {
+			this.taxa.set(taxa);
+		}
+
+		public String getSites() {
+			return sites.get();
+		}
+
+		public void setSites(String sites) {
+			this.sites.set(sites);
+		}
+
+		public String getDataType() {
+			return dataType.get();
+		}
+
+		public void setDataType(String dataType) {
+			this.dataType.set(dataType);
+		}
+
+		public String getSiteModel() {
+			return siteModel.get();
+		}
+
+		public void setSiteModel(String siteModel) {
+			this.siteModel.set(siteModel);
+		}
+
+		public String getClockModel() {
+			return clockModel.get();
+		}
+
+		public void setClockModel(String clockModel) {
+			this.clockModel.set(clockModel);
+		}
+
+		public String getTree() {
+			return tree.get();
+		}
+
+		public void setTree(String tree) {
+			this.tree.set(tree);
+		}
+
+		public Boolean getAmbiguities() {
+			return ambiguities.getValue();
+		}
+
+		public void setAmbiguities(Boolean ambiguities) {
+			this.ambiguities.setValue(ambiguities);
+		}
+		
+		public StringProperty nameProperty() {return name;}
+		public StringProperty fileProperty() {return file;}
+		public StringProperty taxaProperty() {return taxa;}
+		public StringProperty sitesProperty() {return sites;}
+		public StringProperty dataTypeProperty() {return dataType;}
+		public StringProperty siteModelProperty() {return siteModel;}
+		public StringProperty clockModelProperty() {return clockModel;}
+		public StringProperty treeProperty() {return tree;}
+		public BooleanProperty ambiguitiesProperty() { return ambiguities; }
+
+	}
+	
+	protected TableView createListBox() {
 		String[] columnData = new String[] { "Name", "File", "Taxa", "Sites", "Data Type", "Site Model", "Clock Model",
 				"Tree", "Ambiguities" };
 		initTableData();
@@ -712,135 +856,179 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		// set up table.
 		// special features: background shading of rows
 		// custom editor allowing only Date column to be edited.
-		table = new JTable(tableData, columnData) {
-			private static final long serialVersionUID = 1L;
-
-			// method that induces table row shading
-			@Override
-			public Component prepareRenderer(TableCellRenderer renderer, int Index_row, int Index_col) {
-				Component comp = super.prepareRenderer(renderer, Index_row, Index_col);
-				// even index, selected or not selected
-				if (isCellSelected(Index_row, Index_col)) {
-					comp.setBackground(Color.gray);
-				} else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)) {
-					comp.setBackground(new Color(237, 243, 255));
-				} else {
-					comp.setBackground(Color.white);
-				}
-			    JComponent jcomp = (JComponent) comp;
-		    	switch (Index_col) {
-		    	case NAME_COLUMN:			    		
-	    		case CLOCKMODEL_COLUMN: 
-	    		case TREE_COLUMN: 
-	    		case SITEMODEL_COLUMN: 
-			        jcomp.setTooltip(new Tooltip("Set " + table.getColumnName(Index_col).toLowerCase() + " for this partition"));
-					break;
-	    		case FILE_COLUMN:
-	    		case TAXA_COLUMN:
-	    		case SITES_COLUMN:
-	    		case TYPE_COLUMN:
-			        jcomp.setTooltip(new Tooltip("Report " + table.getColumnName(Index_col).toLowerCase() + " for this partition"));
-					break;
-	    		case USE_AMBIGUITIES_COLUMN: 
-					jcomp.setToolTipText("<html>Flag whether to use ambiguities.<br>" +
-							"If not set, the treelikelihood will treat ambiguities in the<br>" +
-							"data as unknowns<br>" +
-							"If set, the treelikelihood will use ambiguities as equally<br>" +
-							"likely values for the tips.<br>" +
-							"This will make the computation twice as slow.</html>");
-					break;
-				default:
-			        jcomp.setTooltip(new Tooltip(null));
-		    	}
-				updateStatus();
-				return comp;
-			}
-		};
-		int size = table.getFont().getSize();
-		table.setRowHeight(25 * size/13);
-		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		table.setColumnSelectionAllowed(false);
-		table.setRowSelectionAllowed(true);
+		table = new TableView<Partition0>();
+		table.getItems().addAll(tableEntries);
+		
+		for (int i = 0; i < columnData.length; i++) {
+			TableColumn<Partition0, String> col1 = new TableColumn<>(columnData[i]);
+			String str = columnData[i].substring(0,1).toLowerCase() + columnData[i].substring(1);
+			str = str.replaceAll(" ","");
+			col1.setCellValueFactory(new PropertyValueFactory<>(str));
+			table.getColumns().add(col1);
+		}
+		
+//		table = new JTable(tableData, columnData) {
+//			private static final long serialVersionUID = 1L;
+//
+//			// method that induces table row shading
+//			@Override
+//			public Component prepareRenderer(TableCellRenderer renderer, int Index_row, int Index_col) {
+//				Component comp = super.prepareRenderer(renderer, Index_row, Index_col);
+//				// even index, selected or not selected
+//				if (isCellSelected(Index_row, Index_col)) {
+//					comp.setBackground(Color.gray);
+//				} else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)) {
+//					comp.setBackground(new Color(237, 243, 255));
+//				} else {
+//					comp.setBackground(Color.white);
+//				}
+//			    JComponent jcomp = (JComponent) comp;
+//		    	switch (Index_col) {
+//		    	case NAME_COLUMN:			    		
+//	    		case CLOCKMODEL_COLUMN: 
+//	    		case TREE_COLUMN: 
+//	    		case SITEMODEL_COLUMN: 
+//			        jcomp.setTooltip(new Tooltip("Set " + table.getColumnName(Index_col).toLowerCase() + " for this partition"));
+//					break;
+//	    		case FILE_COLUMN:
+//	    		case TAXA_COLUMN:
+//	    		case SITES_COLUMN:
+//	    		case TYPE_COLUMN:
+//			        jcomp.setTooltip(new Tooltip("Report " + table.getColumnName(Index_col).toLowerCase() + " for this partition"));
+//					break;
+//	    		case USE_AMBIGUITIES_COLUMN: 
+//					jcomp.setToolTipText("<html>Flag whether to use ambiguities.<br>" +
+//							"If not set, the treelikelihood will treat ambiguities in the<br>" +
+//							"data as unknowns<br>" +
+//							"If set, the treelikelihood will use ambiguities as equally<br>" +
+//							"likely values for the tips.<br>" +
+//							"This will make the computation twice as slow.</html>");
+//					break;
+//				default:
+//			        jcomp.setTooltip(new Tooltip(null));
+//		    	}
+//				updateStatus();
+//				return comp;
+//			}
+//		};
+		//int size = table.getFont().getSize();
+		//table.setRowHeight(25 * size/13);
+        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		//table.setColumnSelectionAllowed(false);
+		//table.setRowSelectionAllowed(true);
 		table.setId("alignmenttable");
 
 		setUpComboBoxes();
-
-		TableColumn col = table.getColumnModel().getColumn(NAME_COLUMN);
-		nameEditor = new TextField();
-		nameEditor.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				processPartitionName();
+		
+		// make columns 0, 5, 6 and 7 editable
+		for (int i : new int[] {0, 5, 6, 7}) {
+			TableColumn<Partition0, ?> tblColID = table.getColumns().get(i);
+			((TableColumn)tblColID).setCellFactory(TextFieldTableCell.forTableColumn());
+			tblColID.setOnEditCommit(e->{
+				processPartitionName(e);
+			});
+		}
+		
+		// make column 9 use checkboxes
+		TableColumn<Partition0, Boolean> loadedColumn = (TableColumn<Partition0, Boolean>) table.getColumns().get(9);
+		loadedColumn.setCellValueFactory( f -> f.getValue().ambiguitiesProperty());
+		loadedColumn.setCellFactory( tc -> new CheckBoxTableCell<>());
+		loadedColumn.setOnEditCommit(e -> {
+			if (table.getSelectedRow() >= 0 && table.getSelectedColumn() >= 0) {
+				Log.warning.println(" " + table.getValueAt(table.getSelectedRow(), table.getSelectedColumn()));
 			}
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				processPartitionName();
+			try {
+				int row = table.getSelectedRow();
+				if (hasUseAmbiguitiesInput(row)) {
+					likelihoods[row].setInputValue("useAmbiguities", checkBox.isSelected());
+					tableData[row][USE_AMBIGUITIES_COLUMN] = checkBox.isSelected();
+				} else {
+					if (checkBox.isSelected()) {
+						checkBox.setSelected(false);
+					}
+				}
+			} catch (Exception ex) {
+				// TODO: handle exception
 			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				processPartitionName();
-			}
-		});
-
-		col.setCellEditor(new DefaultCellEditor(nameEditor));
+	
+		});  
+		
+//		TableColumn col = table.getColumnModel().getColumn(NAME_COLUMN);
+//		nameEditor = new TextField();
+//		nameEditor.getDocument().addDocumentListener(new DocumentListener() {
+//			@Override
+//			public void removeUpdate(DocumentEvent e) {
+//				processPartitionName();
+//			}
+//
+//			@Override
+//			public void insertUpdate(DocumentEvent e) {
+//				processPartitionName();
+//			}
+//
+//			@Override
+//			public void changedUpdate(DocumentEvent e) {
+//				processPartitionName();
+//			}
+//		});
+//
+//		col.setCellEditor(new DefaultCellEditor(nameEditor));
 
 		// // set up editor that makes sure only doubles are accepted as entry
 		// // and only the Date column is editable.
-		table.setDefaultEditor(Object.class, new TableCellEditor() {
-			TextField m_textField = new TextField();
-			int m_iRow, m_iCol;
-
-			@Override
-			public boolean stopCellEditing() {
-				//Log.warning.println("stopCellEditing()");
-				table.removeEditor();
-				String text = m_textField.getText();
-				try {
-					Double.parseDouble(text);
-				} catch (Exception e) {
-					return false;
-				}
-				tableData[m_iRow][m_iCol] = text;
-				return true;
-			}
-
-			@Override
-			public boolean isCellEditable(EventObject anEvent) {
-				//Log.warning.println("isCellEditable()");
-				return table.getSelectedColumn() == 0;
-			}
-
-			@Override
-			public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowNr,
-					int colNr) {
-				return null;
-			}
-
-			@Override
-			public boolean shouldSelectCell(EventObject anEvent) {
-				return false;
-			}
-
-			@Override
-			public void removeCellEditorListener(CellEditorListener l) {
-			}
-
-			@Override
-			public Object getCellEditorValue() {
-				return null;
-			}
-
-			@Override
-			public void cancelCellEditing() {
-			}
-
-			@Override
-			public void addCellEditorListener(CellEditorListener l) {
-			}
-
-		});
+//		table.setDefaultEditor(Object.class, new TableCellEditor() {
+//			TextField m_textField = new TextField();
+//			int m_iRow, m_iCol;
+//
+//			@Override
+//			public boolean stopCellEditing() {
+//				//Log.warning.println("stopCellEditing()");
+//				table.removeEditor();
+//				String text = m_textField.getText();
+//				try {
+//					Double.parseDouble(text);
+//				} catch (Exception e) {
+//					return false;
+//				}
+//				tableData[m_iRow][m_iCol] = text;
+//				return true;
+//			}
+//
+//			@Override
+//			public boolean isCellEditable(EventObject anEvent) {
+//				//Log.warning.println("isCellEditable()");
+//				return table.getSelectedColumn() == 0;
+//			}
+//
+//			@Override
+//			public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowNr,
+//					int colNr) {
+//				return null;
+//			}
+//
+//			@Override
+//			public boolean shouldSelectCell(EventObject anEvent) {
+//				return false;
+//			}
+//
+//			@Override
+//			public void removeCellEditorListener(CellEditorListener l) {
+//			}
+//
+//			@Override
+//			public Object getCellEditorValue() {
+//				return null;
+//			}
+//
+//			@Override
+//			public void cancelCellEditing() {
+//			}
+//
+//			@Override
+//			public void addCellEditorListener(CellEditorListener l) {
+//			}
+//
+//		});
 
 		// show alignment viewer when double clicking a row
 		table.addMouseListener(new MouseListener() {
@@ -892,17 +1080,25 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			}
 		});
 
-		scrollPane = new ScrollPane();
-		scrollPane.setContenc(table);
-
-        int rowsToDisplay = 3;
-        Dimension d = table.getPreferredSize();
-        scrollPane.setPrefSize(
-                d.width,table.getRowHeight()*rowsToDisplay+table.getTableHeader().getHeight());
-
-		return scrollPane;
+//		scrollPane = new ScrollPane();
+//		scrollPane.setContent(table);
+//
+//        int rowsToDisplay = 3;
+//        Dimension d = table.getPreferredSize();
+//        scrollPane.setPrefSize(
+//                d.width,table.getRowHeight()*rowsToDisplay+table.getTableHeader().getHeight());
+//
+//		return scrollPane;
+		return table;
 	} // createListBox
 	
+	private void processPartitionName(CellEditEvent<Partition0, ?> e) {
+		String newId = (String) e.getNewValue();
+		int row = e.getTablePosition().getRow();
+		int col = e.getTablePosition().getColumn();
+		processPartitionName(row, col, newId);
+	}
+
 	void setUpComboBoxes() {
 		// set up comboboxes
 		@SuppressWarnings("unchecked")
@@ -924,30 +1120,86 @@ public class AlignmentListInputEditor extends ListInputEditor {
 				partitionNameStrings[j][i] = BeautiDoc.parsePartition(partitionNameStrings[j][i]);
 			}
 		}
-		TableColumn col = table.getColumnModel().getColumn(SITEMODEL_COLUMN);
-		ComboBox<String> siteModelComboBox = new ComboBox<>();
+		
+		
+		String [] colName = {"Site Model", "Clock Model", "Tree"};
+		int [] colPos = {SITEMODEL_COLUMN, CLOCKMODEL_COLUMN, TREE_COLUMN};
+		
+		for (int k = 0; k < 3; k++) {
+		
+		TableColumn<Partition0, StringProperty> column = new TableColumn<>(colName[k]);
+	    column.setCellValueFactory(i -> {
+	        final StringProperty value;
+	        switch (k) {
+	        	case 0: value = i.getValue().siteModelProperty();break;
+	        	case 1: value = i.getValue().clockModelProperty();break;
+	        	case 2: value = i.getValue().treeProperty();break;
+	        }
+	        // binding to constant value
+	        return Bindings.createObjectBinding(() -> value);
+	    });
+	    
+	    column.setCellFactory(col -> {
+	        TableCell<Partition0, StringProperty> c = new TableCell<>();
+	        final ComboBox<String> comboBox = new ComboBox<>();
+	        comboBox.getItems().addAll(partitionNames[0]);
+	        
+	        comboBox.setEditable(true);
+	        c.itemProperty().addListener((observable, oldValue, newValue) -> {
+	            if (oldValue != null) {
+	                comboBox.valueProperty().unbindBidirectional(oldValue);
+	            }
+	            if (newValue != null) {
+	                comboBox.valueProperty().bindBidirectional(newValue);
+	            }
+	        });
+	        //c.graphicProperty().bind(Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
+	        return c;
+	    });
+		
+		table.getColumns().set(colPos[k], column);
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		TableColumn<Partition0,StringProperty> col = (TableColumn<Partition0,String>) table.getColumns().get(SITEMODEL_COLUMN);
+		col.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[0]));
+
+		ComboBoxTableCell<Partition0, String> siteModelComboBox = new ComboBoxTableCell<>();
+
 		siteModelComboBox.getItems().addAll(partitionNameStrings[0]);
 		siteModelComboBox.setEditable(true);
+		siteModelComboBox.setComboBoxEditable(true);
 		siteModelComboBox.setOnAction(e->new ComboActionListener(SITEMODEL_COLUMN));
-
+		col.setCellEditor(siteModelComboBox);
+		
 		col.setCellEditor(new DefaultCellEditor(siteModelComboBox));
 		// If the cell should appear like a combobox in its
 		// non-editing state, also set the combobox renderer
 		col.setCellRenderer(new MyComboBoxRenderer(partitionNameStrings[0]));
-		col = table.getColumnModel().getColumn(CLOCKMODEL_COLUMN);
 
-		ComboBox<String> clockModelComboBox = new ComboBox<>();
+		col = (TableColumn<Partition0,String>)table.getColumns().get(CLOCKMODEL_COLUMN);
+		ComboBoxTableCell<Partition0, String> clockModelComboBox = new ComboBoxTableCell<>();
 		clockModelComboBox.getItems().addAll(partitionNameStrings[1]);
 		clockModelComboBox.setEditable(true);
+		clockModelComboBox.setComboBoxEditable(true);
 		clockModelComboBox.setOnAction(e->new ComboActionListener(CLOCKMODEL_COLUMN));
 
 		col.setCellEditor(new DefaultCellEditor(clockModelComboBox));
 		col.setCellRenderer(new MyComboBoxRenderer(partitionNameStrings[1]));
-		col = table.getColumnModel().getColumn(TREE_COLUMN);
 
-		ComboBox<String> treeComboBox = new ComboBox<>();
+		col = (	TableColumn<Partition0,String>) table.getColumns().get(TREE_COLUMN);
+		ComboBoxTableCell<Partition0, String> treeComboBox = new ComboBoxTableCell<>();
 		treeComboBox.getItems().addAll(partitionNameStrings[2]);
 		treeComboBox.setEditable(true);
+		treeComboBox.setComboBoxEditable(true);
 		treeComboBox.setOnAction(a->new ComboActionListener(TREE_COLUMN));
 		col.setCellEditor(new DefaultCellEditor(treeComboBox));
 		col.setCellRenderer(new MyComboBoxRenderer(partitionNameStrings[2]));
@@ -956,7 +1208,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		col = table.getColumnModel().getColumn(SITES_COLUMN);
 		col.setPreferredWidth(30);
 		
-		col = table.getColumnModel().getColumn(USE_AMBIGUITIES_COLUMN);
+		col = table.getColumns().get(USE_AMBIGUITIES_COLUMN);
 		CheckBox checkBox = new CheckBox();
 		checkBox.setOnAction(e -> {
 				if (table.getSelectedRow() >= 0 && table.getSelectedColumn() >= 0) {
@@ -983,38 +1235,42 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		col.setMaxWidth(20);
 	}
 
-	void processPartitionName() {
+	void processPartitionName(int row, int col, String newName) {
 		Log.warning.println("processPartitionName");
-		Log.warning.println(table.getSelectedColumn() + " " + table.getSelectedRow());
-		String oldName = tableData[table.getSelectedRow()][table.getSelectedColumn()].toString();
-		String newName = nameEditor.getText();
+		Log.warning.println(col + " " + row);
+		String oldName = tableData[row][col].toString();
+		// String newName = nameEditor.getText();
 		if (!oldName.equals(newName) && newName.indexOf(".") >= 0) {
 			// prevent full stops to be used in IDs
 			newName = newName.replaceAll("\\.", "");
-			table.setValueAt(newName, table.getSelectedRow(), table.getSelectedColumn());
-			table.repaint();
+			//table.setValueAt(newName, row, col);
+			//table.repaint();
 		}
 		if (!oldName.equals(newName)) {
 			try {
 				int partitionID = -2;
-				switch (table.getSelectedColumn()) {
+				switch (col) {
 				case NAME_COLUMN:
 					partitionID = BeautiDoc.ALIGNMENT_PARTITION;
+					tableEntries.get(row).setName(newName);
 					break;
 				case SITEMODEL_COLUMN:
 					partitionID = BeautiDoc.SITEMODEL_PARTITION;
+					tableEntries.get(row).setSiteModel(newName);
 					break;
 				case CLOCKMODEL_COLUMN:
 					partitionID = BeautiDoc.CLOCKMODEL_PARTITION;
+					tableEntries.get(row).setClockModel(newName);
 					break;
 				case TREE_COLUMN:
 					partitionID = BeautiDoc.TREEMODEL_PARTITION;
+					tableEntries.get(row).setTree(newName);
 					break;
 				default:
 					throw new IllegalArgumentException("Cannot rename item in column");
 				}
 				getDoc().renamePartition(partitionID, oldName, newName);
-				table.setValueAt(newName, table.getSelectedRow(), table.getSelectedColumn());
+				// table.setValueAt(newName, row, col);
 				setUpComboBoxes();
 			} catch (Exception e) {
 				Alert.showMessageDialog(null, "Renaming failed: " + e.getMessage());
@@ -1055,7 +1311,6 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	}
 
 	public class MyComboBoxRenderer extends ComboBox<String> implements TableCellRenderer {
-		private static final long serialVersionUID = 1L;
 
 		public MyComboBoxRenderer(String[] items) {
 			super(items);
@@ -1128,13 +1383,13 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	}
 
 	void delItem() {
-		int[] selected = getTableRowSelection();
-		if (selected.length == 0) {
+		List<Integer> selected = getTableRowSelection();
+		if (selected.size() == 0) {
 			Alert.showMessageDialog(this, "Select partitions to delete, before hitting the delete button");
 		}
 		// do the actual deleting
-		for (int i = selected.length - 1; i >= 0; i--) {
-			int rowNr = selected[i];
+		for (int i = selected.size() - 1; i >= 0; i--) {
+			int rowNr = selected.get(i);
 			
 			// before deleting, unlink site model, clock model and tree
 			
@@ -1216,13 +1471,13 @@ public class AlignmentListInputEditor extends ListInputEditor {
 
 	
 	void replaceItem() {
-		int [] selected = getTableRowSelection();
-		if (selected.length != 1) {
+		List<Integer> selected = getTableRowSelection();
+		if (selected.size() != 1) {
 			// don't know how to replace multiple alignments at the same time
 			// should never get here (button is disabled)
 			return;
 		}
-		Alignment alignment = alignments.get(selected[0]);
+		Alignment alignment = alignments.get(selected.get(0));
 		replaceItem(alignment);
 	}
 	
@@ -1277,8 +1532,8 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	} // replaceItem
 	
 	void splitItem() {
-		int[] selected = getTableRowSelection();
-		if (selected.length == 0) {
+		List<Integer> selected = getTableRowSelection();
+		if (selected.size() == 0) {
 			Alert.showMessageDialog(this, "Select partitions to split, before hitting the split button");
 			return;
 		}
@@ -1314,8 +1569,8 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			return;
 		}
 
-		for (int i = selected.length - 1; i >= 0; i--) {
-			int rowNr = selected[i];
+		for (int i = selected.size() - 1; i >= 0; i--) {
+			int rowNr = selected.get(i);
 			Alignment alignment = alignments.remove(rowNr);
 			getDoc().delAlignmentWithSubnet(alignment);
 			try {
@@ -1350,7 +1605,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	/** enable/disable buttons, etc **/
 	void updateStatus() {
 		boolean status = (alignments.size() > 1);
-		if (alignments.size() >= 2 && getTableRowSelection().length == 0) {
+		if (alignments.size() >= 2 && getTableRowSelection().size() == 0) {
 			status = false;
 		}
 		for (Button button : linkButtons) {
@@ -1359,10 +1614,10 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		for (Button button : unlinkButtons) {
 			button.setDisable(!status);
 		}
-		status = (getTableRowSelection().length > 0);
+		status = (getTableRowSelection().size() > 0);
 		splitButton.setDisable(!status);
 		delButton.setDisable(!status);
-		replaceButton.setDisable(getTableRowSelection().length != 1);
+		replaceButton.setDisable(getTableRowSelection().size() != 1);
 	}
 	
 } // class AlignmentListInputEditor
