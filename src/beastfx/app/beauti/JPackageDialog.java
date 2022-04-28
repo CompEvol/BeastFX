@@ -3,26 +3,18 @@ package beastfx.app.beauti;
 
 
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
 
-import beast.app.util.Utils;
+
 import beast.base.core.Description;
 import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.PackageVersion;
-import beastfx.app.inputeditor.FileListInputEditor.File0;
 import beastfx.app.util.Alert;
-import beastfx.app.util.FXUtils;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Dimension2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
@@ -33,22 +25,14 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Window;
 
 import static beast.pkgmgmt.PackageManager.*;
 
 import java.awt.Desktop;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -69,7 +53,7 @@ public class JPackageDialog extends DialogPane {
     Label jLabel;
     HBox buttonBox;
     // JFrame frame;
-    TableView<Package> dataTable = null;
+    TableView<Package0> dataTable = null;
     private List<Package> packageList = null;
     private ObservableList<Package0> packages;
 
@@ -180,7 +164,7 @@ public class JPackageDialog extends DialogPane {
     }
 
 
-    private TableView<Package> createTable() {
+    private TableView<Package0> createTable() {
         dataTable = new TableView<>();
                 
         final int linkColumn = 4;
@@ -191,9 +175,9 @@ public class JPackageDialog extends DialogPane {
 		String[] names = {"Name", "InstalledVersion", "LatestVersion", "Dependencies", "ProjectURL", "Description"};
 
 		for (int i = 0; i < columnNames.length; i++) {
-			TableColumn<Package, String> col1 = new TableColumn<>(columnNames[i]);
+			TableColumn<Package0, String> col1 = new TableColumn<>(columnNames[i]);
 			col1.setPrefWidth(columnWidth[i]);
-			col1.setCellValueFactory(new PropertyValueFactory<Package,String>(names[i]));
+			col1.setCellValueFactory(new PropertyValueFactory<Package0, String>(names[i]));
 			dataTable.getColumns().add(col1);
 		}
 
@@ -203,7 +187,7 @@ public class JPackageDialog extends DialogPane {
         
         
         
-        
+		dataTable.setItems(packages);
         
         dataTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         dataTable.setOnMouseClicked(e -> {

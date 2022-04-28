@@ -18,9 +18,7 @@
  */
 package beastfx.app.beauti;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Point;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -28,20 +26,21 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
-import javax.swing.plaf.multi.MultiMenuItemUI;
 import javax.swing.table.AbstractTableModel;
 
+import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
+import beastfx.app.beauti.JPackageDialog.Package0;
 import beastfx.app.util.Alert;
-import javafx.geometry.Dimension2D;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MultipleSelectionModel;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -50,7 +49,23 @@ import javafx.scene.layout.VBox;
  * @author Tim Vaughan <tgvaughan@gmail.com>
  */
 public class JPackageRepositoryDialog extends DialogPane {
+    public class URL0 {
+    	URL url;
+    	public URL0(URL url) {
+    		this.url = url;
+    	}
+    	
+    	public String getURL() {
+    		return url.getPath();
+    	}
+    	public void setURL(String URL) {
+    		// ignore
+    	}
+    }
 
+    private ObservableList<URL0> urls0;
+
+    
 	public JPackageRepositoryDialog(final Pane frame) {
         // super(frame);
 
@@ -70,13 +85,26 @@ public class JPackageRepositoryDialog extends DialogPane {
                 e.printStackTrace();
             }
         }
-
+        
+        List<URL0> urls0 = new ArrayList<>();
+        for (URL url : urls) {
+        	urls0.add(new URL0(url));
+        }
+        this.urls0 = FXCollections.observableArrayList(urls0);
+        
         // Assemble table
         VBox pane = new VBox();
-        final RepoTableModel repoTableModel = new RepoTableModel(urls);
-        final ListView<URL> repoTable = new ListView<>();
+        //final RepoTableModel repoTableModel = new RepoTableModel(urls);
+        
+        final TableView<URL0> repoTable = new TableView<>();
         pane.getChildren().add(repoTable);
-        repoTable.getItems().addAll(urls);
+        
+		TableColumn<URL0, String> col1 = new TableColumn<>("Package repository URL");
+		col1.setPrefWidth(400);
+		col1.setCellValueFactory(new PropertyValueFactory<URL0, String>("URL"));
+		repoTable.getColumns().add(col1);
+
+		repoTable.setItems(this.urls0);
 //		int size = repoTable.getFont().getSize();
 //		repoTable.setRowHeight(20 * size/13);
 //        repoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -92,7 +120,7 @@ public class JPackageRepositoryDialog extends DialogPane {
         addURLButton.setOnAction(e -> {
             String newURLString = (String)Alert.showInputDialog(frame,
                     "Enter package repository URL",
-                    "Add repository URL",Alert.PLAIN_MESSAGE, null, null, "http://");
+                    "Add repository URL",Alert.PLAIN_MESSAGE, "http://");
 
             if (newURLString == null)
                 return; // User canceled
@@ -105,9 +133,11 @@ public class JPackageRepositoryDialog extends DialogPane {
                 return;
             }
 
-            if (repoTableModel.urls.contains(newURL)) {
-                Alert.showMessageDialog(frame, "Repository already exists!");
-                return;
+            for (URL0 url : this.urls0) {
+	            if (url.getURL().equals(newURL.getPath())) {
+	                Alert.showMessageDialog(frame, "Repository already exists!");
+	                return;
+	            }
             }
 
             try {
@@ -123,8 +153,8 @@ public class JPackageRepositoryDialog extends DialogPane {
             }
 
             // Add to table:
-            repoTableModel.urls.add(newURL);
-            repoTableModel.fireTableDataChanged();
+            this.urls0.add(new URL0(newURL));
+            save();
         });
         box.getChildren().add(addURLButton);
         
@@ -132,20 +162,20 @@ public class JPackageRepositoryDialog extends DialogPane {
         Button deleteURLButton = new Button("Delete selected URL");
         deleteURLButton.setOnAction(e -> {
             if (Alert.showConfirmDialog(dlg.getDialogPane(), "Really delete this repository?", "Delete?", Alert.YES_NO_OPTION) ==Alert.YES_OPTION) {
-                repoTableModel.urls.remove(repoTable.getSelectionModel().getSelectedIndex());
-                repoTableModel.fireTableDataChanged();
+                this.urls0.remove(repoTable.getSelectionModel().getSelectedIndex());
+                save();
             }
         });
         deleteURLButton.setDisable(true);
         box.getChildren().add(deleteURLButton);
         
         // DONE
-        Button OKButton = new Button("Done");
-        OKButton.setOnAction(e -> {
-            PackageManager.saveRepositoryURLs(repoTableModel.urls);
-            setVisible(false);
-        });
-        box.getChildren().add(OKButton);
+//        Button OKButton = new Button("Done");
+//        OKButton.setOnAction(e -> {
+//            PackageManager.saveRepositoryURLs(repoTableModel.urls);
+//            dlg.close();
+//        });
+//        box.getChildren().add(OKButton);
         // getContentPane().add(box, BorderLayout.PAGE_END);
 
         // Action listeners to disable/enable delete button
@@ -168,43 +198,55 @@ public class JPackageRepositoryDialog extends DialogPane {
         
         
         pane.getChildren().add(box);
+        pane.setPrefWidth(400);
+        pane.setPrefHeight(400);
         
         dlg.getDialogPane().setContent(pane);
+        dlg.getDialogPane().getButtonTypes().add(Alert.CLOSED_OPTION);
+        dlg.setResizable(true);
         dlg.showAndWait();
 
     }
 
+	private void save() {
+		List<URL> urls = new ArrayList<>();
+		for (URL0 url0 : this.urls0) {
+			urls.add(url0.url);
+		}
+		PackageManager.saveRepositoryURLs(urls);
+	}
+	
     /**
      * Class of tables containing the current list of package repositories.
      */
-    class RepoTableModel extends AbstractTableModel {
-		private static final long serialVersionUID = 1L;
-		
-		public List<URL> urls;
-
-        public RepoTableModel(List<URL> urls) {
-            this.urls = urls;
-        }
-
-        @Override
-        public int getRowCount() {
-            return urls.size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return 1;
-        }
-
-        @Override
-        public String getColumnName(int column) {
-            return "Package repository URLs";
-        }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            return urls.get(rowIndex);
-        }
-    }
+//    class RepoTableModel extends AbstractTableModel {
+//		private static final long serialVersionUID = 1L;
+//		
+//		public List<URL> urls;
+//
+//        public RepoTableModel(List<URL> urls) {
+//            this.urls = urls;
+//        }
+//
+//        @Override
+//        public int getRowCount() {
+//            return urls.size();
+//        }
+//
+//        @Override
+//        public int getColumnCount() {
+//            return 1;
+//        }
+//
+//        @Override
+//        public String getColumnName(int column) {
+//            return "Package repository URLs";
+//        }
+//
+//        @Override
+//        public Object getValueAt(int rowIndex, int columnIndex) {
+//            return urls.get(rowIndex);
+//        }
+//    }
 
 }

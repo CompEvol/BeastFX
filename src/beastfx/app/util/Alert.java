@@ -22,6 +22,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert.AlertType;
@@ -170,6 +171,19 @@ public class Alert {
             Object message, String title, AlertType messageType, Icon icon,
             Object[] selectionValues, Object initialSelectionValue) {    	
     	ChoiceDialog<?> dlg = new ChoiceDialog<>(initialSelectionValue, selectionValues);
+    	dlg.setHeaderText(title);
+    	Optional<?> option = dlg.showAndWait();
+		if (parent != null) {
+			Scene node = parent.getScene();
+			dlg.setX(node.getX() + node.getWidth()/2);
+			dlg.setY(node.getY() + node.getHeight()/2);
+		}
+		return option.get();
+    }
+
+    public static Object showInputDialog(Parent parent,
+            Object message, String title, AlertType messageType, String initialSelectionValue) {    	
+    	TextInputDialog dlg = new TextInputDialog(initialSelectionValue);
     	dlg.setHeaderText(title);
     	Optional<?> option = dlg.showAndWait();
 		if (parent != null) {

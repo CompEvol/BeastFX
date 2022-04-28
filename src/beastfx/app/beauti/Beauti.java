@@ -2,8 +2,19 @@ package beastfx.app.beauti;
 
 
 
+import javafx.scene.Cursor;
+
 // import jam.framework.DocumentFrame;
+
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 
 import org.w3c.dom.Document;
@@ -38,7 +49,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.awt.*;
+
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
@@ -89,19 +101,19 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     /**
      * menu for file handling, importing partitions, etc.
      */
-	JMenu fileMenu;
+	Menu fileMenu;
     /**
      * menu for switching templates *
      */
-    JMenu templateMenu;
+    Menu templateMenu;
     /**
      * menu for making showing/hiding tabs *
      */
-    JMenu viewMenu;
+    Menu viewMenu;
 
-    JCheckBoxMenuItem autoSetClockRate;
-    JCheckBoxMenuItem allowLinking;
-    JCheckBoxMenuItem autoUpdateFixMeanSubstRate;
+    CheckMenuItem autoSetClockRate;
+    CheckMenuItem allowLinking;
+    CheckMenuItem autoUpdateFixMeanSubstRate;
 
     /**
      * flag indicating beauti is in the process of being set up and panels
@@ -323,7 +335,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             // JFileChooser.APPROVE_OPTION) {
             // fileName = fileChooser.getSelectedFile().toString();
             if (file != null) {
-                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                setCursor(Cursor.WAIT);
                 doc.newAnalysis();
                 doc.setFileName(file.getAbsolutePath());
                 if (doc.getFileName().lastIndexOf(File.separator) > 0) {
@@ -344,7 +356,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                                     + e.getMessage());
                 }
             }
-            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            setCursor(Cursor.DEFAULT);
         } // actionPerformed
     }
 
@@ -358,7 +370,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
         @Override
 		public void actionPerformed(ActionEvent ae) {
-            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            setCursor(Cursor.WAIT);
             File file = beast.app.util.Utils
                     .getLoadFile("Load Template XML File");
             // JFileChooser fileChooser = new
@@ -381,7 +393,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                 }
             }
             createFileMenu();
-            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            setCursor(Cursor.DEFAULT);
         } // actionPerformed
     } // ActionTemplate
 
@@ -395,17 +407,17 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         @Override
 		public void actionPerformed(ActionEvent ae) {
         	JPackageDialog panel = new JPackageDialog();
-        	JDialog dlg = panel.asDialog(frame);
-            dlg.setVisible(true);
+        	javafx.scene.control.Dialog dlg = panel.asDialog(frame);
+            dlg.showAndWait();
             // refresh template menu item
-            templateMenu.removeAll();
+            templateMenu.getItems().removeAll();
             List<AbstractAction> templateActions = getTemplateActions();
             for (AbstractAction a : templateActions) {
-                templateMenu.add(a);
+                templateMenu.getItems().add(a);
             }
-            templateMenu.addSeparator();
-            templateMenu.add(a_template);
-            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            templateMenu.getItems().add(new SeparatorMenuItem());
+            templateMenu.getItems().add(a_template);
+            setCursor(Cursor.DEFAULT);
         } // actionPerformed
     }
     
@@ -502,7 +514,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                 return;
             }
 
-            JMenuItem menuItem = (JMenuItem) ae.getSource();
+            Menu menuItem = (Menu) ae.getSource();
             JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
             Component invoker = popupMenu.getInvoker();
             JComponent invokerAsJComponent = (JComponent) invoker;
@@ -625,13 +637,13 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
         @Override
 		public void actionPerformed(ActionEvent ae) {
-            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            setCursor(Cursor.WAIT);
             HelpBrowser b = new HelpBrowser(currentTab.config.getType());
             int size = UIManager.getFont("Label.font").getSize();
             b.setSize(800 * size / 13, 800 * size / 13);
             b.setVisible(true);
             b.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            setCursor(Cursor.DEFAULT);
         }
     } // class ActionHelp
 
@@ -730,41 +742,41 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     }
 
 
-    public JMenuBar makeMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-        fileMenu = new JMenu("File");
-        fileMenu.setMnemonic('F');
-        menuBar.add(fileMenu);
+    public MenuBar makeMenuBar() {
+        MenuBar menuBar = new MenuBar();
+        fileMenu = new Menu("_File");
+        fileMenu.setMnemonicParsing(true);
+        menuBar.getMenus().add(fileMenu);
         createFileMenu();
 
-        JMenu modeMenu = new JMenu("Mode");
-        menuBar.add(modeMenu);
-        modeMenu.setMnemonic('M');
+        Menu modeMenu = new Menu("Mode");
+        menuBar.getMenus().add(modeMenu);
+        modeMenu.setMnemonicParsing(true);
 
-        autoSetClockRate = new JCheckBoxMenuItem(
-                "Automatic set clock rate", this.doc.autoSetClockRate);
+        autoSetClockRate = new CheckMenuItem("Automatic set clock rate");
+        autoSetClockRate.setSelected(this.doc.autoSetClockRate);
         autoSetClockRate.setOnAction(ae -> {
-                doc.autoSetClockRate = autoSetClockRate.getState();
+                doc.autoSetClockRate = autoSetClockRate.isSelected();
                 refreshPanel();
             });
-        modeMenu.add(autoSetClockRate);
+        modeMenu.getItems().add(autoSetClockRate);
 
-        allowLinking = new JCheckBoxMenuItem(
-                "Allow parameter linking", this.doc.allowLinking);
+        allowLinking = new CheckMenuItem("Allow parameter linking");
+        allowLinking.setSelected(this.doc.allowLinking);
         allowLinking.setOnAction(ae -> {
-                doc.allowLinking = allowLinking.getState();
+                doc.allowLinking = allowLinking.isSelected();
                 doc.determineLinks();
                 refreshPanel();
             });
-        modeMenu.add(allowLinking);
+        modeMenu.getItems().add(allowLinking);
 
-        autoUpdateFixMeanSubstRate = new JCheckBoxMenuItem(
-                "Automatic set fix mean substitution rate flag", this.doc.autoUpdateFixMeanSubstRate);
+        autoUpdateFixMeanSubstRate = new CheckMenuItem("Automatic set fix mean substitution rate flag");
+        autoUpdateFixMeanSubstRate.setSelected(this.doc.autoUpdateFixMeanSubstRate);
         autoUpdateFixMeanSubstRate.setOnAction(ae -> {
-                doc.autoUpdateFixMeanSubstRate = autoUpdateFixMeanSubstRate.getState();
+                doc.autoUpdateFixMeanSubstRate = autoUpdateFixMeanSubstRate.isSelected();
                 refreshPanel();
             });
-        modeMenu.add(autoUpdateFixMeanSubstRate);
+        modeMenu.getItems().add(autoUpdateFixMeanSubstRate);
 
         // final JCheckBoxMenuItem muteSound = new
         // JCheckBoxMenuItem("Mute sound", false);
@@ -776,21 +788,21 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         // });
         // modeMenu.add(muteSound);
 
-        viewMenu = new JMenu("View");
-        menuBar.add(viewMenu);
-        viewMenu.setMnemonic('V');
+        viewMenu = new Menu("_View");
+        menuBar.getMenus().add(viewMenu);
+        viewMenu.setMnemonicParsing(true);
         setUpViewMenu();
 
-        JMenu helpMenu = new JMenu("Help");
-        menuBar.add(helpMenu);
-        helpMenu.setMnemonic('H');
-        helpMenu.add(a_help);
-        helpMenu.add(a_msgs);
-        helpMenu.add(a_citation);
-        helpMenu.add(a_viewModel);
+        Menu helpMenu = new Menu("_Help");
+        menuBar.getMenus().add(helpMenu);
+        helpMenu.setMnemonicParsing(true);
+        helpMenu.getItems().add(a_help);
+        helpMenu.getItems().add(a_msgs);
+        helpMenu.getItems().add(a_citation);
+        helpMenu.getItems().add(a_viewModel);
         addCustomHelpMenus(helpMenu);
         if (!Utils.isMac() || Utils6.isMajorLower(Utils6.JAVA_1_8)) {
-            helpMenu.add(a_about);
+            helpMenu.getItems().add(a_about);
         }
 
         setMenuVisibiliy("", menuBar);
@@ -800,7 +812,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
     // Find sub-classes of BeautiHelpAction and add custom help menu items
     // for these classes
-    private void addCustomHelpMenus(JMenu helpMenu) {
+    private void addCustomHelpMenus(Menu helpMenu) {
         String[] PACKAGE_DIRS = {"beast.app",};
         String helpClass = "beastfx.app.beauti.BeautiHelpAction";
 //        List<String> helpActions = new ArrayList<>();
@@ -815,60 +827,60 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         Set<String> helpActions = Utils.loadService(BeautiHelpAction.class);
         
         if (helpActions.size() > 1) {
-            helpMenu.addSeparator();
+            helpMenu.getItems().add(new SeparatorMenuItem());
             for (String className : helpActions) {
             	if (!className.equals(helpClass)) {
 		            try {
 		            	Class<?> _class = BEASTClassLoader.forName(className);
 		                Constructor<?> con = _class.getConstructor(BeautiDoc.class);
 		                BeautiHelpAction helpAction = (BeautiHelpAction) con.newInstance(doc);
-		                helpMenu.add(helpAction);
+		                helpMenu.getItems().add(helpAction);
 		            } catch (Throwable t) {
 		            	t.printStackTrace();
 		            }
             	}
             }
-            helpMenu.addSeparator();
+            helpMenu.getItems().add(new SeparatorMenuItem());
         }
     }
 
 	private void createFileMenu() {
     	// first clear menu
-   		fileMenu.removeAll();
+   		fileMenu.getItems().removeAll();
 
-        fileMenu.add(a_new);
-        fileMenu.add(a_load);
-        fileMenu.addSeparator();
+        fileMenu.getItems().add(a_new);
+        fileMenu.getItems().add(a_load);
+        fileMenu.getItems().add(new SeparatorMenuItem());
         addAlignmentProviderMenus(fileMenu);
-        fileMenu.addSeparator();
-        templateMenu = new JMenu("Template");
-        fileMenu.add(templateMenu);
-        List<AbstractAction> templateActions = getTemplateActions();
-        for (AbstractAction a : templateActions) {
-            templateMenu.add(a);
+        fileMenu.getItems().add(new SeparatorMenuItem());
+        templateMenu = new Menu("Template");
+        fileMenu.getItems().add(templateMenu);
+        List<MenuItem> templateActions = getTemplateActions();
+        for (MenuItem a : templateActions) {
+            templateMenu.getItems().add(a);
         }
-        JMenu workDirMenu = new JMenu("Set working dir");
-        fileMenu.add(workDirMenu);
-        List<AbstractAction> workDirMenuActions = getWorkDirActions();
-        for (AbstractAction a : workDirMenuActions) {
-        	workDirMenu.add(a);
+        Menu workDirMenu = new Menu("Set working dir");
+        fileMenu.getItems().add(workDirMenu);
+        List<MenuItem> workDirMenuActions = getWorkDirActions();
+        for (MenuItem a : workDirMenuActions) {
+        	workDirMenu.getItems().add(a);
         }
-        templateMenu.addSeparator();
-        templateMenu.add(a_template);
-        fileMenu.add(a_managePackages);
-        fileMenu.add(a_clearClassPath);
-        fileMenu.add(a_appLauncher);
-        fileMenu.addSeparator();
-        fileMenu.add(a_save);
-        fileMenu.add(a_saveas);
+        templateMenu.getItems().add(new SeparatorMenuItem());
+        templateMenu.getItems().add(a_template);
+        fileMenu.getItems().add(a_managePackages);
+        fileMenu.getItems().add(a_clearClassPath);
+        fileMenu.getItems().add(a_appLauncher);
+        fileMenu.getItems().add(new SeparatorMenuItem());
+        fileMenu.getItems().add(a_save);
+        fileMenu.getItems().add(a_saveas);
         if (!Utils.isMac()) {
-            fileMenu.addSeparator();
-            fileMenu.add(a_close);
-            fileMenu.add(a_quit);
+            fileMenu.getItems().add(new SeparatorMenuItem());
+            fileMenu.getItems().add(a_close);
+            fileMenu.getItems().add(a_quit);
         }
 	}
 
-	private void addAlignmentProviderMenus(JMenu fileMenu) {
+	private void addAlignmentProviderMenus(Menu fileMenu) {
         List<BeautiAlignmentProvider> providers = doc.beautiConfig.alignmentProvider;
         for (BeautiAlignmentProvider provider : providers) {
         	AbstractAction action = new AbstractAction() {
@@ -920,7 +932,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 		                        "Error importing alignment",
 		                        Alert.WARNING_MESSAGE);
 		            }
-		            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		            setCursor(Cursor.DEFAULT);
 				}
 			};
             String providerInfo = provider.toString().replaceAll("Add ", "Add partition for ");
@@ -934,7 +946,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 	
 	void setUpViewMenu() {
         m_viewPanelCheckBoxMenuItems = null;
-        viewMenu.removeAll();
+        viewMenu.getItems().removeAll();
         for (int panelIndex = 0; panelIndex < doc.beautiConfig.panels.size(); panelIndex++) {
             final ViewPanelCheckBoxMenuItem viewPanelAction = new ViewPanelCheckBoxMenuItem(
                     panelIndex);
@@ -943,10 +955,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                 });
             viewMenu.add(viewPanelAction);
         }
-        viewMenu.addSeparator();
+        viewMenu.getItems().add(new SeparatorMenuItem());
         viewMenu.add(a_viewall);
         
-        viewMenu.addSeparator();
+        viewMenu.getItems().add(new SeparatorMenuItem());
         MyAction zoomIn = new MyAction("Zoom in", "Increase font size of all components", null, KeyEvent.VK_EQUALS) {
  			private static final long serialVersionUID = 1L;
 
@@ -1035,8 +1047,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
     }
 
-	private List<AbstractAction> getTemplateActions() {
-        List<AbstractAction> actions = new ArrayList<>();
+	private List<MenuItem> getTemplateActions() {
+        List<MenuItem> actions = new ArrayList<>();
         List<String> beastDirectories = PackageManager.getBeastDirectories();
         for (String dirName : beastDirectories) {
             File dir = new File(dirName + "/" + BeautiConfig.TEMPLATE_DIR);
@@ -1045,7 +1057,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         return actions;
     }
 
-    private void getTemplateActionForDir(File dir, List<AbstractAction> actions) {
+    private void getTemplateActionForDir(File dir, List<MenuItem> actions) {
         if (dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles();
             if (files != null) {
@@ -1076,8 +1088,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         }
     }
 
-    private List<AbstractAction> getWorkDirActions() {
-        List<AbstractAction> actions = new ArrayList<>();
+    private List<MenuItem> getWorkDirActions() {
+        List<MenuItem> actions = new ArrayList<>();
         List<String> beastDirectories = PackageManager.getBeastDirectories();
         Set<String> doneDirs = new HashSet<>();
         for (String dir : beastDirectories) {
@@ -1085,24 +1097,16 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 	        	doneDirs.add(dir);
 	        	String exampledir = dir + File.separator+ "examples";
 	        	if (new File(exampledir).exists()) {
-		        	AbstractAction action = new AbstractAction() {
-						private static final long serialVersionUID = 1L;
-	
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							ProgramStatus.setCurrentDir(dir);
-						}
-	
-		            };
 		            String workDirInfo = "Set working directory to " + dir;
 		            String name = dir;
 		            if (name.indexOf(File.separator) >= 0) {
 		            	name = dir.substring(dir.lastIndexOf(File.separator) + 1);
 		            }
-		            action.putValue(Action.SHORT_DESCRIPTION, workDirInfo);
-		            action.putValue(Action.LONG_DESCRIPTION, workDirInfo);
-		            action.putValue(Action.NAME, name);
-		            actions.add(action);
+		            CustomMenuItem menu = new CustomMenuItem(new Label(name));
+	        		menu.setOnAction(e->ProgramStatus.setCurrentDir(dir));
+	        		Tooltip tooltip = new Tooltip(workDirInfo);
+	        		Tooltip.install(menu.getContent(), tooltip);
+		            actions.add(menu);
 	        	}
         	}
         }
@@ -1111,17 +1115,17 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
     void setMenuVisibiliy(String parentName, Component c) {
         String name = "";
-        if (c instanceof JMenu) {
-            name = ((JMenu) c).getText();
-        } else if (c instanceof JMenuItem) {
-            name = ((JMenuItem) c).getText();
+        if (c instanceof Menu) {
+            name = ((Menu) c).getText();
+        } else if (c instanceof MenuItem) {
+            name = ((MenuItem) c).getText();
         }
         if (name.length() > 0
                 && doc.beautiConfig.menuIsInvisible(parentName + name)) {
             c.setVisible(false);
         }
-        if (c instanceof JMenu) {
-            for (Component x : ((JMenu) c).getMenuComponents()) {
+        if (c instanceof Menu) {
+            for (Component x : ((Menu) c).getMenuComponents()) {
                 setMenuVisibiliy(parentName + name
                         + (name.length() > 0 ? "." : ""), x);
             }
@@ -1378,8 +1382,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                 frame.setIconImage(icon.getImage());
             }
 
-            JMenuBar menuBar = beauti.makeMenuBar();
-            frame.setJMenuBar(menuBar);
+            MenuBar menuBar = beauti.makeMenuBar();
+            frame.setMenuBar(menuBar);
 
             if (doc.getFileName() != null || doc.alignments.size() > 0) {
                 beauti.a_save.setEnabled(true);

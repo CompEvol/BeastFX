@@ -11,6 +11,8 @@ import beastfx.app.inputeditor.TaxonSetDialog;
 import java.io.File;
 import java.util.*;
 
+import beastfx.app.beauti.JPackageDialog;
+import beastfx.app.beauti.JPackageRepositoryDialog;
 import beast.base.core.BEASTObject;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Alignment;
@@ -20,11 +22,11 @@ import beast.base.evolution.alignment.TaxonSet;
 import beast.base.inference.distribution.LogNormalDistributionModel;
 import beast.base.inference.distribution.ParametricDistribution;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import test.beast.BEASTTestCase;
 
 public class BaseTest extends javafx.application.Application {
 	public enum e {value1,value2,value3};
@@ -77,6 +79,14 @@ public class BaseTest extends javafx.application.Application {
 		doc.beautiConfig.initAndValidate();
 	    
 		
+    	JPackageDialog panel = new JPackageDialog();
+    	Dialog dlg1 = panel.asDialog(null);
+        dlg1.showAndWait();
+		System.exit(0);
+
+
+		JPackageRepositoryDialog dlg0 = new JPackageRepositoryDialog(null);
+		System.exit(0);
 		
 		
 		Set<Taxon> candidates = new HashSet<>();
@@ -92,6 +102,7 @@ public class BaseTest extends javafx.application.Application {
 		}
 		TaxonSet taxonSet = new TaxonSet();
 		taxonSet.taxonsetInput.get().add(t2);
+		
 		
 		
 		TaxonSetDialog dlg = new TaxonSetDialog(taxonSet, candidates, doc);
