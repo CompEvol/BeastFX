@@ -1,8 +1,10 @@
 package beastfx.app.beauti;
 
-import java.awt.event.ActionEvent;
 
 import beastfx.app.inputeditor.MyAction;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 
 /** Sub-classes of this class in packages will get
  * a menu item in the Help menu in BEAUti
@@ -15,15 +17,19 @@ import beastfx.app.inputeditor.MyAction;
  * }
  * 
  */
-public class BeautiHelpAction extends MyAction {
-	private static final long serialVersionUID = 1L;
+public class BeautiHelpAction extends CustomMenuItem {
 
 	public BeautiHelpAction(String name, String toolTipText, String icon, int acceleratorKey) {
-		super(name, toolTipText, icon, acceleratorKey);
+		super(new Label(name));
+		if (acceleratorKey > 0) {
+	        setMnemonicParsing(true);
+		}
+		Tooltip tooltip = new Tooltip(toolTipText);
+		Tooltip.install(getContent(), tooltip);		
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent ae) {
-	}
+//	@Override
+//	public void actionPerformed(ActionEvent ae) {
+//	}
 
 }

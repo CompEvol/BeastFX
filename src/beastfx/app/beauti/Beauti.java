@@ -2,12 +2,16 @@ package beastfx.app.beauti;
 
 
 
+
+import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 
 // import jam.framework.DocumentFrame;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Control;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -15,7 +19,11 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,7 +63,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -132,7 +139,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     }
 
     void setTitle() {
-        frame.setTitle("BEAUti 2: " + this.doc.getTemplateName() + " "
+        ((Stage)getScene().getWindow()).setTitle("BEAUti 2: " + this.doc.getTemplateName() + " "
                 + doc.getFileName());
     }
 
@@ -140,17 +147,17 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         if (isPaneIsVisible[panelNr]) {
             isPaneIsVisible[panelNr] = false;
             int tabNr = tabNrForPanel(panelNr);
-            removeTabAt(tabNr);
+            getTabs().remove(tabNr);
         } else {
             isPaneIsVisible[panelNr] = true;
             int tabNr = tabNrForPanel(panelNr);
             BeautiPanelConfig panel = doc.beautiConfig.panels.get(panelNr);
-            insertTab(
+            getTabs().insert(
                     doc.beautiConfig.getButtonLabel(this,
                             panel.nameInput.get()), null, panels[panelNr],
                     panel.tipTextInput.get(), tabNr);
             // }
-            setSelectedIndex(tabNr);
+            getSelectionModel().select(tabNr);
         }
     }
 
@@ -164,25 +171,25 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         return k;
     }
 
-    Action a_new = new ActionNew();
-    public Action a_load = new ActionLoad();
-    Action a_template = new ActionTemplate();
-    Action a_managePackages = new ActionManagePacakges();
-    Action a_clearClassPath = new ActionClearClassPath();
+    MenuItem a_new = new ActionNew();
+    public MenuItem a_load = new ActionLoad();
+    MenuItem a_template = new ActionTemplate();
+    MenuItem a_managePackages = new ActionManagePacakges();
+    MenuItem a_clearClassPath = new ActionClearClassPath();
     
 //    public Action a_import = new ActionImport();
-    public Action a_save = new ActionSave();
-    Action a_saveas = new ActionSaveAs();
-    Action a_close = new ActionClose();
-    Action a_quit = new ActionQuit();
-    Action a_viewall = new ActionViewAllPanels();
-    Action a_appLauncher = new ActionLaunch();
+    public MenuItem a_save = new ActionSave();
+    MenuItem a_saveas = new ActionSaveAs();
+    MenuItem a_close = new ActionClose();
+    MenuItem a_quit = new ActionQuit();
+    MenuItem a_viewall = new ActionViewAllPanels();
+    MenuItem a_appLauncher = new ActionLaunch();
 
-    Action a_help = new ActionHelp();
-    Action a_msgs = new ActionMsgs();
-    Action a_citation = new ActionCitation();
-    Action a_about = new ActionAbout();
-    Action a_viewModel = new ActionViewModel();
+    MenuItem a_help = new ActionHelp();
+    MenuItem a_msgs = new ActionMsgs();
+    MenuItem a_citation = new ActionCitation();
+    MenuItem a_about = new ActionAbout();
+    MenuItem a_viewModel = new ActionViewModel();
 
     @Override
     public void docHasChanged() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -192,15 +199,15 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     }
 
     class ActionSave extends MyAction {
-        private static final long serialVersionUID = 1;
+        
 
         public ActionSave() {
-            super("Save", "Save Model", "save", KeyEvent.VK_S);
-            setEnabled(false);
+            super("Save", "Save Model", "save", new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+            setDisable(true);
         } // c'tor
 
         public ActionSave(String name, String toolTipText, String icon,
-                          int acceleratorKey) {
+        		KeyCodeCombination acceleratorKey) {
             super(name, toolTipText, icon, acceleratorKey);
         } // c'tor
 
@@ -234,8 +241,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         private static final long serialVersionUID = -20389110859354L;
 
         public ActionSaveAs() {
-            super("Save As", "Save Model As", "saveas", -1);
-            setEnabled(false);
+            super("Save As", "Save Model As", "saveas", null);
+            setDisable(true);
         } // c'tor
 
         @Override
@@ -296,10 +303,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     } // saveFile
 
     class ActionNew extends MyAction {
-        private static final long serialVersionUID = 1;
+        
 
         public ActionNew() {
-            super("New", "Start new analysis", "new", KeyEvent.VK_N);
+            super("New", "Start new analysis", "new", new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
         } // c'tor
 
         @Override
@@ -313,14 +320,14 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     }
 
     class ActionLoad extends MyAction {
-        private static final long serialVersionUID = 1;
+        
 
         public ActionLoad() {
-            super("Load", "Load Beast File", "open", KeyEvent.VK_O);
+            super("Load", "Load Beast File", "open", new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
         }
 
         public ActionLoad(String name, String toolTipText, String icon,
-                          int acceleratorKey) {
+                          KeyCodeCombination acceleratorKey) {
             super(name, toolTipText, icon, acceleratorKey);
         }
 
@@ -345,8 +352,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                 try {
                 	// TODO: deal with json files
                     doc.loadXML(new File(doc.getFileName()));
-                    a_save.setEnabled(true);
-                    a_saveas.setEnabled(true);
+                    a_save.setDisable(false);
+                    a_saveas.setDisable(false);
                     setTitle();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -361,11 +368,11 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     }
 
     class ActionTemplate extends MyAction {
-        private static final long serialVersionUID = 1;
+        
 
         public ActionTemplate() {
             super("Other Template", "Load Beast Analysis Template From File",
-                    "template", -1);
+                    "template", null);
         } // c'tor
 
         @Override
@@ -398,10 +405,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     } // ActionTemplate
 
     class ActionManagePacakges extends MyAction {
-        private static final long serialVersionUID = 1;
+        
 
         public ActionManagePacakges() {
-            super("Manage Packages", "Manage Packages", "package", -1);
+            super("Manage Packages", "Manage Packages", "package", null);
         } // c'tor
 
         @Override
@@ -411,8 +418,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             dlg.showAndWait();
             // refresh template menu item
             templateMenu.getItems().removeAll();
-            List<AbstractAction> templateActions = getTemplateActions();
-            for (AbstractAction a : templateActions) {
+            List<MyAction> templateActions = getTemplateActions();
+            for (MenuItem a : templateActions) {
                 templateMenu.getItems().add(a);
             }
             templateMenu.getItems().add(new SeparatorMenuItem());
@@ -422,10 +429,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     }
     
     class ActionLaunch extends MyAction {
-        private static final long serialVersionUID = 1;
+        
 
         public ActionLaunch() {
-            super("Launch Apps", "Launch BEAST Apps supplied by packages", "launch", -1);
+            super("Launch Apps", "Launch BEAST Apps supplied by packages", "launch", null);
         } // c'tor
 
         @Override
@@ -435,10 +442,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     }
 
     class ActionClearClassPath extends MyAction {
-        private static final long serialVersionUID = 1;
+        
 
         public ActionClearClassPath() {
-            super("Clear Class Path", "Clear class path, so it will be refreshed next time BEAUti starts. Only useful when installing packages by hand.", "ccp", -1);
+            super("Clear Class Path", "Clear class path, so it will be refreshed next time BEAUti starts. Only useful when installing packages by hand.", "ccp", null);
         } // c'tor
 
         @Override
@@ -453,7 +460,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     
 
     //    class ActionImport extends MyAction {
-//        private static final long serialVersionUID = 1;
+//        
 //
 //        public ActionImport() {
 //            super("Import Alignment", "Import Alignment File", "import",
@@ -504,7 +511,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         private static final long serialVersionUID = -2038911085935515L;
 
         public ActionClose() {
-            super("Close", "Close Window", "close", KeyEvent.VK_W);
+            super("Close", "Close Window", "close", new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
         } // c'tor
 
         @Override
@@ -513,15 +520,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             if (!quit()) {
                 return;
             }
-
-            Menu menuItem = (Menu) ae.getSource();
-            JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
-            Component invoker = popupMenu.getInvoker();
-            JComponent invokerAsJComponent = (JComponent) invoker;
-            Container topLevel = invokerAsJComponent.getTopLevelAncestor();
-            if (topLevel != null) {
-                ((JFrame) topLevel).dispose();
-            }
+            Stage stage = (Stage) getScene().getWindow();
+            stage.close();            
         }
     } // class ActionClose
 
@@ -532,8 +532,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         private static final long serialVersionUID = -2038911085935515L;
 
         public ActionQuit() {
-            super("Exit", "Exit Program", "exit", KeyEvent.VK_F4);
-            putValue(Action.MNEMONIC_KEY, new Integer('x'));
+            super("Exit", "Exit Program", "exit", new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
+            //putValue(Action.MNEMONIC_KEY, new Integer('x'));
         } // c'tor
 
         @Override
@@ -566,14 +566,14 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
     ViewPanelCheckBoxMenuItem[] m_viewPanelCheckBoxMenuItems;
 
-    class ViewPanelCheckBoxMenuItem extends JCheckBoxMenuItem {
-        private static final long serialVersionUID = 1L;
+    class ViewPanelCheckBoxMenuItem extends CheckMenuItem {
         int m_iPanel;
 
         ViewPanelCheckBoxMenuItem(int panelIndex) {
             super("Show "
                     + doc.beautiConfig.panels.get(panelIndex).nameInput.get()
-                    + " panel",
+                    + " panel");
+            setSelected(
                     doc.beautiConfig.panels.get(panelIndex).isVisibleInput.get());
             m_iPanel = panelIndex;
             if (m_viewPanelCheckBoxMenuItems == null) {
@@ -594,10 +594,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
      * makes all panels visible *
      */
     class ActionViewAllPanels extends MyAction {
-        private static final long serialVersionUID = -1;
+        
 
         public ActionViewAllPanels() {
-            super("View all", "View all panels", "viewall", -1);
+            super("View all", "View all panels", "viewall", null);
         } // c'tor
 
         @Override
@@ -612,10 +612,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     } // class ActionViewAllPanels
 
     class ActionAbout extends MyAction {
-        private static final long serialVersionUID = -1;
+        
 
         public ActionAbout() {
-            super("About", "Help about", "about", -1);
+            super("About", "Help about", "about", null);
         } // c'tor
 
         @Override
@@ -629,10 +629,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     } // class ActionAbout
 
     class ActionHelp extends MyAction {
-        private static final long serialVersionUID = -1;
+        
 
         public ActionHelp() {
-            super("Help", "Help on current panel", "help", -1);
+            super("Help", "Help on current panel", "help", null);
         } // c'tor
 
         @Override
@@ -648,10 +648,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     } // class ActionHelp
 
     class ActionMsgs extends MyAction {
-        private static final long serialVersionUID = -1;
+        
 
         public ActionMsgs() {
-            super("Messages", "Show information, warning and error messages", "msgs", -1);
+            super("Messages", "Show information, warning and error messages", "msgs", null);
         } // c'tor
 
         @Override
@@ -672,12 +672,12 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     }
 
     class ActionCitation extends MyAction implements ClipboardOwner {
-        private static final long serialVersionUID = -1;
+        
 
         public ActionCitation() {
             super("Citation",
                     "Show appropriate citations and copy to clipboard",
-                    "citation", -1);
+                    "citation", null);
         } // c'tor
 
         @Override
@@ -706,10 +706,10 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     } // class ActionAbout
 
     class ActionViewModel extends MyAction {
-        private static final long serialVersionUID = -1;
+        
 
         public ActionViewModel() {
-            super("View model", "View model graph", "model", -1);
+            super("View model", "View model graph", "model", null);
         } // c'tor
 
         @Override
@@ -729,7 +729,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
     public void refreshPanel() {
         try {
-            BeautiPanel panel = (BeautiPanel) getSelectedComponent();
+            BeautiPanel panel = (BeautiPanel)getSelectionModel().getSelectedItem();
             if (panel != null) {
                 this.doc.determinePartitions();
                 panel.updateList();
@@ -855,7 +855,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         fileMenu.getItems().add(new SeparatorMenuItem());
         templateMenu = new Menu("Template");
         fileMenu.getItems().add(templateMenu);
-        List<MenuItem> templateActions = getTemplateActions();
+        List<MyAction> templateActions = getTemplateActions();
         for (MenuItem a : templateActions) {
             templateMenu.getItems().add(a);
         }
@@ -882,14 +882,16 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
 	private void addAlignmentProviderMenus(Menu fileMenu) {
         List<BeautiAlignmentProvider> providers = doc.beautiConfig.alignmentProvider;
+
         for (BeautiAlignmentProvider provider : providers) {
-        	AbstractAction action = new AbstractAction() {
-				private static final long serialVersionUID = 1L;
+            String providerInfo = provider.toString().replaceAll("Add ", "Add partition for ");
+
+        	MenuItem action = new MyAction(provider.toString(), providerInfo, null, null) {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
 		            try {
-		                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		                setCursor(Cursor.WAIT);
 
 		                // get user-specified alignments
 				        List<BEASTInterface> beastObjects = provider.getAlignments(doc);
@@ -915,8 +917,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 					        	}
 					        }
 				        }
-		                a_save.setEnabled(true);
-		                a_saveas.setEnabled(true);
+		                a_save.setDisable(false);
+		                a_saveas.setDisable(false);
 		            } catch (Exception exx) {
 		                exx.printStackTrace();
 
@@ -935,11 +937,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 		            setCursor(Cursor.DEFAULT);
 				}
 			};
-            String providerInfo = provider.toString().replaceAll("Add ", "Add partition for ");
-            action.putValue(Action.SHORT_DESCRIPTION, providerInfo);
-            action.putValue(Action.LONG_DESCRIPTION, providerInfo);
-            action.putValue(Action.NAME, provider.toString());
-        	fileMenu.add(action);
+        	fileMenu.getItems().add(action);
         }
 	}
 
@@ -953,14 +951,13 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             viewPanelAction.setOnAction(ae -> {
                     viewPanelAction.doAction();
                 });
-            viewMenu.add(viewPanelAction);
+            viewMenu.getItems().add(viewPanelAction);
         }
         viewMenu.getItems().add(new SeparatorMenuItem());
-        viewMenu.add(a_viewall);
+        viewMenu.getItems().add(a_viewall);
         
         viewMenu.getItems().add(new SeparatorMenuItem());
-        MyAction zoomIn = new MyAction("Zoom in", "Increase font size of all components", null, KeyEvent.VK_EQUALS) {
- 			private static final long serialVersionUID = 1L;
+        MyAction zoomIn = new MyAction("Zoom in", "Increase font size of all components", null, new KeyCodeCombination(KeyCode.EQUALS)) {
 
 			@Override
         	public void actionPerformed(ActionEvent ae) {
@@ -971,8 +968,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         		repaint();
         	}
         };
-        MyAction zoomOut = new MyAction("Zoom out", "Decrease font size of all components", null, KeyEvent.VK_MINUS) {
-			private static final long serialVersionUID = 1L;
+        MyAction zoomOut = new MyAction("Zoom out", "Decrease font size of all components", null, new KeyCodeCombination(KeyCode.MINUS)) {
 
 			@Override
         	public void actionPerformed(ActionEvent ae) {
@@ -983,19 +979,17 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         		repaint();
         	}
         };
-        viewMenu.add(zoomIn);
-        viewMenu.add(zoomOut);
+        viewMenu.getItems().add(zoomIn);
+        viewMenu.getItems().add(zoomOut);
 
     }
 
-    class TemplateAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-
+    class TemplateAction extends MyAction {
         String m_sFileName;
         String templateInfo;
 
         public TemplateAction(File file) {
-            super("xx");
+            super("xx", file.getAbsolutePath(), null, null);
             m_sFileName = file.getAbsolutePath();
             String fileSep = System.getProperty("file.separator");
             if (fileSep.equals("\\")) {
@@ -1004,7 +998,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             int i = m_sFileName.lastIndexOf(fileSep) + 1;
             String name = m_sFileName.substring(
                     i, m_sFileName.length() - 4);
-            putValue(Action.NAME, name);
+            //putValue(Action.NAME, name);
+            ((Label)getContent()).setText(name);
             try {
                 DocumentBuilderFactory factory = DocumentBuilderFactory
                         .newInstance();
@@ -1017,8 +1012,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                     templateInfo = "switch to " + name + " template";
                 }
                 //templateInfo = "<html>" + templateInfo + "</html>";
-                putValue(Action.SHORT_DESCRIPTION, templateInfo);
-                putValue(Action.LONG_DESCRIPTION, templateInfo);
+        		Tooltip tooltip = new Tooltip(templateInfo);
+        		Tooltip.install(getContent(), tooltip);		
             } catch (Exception e) {
                 // ignore
             }
@@ -1047,8 +1042,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
     }
 
-	private List<MenuItem> getTemplateActions() {
-        List<MenuItem> actions = new ArrayList<>();
+	private List<MyAction> getTemplateActions() {
+        List<MyAction> actions = new ArrayList<>();
         List<String> beastDirectories = PackageManager.getBeastDirectories();
         for (String dirName : beastDirectories) {
             File dir = new File(dirName + "/" + BeautiConfig.TEMPLATE_DIR);
@@ -1057,7 +1052,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         return actions;
     }
 
-    private void getTemplateActionForDir(File dir, List<MenuItem> actions) {
+    private void getTemplateActionForDir(File dir, List<MyAction> actions) {
         if (dir.exists() && dir.isDirectory()) {
             File[] files = dir.listFiles();
             if (files != null) {
@@ -1069,8 +1064,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                             	String fileName = template.getName();
                                 fileName = fileName.substring(0, fileName.length() - 4);
                                 boolean duplicate = false;
-                            	for (AbstractAction action : actions) {
-                            		String name = action.getValue(Action.NAME).toString();
+                            	for (MyAction action : actions) {
+                            		String name = ((Label)action.getContent()).getText();
                             		if (name.equals(fileName)) {
                             			duplicate = true;
                             		}
@@ -1113,7 +1108,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         return actions;
     }
 
-    void setMenuVisibiliy(String parentName, Component c) {
+    void setMenuVisibiliy(String parentName, MenuItem c) {
         String name = "";
         if (c instanceof Menu) {
             name = ((Menu) c).getText();
@@ -1125,13 +1120,13 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             c.setVisible(false);
         }
         if (c instanceof Menu) {
-            for (Component x : ((Menu) c).getMenuComponents()) {
+            for (MenuItem x : ((Menu) c).getItems()) {
                 setMenuVisibiliy(parentName + name
                         + (name.length() > 0 ? "." : ""), x);
             }
-        } else if (c instanceof Container) {
-            for (int i = 0; i < ((Container) c).getComponentCount(); i++) {
-                setMenuVisibiliy(parentName, ((Container) c).getComponent(i));
+        } else if (c instanceof Menu) {
+            for (int i = 0; i < ((Menu) c).getItems().size(); i++) {
+                setMenuVisibiliy(parentName, ((Menu) c).getItems().get(i));
             }
         }
     }
