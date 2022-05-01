@@ -2,8 +2,16 @@ package test.beastfx.app.inputeditor;
 
 
 
+
 import java.text.DecimalFormat;
 import java.util.Arrays;
+
+import org.apache.commons.math3.optim.MaxEval;
+import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import org.apache.commons.math3.optim.univariate.BrentOptimizer;
+import org.apache.commons.math3.optim.univariate.SearchInterval;
+import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
+import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 
 import beast.base.core.Log;
 import beast.base.evolution.substitutionmodel.Frequencies;
@@ -15,18 +23,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -37,9 +42,20 @@ public class ExpFunctionViewer extends javafx.application.Application {
 	LineChart<Number,Number> chart;
 	Label a0label, a1label, a2label, b1label, b2label;
 	DecimalFormat format = new DecimalFormat("#.##");
+	DecimalFormat format3= new DecimalFormat("#.####");
 	GeneralSubstitutionModel gtr;
 	TableView<RateRow> table;
+    ObservableList<RateRow> rows;
+	Slider a0Slider;
+	Slider a1Slider;
+	Slider b1Slider;
+	Slider b2Slider;
+	Label diffLabel;
+
 	
+	int current = 1;
+	double [] target = new double[100];
+
 	class RateRow {
 		double [] r;
 		int rowNr;
@@ -132,8 +148,6 @@ public class ExpFunctionViewer extends javafx.application.Application {
 		table.refresh();
 	}
 
-    ObservableList<RateRow> rows;
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		setUpGTR();
@@ -144,10 +158,10 @@ public class ExpFunctionViewer extends javafx.application.Application {
 		pane.getItems().add(ctrlPane);
 		
 		// create control panel
-		Slider a0Slider = new Slider(0, 1, 0.25);
-		Slider a1Slider = new Slider(-1, 1, 0.0);
-		Slider b1Slider = new Slider(0, 5, 0.25);
-		Slider b2Slider = new Slider(0, 5, 0.75);
+		a0Slider = new Slider(0, 1, 0.25);
+		a1Slider = new Slider(-1, 1, 0.0);
+		b1Slider = new Slider(0, 5, 0.25);
+		b2Slider = new Slider(0, 5, 0.75);
 
 		a0label = new Label("a0=0.25");
 		a1label = new Label("a1=0.0");
@@ -176,6 +190,14 @@ public class ExpFunctionViewer extends javafx.application.Application {
         	b2 = new_val.doubleValue();
         	repaint();
 		});
+
+		
+		HBox box = new HBox();
+		Button optimiseNext = new Button("Next");
+		optimiseNext.setOnAction(e->optimiseNext());
+		diffLabel = new Label("0.0");
+		box.getChildren().addAll(optimiseNext, diffLabel);
+		ctrlPane.getChildren().add(box);
 
 		table = new TableView<>();
 		for (int i = 0; i < N; i++) {
@@ -220,10 +242,7 @@ public class ExpFunctionViewer extends javafx.application.Application {
         ctrlPane.getChildren().add(table);
         table.setPrefHeight(24 * N+40);
         
-        for (Node n : ctrlPane.getChildren()) {
-        	((Control)n).setPadding(new Insets(4));
-        }
-
+        setPadding(ctrlPane);
 		
 		// create chart
 		NumberAxis xAxis = new NumberAxis(0, 10, 1);
@@ -250,6 +269,107 @@ public class ExpFunctionViewer extends javafx.application.Application {
 		});
 	}       
 
+	private void setPadding(Node n) {
+		if (n instanceof Parent) {
+            for (Node c : ((Parent) n).getChildrenUnmodifiable()) {
+            	if (c instanceof Control) {
+            		((Control)c).setPadding(new Insets(4));
+            	}
+            	setPadding(c);
+            }
+        }	
+	}
+
+	private Object optimiseNext() {
+		current = current + 1;
+		if (current == N) {
+			current = 1;
+		}
+
+		// set up target function
+        double [] matrix= new double[N*N];
+        gtr.initAndValidate();
+        for (int i = 0; i < 100; i++) {
+        	double x = (i+0.0)/(10);
+        	gtr.getTransitionProbabilities(null, x, 0, 1.0, matrix);
+            target[i] = matrix[current];
+        }
+
+        
+        // optimise b1, b2, a1 (a0, a2 and b0 are calculated from prior info)
+        
+        a0 = 1.0/N;
+        boolean done = false;
+        int k = 0;
+    	BrentOptimizer optimizer = new BrentOptimizer(1e-8, 1e-8);
+        do {
+        	int i = k < 2500?k%3:Randomizer.nextInt(3);
+
+        	switch (i) {
+        	case 0:
+    		UnivariatePointValuePair p = optimizer.optimize(new MaxEval(200), 
+    				new UnivariateObjectiveFunction(x -> {
+    					b1 = x;
+    					return differenceFrom(target);
+    				}),
+    				GoalType.MINIMIZE, new SearchInterval(0, 5));
+    		b1 = p.getPoint();
+    		break;
+        	case 1:
+    		p = optimizer.optimize(new MaxEval(200), 
+    				new UnivariateObjectiveFunction(x -> {
+    					b2 = x;
+    					return differenceFrom(target);
+    				}),
+    				GoalType.MINIMIZE, new SearchInterval(0, 5));
+    		b2 = p.getPoint();
+    		break;
+        	case 2:
+        	p = optimizer.optimize(new MaxEval(200), 
+    				new UnivariateObjectiveFunction(x -> {
+    					a1 = x;
+    					return differenceFrom(target);
+    				}),
+    				GoalType.MINIMIZE, new SearchInterval(-1, 1));
+    		a1 = p.getPoint();
+    		break;
+        	}
+
+        	k++;
+        	done = k > 1500;
+        } while (!done);
+        
+        
+    	a0Slider.setValue(a0);
+    	a1Slider.setValue(a1);
+    	b1Slider.setValue(b1);
+    	b2Slider.setValue(b2);
+
+        
+    	for (int i = 0; i < N; i++) {
+    		if (i+1 == current) {
+    	    	chart.getData().get(i+1).getNode().setStyle("-fx-stroke-width:3;");
+    		} else {
+    	    	chart.getData().get(i+1).getNode().setStyle("-fx-stroke-width:1;");
+    		}
+    	}
+    	
+        
+		return null;
+	}
+
+	private double differenceFrom(double[] target) {
+    	a2= -a0 - a1;
+		double diff = 0;
+        for (int i = 0; i < 100; i++) {
+        	double x = (i+0.0)/(10);
+        	double y = a0 + a1 * Math.exp(-b1 * x) + a2 * Math.exp(-b2 * x);
+        	diff += Math.abs(y-target[i]);
+        }
+		return diff;
+	}
+
+	
 	private void setUpGTR() {
 		gtr = new GeneralSubstitutionModel();
 		Double [] freqs = new Double[N];
@@ -323,6 +443,8 @@ public class ExpFunctionViewer extends javafx.application.Application {
         	}
         	System.out.println();
         }
+        System.out.println("diff = " + differenceFrom(target));
+		diffLabel.setText("diff = " + format3.format(differenceFrom(target)));
         
         for (int i = 0; i < 100; i++) {
         	double x = (i+0.0)/(10);
