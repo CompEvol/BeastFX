@@ -1,6 +1,7 @@
 package beastfx.app.beauti;
 
-import javax.swing.DefaultListModel;
+import beastfx.app.inputeditor.BeautiPanel;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -18,10 +19,10 @@ public class ClonePartitionPanel extends VBox {
 	public ClonePartitionPanel(BeautiPanel beautiPanel) {
         this.beautiPanel = beautiPanel;
 
-        DefaultListModel<String> listModel = beautiPanel.listModel;
-        Object[] models = new Object[listModel.getSize()];
-        for(int i=0; i < listModel.getSize(); i++){
-            models[i] = listModel.getElementAt(i);
+        ObservableList<String> listModel = beautiPanel.listModel;
+        Object[] models = new Object[listModel.size()];
+        for(int i=0; i < listModel.size(); i++){
+            models[i] = listModel.get(i);
         }
 
         cloneFromComboBox = new ComboBox<>();
@@ -64,8 +65,8 @@ public class ClonePartitionPanel extends VBox {
     protected void clonePartitions() {
         String sourceId = cloneFromComboBox.getValue().toString();
 
-        for (Object targetId : beautiPanel.listOfPartitions.getSelectedValuesList()) {
-             beautiPanel.cloneFrom(sourceId, targetId.toString());
+        for (String targetId : beautiPanel.listOfPartitions.getSelectionModel().getSelectedItems()) {
+             beautiPanel.cloneFrom(sourceId, targetId);
         }
     }
 }

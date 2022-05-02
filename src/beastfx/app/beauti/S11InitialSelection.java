@@ -1,7 +1,6 @@
 package beastfx.app.beauti;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+
 
 //http://www.java2s.com/Code/Java/Swing-Components/JComboBoxaddingautomaticcompletionHandlingtheinitialselection.htm
 //Code from: http://www.orbital-computer.de/ComboBox/
@@ -18,20 +17,145 @@ Handling the initial selection
 It is a quiet annoying that the initially selected item is not shown in the combo box. This
 can be easily changed in the constructor of the auto completing document.
 */
-import javax.swing.ComboBoxModel;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+
 import javax.swing.JFrame;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
 
 public class S11InitialSelection extends PlainDocument {
-	private static final long serialVersionUID = 1L;
+	
+	// https://stackoverflow.com/questions/19924852/autocomplete-combobox-in-javafx
+	public class FxUtilTest {
+
+	    public interface AutoCompleteComparator<T> {
+	        boolean matches(String typedText, T objectToCompare);
+	    }
+
+	    public static<T> void autoCompleteComboBoxPlus(ComboBox<T> comboBox, AutoCompleteComparator<T> comparatorMethod) {
+	        ObservableList<T> data = comboBox.getItems();
+
+	        comboBox.setEditable(true);
+	        comboBox.getEditor().focusedProperty().addListener(observable -> {
+	            if (comboBox.getSelectionModel().getSelectedIndex() < 0) {
+	                comboBox.getEditor().setText(null);
+	            }
+	        });
+	        comboBox.addEventHandler(KeyEvent.KEY_PRESSED, t -> comboBox.hide());
+	        comboBox.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+
+	            private boolean moveCaretToPos = false;
+	            private int caretPos;
+
+	            @Override
+	            public void handle(KeyEvent event) {
+	                if (event.getCode() == KeyCode.UP) {
+	                    caretPos = -1;
+	                    if (comboBox.getEditor().getText() != null) {
+	                        moveCaret(comboBox.getEditor().getText().length());
+	                    }
+	                    return;
+	                } else if (event.getCode() == KeyCode.DOWN) {
+	                    if (!comboBox.isShowing()) {
+	                        comboBox.show();
+	                    }
+	                    caretPos = -1;
+	                    if (comboBox.getEditor().getText() != null) {
+	                        moveCaret(comboBox.getEditor().getText().length());
+	                    }
+	                    return;
+	                } else if (event.getCode() == KeyCode.BACK_SPACE) {
+	                    if (comboBox.getEditor().getText() != null) {
+	                        moveCaretToPos = true;
+	                        caretPos = comboBox.getEditor().getCaretPosition();
+	                    }
+	                } else if (event.getCode() == KeyCode.DELETE) {
+	                    if (comboBox.getEditor().getText() != null) {
+	                        moveCaretToPos = true;
+	                        caretPos = comboBox.getEditor().getCaretPosition();
+	                    }
+	                } else if (event.getCode() == KeyCode.ENTER) {
+	                    return;
+	                }
+
+	                if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT || event.getCode().equals(KeyCode.SHIFT) || event.getCode().equals(KeyCode.CONTROL)
+	                        || event.isControlDown() || event.getCode() == KeyCode.HOME
+	                        || event.getCode() == KeyCode.END || event.getCode() == KeyCode.TAB) {
+	                    return;
+	                }
+
+	                ObservableList<T> list = FXCollections.observableArrayList();
+	                for (T aData : data) {
+	                    if (aData != null && comboBox.getEditor().getText() != null && comparatorMethod.matches(comboBox.getEditor().getText(), aData)) {
+	                        list.add(aData);
+	                    }
+	                }
+	                String t = "";
+	                if (comboBox.getEditor().getText() != null) {
+	                    t = comboBox.getEditor().getText();
+	                }
+
+	                comboBox.setItems(list);
+	                comboBox.getEditor().setText(t);
+	                if (!moveCaretToPos) {
+	                    caretPos = -1;
+	                }
+	                moveCaret(t.length());
+	                if (!list.isEmpty()) {
+	                    comboBox.show();
+	                }
+	            }
+
+	            private void moveCaret(int textLength) {
+	                if (caretPos == -1) {
+	                    comboBox.getEditor().positionCaret(textLength);
+	                } else {
+	                    comboBox.getEditor().positionCaret(caretPos);
+	                }
+	                moveCaretToPos = false;
+	            }
+	        });
+	    }
+
+	    public static<T> T getComboBoxValue(ComboBox<T> comboBox){
+	        if (comboBox.getSelectionModel().getSelectedIndex() < 0) {
+	            return null;
+	        } else {
+	            return comboBox.getItems().get(comboBox.getSelectionModel().getSelectedIndex());
+	        }
+	    }
+
+	}	
+	
+	FxUtilTest.autoCompleteComboBoxPlus(myComboBox, (typedText, itemToCompare) -> itemToCompare.getName().toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.getAge().toString().equals(typedText));
+
+	myComboBox.setConverter(new StringConverter<>() {
+
+	    @Override
+	    public String toString(YourObject object) {
+	        return object != null ? object.getName() : "";
+	    }
+
+	    @Override
+	    public YourObject fromString(String string) {
+	        return myComboBox.getItems().stream().filter(object ->
+	                object.getName().equals(string)).findFirst().orElse(null);
+	    }
+
+	});
 
 	ComboBox<Object> comboBox;
-    ComboBoxModel<Object> model;
-    JTextComponent editor;
+    // ComboBoxModel<Object> model;
+    TextField editor;
     
     // flag to indicate if setSelectedItem has been called
     // subsequent calls to remove/insertString should be ignored
@@ -39,17 +163,15 @@ public class S11InitialSelection extends PlainDocument {
 
     public S11InitialSelection(final ComboBox<Object> comboBox) {
         this.comboBox = comboBox;
-        model = comboBox.getModel();
+        comboBox.setEditable(true);
+        // model = comboBox.getModel();
         editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
         editor.setDocument(this);
         comboBox.setOnAction(e -> {
                 if (!selecting) highlightCompletedText(0);
             });
-        editor.addKeyListener(new KeyAdapter() {
-            @Override
-			public void keyPressed(KeyEvent e) {
+        editor.setOnKeyReleased(e-> {
                 if (comboBox.isDisplayable()) comboBox.setPopupVisible(true);
-            }
         });
         // Handle initially selected object
         Object selected = comboBox.getValue();

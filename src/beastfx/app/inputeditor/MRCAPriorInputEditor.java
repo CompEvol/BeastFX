@@ -75,7 +75,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
                     TaxonSetDialog dlg = new TaxonSetDialog(taxonset, candidates, doc);
                     if (dlg.showDialog()) {
         	            if (dlg.taxonSet.taxonsetInput.get().size() == 0) {
-        	            	Alert.showMessageDialog(doc.getFrame(), "At least one taxon should be included in the taxon set",
+        	            	Alert.showMessageDialog(doc.getFrame().getScene().getRoot(), "At least one taxon should be included in the taxon set",
         	            			"Error specifying taxon set", Alert.ERROR_MESSAGE);
         	            	taxonset.taxonsetInput.get().addAll(originalTaxa);
         	            	return;

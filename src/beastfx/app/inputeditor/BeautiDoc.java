@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import beastfx.app.util.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -2434,7 +2435,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         this.beauti = beauti;
     }
 
-    public Pane getFrame() {
+    public Stage getFrame() {
     	if (beauti == null) {
     		return null;
     	}

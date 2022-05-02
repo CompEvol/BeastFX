@@ -3,9 +3,12 @@ package beastfx.app.beauti;
 
 
 
+import javafx.embed.swing.JFXPanel;
+import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 
 // import jam.framework.DocumentFrame;
 
@@ -13,16 +16,21 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Control;
 import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import org.w3c.dom.Document;
@@ -33,6 +41,7 @@ import beastfx.app.inputeditor.BeautiAlignmentProvider;
 import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiDocListener;
+import beastfx.app.inputeditor.BeautiPanel;
 import beastfx.app.inputeditor.BeautiPanelConfig;
 import beastfx.app.inputeditor.MyAction;
 import beastfx.app.util.Alert;
@@ -58,6 +67,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -95,7 +106,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
      * document in document-view pattern. BTW this class is the view
      */
     public BeautiDoc doc;
-    public Pane frame;
+    public Stage frame;
 
     /**
      * currently selected tab *
@@ -152,11 +163,9 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             isPaneIsVisible[panelNr] = true;
             int tabNr = tabNrForPanel(panelNr);
             BeautiPanelConfig panel = doc.beautiConfig.panels.get(panelNr);
-            getTabs().insert(
-                    doc.beautiConfig.getButtonLabel(this,
-                            panel.nameInput.get()), null, panels[panelNr],
-                    panel.tipTextInput.get(), tabNr);
-            // }
+            getTabs().add(tabNr, panels[panelNr]);
+            getTabs().get(tabNr).getTabPane().setTooltip(new Tooltip(panel.tipTextInput.get()));
+            getTabs().get(tabNr).setText(panel.nameInput.get());
             getSelectionModel().select(tabNr);
         }
     }
@@ -414,7 +423,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         @Override
 		public void actionPerformed(ActionEvent ae) {
         	JPackageDialog panel = new JPackageDialog();
-        	javafx.scene.control.Dialog dlg = panel.asDialog(frame);
+        	Dialog dlg = panel.asDialog(frame.getScene().getRoot());
             dlg.showAndWait();
             // refresh template menu item
             templateMenu.getItems().removeAll();
@@ -605,7 +614,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             for (int panelNr = 0; panelNr < isPaneIsVisible.length; panelNr++) {
                 if (!isPaneIsVisible[panelNr]) {
                     toggleVisible(panelNr);
-                    m_viewPanelCheckBoxMenuItems[panelNr].setState(true);
+                    m_viewPanelCheckBoxMenuItems[panelNr].setSelected(true);
                 }
             }
         } // actionPerformed
@@ -657,7 +666,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         @Override
 		public void actionPerformed(ActionEvent ae) {
         	if (BeautiDoc.baos == null) {
-        		Alert.showMessageDialog(frame, "<html>Error and warning messages are printed to Stdout and Stderr<br>" +
+        		Alert.showMessageDialog(frame.getScene().getRoot(), "<html>Error and warning messages are printed to Stdout and Stderr<br>" +
         				"To show them here, start BEAUti with the -capture argument.</html>");
         	} else {
 	        	String msgs = BeautiDoc.baos.toString();
@@ -666,7 +675,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 	        	textArea.setPrefColumnCount(50);
 	        	textArea.setEditable(true);
 	        	javafx.scene.control.ScrollPane scroller = new javafx.scene.control.ScrollPane(textArea);
-	        	Alert.showMessageDialog(frame, scroller, "Messages", Alert.WARNING_MESSAGE);
+	        	Alert.showMessageDialog(frame.getScene().getRoot(), scroller, "Messages", Alert.WARNING_MESSAGE);
         	}
         }
     }
@@ -714,16 +723,25 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
         @Override
 		public void actionPerformed(ActionEvent ae) {
-            JFrame frame = new JFrame("Model Builder");
+            Stage frame = new Stage();
+            frame.setTitle("Model Builder");
+            SwingNode pane = new SwingNode();
             ModelBuilder modelBuilder = new ModelBuilder();
             modelBuilder.init();
-            frame.add(modelBuilder, BorderLayout.CENTER);
-            frame.add(modelBuilder.m_jTbTools2, BorderLayout.NORTH);
+            JPanel panel = new JPanel();
+            panel.setLayout(new BorderLayout());
+            panel.add(modelBuilder, BorderLayout.CENTER);
+            panel.add(modelBuilder.m_jTbTools2, BorderLayout.NORTH);
+            pane.setContent(panel);
             modelBuilder.setEditable(false);
             modelBuilder.m_doc.init(doc.mcmc.get());
             modelBuilder.setDrawingFlag();
-            frame.setSize(600, 800);
-            frame.setVisible(true);
+            panel.setPreferredSize(new Dimension(600, 800));
+            StackPane pane2 = new StackPane();
+            pane2.getChildren().add(pane);
+            Scene scene = new Scene(pane2);
+            frame.setScene(scene);
+            // frame.seVisible(true);
         }
     } // class ActionViewModel
 
@@ -805,7 +823,9 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             helpMenu.getItems().add(a_about);
         }
 
-        setMenuVisibiliy("", menuBar);
+        for (MenuItem m : menuBar.getMenus()) {
+        	setMenuVisibiliy("", m);
+        }
 
         return menuBar;
     } // makeMenuBar
@@ -924,12 +944,12 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
 
 		                String text = "Something went wrong importing the alignment:\n";
 		                javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(text);
-		                textArea.setColumns(30);
-		                textArea.setLineWrap(true);
-		                textArea.setWrapStyleWord(true);
+		                //textArea.setColumns(30);
+		                textArea.setWrapText(true);
+		                //textArea.setWrapStyleWord(true);
 		                textArea.appendText(exx.getMessage());
 		                textArea.setPrefSize(textArea.getPrefWidth(), 1);
-		                textArea.setOpaque(false);
+		                // textArea.setOpaque(false);
 		                Alert.showMessageDialog(null, textArea,
 		                        "Error importing alignment",
 		                        Alert.WARNING_MESSAGE);
@@ -965,7 +985,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             	Utils.setFontSize(size + 1);
             	Utils.saveBeautiProperty("fontsize", (size + 1) + "");
         		refreshPanel();
-        		repaint();
+//        		repaint();
         	}
         };
         MyAction zoomOut = new MyAction("Zoom out", "Decrease font size of all components", null, new KeyCodeCombination(KeyCode.MINUS)) {
@@ -976,7 +996,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             	Utils.setFontSize(Math.max(size - 1, 4));
             	Utils.saveBeautiProperty("fontsize", Math.max(size - 1, 4) + "");
         		refreshPanel();
-        		repaint();
+//        		repaint();
         	}
         };
         viewMenu.getItems().add(zoomIn);
@@ -1024,7 +1044,7 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             try {
                 if (doc.validateModel() == DOC_STATUS.NO_DOCUMENT) {
                     doc.loadNewTemplate(m_sFileName);
-                } else if (Alert.showConfirmDialog(frame,
+                } else if (Alert.showConfirmDialog(frame.getScene().getRoot(),
                         "Changing templates means the information input so far will be lost. "
                                 + "Are you sure you want to change templates?",
                         "Are you sure?", Alert.YES_NO_CANCEL_OPTION) == Alert.YES_OPTION) {
@@ -1149,10 +1169,8 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
     	}
         isInitialising = true;
         // remove any existing tabs
-        if (getTabCount() > 0) {
-            while (getTabCount() > 0) {
-                removeTabAt(0);
-            }
+        if (getTabs().size() > 0) {
+        	getTabs().clear();
             isPaneIsVisible = new boolean[doc.beautiConfig.panels.size()];
             Arrays.fill(isPaneIsVisible, true);
         }
@@ -1165,13 +1183,14 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
         for (int panelIndex = 0; panelIndex < doc.beautiConfig.panels.size(); panelIndex++) {
             BeautiPanelConfig panelConfig = doc.beautiConfig.panels.get(panelIndex);
             panels[panelIndex] = new BeautiPanel(panelIndex, this.doc, panelConfig);
-            addTab(doc.beautiConfig.getButtonLabel(this, panelConfig.getName()),
-                    null, panels[panelIndex], panelConfig.getTipText());
+            getTabs().add(panels[panelIndex]);
+            getTabs().get(panelIndex).setTooltip(new Tooltip(panelConfig.getTipText()));
+            getTabs().get(panelIndex).setText(panelConfig.getName());
         }
 
         for (int panelIndex = doc.beautiConfig.panels.size() - 1; panelIndex >= 0; panelIndex--) {
             if (!isPaneIsVisible[panelIndex]) {
-                removeTabAt(panelIndex);
+                getTabs().remove(panelIndex);
             }
         }
         isInitialising = false;
@@ -1287,70 +1306,70 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
             final Beauti beauti = new Beauti(doc);
 
             if (Utils.isMac() && Utils6.isMajorAtLeast(Utils6.JAVA_1_8)) {
-                // set up application about-menu for Mac
-                // Mac-only stuff
-                try {
-                    URL url = BEASTClassLoader.classLoader.getResource(ModelBuilder.ICONPATH + "beauti.png");
-                    Icon icon = null;
-                    if (url != null) {
-                        icon = new ImageIcon(url);
-                    } else {
-                    	Log.warning.println("Unable to find image: " + ModelBuilder.ICONPATH + "beauti.png");
-                    }
-                    jam.framework.Application application = new jam.framework.MultiDocApplication(null, "BEAUti", "about", icon) {
-
-                        @Override
-                        protected JFrame getDefaultFrame() {
-                            return null;
-                        }
-
-                        @Override
-                        public void doQuit() {
-                            beauti.a_quit.actionPerformed(null);
-                        }
-
-                        @Override
-                        public void doAbout() {
-                            beauti.a_about.actionPerformed(null);
-                        }
-
-                        @Override
-                        public DocumentFrame doOpenFile(File file) {
-                            return null;
-                        }
-
-                        @Override
-                        public DocumentFrame doNew() {
-                            return null;
-                        }
-                    };
-
-                    // https://github.com/CompEvol/beast2/issues/805
-                    if (Utils6.isMajorAtLeast(Utils6.JAVA_9)) // >= Java 9
-                        beast.app.util.Utils.macOSXRegistration(application);
-                    else // <= Java 8
-                        jam.mac.Utils.macOSXRegistration(application);
-                } catch (Throwable e) {
-                    // ignore
-                }
-                if (Utils6.isMajorLower(Utils6.JAVA_9)) {
-                    try {
-                        Class<?> class_ = BEASTClassLoader.forName("jam.maconly.OSXAdapter");
-                        Method method = class_.getMethod("enablePrefs", boolean.class);
-                        method.invoke(null, false);
-                    } catch (java.lang.NoSuchMethodException e) {
-                        // ignore
-                    }
-                }
+            	// TODO: https://github.com/codecentric/NSMenuFX looks relevant
+            	
+//                // set up application about-menu for Mac
+//                // Mac-only stuff
+//                try {
+//                    URL url = BEASTClassLoader.classLoader.getResource(ModelBuilder.ICONPATH + "beauti.png");
+//                    Icon icon = null;
+//                    if (url != null) {
+//                        icon = new ImageIcon(url);
+//                    } else {
+//                    	Log.warning.println("Unable to find image: " + ModelBuilder.ICONPATH + "beauti.png");
+//                    }
+//                    jam.framework.Application application = new jam.framework.MultiDocApplication(null, "BEAUti", "about", icon) {
+//
+//                        @Override
+//                        protected JFrame getDefaultFrame() {
+//                            return null;
+//                        }
+//
+//                        @Override
+//                        public void doQuit() {
+//                            beauti.a_quit.actionPerformed(null);
+//                        }
+//
+//                        @Override
+//                        public void doAbout() {
+//                            beauti.a_about.actionPerformed(null);
+//                        }
+//
+//                        @Override
+//                        public DocumentFrame doOpenFile(File file) {
+//                            return null;
+//                        }
+//
+//                        @Override
+//                        public DocumentFrame doNew() {
+//                            return null;
+//                        }
+//                    };
+//
+//                    // https://github.com/CompEvol/beast2/issues/805
+//                    if (Utils6.isMajorAtLeast(Utils6.JAVA_9)) // >= Java 9
+//                        beast.app.util.Utils.macOSXRegistration(application);
+//                    else // <= Java 8
+//                        jam.mac.Utils.macOSXRegistration(application);
+//                } catch (Throwable e) {
+//                    // ignore
+//                }
+//                if (Utils6.isMajorLower(Utils6.JAVA_9)) {
+//                    try {
+//                        Class<?> class_ = BEASTClassLoader.forName("jam.maconly.OSXAdapter");
+//                        Method method = class_.getMethod("enablePrefs", boolean.class);
+//                        method.invoke(null, false);
+//                    } catch (java.lang.NoSuchMethodException e) {
+//                        // ignore
+//                    }
+//                }
             }
             beauti.setUpPanels();
 
             beauti.currentTab = beauti.panels[0];
             beauti.hidePanels();
 
-            beauti.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
+            beauti.getSelectionModel().selectedItemProperty().addListener(e -> {
                     if (beauti.currentTab == null) {
                         beauti.currentTab = beauti.panels[0];
                     }
@@ -1359,53 +1378,54 @@ public class Beauti extends beastfx.app.inputeditor.Beauti implements BeautiDocL
                             beauti.currentTab.config
                                     .sync(beauti.currentTab.partitionIndex);
                         }
-                        BeautiPanel panel = (BeautiPanel) beauti
-                                .getSelectedComponent();
+                        BeautiPanel panel = (BeautiPanel) beauti.getSelectionModel().getSelectedItem();
                         beauti.currentTab = panel;
                         beauti.refreshPanel();
                     }
-                }
             });
 
             beauti.setVisible(true);
             beauti.refreshPanel();
-            JFrame frame = new JFrame("BEAUti 2: " + doc.getTemplateName()
+            Stage frame = new Stage();
+            frame.setTitle("BEAUti 2: " + doc.getTemplateName()
                     + " " + doc.getFileName());
             beauti.frame = frame;
-            ImageIcon icon = Utils.getIcon(BEAUTI_ICON);
+            ImageView icon = FXUtils.getIcon(BEAUTI_ICON);
             if (icon != null) {
-                frame.setIconImage(icon.getImage());
+                frame.getIcons().add(icon.getImage());
             }
 
             MenuBar menuBar = beauti.makeMenuBar();
-            frame.setMenuBar(menuBar);
+            if (Utils.isMac()) {
+            	menuBar.useSystemMenuBarProperty().set(true);
+            }
+            VBox vb = new VBox(menuBar);
+            Scene scene = new Scene(vb);
+            frame.setScene(scene);
 
             if (doc.getFileName() != null || doc.alignments.size() > 0) {
-                beauti.a_save.setEnabled(true);
-                beauti.a_saveas.setEnabled(true);
+                beauti.a_save.setDisable(false);
+                beauti.a_saveas.setDisable(false);
             }
 
-            frame.add(beauti);
+            vb.getChildren().add(beauti);
             int size = UIManager.getFont("Label.font").getSize();
-            frame.setSize(1024 * size / 13, 768 * size / 13);
-            frame.setLocation(BEAUtiIntances * 10, BEAUtiIntances * 10);
-            frame.setVisible(true);
+            vb.setPrefSize(1024 * size / 13, 768 * size / 13);
+            frame.setX(BEAUtiIntances * 10);
+            frame.setY(BEAUtiIntances * 10);
+            // frame.setVisible(true);
 
             // check file needs to be save on closing main frame
-            frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-            frame.addWindowListener(new WindowAdapter() {
-                @Override
-				public void windowClosing(WindowEvent e) {
+            frame.setOnCloseRequest(e-> {
                     if (!beauti.quit()) {
                         return;
                     }
-                    JFrame frame = (JFrame) e.getSource();
-                    frame.dispose();
+                    Stage frame0 = (Stage) e.getSource();
+                    frame0.close();
                     BEAUtiIntances--;
                     if (BEAUtiIntances == 0) {
                         System.exit(0);
                     }
-                }
             });
 
             // Toolkit toolkit = Toolkit.getDefaultToolkit();

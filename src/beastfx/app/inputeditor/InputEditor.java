@@ -177,9 +177,9 @@ public abstract class Base extends Pane implements InputEditor {
 
 	protected BeautiDoc getDoc() {
         if (doc == null) {
-        	Parent c = this;
-            while (c.getParent() != null) {
-                c = c.getParent();
+        	Object c = this;
+            while (c instanceof Parent && ((Parent)c).getParent() != null) {
+                c = ((Parent)c).getParent();
                 if (c instanceof BeautiPanel) {
                     doc = ((BeautiPanel) c).getDoc();
                 }
@@ -451,9 +451,9 @@ public abstract class Base extends Pane implements InputEditor {
      * synchronise values in panel with current network *
      */
     protected void sync() {
-        Parent c = this;
-        while (c.getParent() != null) {
-            c = c.getParent();
+        Object c = this;
+        while (c instanceof Parent && ((Parent)c).getParent() != null) {
+            c = ((Parent)c).getParent();
             if (c instanceof BeautiPanel) {
                 BeautiPanel panel = (BeautiPanel) c;
                 BeautiPanelConfig cfgPanel = panel.config;

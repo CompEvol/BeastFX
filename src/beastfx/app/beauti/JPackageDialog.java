@@ -13,6 +13,7 @@ import beastfx.app.util.Alert;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
@@ -538,7 +539,7 @@ public class JPackageDialog extends DialogPane {
 //
 
 
-	public Dialog<Package> asDialog(Pane pane) {
+	public Dialog<Package> asDialog(Parent pane) {
 		
 		dlg.setDialogPane(new JPackageDialog());
 		dlg.setTitle("BEAST 2 Package Manager");

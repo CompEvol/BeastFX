@@ -1,44 +1,40 @@
 package beastfx.app.inputeditor;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.Box;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.image.ImageView;
 
-import javax.swing.JList;
 import beastfx.app.util.Alert;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JViewport;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import beastfx.app.util.FXUtils;
 
+
+import beastfx.app.beauti.ClonePartitionPanel;
 // import beastfx.app.inputeditor.BeautiDoc;
 //import beastfx.app.inputeditor.BeautiDocProvider;
 //import beastfx.app.inputeditor.BeautiPanelConfig;
 //import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.BeautiPanelConfig.Partition;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
-import beast.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Taxon;
@@ -57,9 +53,8 @@ import javafx.scene.layout.VBox;
 /**
  * panel making up each of the tabs in Beauti *
  */
-public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDocProvider {
+public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvider {
 
-    private static final long serialVersionUID = 1L;
     public final static String ICONPATH = "beastfx.app.beauti/";
 
     static int partitionListPreferredWidth = 120;
@@ -109,18 +104,19 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
     /**
      * list of partitions in m_listBox *
      */
-    ListView<String> listOfPartitions;
+    public ListView<String> listOfPartitions;
     /**
      * model for m_listOfPartitions *
      */
-    DefaultListModel<String> listModel;
-
+    // DefaultListModel<String> listModel;
+    public ObservableList<String> listModel;
+    
     ScrollPane scroller;
 
     /**
      * component containing main input editor *
      */
-    Component centralComponent = null;
+    Parent centralComponent = null;
 
     public BeautiPanel() {
     }
@@ -135,7 +131,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         if (this.config.hasPartition() != Partition.none &&
                 doc.getPartitions(config.hasPartitionsInput.get().toString()).size() > 1) {
             splitPane = new SplitPane();
-            splitPane.setJSplitPane.HORIZONTAL_SPLIT);
+            //splitPane.setJSplitPane.HORIZONTAL_SPLIT);
             pane.setCenter(splitPane);
         } else {
             splitPane = null;
@@ -156,20 +152,20 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
             return;
         }
         box.getChildren().add(new Separator(Orientation.VERTICAL));
-        box.getChildren().add(new Label(getIcon(panelIndex, config)));
+        box.getChildren().add(getIcon(panelIndex, config));
 
-        splitPane.add(box, JSplitPane.LEFT);
+        splitPane.getItems().add(box);
         if (listOfPartitions != null) {
             listOfPartitions.getSelectionModel().select(partitionIndex);
         }
     }
     
-	private ImageIcon getIcon(int panelIndex, BeautiPanelConfig config) {
+	private ImageView getIcon(int panelIndex, BeautiPanelConfig config) {
 		String iconLocation = BeautiPanel.ICONPATH + panelIndex + ".png";
 		if (config != null) {
 			iconLocation = BeautiPanel.ICONPATH + config.getIcon();
 		}
-		return Utils.getIcon(iconLocation);
+		return FXUtils.getIcon(iconLocation);
 	}
 
 
@@ -181,12 +177,13 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         partitionComponent = new BorderPane();
         // partitionComponent.setLayout(new BorderLayout());
         Label partitionLabel = new Label("Partition");
-        partitionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        partitionComponent.getChildren().add(partitionLabel, BorderLayout.NORTH);
-        listModel = new DefaultListModel<>();
-        listOfPartitions = new JList<>(listModel);
+        partitionLabel.setAlignment(Pos.CENTER);
+        partitionComponent.setTop(partitionLabel);//, BorderLayout.NORTH);
+        listModel = FXCollections.observableArrayList();
+        listOfPartitions = new ListView<>();//listModel);
         listOfPartitions.setId("listOfPartitions");
-        listOfPartitions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        listOfPartitions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        listOfPartitions.setItems(listModel);
 
         Dimension size = new Dimension(partitionListPreferredWidth, 300);
         //listOfPartitions.setFixedCellWidth(120);
@@ -195,7 +192,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
     	listOfPartitions.setMinSize(size.getWidth(), size.getHeight());
 //    	m_listOfPartitions.setBounds(0, 0, 100, 100);
 
-        listOfPartitions.addListSelectionListener(this);
+        listOfPartitions.getSelectionModel().selectedItemProperty().addListener(this);
         updateList();
 
         // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
@@ -203,7 +200,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
 
         ScrollPane listPane = new ScrollPane();
         listPane.setContent(listOfPartitions);
-        partitionComponent.getChildren().add(listPane, BorderLayout.CENTER);
+        partitionComponent.setCenter(listPane);
         // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
         //partitionComponent.setBorder(new EtchedBorder());
         return partitionComponent;
@@ -232,10 +229,10 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
             if (partitionID.length() > 1 && partitionID.charAt(1) == ':') {
             	partitionID = partitionID.substring(2);
             }
-            listModel.addElement(partitionID);
+            listModel.add(partitionID);
         }
         if (partitionIndex >= 0 && listModel.size() > 0)
-            listOfPartitions.setSelectedIndex(partitionIndex);
+            listOfPartitions.getSelectionModel().select(partitionIndex);
     }
 
     
@@ -253,13 +250,13 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         // toggle splitpane
         if (splitPane == null && config.hasPartition() != Partition.none &&
                 doc.getPartitions(config.hasPartitionsInput.get().toString()).size() > 1) {
-            splitPane = new SplitPane(JSplitPane.HORIZONTAL_SPLIT);
+            splitPane = new SplitPane();//JSplitPane.HORIZONTAL_SPLIT);
             pane.setCenter(splitPane);
             addPartitionPanel(config.hasPartition(), panelIndex);
         }
         if (splitPane != null && (config.hasPartition() == Partition.none ||
                 doc.getPartitions(config.hasPartitionsInput.get().toString()).size() <= 1)) {
-            remove(splitPane);
+        	((BorderPane)getContent()).setCenter(null);
             splitPane = null;
         }
 
@@ -273,50 +270,49 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
     
     void refreshInputPanel(BEASTInterface beastObject, Input<?> input, boolean addButtons, InputEditor.ExpandOption forceExpansion) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (centralComponent != null) {
-            remove(centralComponent);
+        	((BorderPane)getContent()).setCenter(null);
         }
         if (input != null && input.get() != null && input.getType() != null) {
             InputEditor.ButtonStatus bs = config.buttonStatusInput.get();
             InputEditor inputEditor = doc.getInputEditorFactory().createInputEditor(input, beastObject, addButtons, forceExpansion, bs, null, doc);
 
-            JPanel p = new JPanel();
-            p.setLayout(new BorderLayout());
+            BorderPane p = new BorderPane();
             if (isToClone()) {
                 ClonePartitionPanel clonePartitionPanel = new ClonePartitionPanel(this);
-                p.add(clonePartitionPanel, BorderLayout.NORTH);
+                p.setTop(clonePartitionPanel);//, BorderLayout.NORTH);
             } else {
-                p.add(inputEditor.getComponent(), BorderLayout.CENTER);
+                p.setCenter(inputEditor.getComponent());//, BorderLayout.CENTER);
             }
 
-            Rectangle bounds = new Rectangle(0,0);
-            if (scroller != null) {
-            	// get lastPaintPosition from viewport
-            	// HACK access it through its string representation
-	            JViewport v = scroller.getViewport();
-	            String vs = v.toString();
-	            int i = vs.indexOf("lastPaintPosition=java.awt.Point[x=");
-	            if (i > -1) {
-	            	i = vs.indexOf("y=", i);
-	            	vs = vs.substring(i+2, vs.indexOf("]", i));
-	            	i = Integer.parseInt(vs);
-	            } else {
-	            	i = 0;
-	            }
-	            bounds.y = -i;
-            }
-            scroller = new JScrollPane(p);
-            scroller.getViewport().scrollRectToVisible(bounds);
-            centralComponent = scroller;
+//            Rectangle bounds = new Rectangle(0,0);
+//            if (scroller != null) {
+//            	// get lastPaintPosition from viewport
+//            	// HACK access it through its string representation
+//	            JViewport v = scroller.getViewport();
+//	            String vs = v.toString();
+//	            int i = vs.indexOf("lastPaintPosition=java.awt.Point[x=");
+//	            if (i > -1) {
+//	            	i = vs.indexOf("y=", i);
+//	            	vs = vs.substring(i+2, vs.indexOf("]", i));
+//	            	i = Integer.parseInt(vs);
+//	            } else {
+//	            	i = 0;
+//	            }
+//	            bounds.y = -i;
+//            }
+//            scroller = new JScrollPane(p);
+//            scroller.getViewport().scrollRectToVisible(bounds);
+//            centralComponent = scroller;
+            centralComponent = p;
         } else {
             centralComponent = new Label("No input editors.");
         }
         if (splitPane != null) {
-            JPanel panel = new JPanel();
-            panel.setLayout(new BorderLayout());
-            panel.add(centralComponent, BorderLayout.NORTH);
-            splitPane.add(panel, JSplitPane.RIGHT);
+            BorderPane panel = new BorderPane();
+            panel.setTop(centralComponent);
+            splitPane.getItems().add(panel);
         } else {
-            add(centralComponent);
+            pane.setCenter(centralComponent);
         }
     }
 
@@ -386,7 +382,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
 				siteModel = (SiteModel.Base) BeautiDoc.deepCopyPlugin((BEASTInterface) siteModelSource,
 					likelihood, (MCMC) doc.mcmc.get(), oldContext, newContext, doc, null);
 			} catch (RuntimeException e) {
-				Alert.showMessageDialog(this, "Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
+				Alert.showMessageDialog(((Pane)this.getContent()), "Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
 				return;
 			}
 			likelihood.siteModelInput.setValue(siteModel, likelihood);
@@ -398,7 +394,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
 				clockModel = (BranchRateModel) BeautiDoc.deepCopyPlugin((BEASTInterface) clockModelSource,
 						likelihood, (MCMC) doc.mcmc.get(), oldContext, newContext, doc, null);
 			} catch (Exception e) {
-				Alert.showMessageDialog(this, "Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
+				Alert.showMessageDialog(((Pane)this.getContent()), "Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
 				return;
 			}
 			// make sure that *if* the clock model has a tree as input, it is
@@ -430,7 +426,7 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
 			tree = (TreeInterface) BeautiDoc.deepCopyPlugin((BEASTInterface) treeSource, likelihood,
 							(MCMC) doc.mcmc.get(), oldContext, newContext, doc, null);
 				} catch (Exception e) {
-					Alert.showMessageDialog(this, "Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
+					Alert.showMessageDialog(((Pane)this.getContent()), "Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
 					return;
 			}
 			// sanity check: make sure taxon sets are compatible
@@ -477,10 +473,12 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
 //        }).start();
 //    }
 
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
+//    @Override
+//    public void valueChanged(ListSelectionEvent e) {
+   	@Override
+   	public void changed(ObservableValue observable, Object oldValue, Object newValue) {
         //System.err.print("BeautiPanel::valueChanged " + m_iPartition + " => ");
-        if (e != null) {
+        if (observable != null) {
             config.sync(partitionIndex);
             if (listOfPartitions != null) {
                 partitionIndex = Math.max(0, listOfPartitions.getSelectionModel().getSelectedIndex());
@@ -491,8 +489,8 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
         try {
             refreshPanel();
 
-            centralComponent.repaint();
-            repaint();
+//            centralComponent.repaint();
+//            repaint();
 
             // hack to ensure m_centralComponent is repainted RRB: is there a better way???
             if (Frame.getFrames().length == 0) {
@@ -512,5 +510,6 @@ public class BeautiPanel extends Pane implements ListSelectionListener, BeautiDo
             ex.printStackTrace();
         }
     }
+
     
 } // class BeautiPanel
