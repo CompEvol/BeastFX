@@ -3,8 +3,13 @@ package test.beastfx.app.inputeditor;
 
 
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.math3.optim.MaxEval;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
@@ -18,10 +23,15 @@ import beast.base.evolution.substitutionmodel.Frequencies;
 import beast.base.evolution.substitutionmodel.GeneralSubstitutionModel;
 import beast.base.inference.parameter.RealParameter;
 import beast.base.util.Randomizer;
+import beastfx.app.util.Alert;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
+import javafx.print.Printer;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,6 +41,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -197,6 +208,33 @@ public class ExpFunctionViewer extends javafx.application.Application {
 		optimiseNext.setOnAction(e->optimiseNext());
 		diffLabel = new Label("0.0");
 		box.getChildren().addAll(optimiseNext, diffLabel);
+		
+		Button printButton = new Button("Print");
+		printButton.setOnAction(e->{
+			WritableImage image = primaryStage.getScene().snapshot(null);
+			String fName = "/tmp/ExpFunctionViewer.png";
+			File file = new File(fName);
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            Alert.showMessageDialog(primaryStage.getScene().getRoot(), "Image saved as file " + fName);
+//			ObservableSet<Printer> p = Printer.getAllPrinters();
+//			Printer p2= Printer.getDefaultPrinter();
+//			System.out.println(p.size());
+//			if (p.size()> 0) {
+//			 PrinterJob job = PrinterJob.createPrinterJob(p2); 
+//					 // PrinterJob.createPrinterJob(p.toArray(new Printer[] {})[0]);
+//			 if(job != null){
+//			   job.showPrintDialog(primaryStage); // Window must be your main Stage
+//			   job.printPage(chart);
+//			   job.endJob();
+//			 }
+//			}
+		});
+		box.getChildren().add(printButton);
+
 		ctrlPane.getChildren().add(box);
 
 		table = new TableView<>();

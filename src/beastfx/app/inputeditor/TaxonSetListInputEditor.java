@@ -1,37 +1,29 @@
 package beastfx.app.inputeditor;
 
-import java.awt.Color;
-import java.awt.Component;
+
 import java.awt.Dimension;
 import java.awt.datatransfer.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 
-import beastfx.app.inputeditor.BeautiDoc;
-import beastfx.app.inputeditor.ListInputEditor;
 import beastfx.app.util.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import beast.base.core.BEASTInterface;
-import beast.base.core.BEASTObject;
 import beast.base.core.Input;
-import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.alignment.TaxonSet;
 
@@ -50,7 +42,7 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 	List<TaxonSet> m_taxonset;
 	Map<String,Taxon> m_taxonMap;
 	DefaultTreeModel m_treemodel;
-	TreeModel m_tree;
+	TreeView m_tree;
 	TextField filterEntry;
 	String m_sFilter = ".*";
 
@@ -89,49 +81,49 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 
 		taxonSetToModel();
 
-		m_tree = new JTree(m_treemodel);
-		m_tree.setDragEnabled(true);
-		m_tree.setEditable(true);
-		// tree.setRootVisible(false);
-		m_tree.setDropMode(DropMode.ON_OR_INSERT);
-		m_tree.setTransferHandler(new TreeTransferHandler());
-		m_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-		expandTree(m_tree);
-
-		m_tree.setCellRenderer(new DefaultTreeCellRenderer() {
-		      public Component getTreeCellRendererComponent(JTree tree,
-		          Object value, boolean sel, boolean expanded, boolean leaf,
-		          int row, boolean hasFocus) {
-			        super.getTreeCellRendererComponent(tree, value, sel, expanded,
-				            leaf, row, hasFocus);
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-		        if (node != m_treemodel.getRoot() &&
-		        		node.getParent() != m_treemodel.getRoot() && !node.toString().matches(m_sFilter)) {
-		          setForeground(Color.lightGray);
-		        }
-		        return this;
-		      }
-		    });
-
-		m_tree.setCellEditor(new DefaultTreeCellEditor(m_tree, (DefaultTreeCellRenderer) m_tree.getCellRenderer()) {
-			public boolean isCellEditable(EventObject event) {
-				boolean returnValue = super.isCellEditable(event);
-				if (returnValue) {
-					// don't edit if it is not a child
-					Object node = tree.getLastSelectedPathComponent();
-					if ((node != null) && (node instanceof TreeNode)) {
-						TreeNode treeNode = (TreeNode) node;
-						returnValue = treeNode.getParent() == m_treemodel.getRoot();
-						//!treeNode.isLeaf() && treeNode.getParent() != null;
-					}
-				}
-				return returnValue;
-			}
-
-		});
-
-		ScrollPane pane = new ScrollPane();
-		pane.setConent(m_tree);
+//		m_tree = new JTree(m_treemodel);
+//		m_tree.setDragEnabled(true);
+//		m_tree.setEditable(true);
+//		// tree.setRootVisible(false);
+//		m_tree.setDropMode(DropMode.ON_OR_INSERT);
+//		m_tree.setTransferHandler(new TreeTransferHandler());
+//		m_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+//		expandTree(m_tree);
+//
+//		m_tree.setCellRenderer(new DefaultTreeCellRenderer() {
+//		      public Component getTreeCellRendererComponent(JTree tree,
+//		          Object value, boolean sel, boolean expanded, boolean leaf,
+//		          int row, boolean hasFocus) {
+//			        super.getTreeCellRendererComponent(tree, value, sel, expanded,
+//				            leaf, row, hasFocus);
+//				DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+//		        if (node != m_treemodel.getRoot() &&
+//		        		node.getParent() != m_treemodel.getRoot() && !node.toString().matches(m_sFilter)) {
+//		          setForeground(Color.lightGray);
+//		        }
+//		        return this;
+//		      }
+//		    });
+//
+//		m_tree.setCellEditor(new DefaultTreeCellEditor(m_tree, (DefaultTreeCellRenderer) m_tree.getCellRenderer()) {
+//			public boolean isCellEditable(EventObject event) {
+//				boolean returnValue = super.isCellEditable(event);
+//				if (returnValue) {
+//					// don't edit if it is not a child
+//					Object node = tree.getLastSelectedPathComponent();
+//					if ((node != null) && (node instanceof TreeNode)) {
+//						TreeNode treeNode = (TreeNode) node;
+//						returnValue = treeNode.getParent() == m_treemodel.getRoot();
+//						//!treeNode.isLeaf() && treeNode.getParent() != null;
+//					}
+//				}
+//				return returnValue;
+//			}
+//
+//		});
+//
+//		ScrollPane pane = new ScrollPane();
+//		pane.setConent(m_tree);
 
 		VBox box = new VBox();
 		box.getChildren().add(createFilterBox());
@@ -157,8 +149,8 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 				// sanity check: make sure the filter is legit
 				sFilter.matches(sFilter);
 				m_sFilter = sFilter;
-				m_tree.repaint();
-			} catch (PatternSyntaxException e) {
+//				m_tree.repaint();
+			} catch (PatternSyntaxException e2) {
 				// ignore
 			}			
 		});
@@ -196,13 +188,13 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 
 		Button delButton = new Button("Delete");
 		delButton.setOnAction(e-> {
-				int[] selRows = m_tree.getSelectionRows();
-				if (selRows.length == 0) {
+				List<Integer> selRows = m_tree.getSelectionModel().getSelectedIndices();
+				if (selRows.size() == 0) {
 					return;
 				}
-				TreePath path = m_tree.getPathForRow(selRows[0]);
-				DefaultMutableTreeNode firstNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-				if (firstNode.getChildCount() > 0) {
+				TreeItem firstNode = m_tree.getTreeItem(selRows.get(0));
+				// DefaultMutableTreeNode firstNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+				if (firstNode.getChildren().size() > 0) {
 					Alert.showMessageDialog(m_tree, "Cannot delete " + firstNode.toString() + ":there are still children left");
 					return;
 				}
@@ -214,7 +206,7 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 					Alert.showMessageDialog(m_tree, "Cannot delete taxon");
 					return;
 				}
-				m_treemodel.removeNodeFromParent(firstNode);
+				firstNode.getParent().getChildren().remove(firstNode);
 				modelToTaxonset();
 		});
 		buttonBox.getChildren().add(new Separator());
