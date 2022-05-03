@@ -5,30 +5,38 @@ package beastfx.app.beauti;
 
 
 
+
+import beast.app.beauti.BeautiPanel;
 import beast.base.core.Description;
 import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.PackageVersion;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
 import static beast.pkgmgmt.PackageManager.*;
@@ -49,7 +57,6 @@ import java.util.stream.Collectors;
  */
 @Description("BEAUti package manager")
 public class JPackageDialog extends DialogPane {
-    private static final long serialVersionUID = 1L;
     // JScrollPane scrollPane;
     Label jLabel;
     HBox buttonBox;
@@ -58,7 +65,7 @@ public class JPackageDialog extends DialogPane {
     private List<Package> packageList = null;
     private ObservableList<Package0> packages;
 
-    class Package0 {
+    public class Package0 {
     	Package pkg;
     	public Package0(Package pkg) {
     		this.pkg = pkg;
@@ -69,23 +76,31 @@ public class JPackageDialog extends DialogPane {
     	}
     	
     	public String getInstalledVersion() {
-    		return pkg.getInstalledVersion().getVersion();
+    		if (pkg.getInstalledVersion() != null) {
+    			return pkg.getInstalledVersion().getVersion();
+    		}
+    		return "";
     	}
     	
     	public String getLatestVersion() {
-    		return pkg.getLatestVersion().getVersion();
+    		if (pkg.getLatestVersion() != null) {
+    			return pkg.getLatestVersion().getVersion();
+    		}
+    		return "";
     	}
     	
         public String getDependencies() {
-                return pkg.getDependenciesString();
+            return pkg.getDependenciesString();
         }
         
         public String getProjectURL() {
+        	if (pkg.getProjectURL() != null)
                 return pkg.getProjectURL().toString();
+        	return "";
         }
         
         public String getDescription() {
-                return pkg.getDescription();
+            return pkg.getDescription();
         }
     }
     
@@ -107,16 +122,17 @@ public class JPackageDialog extends DialogPane {
 
     boolean isRunning;
     Thread t;
-    BorderPane pane;
+    VBox pane;
     
     public JPackageDialog() {
         jLabel = new Label("List of available packages for BEAST v" + beastVersion.getMajorVersion() + ".*");
+        jLabel.setMinWidth(400);
         //frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         //setLayout(new BorderLayout());
-        pane = new BorderPane();
-        pane.setTop(jLabel);
+        pane = new VBox();
+        pane.getChildren().add(jLabel);
 
-		createTable();
+        dataTable = createTable();
         // update packages using a 30 second time out
         isRunning = true;
         t = new Thread() {
@@ -156,12 +172,15 @@ public class JPackageDialog extends DialogPane {
 		}
 
         
-        pane.setCenter(dataTable);
+        pane.getChildren().add(dataTable);
 
         buttonBox = createButtonBox();
-        pane.setBottom(buttonBox);
+        pane.getChildren().add(buttonBox);
 
-        setPrefSize(dataTable.getPrefWidth() + 30, dataTable.getPrefHeight() + buttonBox.getPrefHeight() + 30);
+        setPrefSize(dataTable.getPrefWidth() + 0, dataTable.getPrefHeight() + buttonBox.getPrefHeight() + 60);
+        
+        dlgPane = this;
+        getChildren().add(pane);
     }
 
 
@@ -172,16 +191,29 @@ public class JPackageDialog extends DialogPane {
 
         
 		String[] columnNames = {"Name", "Installed", "Latest", "Dependencies", "Link", "Detail"};
-		int[] columnWidth = {200, 50, 50, 200, 30, 400};
+		int[] columnWidth = {200, 60, 50, 200, 40, 1200};
 		String[] names = {"Name", "InstalledVersion", "LatestVersion", "Dependencies", "ProjectURL", "Description"};
 
 		for (int i = 0; i < columnNames.length; i++) {
 			TableColumn<Package0, String> col1 = new TableColumn<>(columnNames[i]);
 			col1.setPrefWidth(columnWidth[i]);
-			col1.setCellValueFactory(new PropertyValueFactory<Package0, String>(names[i]));
+			if (i != linkColumn) {
+				col1.setCellValueFactory(new PropertyValueFactory<Package0, String>(names[i]));
+			} else {
+				col1.setCellFactory(e->{
+					TableCell cell = new TableCell();
+					ImageView imageview = FXUtils.getIcon(BeautiPanel.ICONPATH + "link.png");
+					cell.setGraphic(imageview);
+				    return cell;
+				});
+			}
 			dataTable.getColumns().add(col1);
 		}
 
+		dataTable.setPrefWidth(200+50+50+200+30+400);
+		dataTable.setPrefHeight(600);
+		dataTable.setMinSize(930, 600);
+		dataTable.setPadding(new Insets(7));
         
 //        dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
@@ -261,7 +293,10 @@ public class JPackageDialog extends DialogPane {
                 }
             }
             packages = FXCollections.observableArrayList(list);
-
+            if (dataTable != null) {
+            	dataTable.setItems(packages);
+            	dataTable.refresh();
+            }
         } catch (PackageManager.PackageListRetrievalException e) {
         	StringBuilder msgBuilder = new StringBuilder("<html>" + e.getMessage() + "<br>");
             if (e.getCause() instanceof IOException)
@@ -435,27 +470,27 @@ public class JPackageDialog extends DialogPane {
         });
         box.getChildren().add(uninstallButton);
 
-        box.getChildren().add(new Separator());
+//        box.getChildren().add(new Separator());
 
         Button packageRepoButton = new Button("Package repositories");
         packageRepoButton.setOnAction(e -> {
-                JPackageRepositoryDialog dlg = new JPackageRepositoryDialog(this.dlg.getDialogPane());
+                JPackageRepositoryDialog dlg = new JPackageRepositoryDialog(dlgPane);
                 dlg.setVisible(true);
                 resetPackages();
             });
         box.getChildren().add(packageRepoButton);
 
-        box.getChildren().add(new Separator());
+//        box.getChildren().add(new Separator());
 
-        Button closeButton = new Button("Close");
-        closeButton.setOnAction(e -> {
-            	if (dlg != null) {
-            		dlg.close();
-            	} else {
-            		setVisible(false);
-            	}
-            });
-        box.getChildren().add(closeButton);
+//        Button closeButton = new Button("Close");
+//        closeButton.setOnAction(e -> {
+//            	if (dlgPane != null) {
+//            		// dialog.close();
+//            	} else {
+//            		setVisible(false);
+//            	}
+//            });
+//        box.getChildren().add(closeButton);
 
         Button button = new Button("?");
         button.setTooltip(new Tooltip(getPackageUserDir() + " " + getPackageSystemDir()));
@@ -464,9 +499,15 @@ public class JPackageDialog extends DialogPane {
                         "</em><br><br>and are available only to you.<br>" +
                         "<br>Packages can also be moved manually to <br><br><em>" + getPackageSystemDir() +
                         "</em><br><br>which makes them available to all users<br>"
-                        + "on your system.</html>");
+                        + "on your system.</html>", "Repository directory", null);
             });
         box.getChildren().add(button);
+        for (Node n : box.getChildren()) {
+        	if (n instanceof Control) {
+        		((Control)n).setMinWidth(150);
+        		((Control)n).setPadding(new Insets(5));
+        	}
+        }
         return box;
     }
 
@@ -539,8 +580,8 @@ public class JPackageDialog extends DialogPane {
 //
 
 
-	public Dialog<Package> asDialog(Parent pane) {
-		
+	public static Dialog<Package> asDialog(Parent pane) {
+		Dialog<Package> dlg = new Dialog<>();
 		dlg.setDialogPane(new JPackageDialog());
 		dlg.setTitle("BEAST 2 Package Manager");
 		dlg.getDialogPane().getButtonTypes().add(Alert.CLOSED_OPTION);
@@ -557,13 +598,15 @@ public class JPackageDialog extends DialogPane {
         
         dlg.setX(stage.getX() + stage.getWidth() / 2 - dlg.getWidth() / 2);
         dlg.setY(stage.getY() + stage.getHeight() / 2 - dlg.getHeight() / 2);
-
-        pane.setCursor(Cursor.DEFAULT);
+        
+        if (pane != null) {
+        	pane.setCursor(Cursor.DEFAULT);
+        }
         return dlg;
 	}
 
 
-	Dialog<Package> dlg = null;
+	DialogPane dlgPane = null;
 
 //    class PackageTable extends TableView<Package> {
 //		private static final long serialVersionUID = 1L;

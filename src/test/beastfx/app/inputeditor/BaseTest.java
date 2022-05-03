@@ -1,5 +1,6 @@
 package test.beastfx.app.inputeditor;
 
+
 import beastfx.app.inputeditor.AlignmentViewer;
 import beastfx.app.inputeditor.BEASTObjectInputEditor;
 import beastfx.app.inputeditor.BeautiConfig;
@@ -7,12 +8,14 @@ import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beastfx.app.inputeditor.TaxonSetDialog;
+import beastfx.app.util.Alert;
 
 import java.io.File;
 import java.util.*;
 
 import beastfx.app.beauti.JPackageDialog;
 import beastfx.app.beauti.JPackageRepositoryDialog;
+import beastfx.app.beauti.S11InitialSelection;
 import beast.base.core.BEASTObject;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Alignment;
@@ -21,7 +24,9 @@ import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.alignment.TaxonSet;
 import beast.base.inference.distribution.LogNormalDistributionModel;
 import beast.base.inference.distribution.ParametricDistribution;
+
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
@@ -30,6 +35,7 @@ import javafx.stage.Stage;
 
 public class BaseTest extends javafx.application.Application {
 	public enum e {value1,value2,value3};
+	static private int testNum = 1;
 
 	public class InputClass2 extends BEASTObject {
 		final public Input<InputClass> InputClassInput = new Input<>("InputClass", "Input class", new InputClass());
@@ -78,79 +84,95 @@ public class BaseTest extends javafx.application.Application {
 		doc.beautiConfig = new BeautiConfig();
 		doc.beautiConfig.initAndValidate();
 	    
-		
-    	JPackageDialog panel = new JPackageDialog();
-    	Dialog dlg1 = panel.asDialog(null);
-        dlg1.showAndWait();
-		System.exit(0);
+		switch (testNum) {
+		case 0:{
+			VBox root = new VBox();
+	        // the combo box (add/modify items if you like to)
+	        ComboBox<Object> comboBox = new ComboBox<>();
+	        comboBox.getItems().addAll(new Object[] {"Ester", "Jordi", "Jordina", "Jorge", "Sergi"});
+	        // has to be editable
+	        comboBox.setEditable(true);
+	        // add autocompletion
+	        new S11InitialSelection(comboBox);
+	        Dialog dlg = new Dialog();
+	        dlg.getDialogPane().setContent(comboBox);
+	        dlg.getDialogPane().getButtonTypes().add(Alert.CLOSED_OPTION);
+	        dlg.showAndWait();
+			}
+	        break;
+		case 1:
+	    	// JPackageDialog panel = new JPackageDialog();
+	    	Dialog dlg1 = JPackageDialog.asDialog(null);
+	        dlg1.showAndWait();
+			System.exit(0);
 
-
-		JPackageRepositoryDialog dlg0 = new JPackageRepositoryDialog(null);
-		System.exit(0);
-		
-		
-		Set<Taxon> candidates = new HashSet<>();
-		Taxon t1 = new Taxon("human");
-		Taxon t2 = new Taxon("chimp");
-		Taxon t3 = new Taxon("bonobo");
-		candidates.add(t1);
-		candidates.add(t2);
-		candidates.add(t3);
-		for (int i = 0; i < 50; i++) {
-			Taxon t = new Taxon("taxon" + i);
-			candidates.add(t);
-		}
-		TaxonSet taxonSet = new TaxonSet();
-		taxonSet.taxonsetInput.get().add(t2);
-		
-		
-		
-		TaxonSetDialog dlg = new TaxonSetDialog(taxonSet, candidates, doc);
-		if (dlg.showDialog()) {
+		case 2:
+			JPackageRepositoryDialog dlg0 = new JPackageRepositoryDialog(null);
+			System.exit(0);
+		case 3:
+			Set<Taxon> candidates = new HashSet<>();
+			Taxon t1 = new Taxon("human");
+			Taxon t2 = new Taxon("chimp");
+			Taxon t3 = new Taxon("bonobo");
+			candidates.add(t1);
+			candidates.add(t2);
+			candidates.add(t3);
+			for (int i = 0; i < 50; i++) {
+				Taxon t = new Taxon("taxon" + i);
+				candidates.add(t);
+			}
+			TaxonSet taxonSet = new TaxonSet();
+			taxonSet.taxonsetInput.get().add(t2);
+			
+			TaxonSetDialog dlg = new TaxonSetDialog(taxonSet, candidates, doc);
+			if (dlg.showDialog()) {
+				System.out.println(taxonSet.toString());
+			}
 			System.out.println(taxonSet.toString());
+			break;
+			
+		case 4:
+			Alignment data = getAlignment();
+			AlignmentViewer.showInDialog(data);
+	
+			
+			VBox box = new VBox();
+			InputClass2 beastObject = new InputClass2();
+			beastObject.setID("inputClass2");
+			InputClass oi = beastObject.InputClassInput.get(); 
+			oi.setID("inputClass");
+			LogNormalDistributionModel distr = new LogNormalDistributionModel();
+			distr.setID("LogNormalDistributionModel.0");
+			distr.initByName("M","1","S","0.15");
+			oi.paramDistrInput.setValue(distr, oi);
+	
+			InputEditor e = new BEASTObjectInputEditor(doc);
+			e.init(beastObject.InputClassInput, beastObject, -1, ExpandOption.TRUE, true);
+			box.getChildren().add((Pane) e);
+			
+			for (Input<?> input : beastObject.listInputs()) {
+				Object o = doc.getInputEditorFactory().createInputEditor(input, beastObject, doc);
+				Pane node = (Pane) o;
+				box.getChildren().add(node);
+			}
+	
+			ScrollPane root = new ScrollPane();
+	        root.setContent(box);
+	 
+	        // Set the Style-properties of the VBox
+	        root.setStyle("-fx-padding: 10;" +
+	                "-fx-border-style: solid inside;" +
+	                "-fx-border-width: 2;" +
+	                "-fx-border-insets: 5;" +
+	                "-fx-border-radius: 5;" +
+	                "-fx-border-color: blue;");				    
+	        
+			Scene scene = new Scene(root);
+			primaryStage.setScene(scene);
+			primaryStage.show();
+			break;
 		}
-		System.out.println(taxonSet.toString());
-		
-		
-		Alignment data = getAlignment();
-		AlignmentViewer.showInDialog(data);
 
-		
-		VBox box = new VBox();
-		InputClass2 beastObject = new InputClass2();
-		beastObject.setID("inputClass2");
-		InputClass oi = beastObject.InputClassInput.get(); 
-		oi.setID("inputClass");
-		LogNormalDistributionModel distr = new LogNormalDistributionModel();
-		distr.setID("LogNormalDistributionModel.0");
-		distr.initByName("M","1","S","0.15");
-		oi.paramDistrInput.setValue(distr, oi);
-
-		InputEditor e = new BEASTObjectInputEditor(doc);
-		e.init(beastObject.InputClassInput, beastObject, -1, ExpandOption.TRUE, true);
-		box.getChildren().add((Pane) e);
-		
-		for (Input<?> input : beastObject.listInputs()) {
-			Object o = doc.getInputEditorFactory().createInputEditor(input, beastObject, doc);
-			Pane node = (Pane) o;
-			box.getChildren().add(node);
-		}
-
-		ScrollPane root = new ScrollPane();
-        root.setContent(box);
- 
-        // Set the Style-properties of the VBox
-        root.setStyle("-fx-padding: 10;" +
-                "-fx-border-style: solid inside;" +
-                "-fx-border-width: 2;" +
-                "-fx-border-insets: 5;" +
-                "-fx-border-radius: 5;" +
-                "-fx-border-color: blue;");				    
-
-        
-		Scene scene = new Scene(root);
-		primaryStage.setScene(scene);
-		primaryStage.show();
 
 		primaryStage.setOnCloseRequest((event) -> {
 		    System.exit(0);
@@ -158,7 +180,11 @@ public class BaseTest extends javafx.application.Application {
 	}       
 
 	public static void main(String[] args) {
-	    launch();
+		if (args.length > 0) {
+			testNum = Integer.parseInt(args[0]);
+		}
+		launch();
+	    
 	}
 	
 }
