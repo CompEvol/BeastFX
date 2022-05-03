@@ -56,11 +56,11 @@ public class FXUtils {
     	fileChooser.setInitialDirectory(defaultFileOrDir);
     	
     	if (defaultFileOrDir != null) {
-    		if (defaultFileOrDir.isFile()) {
+    		if (defaultFileOrDir.isDirectory()) {
+    			fileChooser.setInitialDirectory(defaultFileOrDir);
+    		} else if (defaultFileOrDir.getParentFile().isDirectory()){
     			fileChooser.setInitialDirectory(defaultFileOrDir.getParentFile());
     			fileChooser.setInitialFileName(defaultFileOrDir.getName());
-    		} else {
-    			fileChooser.setInitialDirectory(defaultFileOrDir);
     		}
     	}
     	

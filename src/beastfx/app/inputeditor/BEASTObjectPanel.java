@@ -46,7 +46,6 @@ import javafx.scene.layout.VBox;
  */
 
 public class BEASTObjectPanel extends Pane {
-    private static final long serialVersionUID = 1L;
     /**
      * plug in to be edited *
      */
@@ -218,6 +217,8 @@ public class BEASTObjectPanel extends Pane {
 
         BEASTObjectPanel.m_position.x += 30;
         BEASTObjectPanel.m_position.y += 30;
+        
+        getChildren().add(pane);
         // setLocation(BEASTObjectPanel.m_position);
     } // c'tor
 

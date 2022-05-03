@@ -22,6 +22,8 @@ import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.alignment.Sequence;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.alignment.TaxonSet;
+import beast.base.evolution.tree.Tree;
+import beast.base.evolution.tree.TreeParser;
 import beast.base.inference.distribution.LogNormalDistributionModel;
 import beast.base.inference.distribution.ParametricDistribution;
 
@@ -35,7 +37,7 @@ import javafx.stage.Stage;
 
 public class BaseTest extends javafx.application.Application {
 	public enum e {value1,value2,value3};
-	static private int testNum = 1;
+	static private int testNum = 5;
 
 	public class InputClass2 extends BEASTObject {
 		final public Input<InputClass> InputClassInput = new Input<>("InputClass", "Input class", new InputClass());
@@ -45,13 +47,17 @@ public class BaseTest extends javafx.application.Application {
 	public class InputClass extends BEASTObject {
 		final public Input<e> eInput = new Input<>("enum", "integer valued input for test class", e.value2, e.values());
 		final public Input<Integer> intInput = new Input<>("int", "integer valued input for test class", 3);
-		final public Input<Boolean> boolInput = new Input<>("bool", "boolean valued input for test class", true);
+/*		
+ 		final public Input<Boolean> boolInput = new Input<>("bool", "boolean valued input for test class", true);
 		final public Input<Double> doubleInput = new Input<>("double", "double valued input for test class", 3.12);
 		final public Input<Long> longInput = new Input<>("long", "long valued input for test class", 123L);
 		final public Input<String> strInput = new Input<>("string", "string valued input for test class", "string");
 		final public Input<File> fileInput = new Input<>("file", "file valued input for test class");
-		final public Input<ParametricDistribution> paramDistrInput = new Input<>("paramDistr", "parametric distribution valued input for test class");
 		final public Input<List<File>> filesInput = new Input<>("files", "file valued input for test class", new ArrayList<>());
+*/
+		final public Input<Tree> treeInput = new Input<>("tree", "tree valued input for test class");
+		final public Input<ParametricDistribution> paramDistrInput = new Input<>("paramDistr", "parametric distribution valued input for test class");
+		final public Input<List<Alignment>> alignmentListInput = new Input<>("data", "alignment list valued input for test class", new ArrayList<>());
 		
 		
 		@Override
@@ -60,6 +66,18 @@ public class BaseTest extends javafx.application.Application {
 		}
 		
 	}
+	
+    static public Tree getTree(Alignment data) throws Exception {
+        TreeParser tree = new TreeParser();
+        tree.initByName("taxa", data,
+                "newick", "((((human:0.024003,(chimp:0.010772,bonobo:0.010772):0.013231):0.012035,gorilla:0.036038):0.033087000000000005,orangutan:0.069125):0.030456999999999998,siamang:0.099582);",
+                "IsLabelledNewick", true);
+        
+        //Tree tree2 = new Tree(tree.getRoot());
+        tree.setID("Tree.t:tree");
+        return tree;
+    }
+
 	
 	
     static public Alignment getAlignment() throws Exception {
@@ -83,9 +101,13 @@ public class BaseTest extends javafx.application.Application {
 		BeautiDoc doc = new BeautiDoc();
 		doc.beautiConfig = new BeautiConfig();
 		doc.beautiConfig.initAndValidate();
+		doc.newAnalysis();
+		Alignment data = getAlignment();
+		Tree tree = getTree(data);
 	    
 		switch (testNum) {
 		case 0:{
+			// autocomplete combobox test
 			VBox root = new VBox();
 	        // the combo box (add/modify items if you like to)
 	        ComboBox<Object> comboBox = new ComboBox<>();
@@ -101,15 +123,16 @@ public class BaseTest extends javafx.application.Application {
 			}
 	        break;
 		case 1:
-	    	// JPackageDialog panel = new JPackageDialog();
+	    	// JPackageDialog test
 	    	Dialog dlg1 = JPackageDialog.asDialog(null);
 	        dlg1.showAndWait();
 			System.exit(0);
-
 		case 2:
+	    	// JPackageRepositoryDialog test
 			JPackageRepositoryDialog dlg0 = new JPackageRepositoryDialog(null);
 			System.exit(0);
 		case 3:
+	    	// TaxonSetDialog test
 			Set<Taxon> candidates = new HashSet<>();
 			Taxon t1 = new Taxon("human");
 			Taxon t2 = new Taxon("chimp");
@@ -132,10 +155,11 @@ public class BaseTest extends javafx.application.Application {
 			break;
 			
 		case 4:
-			Alignment data = getAlignment();
+			// AlignmentViewer test
 			AlignmentViewer.showInDialog(data);
-	
-			
+			break;
+		case 5:
+			// basic input editor test
 			VBox box = new VBox();
 			InputClass2 beastObject = new InputClass2();
 			beastObject.setID("inputClass2");
@@ -145,6 +169,7 @@ public class BaseTest extends javafx.application.Application {
 			distr.setID("LogNormalDistributionModel.0");
 			distr.initByName("M","1","S","0.15");
 			oi.paramDistrInput.setValue(distr, oi);
+			oi.treeInput.setValue(tree, oi);
 	
 			InputEditor e = new BEASTObjectInputEditor(doc);
 			e.init(beastObject.InputClassInput, beastObject, -1, ExpandOption.TRUE, true);
@@ -171,6 +196,8 @@ public class BaseTest extends javafx.application.Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			break;
+		case 6:
+			
 		}
 
 

@@ -349,6 +349,10 @@ public class InputEditorFactory {
 
     public List<BeautiSubTemplate> getAvailableTemplates(Input<?> input, BEASTInterface parent, List<String> tabuList, BeautiDoc doc) {
         Class<?> type = input.getType();
+        if (type == null) {
+        	input.determineClass(parent);
+        	type = input.getType();
+        }
         List<BeautiSubTemplate> candidates = doc.beautiConfig.getInputCandidates(parent, input, type);
         if (input.getRule().equals(Validate.OPTIONAL)) {
             candidates.add(BeautiConfig.getNullTemplate(doc));

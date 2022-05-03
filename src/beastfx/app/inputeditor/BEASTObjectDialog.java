@@ -53,10 +53,10 @@ public class BEASTObjectDialog extends Dialog {
         this(new BEASTObjectPanel(beastObject, type, doc), doc);
     }
 
-    final public static String ICONPATH = "/beastfx/app/inputeditor/icons/";
+    final public static String ICONPATH = "/beastfx/app/inputeditor/icon/";
     
     public boolean showDialog() {
-        Image image = new Image(this.getClass().getResource("icons/beast.png").toString());
+        Image image = new Image(this.getClass().getResource("icon/beast.png").toString());
         
 		Dialog<ButtonType> alert = new Dialog<>();
 		DialogPane pane = alert.getDialogPane();
@@ -65,14 +65,14 @@ public class BEASTObjectDialog extends Dialog {
 		alert.setHeaderText(m_panel.m_beastObject.getClass().getName());
 		Stage stage = (Stage) pane.getScene().getWindow();
 		stage.getIcons().add(image);
-		
+
+		setResizable(true);
 //		if (parent != null) {
 //			Scene node = parent.getScene();
 //			alert.setX(node.getX() + node.getWidth()/2);
 //			alert.setY(node.getY() + node.getHeight()/2);
 //		}
 		ButtonType result = alert.showAndWait().get();
-
 		m_bOK = (result != ButtonType.CANCEL);
         return m_bOK;
     }

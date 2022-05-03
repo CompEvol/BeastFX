@@ -177,6 +177,11 @@ public class BeautiConfig extends BEASTObject {
     public List<BEASTInterface> selectAlignments(BeautiDoc doc, Parent parent, File[] fileArray) {
         List<BeautiAlignmentProvider> providers = alignmentProvider;
         BeautiAlignmentProvider selectedProvider = null;
+//        if (providers.size() == 0) {
+//        	BeautiAlignmentProvider provider = new BeautiAlignmentProvider();
+//        	provider.setInputValue("template", doc.pluginmap.get("StandardPartitionTemplate"));
+//        	alignmentProvider.add(provider);
+//        } 
         if (providers.size() == 1) {
             selectedProvider = providers.get(0);
         } else {

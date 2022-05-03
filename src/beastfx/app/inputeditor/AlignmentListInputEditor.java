@@ -196,11 +196,11 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	private Pane createLinkButtons() {
         HBox box = new HBox();
 		addLinkUnlinkPair(box, "Site Models");
-		Separator separator = new Separator();
-		separator.setStyle("-fx-width:5;");
-        box.getChildren().add(separator);
+		//Separator separator = new Separator();
+		//separator.setStyle("-fx-width:5;");
+        //box.getChildren().add(separator);
         addLinkUnlinkPair(box, "Clock Models");
-        box.getChildren().add(separator);
+        //box.getChildren().add(separator);
         addLinkUnlinkPair(box, "Trees");
         box.getChildren().add(new Separator());
 		return box;
@@ -213,12 +213,12 @@ public class AlignmentListInputEditor extends ListInputEditor {
         addButton.setId("+");
         addButton.setTooltip(new Tooltip("Add item to the list"));
         addButton.setOnAction(e -> addItem());
-        Separator separator = new Separator();
-        separator.setPrefWidth(STRUT_SIZE);
+        //Separator separator = new Separator();
+        //separator.setPrefWidth(STRUT_SIZE);
         
-        buttonBox.getChildren().add(separator);
+        // buttonBox.getChildren().add(separator);
         buttonBox.getChildren().add(addButton);
-        buttonBox.getChildren().add(separator);
+        // buttonBox.getChildren().add(separator);
 
         delButton = new SmallButton("-", true, SmallButton.ButtonType.square);
         delButton.setId("-");
@@ -231,15 +231,15 @@ public class AlignmentListInputEditor extends ListInputEditor {
             delItem();
         });
         buttonBox.getChildren().add(delButton);
-        buttonBox.getChildren().add(separator);
+        //buttonBox.getChildren().add(separator);
 
         replaceButton = new SmallButton("r", true, SmallButton.ButtonType.square);
         replaceButton.setId("r");
         replaceButton.setTooltip(new Tooltip("Replace alignment by one loaded from file"));
         replaceButton.setOnAction(e -> replaceItem());
-        buttonBox.getChildren().add(separator);
+        //buttonBox.getChildren().add(separator);
         buttonBox.getChildren().add(replaceButton);
-        buttonBox.getChildren().add(separator);
+        //buttonBox.getChildren().add(separator);
 
         
         splitButton = new Button("Split");
@@ -939,7 +939,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		}
 		
 		// make column 9 use checkboxes
-		TableColumn<Partition0, Boolean> loadedColumn = (TableColumn<Partition0, Boolean>) table.getColumns().get(9);
+		TableColumn<Partition0, Boolean> loadedColumn = (TableColumn<Partition0, Boolean>) table.getColumns().get(8);
 		loadedColumn.setCellValueFactory( f -> f.getValue().ambiguitiesProperty());
 		loadedColumn.setCellFactory( tc -> new CheckBoxTableCell<>());
 		loadedColumn.setOnEditCommit(e -> {
@@ -1463,8 +1463,20 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	private void addItem(File[] fileArray) {
 		List<BEASTInterface> beastObjects = doc.beautiConfig.selectAlignments(doc, this, fileArray);
 
-		// Component c = this;
 		if (beastObjects != null) {
+			for (BEASTInterface b : beastObjects) {
+				GenericTreeLikelihood likelihood = null;
+				for (BEASTInterface o : b.getOutputs()) {
+					if (o instanceof GenericTreeLikelihood) {
+						likelihood = (GenericTreeLikelihood) o;
+						break;
+					}
+				}
+				Partition0 p = new Partition0(likelihood);
+				tableEntries.add(p);
+			}
+			table.setItems(tableEntries);
+	    	table.refresh();
 			refreshPanel();
 		}
 	}

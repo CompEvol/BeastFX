@@ -122,7 +122,7 @@ public abstract class Base extends Pane implements InputEditor {
     }
 
     Label m_inputLabel;
-    protected static Dimension2D PREFERRED_SIZE = new Dimension2D(200, 25);
+    protected static Dimension2D PREFERRED_SIZE = new Dimension2D(150, 25);
     protected static Dimension2D MAX_SIZE = new Dimension2D(1024, 25);
 
     /**

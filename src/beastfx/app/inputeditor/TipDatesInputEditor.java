@@ -1,10 +1,6 @@
 package beastfx.app.inputeditor;
 
 
-import javax.swing.*;
-import javax.swing.event.CellEditorListener;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -12,11 +8,9 @@ import beast.base.core.Log;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.tree.TraitSet;
 import beast.base.evolution.tree.Tree;
-import beastfx.app.inputeditor.FileListInputEditor.File0;
 import beastfx.app.util.Alert;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Pos;
@@ -30,21 +24,17 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 
 import java.text.DateFormat;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.List;
 import java.util.Map;
 
@@ -95,7 +85,6 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
     public TipDatesInputEditor(BeautiDoc doc) {
         super(doc);
     }
-    private static final long serialVersionUID = 1L;
 
     DateFormat dateFormat = DateFormat.getDateInstance();
 
@@ -111,7 +100,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
     // Object[][] tableData;
     boolean[] recordValid;
     
-    class TipDate {
+    public class TipDate {
     	String taxon;
     	String date;
     	Double age;
@@ -151,10 +140,12 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
     RadioButton numericRadioButton, formattedDateRadioButton;
     ToggleGroup radioButtonGroup;
     ComboBox<String> dateFormatComboBox;
-
+    CheckBox useTipDates;
+    
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
         m_bAddButtons = addButtons;
+        pane = new VBox();
         this.itemNr = itemNr;
         if (itemNr >= 0) {
             tree = (Tree) ((List<?>) input.get()).get(itemNr);
@@ -173,7 +164,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 
             VBox box = new VBox();
 
-            CheckBox useTipDates = new CheckBox("Use tip dates");
+            useTipDates = new CheckBox("Use tip dates");
             useTipDates.setSelected(traitSet != null);
             useTipDates.setOnAction(e -> {
             	CheckBox checkBox = (CheckBox) e.getSource();
@@ -199,7 +190,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                 });
             HBox box2 = new HBox();
             box2.getChildren().add(useTipDates);
-            box2.getChildren().add(new Separator());
+            // box2.getChildren().add(new Separator());
             box.getChildren().add(box2);
 
             if (traitSet != null) {
@@ -208,8 +199,24 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             }
             pane.getChildren().add(box);
         }
+        getChildren().add(pane);
     } // init
 
+    @Override
+    public void refreshPanel() {
+    	VBox box = (VBox) pane.getChildren().get(0);
+        if (useTipDates.isSelected()) {
+        	if (box.getChildren().size() == 1) {
+        		box.getChildren().add(createButtonBox());
+        		box.getChildren().add(createListBox());
+        	}
+        } else {
+        	while (box.getChildren().size() > 1) {
+        		box.getChildren().remove(box.getChildren().size()-1);
+        	}
+        }
+    } 
+    
     private Node createListBox() {
         taxa = traitSet.taxaInput.get().asStringList();
         List<TipDate> list = new ArrayList<>();
@@ -222,7 +229,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         // tableData = new Object[taxa.size()][3];
         
         table = new TableView<>();
-        table.setPrefWidth(1024);
+        table.setPrefWidth(800);
         table.setEditable(true);
 
         TableColumn<TipDate,String> col1 = new TableColumn<>("Taxon");
@@ -234,7 +241,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         table.getColumns().add(col1);
         
         TableColumn<TipDate,String> col2 = new TableColumn<>("Date (raw value)");
-        col2.setPrefWidth(500);
+        col2.setPrefWidth(150);
         col2.setEditable(true);
         col2.setCellValueFactory(
         	    new PropertyValueFactory<TipDate,String>("Date")
@@ -264,7 +271,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             );
         
         TableColumn<TipDate,Double> col3 = new TableColumn<>("Age/Height");
-        col3.setPrefWidth(500);
+        col3.setPrefWidth(150);
         col3.setEditable(false);
         col3.setCellValueFactory(
         	    new PropertyValueFactory<TipDate,Double>("Age")
@@ -361,10 +368,11 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 //        });
 //        // int fontsize = table.getFont().getSize();
         // table.setRowHeight(24 * fontsize / 13);
-        scrollPane = new ScrollPane();
-        scrollPane.setContent(table);
-
-        return scrollPane;
+//        scrollPane = new ScrollPane();
+//        scrollPane.setContent(table);
+//
+//        return scrollPane;
+        return table;
     } // createListBox
 
     private void clearTable(boolean heightsOnly) {
@@ -374,7 +382,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             if (!heightsOnly)
                 entry.setDate("0");
             entry.setAge(0.0);
-        }
+         }
+         table.refresh();
     }
 
     /* synchronise table with data from traitSet BEASTObject */
@@ -452,6 +461,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             }
         }
 
+        table.refresh();
 //        if (table != null) {
 //            for (int i = 0; i < tipDateEntries.size(); i++) {
 //                table.setValueAt(tipDateEntries.get(i).getDate(), i, 1);
@@ -512,6 +522,9 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 
         numericRadioButton.setOnAction(e -> {
             traitSet.dateTimeFormatInput.setValue(null, traitSet);
+            unitsComboBox.setDisable(false);
+            relativeToComboBox.setDisable(false);
+            dateFormatComboBox.setDisable(true);
             refreshPanel();
         });
 
@@ -571,6 +584,9 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 
         formattedDateRadioButton.setOnAction(e -> {
             traitSet.dateTimeFormatInput.setValue(dateFormatComboBox.getValue(), traitSet);
+            unitsComboBox.setDisable(true);
+            relativeToComboBox.setDisable(true);
+            dateFormatComboBox.setDisable(false);
             refreshPanel();
         });
         formattedDateRadioButton.setToggleGroup(radioButtonGroup);
