@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -32,7 +33,6 @@ import beast.base.inference.StateNode;
 
 
 public class OperatorListInputEditor extends ListInputEditor {
-    private static final long serialVersionUID = 1L;
     List<TextField> textFields = new ArrayList<>();
     List<Operator> operators = new ArrayList<>();
 
@@ -57,13 +57,13 @@ public class OperatorListInputEditor extends ListInputEditor {
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
     	HBox box = new HBox();
-    	pane = new VBox();
-    	box.getChildren().add(new Separator());
+    	pane = new BorderPane();
+    	//box.getChildren().add(new Separator());
     	box.getChildren().add(new Label("Operator"));
-    	box.getChildren().add(new Separator());
+    	//box.getChildren().add(new Separator());
     	box.getChildren().add(new Label("Weight"));
-    	box.getChildren().add(new Separator());
-    	pane.getChildren().add(box);
+    	//box.getChildren().add(new Separator());
+    	((BorderPane)pane).setTop(box);
     	
 
     	m_buttonStatus = ButtonStatus.NONE;
@@ -71,8 +71,8 @@ public class OperatorListInputEditor extends ListInputEditor {
     	
     	BEASTObjectInputEditor osEditor = new BEASTObjectInputEditor(doc);
     	osEditor.init(((BEASTInterface) doc.mcmc.get()).getInput("operatorschedule"), (BEASTInterface) doc.mcmc.get(), -1, isExpandOption, addButtons);
-    	pane.getChildren().add(osEditor);
-    	getChildren().add(pane);
+    	((BorderPane)pane).setBottom(osEditor);
+    	//getChildren().add(pane); <- already done by super class
     }
     
     @Override

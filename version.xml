@@ -27,7 +27,7 @@
 				<provider classname="beastfx.app.beauti.FrequenciesInputEditor"/>
 				<provider classname="beastfx.app.beauti.PriorInputEditor"/>
 				<provider classname="beastfx.app.beauti.PriorListInputEditor"/>
-<!--
+
 				<provider classname="beastfx.app.inputeditor.AlignmentListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.LogFileInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.LogFileListInputEditor"/>
@@ -44,6 +44,7 @@
 				<provider classname="beastfx.app.beauti.StateNodeInitialiserListInputEditor"/>
 				<provider classname="beastfx.app.beauti.StateNodeListInputEditor"/>
 				<provider classname="beastfx.app.beauti.TreeDistributionInputEditor"/>
+<!--
 -->				
 			</service>
 	

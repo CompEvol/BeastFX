@@ -140,6 +140,7 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         refreshPanel();
         addPartitionPanel(this.config.hasPartition(), panelIndex);
 
+        setContent(pane);
         //setOpaque(false);
         
     } // c'tor
@@ -269,7 +270,7 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     }
     
     void refreshInputPanel(BEASTInterface beastObject, Input<?> input, boolean addButtons, InputEditor.ExpandOption forceExpansion) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if (centralComponent != null) {
+        if (centralComponent != null && ((BorderPane)getContent()) != null) {
         	((BorderPane)getContent()).setCenter(null);
         }
         if (input != null && input.get() != null && input.getType() != null) {

@@ -50,6 +50,7 @@ public class MyAction extends CustomMenuItem {
 
     public MyAction(String name, String toolTipText, String icon, KeyCodeCombination acceleratorKeystroke) {
         super(new Label(name));
+        setText(name);
         init(name, toolTipText, icon, acceleratorKeystroke);
     }
     

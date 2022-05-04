@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import beastfx.app.beauti.Beauti;
+import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.inputeditor.*;
 import beast.app.util.PartitionContextUtil;
 import beast.app.util.Utils;
@@ -134,7 +134,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
     Set<PartitionContext> possibleContexts = new HashSet<>();
 
     public BeautiConfig beautiConfig;
-    public Beauti beauti;
+    public BeautiTabPane beauti;
 
     private String templateName = null;
     private String templateFileName = STANDARD_TEMPLATE;
@@ -2431,7 +2431,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         return beastObject;
     }
 
-    public void setBeauti(Beauti beauti) {
+    public void setBeauti(BeautiTabPane beauti) {
         this.beauti = beauti;
     }
 

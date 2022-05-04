@@ -1,9 +1,5 @@
 package beastfx.app.inputeditor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,9 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -28,7 +21,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
-import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -39,7 +31,7 @@ import beast.pkgmgmt.BEASTClassLoader;
 
 public class ListInputEditor extends InputEditor.Base {
 
-    public final static String ICONPATH = "beastfx.app.beauti/";
+    public final static String ICONPATH = "/beastfx/app/inputeditor/icon/";
     static Image DOWN_ICON;
     static Image RIGHT_ICON;
 
@@ -135,7 +127,9 @@ public class ListInputEditor extends InputEditor.Base {
         m_input = input;
         m_beastObject = beastObject;
         this.itemNr = -1;
-        pane = new BorderPane();
+        if (pane == null) { 
+        	pane = new BorderPane();
+        }
         addInputLabel();
         if (m_inputLabel != null) {
             //m_inputLabel.setMaxSize(m_inputLabel.getSize().width, 1000);
@@ -237,7 +231,7 @@ public class ListInputEditor extends InputEditor.Base {
                 //itemBox = box;
                 VBox box2 = new VBox();
                 box2.getChildren().add(itemBox);
-                itemBox.getChildren().add(0, editButton);
+//TODO: find out what this line does:  itemBox.getChildren().add(0, editButton);
                 box2.getChildren().add(expandBox);
 //        		expandBox.setVisible(false);
 //        		//itemBox.remove(editButton);

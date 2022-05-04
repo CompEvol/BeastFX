@@ -4,7 +4,9 @@ package beastfx.app.inputeditor;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
 
-abstract public class Beauti extends TabPane {
+// this is part of beastfx.app.inputeditor to ensure 
+// the inputeditor (java) package does not depend on the beauti (java) package
+abstract public class BeautiTabPane extends TabPane {
 
 	public Pane frame;
 	
