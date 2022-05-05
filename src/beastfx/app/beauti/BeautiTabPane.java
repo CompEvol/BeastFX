@@ -12,7 +12,7 @@ import javafx.scene.Scene;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.CustomMenuItem;
+//import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -1000,26 +1000,27 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				frame.getScene().getStylesheets().clear();
-				try {
-					String cssFile = themeFile;
-					if (!new File(themeFile).exists()) {
-		    			cssFile = PackageManager.getBeastDirectories().get(0) + "/" +themeFile;
-						if (!new File(cssFile).exists()) {
-			    			cssFile = System.getProperty("user.dir") + "/../" +themeFile;
-							if (!new File(cssFile).exists()) {
-								Alert.showMessageDialog(getParent(), "Could not find theme file " + themeFile);
-								return;
-							}							
-						}
-					}
-					frame.getScene().getStylesheets().add(new URL("file:///" + cssFile).toExternalForm());
-				} catch (MalformedURLException e) {
-					// ignore
-					return;
+//				try {
+//					String cssFile = themeFile;
+//					if (!new File(themeFile).exists()) {
+//		    			cssFile = PackageManager.getBeastDirectories().get(0) + "/" +themeFile;
+//						if (!new File(cssFile).exists()) {
+//			    			cssFile = System.getProperty("user.dir") + "/../" +themeFile;
+//							if (!new File(cssFile).exists()) {
+//								Alert.showMessageDialog(getParent(), "Could not find theme file " + themeFile);
+//								return;
+//							}							
+//						}
+//					}
+//					frame.getScene().getStylesheets().add(new URL("file:///" + cssFile).toExternalForm());
+//				} catch (MalformedURLException e) {
+//					// ignore
+//					return;
+//				}
+				if (FXUtils.loadStyleSheet(frame.getScene(), themeFile)) {
+					Utils.saveBeautiProperty("theme", themeFile);
+					refreshPanel();
 				}
-				Utils.saveBeautiProperty("theme", themeFile);
-				refreshPanel();
 			}
         	};
         	viewMenu.getItems().add(themeAction);
@@ -1041,7 +1042,8 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             String name = m_sFileName.substring(
                     i, m_sFileName.length() - 4);
             //putValue(Action.NAME, name);
-            ((Label)getContent()).setText(name);
+            setText(name);
+            //((Label)getContent()).setText(name);
             try {
                 DocumentBuilderFactory factory = DocumentBuilderFactory
                         .newInstance();
@@ -1055,7 +1057,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
                 }
                 //templateInfo = "<html>" + templateInfo + "</html>";
         		Tooltip tooltip = new Tooltip(templateInfo);
-        		Tooltip.install(getContent(), tooltip);		
+//        		Tooltip.install(getContent(), tooltip);		
             } catch (Exception e) {
                 // ignore
             }
@@ -1107,7 +1109,8 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
                                 fileName = fileName.substring(0, fileName.length() - 4);
                                 boolean duplicate = false;
                             	for (MyAction action : actions) {
-                            		String name = ((Label)action.getContent()).getText();
+                            		//String name = ((Label)action.getContent()).getText();
+                            		String name = action.getText();
                             		if (name.equals(fileName)) {
                             			duplicate = true;
                             		}
@@ -1139,10 +1142,10 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 		            if (name.indexOf(File.separator) >= 0) {
 		            	name = dir.substring(dir.lastIndexOf(File.separator) + 1);
 		            }
-		            CustomMenuItem menu = new CustomMenuItem(new Label(name));
+		            MenuItem menu = new MenuItem(name);
 	        		menu.setOnAction(e->ProgramStatus.setCurrentDir(dir));
-	        		Tooltip tooltip = new Tooltip(workDirInfo);
-	        		Tooltip.install(menu.getContent(), tooltip);
+//	        		Tooltip tooltip = new Tooltip(workDirInfo);
+//	        		Tooltip.install(menu.getContent(), tooltip);
 		            actions.add(menu);
 	        	}
         	}
@@ -1250,6 +1253,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
     public static BeautiTabPane main2(String[] args, Stage primaryStage) {
 //    	Utils6.startSplashScreen();
 //    	Utils6.logToSplashScreen("Initialising BEAUti");
+    	
     	
     	// retrieve previously stored working directory
     	String currentDir = Utils.getBeautiProperty("currentDir");
@@ -1414,6 +1418,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             beauti.setVisible(true);
             beauti.refreshPanel();
             Stage frame = primaryStage;
+            primaryStage.setTitle("BEAUti");
             beauti.frame = primaryStage;
             // Stage frame = new Stage();
             frame.setTitle("BEAUti 2: " + doc.getTemplateName()
@@ -1426,7 +1431,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
             MenuBar menuBar = beauti.createMenuBar();
             if (Utils.isMac()) {
-            //	menuBar.useSystemMenuBarProperty().set(true);
+            	menuBar.useSystemMenuBarProperty().set(true);
             }
 
             if (doc.getFileName() != null || doc.alignments.size() > 0) {
@@ -1442,15 +1447,11 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             vb.setPrefSize(1024, 768);
             
             Scene scene = new Scene(vb);
-            String theme = Utils.getBeautiProperty("theme");
-            if (theme == null) {
-            	theme = System.getProperty("user.dir")+"/themes/default.css";
+            String themeFile = Utils.getBeautiProperty("theme");
+            if (themeFile == null) {
+            	themeFile = System.getProperty("user.dir")+"/themes/default.css";
             }
-            try {
-            	scene.getStylesheets().add(new URL("file:///" + theme).toExternalForm());
-            } catch (MalformedURLException e) {
-            	// ignore
-            }
+            FXUtils.loadStyleSheet(scene, themeFile);
             frame.setScene(scene);
             frame.setX(BEAUtiIntances * 10);
             frame.setY(BEAUtiIntances * 10);

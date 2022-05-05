@@ -13,6 +13,7 @@ import beast.base.core.Log;
 import javafx.event.ActionEvent;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,7 +26,7 @@ import javafx.scene.input.KeyCombination;
  * Base class used for definining actions with a name, tool tip text, possibly
  * an icon and accelerator key.
  */
-public class MyAction extends CustomMenuItem {
+public class MyAction extends MenuItem {
 
     /**
      * path for icons
@@ -50,14 +51,16 @@ public class MyAction extends CustomMenuItem {
 //    } // c'tor
 
     public MyAction(String name, String toolTipText, String icon, KeyCodeCombination acceleratorKeystroke) {
-        super(new Label(name));
-        setText(name);
+        super(name);
+//        super(new Label(name));
+//        setText(name);
         init(name, toolTipText, icon, acceleratorKeystroke);
     }
     
     private void init(String name, String toolTipText, String icon, KeyCodeCombination keyCodeCombination) {
 		Tooltip tooltip = new Tooltip(toolTipText);
-		Tooltip.install(getContent(), tooltip);		
+		//Tooltip.install(getContent(), tooltip);		
+		Tooltip.install(getGraphic(), tooltip);		
 
 		try {
         	// setTooltip(new Tooltip(toolTipText));

@@ -19,6 +19,10 @@ public class ThemeProvider {
 	 */
 	public String getThemes() {
     	String themes = "/BeastFX/themes/default.css;/BeastFX/themes/dark.css;/BeastFX/themes/bootstrap.css";
+    	themes += ";/BeastFX/themes/win7.css";
+    	themes += ";/BeastFX/themes/fluent.css";
+    	themes += ";/BeastFX/themes/metro.css";
+    	
     	return themes;
 	}
 }

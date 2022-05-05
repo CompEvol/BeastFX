@@ -1,5 +1,9 @@
 package beastfx.app.inputeditor;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import beast.app.util.Utils;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -54,9 +58,6 @@ public class WrappedOptionPane extends DialogPane {
         Dialog<?> dialog = new Dialog<>();
         dialog.setDialogPane(pane);
         pane.setContentText(message.toString());
-        if (fontName != null) {
-        	pane.setStyle("-fx-font:" + fontName);
-        }
         Stage stage = (Stage) pane.getScene().getWindow();
         String str = WrappedOptionPane.class.getResource("/beastfx/app/inputeditor/icon/beast.png").toString();
         stage.getIcons().add(new Image(str));
@@ -64,6 +65,20 @@ public class WrappedOptionPane extends DialogPane {
         pane.setHeaderText("Information");
 
         pane.getButtonTypes().add(ButtonType.CLOSE);
+        String theme = Utils.getBeautiProperty("theme");
+        if (theme != null) {
+        	System.err.println(theme);
+	        try {
+	        	pane.getScene().getStylesheets().add(new URL("file:///" + theme).toExternalForm());
+	        	pane.getStyleClass().add("dialog");
+	        } catch (MalformedURLException e) {
+	        	// ignore
+	        }
+        }
+        if (fontName != null) {
+        	pane.setStyle("-fx-font-family:" + fontName + ";");
+        }
+        dialog.setResizable(true);
         dialog.showAndWait();
 
     }
