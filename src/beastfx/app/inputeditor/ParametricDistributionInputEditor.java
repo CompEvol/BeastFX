@@ -16,6 +16,7 @@ import beast.base.core.Input;
 import beast.base.evolution.tree.MRCAPrior;
 import beast.base.evolution.tree.TreeDistribution;
 import beast.base.inference.distribution.ParametricDistribution;
+import beastfx.app.util.FXUtils;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
@@ -60,7 +61,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             super.init(input, beastObject, itemNr, ExpandOption.TRUE, addButtons);
         }
         Pane pane1 = pane;
-        pane = new VBox();
+        pane = FXUtils.newVBox();
         pane.getChildren().add(pane1);
         pane.getChildren().add(createGraph());
         getChildren().add(pane);
@@ -389,7 +390,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         int fsize = UIManager.getFont("Label.font").getSize();
         Dimension2D size = new Dimension2D(200 * fsize / 13, 200 * fsize / 13);
         //panel.setSize(size);
-        HBox box = new HBox();
+        HBox box = FXUtils.newHBox();
         //box.setBorder(BorderFactory.createEmptyBorder());
         box.getChildren().add(graphPanel);        
         box.setPrefSize(size.getHeight(), size.getWidth());

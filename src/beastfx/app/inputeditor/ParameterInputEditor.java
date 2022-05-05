@@ -14,7 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
 import beastfx.app.util.Alert;
-
+import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -105,7 +105,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 
     @Override
     protected void addComboBox(Pane box, Input<?> input, BEASTInterface beastObject) {
-        HBox paramBox = new HBox();
+        HBox paramBox = FXUtils.newHBox();
         Parameter.Base<?> parameter = null;
         if (itemNr >= 0) {
         	parameter = (Parameter.Base<?>) ((List<?>) input.get()).get(itemNr);

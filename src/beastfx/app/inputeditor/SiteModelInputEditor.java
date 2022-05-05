@@ -14,6 +14,7 @@ import beast.base.inference.*;
 import beast.base.inference.operator.DeltaExchangeOperator;
 import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
@@ -77,7 +78,7 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     		doc.addPlugin(operator);
     	}
 		fixMeanRatesCheckBox.setSelected(operators.contains(operator));
-		HBox box = new HBox();
+		HBox box = FXUtils.newHBox();
 		box.getChildren().add(fixMeanRatesCheckBox);
 		box.getChildren().add(new Separator());
 		fixMeanRatesValidateLabel = new SmallLabel("x", "green");

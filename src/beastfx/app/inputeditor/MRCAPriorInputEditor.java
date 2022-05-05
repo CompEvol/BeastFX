@@ -15,7 +15,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import beastfx.app.util.Alert;
-
+import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -54,8 +54,8 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         m_beastObject = beastObject;
         this.itemNr= listItemNr;
 		
-        pane = new VBox();
-        HBox itemBox = new HBox();
+        pane = FXUtils.newVBox();
+        HBox itemBox = FXUtils.newHBox();
 
         MRCAPrior prior = (MRCAPrior) beastObject;
         String text = prior.getID();

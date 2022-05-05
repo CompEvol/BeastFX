@@ -15,6 +15,7 @@ import java.util.List;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.*;

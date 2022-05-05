@@ -23,6 +23,7 @@ import beastfx.app.inputeditor.BEASTObjectInputEditor;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.ListInputEditor;
+import beastfx.app.util.FXUtils;
 import beastfx.app.inputeditor.InputEditor.ButtonStatus;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beast.base.core.BEASTInterface;
@@ -56,7 +57,7 @@ public class OperatorListInputEditor extends ListInputEditor {
 
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
-    	HBox box = new HBox();
+    	HBox box = FXUtils.newHBox();
     	pane = new BorderPane();
     	//box.getChildren().add(new Separator());
     	box.getChildren().add(new Label("Operator"));

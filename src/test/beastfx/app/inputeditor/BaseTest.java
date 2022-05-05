@@ -22,8 +22,10 @@ import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.alignment.Sequence;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.alignment.TaxonSet;
+import beast.base.evolution.speciation.YuleModel;
 import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeParser;
+import beast.base.inference.Distribution;
 import beast.base.inference.distribution.LogNormalDistributionModel;
 import beast.base.inference.distribution.ParametricDistribution;
 
@@ -45,24 +47,25 @@ public class BaseTest extends javafx.application.Application {
 		public void initAndValidate() {}
 	}
 	public class InputClass extends BEASTObject {
+		/*		
 		final public Input<e> eInput = new Input<>("enum", "integer valued input for test class", e.value2, e.values());
 		final public Input<Integer> intInput = new Input<>("int", "integer valued input for test class", 3);
-/*		
  		final public Input<Boolean> boolInput = new Input<>("bool", "boolean valued input for test class", true);
 		final public Input<Double> doubleInput = new Input<>("double", "double valued input for test class", 3.12);
 		final public Input<Long> longInput = new Input<>("long", "long valued input for test class", 123L);
 		final public Input<String> strInput = new Input<>("string", "string valued input for test class", "string");
 		final public Input<File> fileInput = new Input<>("file", "file valued input for test class");
 		final public Input<List<File>> filesInput = new Input<>("files", "file valued input for test class", new ArrayList<>());
-*/
 		final public Input<Tree> treeInput = new Input<>("tree", "tree valued input for test class");
 		final public Input<ParametricDistribution> paramDistrInput = new Input<>("paramDistr", "parametric distribution valued input for test class");
 		final public Input<List<Alignment>> alignmentListInput = new Input<>("data", "alignment list valued input for test class", new ArrayList<>());
+*/		
+		final public Input<List<Distribution>> filesInput = new Input<>("distribution", "distribution valued input for test class", new ArrayList<>());
 		
 		
 		@Override
 		public void initAndValidate() {
-			System.out.println("Value of int = " + intInput.get());
+			//System.out.println("Value of int = " + intInput.get());
 		}
 		
 	}
@@ -168,9 +171,14 @@ public class BaseTest extends javafx.application.Application {
 			LogNormalDistributionModel distr = new LogNormalDistributionModel();
 			distr.setID("LogNormalDistributionModel.0");
 			distr.initByName("M","1","S","0.15");
-			oi.paramDistrInput.setValue(distr, oi);
-			oi.treeInput.setValue(tree, oi);
-	
+			setInputValue(oi, "paramDistr", distr);
+			setInputValue(oi, "tree", tree);
+			YuleModel yule = new YuleModel();
+			yule.setID("Tree.t:tree");
+			yule.initByName("tree", tree, "birthDiffRate", "1.0");
+			oi.getInput("distribution").setValue(yule, oi);
+
+			
 			InputEditor e = new BEASTObjectInputEditor(doc);
 			e.init(beastObject.InputClassInput, beastObject, -1, ExpandOption.TRUE, true);
 			box.getChildren().add((Pane) e);
@@ -205,6 +213,16 @@ public class BaseTest extends javafx.application.Application {
 		    System.exit(0);
 		});
 	}       
+
+	private void setInputValue(InputClass oi, String inputName, Object value) {
+		if (!oi.getInputs().containsKey(inputName)) {
+			return;
+		}
+		Input<?> input = oi.getInput(inputName);
+		input.setValue(value, oi);
+	}
+
+
 
 	public static void main(String[] args) {
 		if (args.length > 0) {

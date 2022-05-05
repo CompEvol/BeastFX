@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
@@ -138,7 +139,7 @@ public class ListInputEditor extends InputEditor.Base {
             //m_inputLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
 
-        m_listBox = new VBox();
+        m_listBox = FXUtils.newVBox();
         // list of inputs 
         for (Object o : (List<?>) input.get()) {
             if (o instanceof BEASTInterface) {
@@ -149,7 +150,7 @@ public class ListInputEditor extends InputEditor.Base {
 
         ((BorderPane)pane).setTop(m_listBox);
 
-        buttonBox = new HBox();
+        buttonBox = FXUtils.newHBox();
         if (m_buttonStatus == ButtonStatus.ALL || m_buttonStatus == ButtonStatus.ADD_ONLY) {
             addButton = new SmallButton("+", true);
             addButton.setId("+");
@@ -176,7 +177,7 @@ public class ListInputEditor extends InputEditor.Base {
             m_validateLabel.setVisible(true);
             validateInput();
         }
-        buttonBox.getChildren().add(new Separator());
+        //buttonBox.getChildren().add(new Separator());
         m_listBox.getChildren().add(buttonBox);
 
         updateState();
@@ -191,7 +192,7 @@ public class ListInputEditor extends InputEditor.Base {
     } // init
 
     protected void addSingleItem(BEASTInterface beastObject) {
-        Pane itemBox = new HBox();
+        Pane itemBox = FXUtils.newHBox();
 
         InputEditor editor = addPluginItem(itemBox, beastObject);
         
@@ -221,7 +222,7 @@ public class ListInputEditor extends InputEditor.Base {
 
         if (m_bExpandOption == ExpandOption.TRUE || m_bExpandOption == ExpandOption.TRUE_START_COLLAPSED ||
                 (m_bExpandOption == ExpandOption.IF_ONE_ITEM && ((List<?>) m_input.get()).size() == 1)) {
-            VBox expandBox = new VBox();
+            VBox expandBox = FXUtils.newVBox();
             //box.add(itemBox);
             doc.getInputEditorFactory().addInputs(expandBox, beastObject, editor, null, doc);
             //System.err.print(expandBox.getComponentCount());
@@ -229,7 +230,7 @@ public class ListInputEditor extends InputEditor.Base {
                 // only go here if it is worth showing expanded box
                 //expandBox.setBorder(BorderFactory.createMatteBorder(1, 5, 1, 1, Color.gray));
                 //itemBox = box;
-                VBox box2 = new VBox();
+                VBox box2 = FXUtils.newVBox();
                 box2.getChildren().add(itemBox);
 //TODO: find out what this line does:  itemBox.getChildren().add(0, editButton);
                 box2.getChildren().add(expandBox);

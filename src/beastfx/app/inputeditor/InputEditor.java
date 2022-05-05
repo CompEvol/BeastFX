@@ -16,6 +16,7 @@ import javax.swing.event.ListSelectionListener;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
+import beastfx.app.util.FXUtils;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
@@ -168,7 +169,7 @@ public abstract class Base extends Pane implements InputEditor {
 
     public Base() {}
 	public Base(BeautiDoc doc) {
-		// setLayout(new HBox());
+		// setLayout(FXUtils.newHBox());
 		this.doc = doc;
 		if (doc != null) {
 			doc.currentInputEditors.add(this);
@@ -213,7 +214,7 @@ public abstract class Base extends Pane implements InputEditor {
         m_beastObject = beastObject;
         this.itemNr= itemNr;
         
-        pane = new HBox();
+        pane = new 	HBox();
         
         addInputLabel();
 

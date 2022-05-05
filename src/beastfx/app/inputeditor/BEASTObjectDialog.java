@@ -110,7 +110,7 @@ public class BEASTObjectDialog extends Dialog {
 
 
 //        /* add cancel and ok buttons at the bottom */
-//        HBox cancelOkBox = new HBox();
+//        HBox cancelOkBox = FXUtils.newHBox();
 //        cancelOkBox.setBorder(new EtchedBorder());
 //        Button okButton = new Button("Ok");
 //        okButton.setOnAction(new ActionListener() {

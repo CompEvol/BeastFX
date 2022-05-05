@@ -8,6 +8,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
+import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.speciation.GeneTreeForSpeciesTreeDistribution;
@@ -31,7 +32,7 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
 
 	@Override
 	public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
-        pane = new HBox();
+        pane = FXUtils.newHBox();
         m_bAddButtons = addButtons;
         m_input = input;
         m_beastObject = beastObject;

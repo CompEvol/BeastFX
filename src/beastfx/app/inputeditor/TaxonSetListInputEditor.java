@@ -12,6 +12,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;
 
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -59,7 +60,7 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 	@Override
 	public void init(Input<?> input, BEASTInterface plugin, int itemNr, ExpandOption bExpand, boolean bAddButtons) {
 		this.itemNr = itemNr;
-		pane = new HBox();
+		pane = FXUtils.newHBox();
 		List<TaxonSet> taxonset = (List<TaxonSet>) input.get();
 		pane.getChildren().add(getContent(taxonset));
 		getChildren().add(pane);
@@ -125,7 +126,7 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 //		ScrollPane pane = new ScrollPane();
 //		pane.setConent(m_tree);
 
-		VBox box = new VBox();
+		VBox box = FXUtils.newVBox();
 		box.getChildren().add(createFilterBox());
 		box.getChildren().add(pane);
 		box.getChildren().add(createButtonBox());
@@ -133,7 +134,7 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 	}
 
 	private Pane createFilterBox() {
-		HBox filterBox = new HBox();
+		HBox filterBox = FXUtils.newHBox();
 		filterBox.getChildren().add(new Label("filter: "));
 		Dimension size = new Dimension(100,20);
 		filterEntry = new TextField();
@@ -184,7 +185,7 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 
 	/** for adding and deleting taxon sets **/
 	private Pane createButtonBox() {
-		HBox buttonBox = new HBox();
+		HBox buttonBox = FXUtils.newHBox();
 
 		Button delButton = new Button("Delete");
 		delButton.setOnAction(e-> {

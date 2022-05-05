@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
+import beastfx.app.util.FXUtils;
 import javafx.scene.layout.HBox;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -30,7 +31,7 @@ public class ConstantPopulationInputEditor extends InputEditor.Base {
 		ConstantPopulation population = (ConstantPopulation) input.get();
 		try {
 			InputEditor editor = doc.inputEditorFactory.createInputEditor(population.popSizeParameter, population, doc);
-			pane = new HBox();
+			pane = FXUtils.newHBox();
 			pane.getChildren().add(editor.getComponent());
 			getChildren().add(pane);
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | InstantiationException

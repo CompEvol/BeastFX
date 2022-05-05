@@ -6,11 +6,11 @@ package beastfx.app.beauti;
 
 
 
-import beast.app.beauti.BeautiPanel;
 import beast.base.core.Description;
 import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.PackageVersion;
+import beastfx.app.inputeditor.BeautiPanel;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.collections.FXCollections;
@@ -129,7 +129,7 @@ public class JPackageDialog extends DialogPane {
         jLabel.setMinWidth(400);
         //frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         //setLayout(new BorderLayout());
-        pane = new VBox();
+        pane = FXUtils.newVBox();
         pane.getChildren().add(jLabel);
 
         dataTable = createTable();
@@ -329,7 +329,7 @@ public class JPackageDialog extends DialogPane {
     }
 
     private HBox createButtonBox() {
-        HBox box = new HBox();
+        HBox box = FXUtils.newHBox();
         final CheckBox latestVersionCheckBox = new CheckBox("Latest");
         latestVersionCheckBox.setTooltip(new Tooltip("If selected, only the latest version is installed when hitting the Install/Upgrade button. "
         		+ "Otherwise, you can select from a list of available versions."));

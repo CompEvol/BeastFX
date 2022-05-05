@@ -32,6 +32,7 @@ import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beastfx.app.beauti.JPackageDialog.Package0;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -93,7 +94,7 @@ public class JPackageRepositoryDialog extends DialogPane {
         this.urls0 = FXCollections.observableArrayList(urls0);
         
         // Assemble table
-        VBox pane = new VBox();
+        VBox pane = FXUtils.newVBox();
         //final RepoTableModel repoTableModel = new RepoTableModel(urls);
         
         final TableView<URL0> repoTable = new TableView<>();
@@ -113,7 +114,7 @@ public class JPackageRepositoryDialog extends DialogPane {
 //        getContentPane().add(scrollPane, BorderLayout.CENTER);
         
         // Add buttons
-        HBox box = new HBox();
+        HBox box = FXUtils.newHBox();
         
         // ADD URL
         Button addURLButton = new Button("Add URL");

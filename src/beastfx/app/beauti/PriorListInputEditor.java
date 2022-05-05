@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
@@ -130,8 +131,8 @@ public class PriorListInputEditor extends ListInputEditor {
 	        addButton.setOnAction(e -> {
 	                addItem();
 	            });
+	        buttonBox.alignmentProperty().set(Pos.CENTER);
 	        buttonBox.getChildren().add(addButton);
-            buttonBox.getChildren().add(new Separator());
         }
     }
 
@@ -145,7 +146,7 @@ public class PriorListInputEditor extends ListInputEditor {
      */
     @Override
     protected InputEditor addPluginItem(Pane itemBox, BEASTInterface beastObject) {
-		try {
+    	try {
 	    	int listItemNr = ((List<?>) m_input.get()).indexOf(beastObject);
 	    	InputEditor editor = doc.getInputEditorFactory().createInputEditor(m_input, listItemNr, beastObject, false, ExpandOption.FALSE, ButtonStatus.NONE, null, doc);
 	    	itemBox.getChildren().add((Pane) editor);

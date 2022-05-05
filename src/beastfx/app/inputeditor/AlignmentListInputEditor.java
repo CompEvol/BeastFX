@@ -33,6 +33,7 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -156,7 +157,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
         bpane.setTop(createLinkButtons());
         bpane.setCenter(createListBox());
 
-        //VBox box = new VBox();
+        //VBox box = FXUtils.newVBox();
 		//box.add(Box.createVerticalStrut(STRUT_SIZE));
 		//box.add(createLinkButtons());
 		//box.add(Box.createVerticalStrut(STRUT_SIZE));
@@ -196,7 +197,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
      * @return a box containing three link/unlink button pairs.
      */
 	private Pane createLinkButtons() {
-        HBox box = new HBox();
+        HBox box = FXUtils.newHBox();
 		addLinkUnlinkPair(box, "Site Models");
 		//Separator separator = new Separator();
 		//separator.setStyle("-fx-width:5;");
@@ -209,7 +210,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	}
 
     private Pane createAddRemoveSplitButtons() {
-        HBox buttonBox = new HBox();
+        HBox buttonBox = FXUtils.newHBox();
 
         addButton = new SmallButton("+", true, SmallButton.ButtonType.square);
         addButton.setId("+");

@@ -146,7 +146,7 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     } // c'tor
 
     void addPartitionPanel(Partition hasPartition, int panelIndex) {
-        VBox box = new VBox();
+        VBox box = FXUtils.newVBox();
         if (splitPane != null && hasPartition != Partition.none) {
             box.getChildren().add(createList());
         } else {

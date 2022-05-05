@@ -19,6 +19,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
 
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -55,7 +56,7 @@ public class TaxonSetDialog extends DialogPane {
         this.doc = doc;
         id = taxonSet.getID();
         // create components
-        box = new VBox();
+        box = FXUtils.newVBox();
         box.getChildren().add(createIDBox());
         box.getChildren().add(createFilterBox());
         box.getChildren().add(createTaxonSelector());
@@ -107,7 +108,7 @@ public class TaxonSetDialog extends DialogPane {
     
 
     private Pane createFilterBox() {
-        HBox box = new HBox();
+        HBox box = FXUtils.newHBox();
         Label label = new Label("Filter:");
         box.getChildren().add(label);
         label.setMinSize(100,20);
@@ -141,7 +142,7 @@ public class TaxonSetDialog extends DialogPane {
     }
 
     Pane createIDBox() {
-        HBox box = new HBox();
+        HBox box = FXUtils.newHBox();
         Label label = new Label("Taxon set label:");
         box.getChildren().add(label);        
         label.setMinSize(100,20);
@@ -155,7 +156,7 @@ public class TaxonSetDialog extends DialogPane {
     }
     
     Pane createTaxonSelector() {
-        HBox box = new HBox();
+        HBox box = FXUtils.newHBox();
 
         // list of taxa to select from
         listOfTaxonCandidates = new ListView<>();
@@ -176,7 +177,7 @@ public class TaxonSetDialog extends DialogPane {
         box.getChildren().add(listOfTaxonCandidates);
 
         // add buttons to select/deselect taxa
-        VBox buttonBox = new VBox();
+        VBox buttonBox = FXUtils.newVBox();
         buttonBox.getChildren().add(new Separator());
         Button selectButton = new Button(">>");
         selectButton.setId(">>");

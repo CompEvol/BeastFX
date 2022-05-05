@@ -5,6 +5,7 @@ import java.util.List;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -43,7 +44,7 @@ public class EnumInputEditor extends InputEditor.Base {
         m_input = input;
         m_beastObject = beastObject;
 		this.itemNr = itemNr;
-		pane = new HBox();
+		pane = FXUtils.newHBox();
 		
         addInputLabel();
         List<String> availableValues = new ArrayList<>();

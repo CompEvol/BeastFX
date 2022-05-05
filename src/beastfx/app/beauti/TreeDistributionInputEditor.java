@@ -23,6 +23,7 @@ import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiSubTemplate;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.SmallLabel;
+import beastfx.app.util.FXUtils;
 import beastfx.app.inputeditor.InputEditor.Base;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beast.base.core.BEASTInterface;
@@ -34,8 +35,6 @@ import beast.base.parser.PartitionContext;
 //import beast.evolution.speciation.BirthDeathGernhard08Model;
 //import beast.evolution.speciation.YuleModel;
 public class TreeDistributionInputEditor extends InputEditor.Base {
-
-    private static final long serialVersionUID = 1L;
 
     public TreeDistributionInputEditor(BeautiDoc doc) {
         super(doc);
@@ -68,8 +67,8 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         m_beastObject = beastObject;
         this.itemNr = listItemNr;
 
-        pane = new VBox();
-        HBox itemBox = new HBox();
+        pane = FXUtils.newVBox();
+        HBox itemBox = FXUtils.newHBox();
 
         TreeDistribution distr = (TreeDistribution) beastObject;
         String text = ""/* beastObject.getID() + ": " */;
@@ -152,6 +151,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         validateInput();
         itemBox.getChildren().add(m_validateLabel);
         pane.getChildren().add(itemBox);
+        getChildren().add(pane);
     }
 
     @Override

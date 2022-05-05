@@ -15,6 +15,7 @@ import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.ListInputEditor;
 import beastfx.app.inputeditor.SmallLabel;
+import beastfx.app.util.FXUtils;
 import beastfx.app.inputeditor.InputEditor.ButtonStatus;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beast.base.core.BEASTInterface;
@@ -99,7 +100,7 @@ public class ClockModelListInputEditor extends ListInputEditor {
     		doc.addPlugin(operator);
     	}
 		fixMeanRatesCheckBox.setSelected(operators.contains(operator));
-		HBox box = new HBox();
+		HBox box = FXUtils.newHBox();
 		box.getChildren().add(fixMeanRatesCheckBox);
 		box.getChildren().add(new Separator());
 		fixMeanRatesValidateLabel = new SmallLabel("x", "green");

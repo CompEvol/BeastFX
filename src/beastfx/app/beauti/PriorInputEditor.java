@@ -25,6 +25,7 @@ import beastfx.app.inputeditor.BeautiSubTemplate;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.InputEditor.Base;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
+import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.inference.distribution.Prior;
@@ -55,8 +56,8 @@ public class PriorInputEditor extends InputEditor.Base {
         m_beastObject = beastObject;
         this.itemNr= listItemNr;
 		
-        pane = new VBox();
-        HBox itemBox = new HBox();
+        pane = FXUtils.newVBox();
+        HBox itemBox = FXUtils.newHBox();
 
         Prior prior = (Prior) beastObject;
         String text = prior.getParameterName();

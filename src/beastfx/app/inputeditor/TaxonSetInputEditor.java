@@ -23,6 +23,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -96,7 +97,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         m_input = input;
         m_beastObject = beastObject;
 		this.itemNr = itemNr;
-		pane = new VBox();
+		pane = FXUtils.newVBox();
         TaxonSet taxonset = (TaxonSet) m_input.get();
         if (taxonset == null) {
             return;
@@ -300,12 +301,12 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 //        header.addMouseListener(new ColumnHeaderListener());
 
         //JScrollPane pane = new JScrollPane(m_table);
-        //HBox tableBox = new HBox();
+        //HBox tableBox = FXUtils.newHBox();
         //tableBox.getChildren().add(new Separator());
         //tableBox.getChildren().add(pane);
         //tableBox.getChildren().add(new Separator());
 
-        VBox box = new VBox();
+        VBox box = FXUtils.newVBox();
         box.getChildren().add(createFilterBox());
         box.getChildren().add(m_table);
         box.getChildren().add(createButtonBox());
@@ -313,7 +314,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
     }
 
     private Pane createButtonBox() {
-        HBox buttonBox = new HBox();
+        HBox buttonBox = FXUtils.newHBox();
 
         Button fillDownButton = new Button("Fill down");
         fillDownButton.setId("Fill down");
@@ -540,7 +541,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 
 
     private Pane createFilterBox() {
-        HBox filterBox = new HBox();
+        HBox filterBox = FXUtils.newHBox();
         filterBox.getChildren().add(new Label("filter: "));
         // Dimension size = new Dimension(100,20);
         filterEntry = new TextField();

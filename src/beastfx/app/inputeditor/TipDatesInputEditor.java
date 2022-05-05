@@ -9,6 +9,7 @@ import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.tree.TraitSet;
 import beast.base.evolution.tree.Tree;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -145,7 +146,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
         m_bAddButtons = addButtons;
-        pane = new VBox();
+        pane = FXUtils.newVBox();
         this.itemNr = itemNr;
         if (itemNr >= 0) {
             tree = (Tree) ((List<?>) input.get()).get(itemNr);
@@ -162,7 +163,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             m_beastObject = tree;
             traitSet = tree.getDateTrait();
 
-            VBox box = new VBox();
+            VBox box = FXUtils.newVBox();
 
             useTipDates = new CheckBox("Use tip dates");
             useTipDates.setSelected(traitSet != null);
@@ -188,7 +189,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                     }
 
                 });
-            HBox box2 = new HBox();
+            HBox box2 = FXUtils.newHBox();
             box2.getChildren().add(useTipDates);
             // box2.getChildren().add(new Separator());
             box.getChildren().add(box2);
@@ -502,16 +503,16 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
      * create box with comboboxes for selectin units and trait name *
      */
     private HBox createButtonBox() {
-        HBox buttonBox = new HBox();
+        HBox buttonBox = FXUtils.newHBox();
 
         Label label = new Label("Dates specified: ");
         label.setAlignment(Pos.TOP_CENTER);
         label.setMaxSize(label.getPrefWidth(), label.getPrefHeight());
         buttonBox.getChildren().add(label);
 
-        VBox formatBox = new VBox();
-        HBox formatBoxFirstLine = new HBox();
-        HBox formatBoxSecondLine = new HBox();
+        VBox formatBox = FXUtils.newVBox();
+        HBox formatBoxFirstLine = FXUtils.newHBox();
+        HBox formatBoxSecondLine = FXUtils.newHBox();
 
         radioButtonGroup = new ToggleGroup();
         numericRadioButton = new RadioButton("numerically as");

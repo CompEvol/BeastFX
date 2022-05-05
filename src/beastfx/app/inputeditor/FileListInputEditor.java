@@ -97,7 +97,7 @@ public class FileListInputEditor extends ListInputEditor {
         m_input = input;
         m_beastObject = beastObject;
 		// super.init(input, beastObject, itemNr, isExpandOption, addButtons);
-		pane = new HBox();
+		pane = FXUtils.newHBox();
 		Object o = input.get();
 		if (o instanceof List) {
 			List<File0> o2 = new ArrayList<>();

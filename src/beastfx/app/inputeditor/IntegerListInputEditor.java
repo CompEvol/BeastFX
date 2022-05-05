@@ -35,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
+import beastfx.app.util.FXUtils;
 
 
 public class IntegerListInputEditor extends ListInputEditor {
@@ -170,7 +171,7 @@ public class IntegerListInputEditor extends ListInputEditor {
             m_beastObject = beastObject;
             this.itemNr= itemNr;
             
-            pane = new HBox();
+            pane = FXUtils.newHBox();
             addInputLabel();
 
             setUpEntry();

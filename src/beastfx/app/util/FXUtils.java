@@ -103,8 +103,8 @@ public class FXUtils {
 
 	public static VBox newVBox() {
 		VBox box = new VBox();
-        box.setSpacing(10);
-        box.setPadding(new Insets(5));
+        box.setSpacing(3);
+        box.setPadding(new Insets(2));
         return box;
 	}
 

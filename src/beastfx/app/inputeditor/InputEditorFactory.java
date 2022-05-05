@@ -112,10 +112,10 @@ public class InputEditorFactory {
                 if (!doc.beautiConfig.suppressBEASTObjects.contains(fullInputName)) {
                     InputEditor inputEditor = createInputEditor(input, beastObject, true, ExpandOption.FALSE, ButtonStatus.ALL, editor, doc);
                     box.getChildren().add(inputEditor.getComponent());
-                    Separator separator = new Separator();
-                    separator.setOrientation(Orientation.VERTICAL);
-                    separator.setPrefHeight(5);
-                    box.getChildren().add(separator);
+                    //Separator separator = new Separator();
+                    //separator.setOrientation(Orientation.VERTICAL);
+                    //separator.setPrefHeight(5);
+                    //box.getChildren().add(separator);
                     // box.add(Box.createVerticalStrut(5));
                     //box.add(Box.createVerticalGlue());
                     if (validateListener != null) {

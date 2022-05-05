@@ -6,6 +6,7 @@ import javafx.scene.control.Separator;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -56,7 +57,7 @@ public class BooleanInputEditor extends InputEditor.Base {
                     Log.err.println("BooleanInputEditor " + ex.getMessage());
                 }
             });
-        pane = new HBox();
+        pane = FXUtils.newHBox();
         pane.getChildren().add(m_entry);
         //getChildren().add(new Separator());
         pane.getChildren().add(new Separator());

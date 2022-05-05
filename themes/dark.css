@@ -6,12 +6,12 @@
     -fx-control-inner-background-alt: -fx-control-inner-background ;
 }
 
-.hbox {
-    -fx-spacing: 10px;
+.h-box {
+    -fx-spacing: 50px;
     -fx-padding:  10px;
 }
 
-.vbox {
+.v-box {
     -fx-spacing: 5px;
     -fx-padding:  5px;
 }
