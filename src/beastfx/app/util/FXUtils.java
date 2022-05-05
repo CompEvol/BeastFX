@@ -3,10 +3,13 @@ package beastfx.app.util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.*;
@@ -91,5 +94,18 @@ public class FXUtils {
 	
 	
 
+	public static HBox newHBox() {
+		HBox box = new HBox();
+        box.setSpacing(10);
+        box.setPadding(new Insets(5));
+        return box;
+	}
+
+	public static VBox newVBox() {
+		VBox box = new VBox();
+        box.setSpacing(10);
+        box.setPadding(new Insets(5));
+        return box;
+	}
 
 }

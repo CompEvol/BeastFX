@@ -17,10 +17,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
@@ -268,6 +270,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
             Button button = (Button) e.getSource();
             link(columnLabelToNr(button.getText()));
 //            table.repaint();
+    		initTableData();
         });
 		box.getChildren().add(linkSModelButton);
 		linkSModelButton.setDisable(getDoc().hasLinkedAtLeastOnce);
@@ -277,6 +280,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
             Button button = (Button) e.getSource();
             unlink(columnLabelToNr(button.getText()));
 //            table.repaint();
+    		initTableData();
         });
 		box.getChildren().add(unlinkSModelButton);
 		unlinkSModelButton.setDisable(getDoc().hasLinkedAtLeastOnce);
@@ -714,8 +718,24 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			list.add(new Partition0(likelihood));
 		}
 		tableEntries = FXCollections.observableArrayList(list);
+		table.setItems(tableEntries);
 	}
-
+	
+//	void initTableEntries() {
+//		if (tableData == null) {
+//			throw new RuntimeException("Programmer error: tableData should be initialised");
+//		}
+//		CompoundDistribution likelihoods = (CompoundDistribution) doc.pluginmap.get("likelihood");
+//
+//		List<Partition0> list = new ArrayList<>();
+//		for (int i = 0; i < partitionCount; i++) {
+//			GenericTreeLikelihood likelihood = (GenericTreeLikelihood) likelihoods.pDistributions.get().get(i);
+//			assert (likelihood != null);
+//			list.add(new Partition0(likelihood));
+//		}
+//		tableEntries = FXCollections.observableArrayList(list);
+//	}
+	
 	private boolean hasUseAmbiguitiesInput(int i) {
 		try {
 			for (Input<?> input : likelihoods[i].listInputs()) {
@@ -859,14 +879,13 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	protected TableView<Partition0> createListBox() {
 		String[] columnData = new String[] { "Name", "File", "Taxa", "Sites", "Data Type", "Site Model", "Clock Model",
 				"Tree", "Ambiguities"};
-		initTableData();
 
 		// set up table.
 		// special features: background shading of rows
 		// custom editor allowing only Date column to be edited.
 		table = new TableView<Partition0>();
-		table.setItems(tableEntries);
-		
+		table.setPlaceholder(new Label("No partitions loaded yet"));
+
 		for (int i = 0; i < columnData.length; i++) {
 			TableColumn<Partition0, String> col1 = new TableColumn<>(columnData[i]);
 			String str = columnData[i].substring(0,1).toLowerCase() + columnData[i].substring(1);
@@ -875,6 +894,9 @@ public class AlignmentListInputEditor extends ListInputEditor {
 				col1.setCellValueFactory(new PropertyValueFactory<>(str));
 			table.getColumns().add(col1);
 		}
+
+		initTableData();
+		// table.setItems(tableEntries);
 		
 //		table = new JTable(tableData, columnData) {
 //			private static final long serialVersionUID = 1L;
@@ -923,6 +945,11 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		//int size = table.getFont().getSize();
 		//table.setRowHeight(25 * size/13);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        table.getSelectionModel().selectedItemProperty().addListener(
+        	    (observable, oldValue, newValue) -> {
+        	    	updateStatus();
+        	    }
+        		);
 		//table.setColumnSelectionAllowed(false);
 		//table.setRowSelectionAllowed(true);
 		table.setId("alignmenttable");
@@ -1135,6 +1162,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		return table;
 	} // createListBox
 	
+
 	private void processPartitionName(CellEditEvent<Partition0, ?> e) {
 		String newId = (String) e.getNewValue();
 		int row = e.getTablePosition().getRow();
@@ -1483,10 +1511,14 @@ public class AlignmentListInputEditor extends ListInputEditor {
 						break;
 					}
 				}
-				Partition0 p = new Partition0(likelihood);
-				tableEntries.add(p);
+//				Partition0 p = new Partition0(likelihood);
+//				tableEntries.add(p);
+				alignments.add(likelihood.dataInput.get());
 			}
-			table.setItems(tableEntries);
+			partitionCount = alignments.size();
+			tableData = null;
+			initTableData();
+//			table.setItems(tableEntries);
 	    	table.refresh();
 			refreshPanel();
 		}
@@ -1579,6 +1611,10 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		refreshPanel();
 	} // delItem
 
+	@Override
+    public void refreshPanel() {
+		initTableData();
+    }
 	
 	void replaceItem() {
 		List<Integer> selected = getTableRowSelection();
@@ -1695,7 +1731,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 				alignments.addAll(newAlignments);
 				partitionCount = alignments.size();
 				tableData = null; 
-				initTableData();			
+				initTableData();
 				if (newAlignments.size() == 2) {
 					link(TREE_COLUMN, alignments.size() - 1, alignments.size() - 2);
 				} else {

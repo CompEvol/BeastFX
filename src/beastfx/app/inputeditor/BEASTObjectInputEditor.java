@@ -16,6 +16,7 @@ import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beastfx.app.util.Alert;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -223,7 +224,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //					public void run() {
 
                 // get a handle of the selected beastObject
-                BeautiSubTemplate selected = (BeautiSubTemplate) m_selectBEASTObjectBox.getValue();
+            	BeautiSubTemplate selected = (BeautiSubTemplate) m_selectBEASTObjectBox.getValue();
                 BEASTInterface beastObject = (BEASTInterface) m_input.get();
                 String id = beastObject==null ? "no_id" : beastObject.getID();
                 String partition = id.indexOf('.') >= 0 ? 
@@ -314,9 +315,9 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 
                     if (m_expansionBox != null) {
                         // remove items from Expansion Box
-                        //for (int i = 1; i < m_expansionBox.getChildren().size(); ) {
-                            m_expansionBox.getChildren().removeAll();//(1, m_expansionBox.getChildren().size()-1);
-                        //}
+                        while (m_expansionBox.getChildren().size()>1) {
+                            m_expansionBox.getChildren().remove(m_expansionBox.getChildren().size()-1);
+                        }
                         // add new items to Expansion Box
                         if (beastObject != null) {
                         	doc.getInputEditorFactory().addInputs(m_expansionBox, beastObject, _this, _this, doc);

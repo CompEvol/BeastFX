@@ -3,18 +3,15 @@ package beastfx.app.beauti;
 
 
 
-import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 
 // import jam.framework.DocumentFrame;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Control;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -23,15 +20,12 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import org.w3c.dom.Document;
@@ -64,8 +58,6 @@ import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.Utils6;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import java.awt.BorderLayout;
@@ -75,16 +67,13 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -245,11 +234,6 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
     } // class ActionSave
 
     class ActionSaveAs extends ActionSave {
-        /**
-         * for serialisation
-         */
-        private static final long serialVersionUID = -20389110859354L;
-
         public ActionSaveAs() {
             super("Save As", "Save Model As", "saveas", null);
             setDisable(true);
@@ -517,11 +501,6 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 //    }
 
     class ActionClose extends ActionSave {
-        /**
-         * for serialisation
-         */
-        private static final long serialVersionUID = -2038911085935515L;
-
         public ActionClose() {
             super("Close", "Close Window", "close", new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
         } // c'tor
@@ -538,11 +517,6 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
     } // class ActionClose
 
     class ActionQuit extends ActionSave {
-        /**
-         * for serialisation
-         */
-        private static final long serialVersionUID = -2038911085935515L;
-
         public ActionQuit() {
             super("Exit", "Exit Program", "exit", new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
             //putValue(Action.MNEMONIC_KEY, new Integer('x'));
@@ -980,31 +954,76 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         viewMenu.getItems().add(a_viewall);
         
         viewMenu.getItems().add(new SeparatorMenuItem());
-        MyAction zoomIn = new MyAction("Zoom in", "Increase font size of all components", null, new KeyCodeCombination(KeyCode.EQUALS)) {
+        
+        // TODO: do we still need zoom?
+//        MyAction zoomIn = new MyAction("Zoom in", "Increase font size of all components", null, new KeyCodeCombination(KeyCode.EQUALS)) {
+//
+//			@Override
+//        	public void actionPerformed(ActionEvent ae) {
+//				int size = UIManager.getFont("Label.font").getSize();
+//            	Utils.setFontSize(size + 1);
+//            	Utils.saveBeautiProperty("fontsize", (size + 1) + "");
+//        		refreshPanel();
+//        	}
+//        };
+//        MyAction zoomOut = new MyAction("Zoom out", "Decrease font size of all components", null, new KeyCodeCombination(KeyCode.MINUS)) {
+//
+//			@Override
+//        	public void actionPerformed(ActionEvent ae) {
+//				int size = UIManager.getFont("Label.font").getSize();
+//            	Utils.setFontSize(Math.max(size - 1, 4));
+//            	Utils.saveBeautiProperty("fontsize", Math.max(size - 1, 4) + "");
+//        		refreshPanel();
+//        	}
+//        };
+//        viewMenu.getItems().add(zoomIn);
+//        viewMenu.getItems().add(zoomOut);
+
+        String	themes = "";
+    	for (String p: PackageManager.listServices(ThemeProvider.class.getName())) {
+    		ThemeProvider provider;
+			try {
+				provider = (ThemeProvider) BEASTClassLoader.forName(p).newInstance();
+        		themes += provider.getThemes() + ";";
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	themes = themes.substring(0,themes.length()-1);
+
+    	for (String themeFile : themes.split(";")) {
+        	int i = themeFile.lastIndexOf(File.separator);
+        	String theme = themeFile.substring(i+1, themeFile.length()-4);
+        	theme = theme.substring(0,1).toUpperCase() + theme.substring(1);
+        	MyAction themeAction = new MyAction("Theme " + theme, "Choose " + theme + " theme to skin BEAUti", null, null) {
 
 			@Override
-        	public void actionPerformed(ActionEvent ae) {
-				int size = UIManager.getFont("Label.font").getSize();
-            	Utils.setFontSize(size + 1);
-            	Utils.saveBeautiProperty("fontsize", (size + 1) + "");
-        		refreshPanel();
-//        		repaint();
-        	}
-        };
-        MyAction zoomOut = new MyAction("Zoom out", "Decrease font size of all components", null, new KeyCodeCombination(KeyCode.MINUS)) {
-
-			@Override
-        	public void actionPerformed(ActionEvent ae) {
-				int size = UIManager.getFont("Label.font").getSize();
-            	Utils.setFontSize(Math.max(size - 1, 4));
-            	Utils.saveBeautiProperty("fontsize", Math.max(size - 1, 4) + "");
-        		refreshPanel();
-//        		repaint();
-        	}
-        };
-        viewMenu.getItems().add(zoomIn);
-        viewMenu.getItems().add(zoomOut);
-
+			public void actionPerformed(ActionEvent ae) {
+				frame.getScene().getStylesheets().clear();
+				try {
+					String cssFile = themeFile;
+					if (!new File(themeFile).exists()) {
+		    			cssFile = PackageManager.getBeastDirectories().get(0) + "/" +themeFile;
+						if (!new File(cssFile).exists()) {
+			    			cssFile = System.getProperty("user.dir") + "/../" +themeFile;
+							if (!new File(cssFile).exists()) {
+								Alert.showMessageDialog(getParent(), "Could not find theme file " + themeFile);
+								return;
+							}							
+						}
+					}
+					frame.getScene().getStylesheets().add(new URL("file:///" + cssFile).toExternalForm());
+				} catch (MalformedURLException e) {
+					// ignore
+					return;
+				}
+				Utils.saveBeautiProperty("theme", themeFile);
+				refreshPanel();
+			}
+        	};
+        	viewMenu.getItems().add(themeAction);
+        }
     }
 
     class TemplateAction extends MyAction {
@@ -1295,9 +1314,9 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             }
 
             PackageManager.loadExternalJars();
-            //if (!Utils.isMac()) {
+            if (Utils.isMac()) {
             	Utils.loadUIManager();
-            //}
+            }
             BEASTObjectPanel.init();
 
             BeautiDoc doc = new BeautiDoc();
@@ -1423,6 +1442,15 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             vb.setPrefSize(1024, 768);
             
             Scene scene = new Scene(vb);
+            String theme = Utils.getBeautiProperty("theme");
+            if (theme == null) {
+            	theme = System.getProperty("user.dir")+"/themes/default.css";
+            }
+            try {
+            	scene.getStylesheets().add(new URL("file:///" + theme).toExternalForm());
+            } catch (MalformedURLException e) {
+            	// ignore
+            }
             frame.setScene(scene);
             frame.setX(BEAUtiIntances * 10);
             frame.setY(BEAUtiIntances * 10);

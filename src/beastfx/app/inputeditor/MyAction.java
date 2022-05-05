@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
 import beast.app.util.Utils;
+import beast.base.core.Log;
 import javafx.event.ActionEvent;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
@@ -79,7 +80,8 @@ public class MyAction extends CustomMenuItem {
 	        	setGraphic(openView);
 	        }
         } catch (Throwable  e) {
-        	e.printStackTrace();
+        	Log.warning(icon != null ? icon + " missing?" : e.getMessage());
+        	// e.printStackTrace();
         }
 		
 		setOnAction(e -> actionPerformed(e));

@@ -164,6 +164,7 @@ public class Alert {
 			alert.setX(node.getX() + node.getWidth()/2);
 			alert.setY(node.getY() + node.getHeight()/2);
 		}
+		alert.getDialogPane().getButtonTypes().addAll(CLOSED_OPTION, OK_OPTION);
 		alert.showAndWait();
 	}
 
