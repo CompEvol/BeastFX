@@ -15,6 +15,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -791,6 +793,12 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			} catch (Exception e) {
 				// ignore
 			}
+			ambiguities.addListener((obs,  wasSelected,  isSelected) -> {
+			    if (likelihood.getInputs().containsKey("useAmbiguities")) {
+			        Input<?> input = likelihood.getInput("useAmbiguities");
+			        input.setValue(isSelected, likelihood);
+			    }
+			});	
 		}
 		
 		public String getName() {
@@ -968,31 +976,32 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		
 		// make column 9 use checkboxes
 		if (table.getColumns().size() > 8) {
-		TableColumn<Partition0, Boolean> loadedColumn = (TableColumn<Partition0, Boolean>) table.getColumns().get(8);
-		loadedColumn.setCellValueFactory( f -> f.getValue().ambiguitiesProperty());
-		loadedColumn.setCellFactory( tc -> new CheckBoxTableCell<>());
-		loadedColumn.setOnEditCommit(e -> {
-			CheckBox checkBox = (CheckBox) e.getSource();
-			ObservableList<TablePosition> list = table.getSelectionModel().getSelectedCells();
-			TablePosition pos = list.get(0);
-			if (pos.getRow() >= 0 && pos.getColumn() >= 0) {
-				Log.warning.println(" " + tableData[pos.getRow()][pos.getColumn()]);
-			}
-			try {
-				int row = pos.getRow();
-				if (hasUseAmbiguitiesInput(row)) {
-					likelihoods[row].setInputValue("useAmbiguities", checkBox.isSelected());
-					tableData[row][USE_AMBIGUITIES_COLUMN] = checkBox.isSelected();
-				} else {
-					if (checkBox.isSelected()) {
-						checkBox.setSelected(false);
-					}
-				}
-			} catch (Exception ex) {
-				// TODO: handle exception
-			}
-	
-		});  
+		TableColumn<Partition0, Boolean> ambiguitiesColumn = (TableColumn<Partition0, Boolean>) table.getColumns().get(8);
+		ambiguitiesColumn.setCellValueFactory( f -> f.getValue().ambiguitiesProperty());
+		ambiguitiesColumn.setCellFactory( tc -> new CheckBoxTableCell<>());
+		
+//		ambiguitiesColumn.setOnEditCommit(e -> {
+//			CheckBox checkBox = (CheckBox) e.getSource();
+//			ObservableList<TablePosition> list = table.getSelectionModel().getSelectedCells();
+//			TablePosition pos = list.get(0);
+//			if (pos.getRow() >= 0 && pos.getColumn() >= 0) {
+//				Log.warning.println(" " + tableData[pos.getRow()][pos.getColumn()]);
+//			}
+//			try {
+//				int row = pos.getRow();
+//				if (hasUseAmbiguitiesInput(row)) {
+//					likelihoods[row].setInputValue("useAmbiguities", checkBox.isSelected());
+//					tableData[row][USE_AMBIGUITIES_COLUMN] = checkBox.isSelected();
+//				} else {
+//					if (checkBox.isSelected()) {
+//						checkBox.setSelected(false);
+//					}
+//				}
+//			} catch (Exception ex) {
+//				// TODO: handle exception
+//			}
+//	
+//		});  
 		}
 		
 //		TableColumn col = table.getColumnModel().getColumn(NAME_COLUMN);

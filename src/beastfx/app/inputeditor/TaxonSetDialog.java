@@ -88,6 +88,7 @@ public class TaxonSetDialog extends DialogPane {
     	getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
     	dialog.setTitle("Taxon set editor");    	
 
+    	FXUtils.loadStyleSheet(this.getScene());
     	Optional<ButtonType> result = dialog.showAndWait();
     	
         isOK = result.get() == Alert.OK_OPTION;

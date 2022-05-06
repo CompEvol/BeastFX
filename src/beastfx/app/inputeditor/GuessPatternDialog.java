@@ -563,6 +563,7 @@ public class GuessPatternDialog implements Initializable {
         updateFields();
         // dialog.setVisible(true);
         dialog.getDialogPane().getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
+    	FXUtils.loadStyleSheet(root.getScene());
         ButtonType result = (ButtonType) dialog.showAndWait().get();
         
         if (result != Alert.OK_OPTION) {

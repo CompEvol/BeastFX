@@ -205,6 +205,7 @@ public class JPackageRepositoryDialog extends DialogPane {
         dlg.getDialogPane().setContent(pane);
         dlg.getDialogPane().getButtonTypes().add(Alert.CLOSED_OPTION);
         dlg.setResizable(true);
+    	FXUtils.loadStyleSheet(pane.getScene());
         dlg.showAndWait();
 
     }

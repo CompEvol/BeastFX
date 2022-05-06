@@ -6,16 +6,6 @@
     -fx-control-inner-background-alt: -fx-control-inner-background ;
 }
 
-.h-box {
-    -fx-spacing: 50px;
-    -fx-padding:  10px;
-}
-
-.v-box {
-    -fx-spacing: 5px;
-    -fx-padding:  5px;
-}
-
 .label{
     -fx-text-fill: lightgray;
 }
@@ -48,7 +38,7 @@
 }
 
 .dialog-pane {
-    -fx-background-color: black;
+    -fx-background-color: darkgray;
 }
 
 .dialog-pane .label {
@@ -56,7 +46,7 @@
 }
 
 .dialog-pane:header .header-panel {
-    -fx-background-color: black;
+    -fx-background-color: darkgray;
 }
 
 .dialog-pane:header .header-panel .label {

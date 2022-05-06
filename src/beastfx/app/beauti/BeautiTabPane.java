@@ -31,6 +31,8 @@ import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.aquafx_project.AquaFx;
+
 import beastfx.app.inputeditor.BEASTObjectPanel;
 import beastfx.app.inputeditor.BeautiAlignmentProvider;
 import beastfx.app.inputeditor.BeautiConfig;
@@ -411,7 +413,8 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 		public void actionPerformed(ActionEvent ae) {
         	JPackageDialog panel = new JPackageDialog();
         	Dialog dlg = panel.asDialog(frame.getScene().getRoot());
-            dlg.showAndWait();
+        	FXUtils.loadStyleSheet(dlg.getDialogPane().getScene());
+        	dlg.showAndWait();
             // refresh template menu item
             templateMenu.getItems().removeAll();
             List<MyAction> templateActions = getTemplateActions();
@@ -1337,6 +1340,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             final BeautiTabPane beauti = new BeautiTabPane(doc);
 
             if (Utils.isMac() && Utils6.isMajorAtLeast(Utils6.JAVA_1_8)) {
+            	AquaFx.style();
             	// TODO: https://github.com/codecentric/NSMenuFX looks relevant
             	
 //                // set up application about-menu for Mac

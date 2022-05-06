@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import beast.app.util.Utils;
 import beast.pkgmgmt.PackageManager;
 
 public class FXUtils {
@@ -113,8 +114,16 @@ public class FXUtils {
         return box;
 	}
 
+	static public boolean loadStyleSheet(Scene scene) {
+        String themeFile = Utils.getBeautiProperty("theme");
+        return loadStyleSheet(scene, themeFile);
+	}
+	
 	static public boolean loadStyleSheet(Scene scene, String themeFile) {
 		String cssFile = themeFile;
+		if (cssFile == null) {
+			return false;
+		}
 		if (!new File(themeFile).exists()) {
 			cssFile = PackageManager.getBeastDirectories().get(0) + "/" +themeFile;
 			if (!new File(cssFile).exists()) {
