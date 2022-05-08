@@ -1,25 +1,13 @@
 package beastfx.app.util;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-
-import beast.app.util.Utils;
-import beast.pkgmgmt.PackageManager;
 
 public class FXUtils {
 
@@ -112,34 +100,5 @@ public class FXUtils {
         box.setSpacing(3);
         box.setPadding(new Insets(2));
         return box;
-	}
-
-	static public boolean loadStyleSheet(Scene scene) {
-        String themeFile = Utils.getBeautiProperty("theme");
-        return loadStyleSheet(scene, themeFile);
-	}
-	
-	static public boolean loadStyleSheet(Scene scene, String themeFile) {
-		String cssFile = themeFile;
-		if (cssFile == null) {
-			return false;
-		}
-		if (!new File(themeFile).exists()) {
-			cssFile = PackageManager.getBeastDirectories().get(0) + "/" +themeFile;
-			if (!new File(cssFile).exists()) {
-    			cssFile = System.getProperty("user.dir") + "/../" +themeFile;
-				if (!new File(cssFile).exists()) {
-					Alert.showMessageDialog(null, "Could not find theme file " + themeFile + ". Choose another theme, or remove 'theme' entry from beauti.properties.file");
-					return false;
-				}							
-			}
-		}
-		try {
-			scene.getStylesheets().clear();
-			scene.getStylesheets().add(new URL("file:///" + cssFile).toExternalForm());
-		} catch (MalformedURLException e) {
-			return false;
-		}
-		return true;
 	}
 }

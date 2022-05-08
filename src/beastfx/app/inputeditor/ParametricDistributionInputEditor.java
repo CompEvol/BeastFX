@@ -18,6 +18,7 @@ import beast.base.evolution.tree.TreeDistribution;
 import beast.base.inference.distribution.ParametricDistribution;
 import beastfx.app.util.FXUtils;
 import javafx.geometry.Dimension2D;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -385,18 +386,20 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         }
     }
 
-    private Parent createGraph() {
+    private Node createGraph() {
+    	
     	graphPanel = new PDPanel();
-        int fsize = UIManager.getFont("Label.font").getSize();
-        Dimension2D size = new Dimension2D(200 * fsize / 13, 200 * fsize / 13);
-        //panel.setSize(size);
-        HBox box = FXUtils.newHBox();
-        //box.setBorder(BorderFactory.createEmptyBorder());
-        box.getChildren().add(graphPanel);        
-        box.setPrefSize(size.getHeight(), size.getWidth());
-        box.setMinSize(size.getHeight(), size.getWidth());
+//        int fsize = UIManager.getFont("Label.font").getSize();
+//        Dimension2D size = new Dimension2D(200 * fsize / 13, 200 * fsize / 13);
+//        //panel.setSize(size);
+//        HBox box = FXUtils.newHBox();
+//        //box.setBorder(BorderFactory.createEmptyBorder());
+//        box.getChildren().add(graphPanel);        
+//        box.setPrefSize(size.getHeight(), size.getWidth());
+//        box.setMinSize(size.getHeight(), size.getWidth());
         graphPanel.paintComponent();
-        return box;
+        return graphPanel;
+//        return box;
     }
 
 //    @Override

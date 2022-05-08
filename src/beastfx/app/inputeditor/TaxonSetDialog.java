@@ -17,7 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
-
+import beastfx.app.beauti.ThemeProvider;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.scene.control.TextField;
@@ -88,7 +88,7 @@ public class TaxonSetDialog extends DialogPane {
     	getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
     	dialog.setTitle("Taxon set editor");    	
 
-    	FXUtils.loadStyleSheet(this.getScene());
+    	ThemeProvider.loadStyleSheet(this.getScene());
     	Optional<ButtonType> result = dialog.showAndWait();
     	
         isOK = result.get() == Alert.OK_OPTION;

@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import beast.app.util.Utils;
-import beastfx.app.util.FXUtils;
+import beastfx.app.beauti.ThemeProvider;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -66,7 +66,7 @@ public class WrappedOptionPane extends DialogPane {
         pane.setHeaderText("Information");
 
         pane.getButtonTypes().add(ButtonType.CLOSE);
-        FXUtils.loadStyleSheet(pane.getScene());
+        ThemeProvider.loadStyleSheet(pane.getScene());
         if (fontName != null) {
         	pane.setStyle("-fx-font-family:" + fontName + ";");
         }

@@ -17,7 +17,7 @@ import beast.base.core.Input;
 import beast.base.inference.MCMC;
 import beast.base.parser.XMLProducer;
 import beast.pkgmgmt.BEASTClassLoader;
-import beastfx.app.util.FXUtils;
+import beastfx.app.beauti.ThemeProvider;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -73,7 +73,7 @@ public class BEASTObjectDialog extends Dialog {
 //			alert.setX(node.getX() + node.getWidth()/2);
 //			alert.setY(node.getY() + node.getHeight()/2);
 //		}
-    	FXUtils.loadStyleSheet(pane.getScene());
+    	ThemeProvider.loadStyleSheet(pane.getScene());
 		ButtonType result = alert.showAndWait().get();
 		m_bOK = (result != ButtonType.CANCEL);
         return m_bOK;

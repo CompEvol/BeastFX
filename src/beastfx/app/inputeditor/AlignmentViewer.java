@@ -24,7 +24,7 @@ import javax.swing.table.TableModel;
 import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.datatype.DataType;
 import beast.base.parser.NexusParser;
-import beastfx.app.util.FXUtils;
+import beastfx.app.beauti.ThemeProvider;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingNode;
@@ -373,7 +373,7 @@ public class AlignmentViewer extends JPanel {
     	pane.setContent(panel);
     	pane.setPrefSize(1024, 600);
     	dialog.setResizable(true);
-    	FXUtils.loadStyleSheet(pane.getScene());
+    	ThemeProvider.loadStyleSheet(pane.getScene());
     	dialog.showAndWait();
     }
 

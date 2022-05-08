@@ -3,7 +3,13 @@
 	<depends on='BEAST.app' atleast='2.7.0' atmost="2.7.9"/>
 
 			<service type="beastfx.app.beauti.ThemeProvider">
-				<provider classname="beastfx.app.beauti.ThemeProvider"/>
+				<provider classname="beastfx.app.beauti.theme.Default"/>
+				<provider classname="beastfx.app.beauti.theme.Dark"/>
+				<provider classname="beastfx.app.beauti.theme.Bootstrap"/>
+				<provider classname="beastfx.app.beauti.theme.Fluent"/>
+				<provider classname="beastfx.app.beauti.theme.Win7"/>
+				<provider classname="beastfx.app.beauti.theme.Metro"/>
+				<provider classname="beastfx.app.beauti.theme.Aqua"/>
 			</service>
 			
 			<service type="beastfx.app.inputeditor.InputEditor">

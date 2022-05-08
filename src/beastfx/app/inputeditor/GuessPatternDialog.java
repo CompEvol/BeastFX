@@ -28,6 +28,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 
 import javafx.scene.control.Label;
+import beastfx.app.beauti.ThemeProvider;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.scene.control.RadioButton;
@@ -563,7 +564,7 @@ public class GuessPatternDialog implements Initializable {
         updateFields();
         // dialog.setVisible(true);
         dialog.getDialogPane().getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
-    	FXUtils.loadStyleSheet(root.getScene());
+    	ThemeProvider.loadStyleSheet(root.getScene());
         ButtonType result = (ButtonType) dialog.showAndWait().get();
         
         if (result != Alert.OK_OPTION) {

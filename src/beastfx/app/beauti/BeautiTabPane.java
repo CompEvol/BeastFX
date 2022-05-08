@@ -3,6 +3,8 @@ package beastfx.app.beauti;
 
 
 
+
+
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
@@ -31,7 +33,7 @@ import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.aquafx_project.AquaFx;
+
 
 import beastfx.app.inputeditor.BEASTObjectPanel;
 import beastfx.app.inputeditor.BeautiAlignmentProvider;
@@ -413,7 +415,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 		public void actionPerformed(ActionEvent ae) {
         	JPackageDialog panel = new JPackageDialog();
         	Dialog dlg = panel.asDialog(frame.getScene().getRoot());
-        	FXUtils.loadStyleSheet(dlg.getDialogPane().getScene());
+        	ThemeProvider.loadStyleSheet(dlg.getDialogPane().getScene());
         	dlg.showAndWait();
             // refresh template menu item
             templateMenu.getItems().removeAll();
@@ -982,51 +984,20 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 //        viewMenu.getItems().add(zoomIn);
 //        viewMenu.getItems().add(zoomOut);
 
-        String	themes = "";
-    	for (String p: PackageManager.listServices(ThemeProvider.class.getName())) {
-    		ThemeProvider provider;
-			try {
-				provider = (ThemeProvider) BEASTClassLoader.forName(p).newInstance();
-        		themes += provider.getThemes() + ";";
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
-    	themes = themes.substring(0,themes.length()-1);
-
-    	for (String themeFile : themes.split(";")) {
-        	int i = themeFile.lastIndexOf(File.separator);
-        	String theme = themeFile.substring(i+1, themeFile.length()-4);
-        	theme = theme.substring(0,1).toUpperCase() + theme.substring(1);
-        	MyAction themeAction = new MyAction("Theme " + theme, "Choose " + theme + " theme to skin BEAUti", null, null) {
-
-			@Override
-			public void actionPerformed(ActionEvent ae) {
-//				try {
-//					String cssFile = themeFile;
-//					if (!new File(themeFile).exists()) {
-//		    			cssFile = PackageManager.getBeastDirectories().get(0) + "/" +themeFile;
-//						if (!new File(cssFile).exists()) {
-//			    			cssFile = System.getProperty("user.dir") + "/../" +themeFile;
-//							if (!new File(cssFile).exists()) {
-//								Alert.showMessageDialog(getParent(), "Could not find theme file " + themeFile);
-//								return;
-//							}							
-//						}
-//					}
-//					frame.getScene().getStylesheets().add(new URL("file:///" + cssFile).toExternalForm());
-//				} catch (MalformedURLException e) {
-//					// ignore
-//					return;
-//				}
-				if (FXUtils.loadStyleSheet(frame.getScene(), themeFile)) {
-					Utils.saveBeautiProperty("theme", themeFile);
-					refreshPanel();
-				}
-			}
-        	};
-        	viewMenu.getItems().add(themeAction);
+    	for (String name: ThemeProvider.getThemeMap().keySet()) {
+    		ThemeProvider provider = ThemeProvider.getThemeProvider(name);
+    		if (name != null & name.length() > 0) {
+            	MyAction themeAction = new MyAction("Theme " + name, "Choose " + name + " theme to skin BEAUti", null, null) {
+        			@Override
+        			public void actionPerformed(ActionEvent ae) {
+        				if (provider.loadMyStyleSheet(frame.getScene())) {
+        					Utils.saveBeautiProperty("theme", name);
+        					refreshPanel();
+        				}
+        			}
+            	};
+        		viewMenu.getItems().add(themeAction);
+    		}
         }
     }
 
@@ -1340,7 +1311,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             final BeautiTabPane beauti = new BeautiTabPane(doc);
 
             if (Utils.isMac() && Utils6.isMajorAtLeast(Utils6.JAVA_1_8)) {
-            	AquaFx.style();
+            	
             	// TODO: https://github.com/codecentric/NSMenuFX looks relevant
             	
 //                // set up application about-menu for Mac
@@ -1451,11 +1422,8 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             vb.setPrefSize(1024, 768);
             
             Scene scene = new Scene(vb);
-            String themeFile = Utils.getBeautiProperty("theme");
-            if (themeFile == null) {
-            	themeFile = System.getProperty("user.dir")+"/themes/default.css";
-            }
-            FXUtils.loadStyleSheet(scene, themeFile);
+            ThemeProvider.loadStyleSheet(scene);
+            
             frame.setScene(scene);
             frame.setX(BEAUtiIntances * 10);
             frame.setY(BEAUtiIntances * 10);
