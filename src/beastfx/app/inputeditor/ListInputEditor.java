@@ -1,12 +1,9 @@
 package beastfx.app.inputeditor;
 
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.imageio.ImageIO;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,7 +14,9 @@ import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -38,12 +37,14 @@ public class ListInputEditor extends InputEditor.Base {
 
     {
         try {
-            java.net.URL downURL = ListInputEditor.class.getClassLoader().getResource(ICONPATH + "down.png");
-            if (downURL != null)
-            	DOWN_ICON = ImageIO.read(downURL); 
-            java.net.URL rightURL = ListInputEditor.class.getClassLoader().getResource(ICONPATH + "right.png");
-            if (rightURL != null)
-            	RIGHT_ICON = ImageIO.read(rightURL);
+        	DOWN_ICON = FXUtils.getIcon(ICONPATH + "down.png").getImage();
+        	RIGHT_ICON = FXUtils.getIcon(ICONPATH + "right.png").getImage();
+//            java.net.URL downURL = ListInputEditor.class.getClassLoader().getResource(ICONPATH + "down.png");
+//            if (downURL != null)
+//            	DOWN_ICON = ImageIO.read(downURL); 
+//            java.net.URL rightURL = ListInputEditor.class.getClassLoader().getResource(ICONPATH + "right.png");
+//            if (rightURL != null)
+//            	RIGHT_ICON = ImageIO.read(rightURL);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,7 +60,8 @@ public class ListInputEditor extends InputEditor.Base {
     protected List<SmallButton> delButtonList;
     protected List<SmallButton> m_editButton;
     protected List<SmallLabel> m_validateLabels;
-    protected VBox m_listBox;
+    protected GridPane m_listBox;
+    private int rowCount;
     protected ExpandOption m_bExpandOption;
 
     // the box containing any buttons
@@ -139,8 +141,9 @@ public class ListInputEditor extends InputEditor.Base {
             //m_inputLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
 
-        m_listBox = FXUtils.newVBox();
-        // list of inputs 
+        m_listBox = new GridPane();// FXUtils.newVBox();
+        // list of inputs
+        rowCount = 1;
         for (Object o : (List<?>) input.get()) {
             if (o instanceof BEASTInterface) {
                 BEASTInterface beastObject2 = (BEASTInterface) o;
@@ -193,8 +196,6 @@ public class ListInputEditor extends InputEditor.Base {
 
     protected void addSingleItem(BEASTInterface beastObject) {
         Pane itemBox = FXUtils.newHBox();
-
-        InputEditor editor = addPluginItem(itemBox, beastObject);
         
         SmallButton editButton = new SmallButton("e", true, SmallButton.ButtonType.square);
         editButton.setId(beastObject.getID() + ".editButton");
@@ -207,13 +208,13 @@ public class ListInputEditor extends InputEditor.Base {
 				}
 			});
         } else {
-            editButton.setText("");
             editButton.setTooltip(new Tooltip("Expand/collapse item in the list"));
             editButton.setButtonType(SmallButton.ButtonType.toolbar);
         }
         m_editButton.add(editButton);
         itemBox.getChildren().add(editButton);
 
+        InputEditor editor = addPluginItem(itemBox, beastObject);
 
         SmallLabel validateLabel = new SmallLabel("x", "red");
         itemBox.getChildren().add(validateLabel);
@@ -224,21 +225,39 @@ public class ListInputEditor extends InputEditor.Base {
                 (m_bExpandOption == ExpandOption.IF_ONE_ITEM && ((List<?>) m_input.get()).size() == 1)) {
             VBox expandBox = FXUtils.newVBox();
             //box.add(itemBox);
-            doc.getInputEditorFactory().addInputs(expandBox, beastObject, editor, null, doc);
+            List<InputEditor> editors = doc.getInputEditorFactory().addInputs(expandBox, beastObject, editor, null, doc);
+            
+            boolean addExpansionBox = editors.size() > 1;
             //System.err.print(expandBox.getComponentCount());
-            if (expandBox.getChildren().size() > 1) {
-                // only go here if it is worth showing expanded box
-                //expandBox.setBorder(BorderFactory.createMatteBorder(1, 5, 1, 1, Color.gray));
-                //itemBox = box;
-                VBox box2 = FXUtils.newVBox();
-                box2.getChildren().add(itemBox);
+            if (editors.size() == 1 && editors.get(0) instanceof BEASTObjectInputEditor) {
+            	BEASTObjectInputEditor boie = (BEASTObjectInputEditor) editors.get(0);
+            	if (boie.m_expansionBox != null && boie.m_expansionBox.getChildren().size() > 1) {
+            		addExpansionBox = true;
+            	}
+            }
+            
+            if (addExpansionBox) {
+                    // only go here if it is worth showing expanded box
+                    //expandBox.setBorder(BorderFactory.createMatteBorder(1, 5, 1, 1, Color.gray));
+                    //itemBox = box;
+	                //VBox box2 = FXUtils.newVBox();
+	                //box2.getChildren().add(itemBox);
 //TODO: find out what this line does:  itemBox.getChildren().add(0, editButton);
-                box2.getChildren().add(expandBox);
+	                //box2.getChildren().add(expandBox);
 //        		expandBox.setVisible(false);
 //        		//itemBox.remove(editButton);
 //        		editButton.setVisible(false);
 //        	} else {
-                itemBox = box2;
+	                //itemBox = box2;
+	                rowCount++;
+	                m_listBox.add(expandBox, 0, rowCount);
+	            if (g_collapsedIDs.contains(beastObject.getID())) {
+	            	expandBox.setPrefHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
+	            	expandBox.setMinHeight(expandBox.getPrefHeight());
+            	} else {
+            		expandBox.setPrefHeight(0);
+	            	expandBox.setMinHeight(0);
+            	}
             } else {
                 editButton.setVisible(false);
             }
@@ -249,17 +268,21 @@ public class ListInputEditor extends InputEditor.Base {
                     m_box.setVisible(!m_box.isVisible());
                     if (m_box.isVisible()) {
                         try {
-                        editButton.setImg(DOWN_ICON);
+                        	editButton.setImg(DOWN_ICON);
                         }catch (Exception e2) {
-							// TODO: handle exception
+							// ignore
 						}
                         g_collapsedIDs.remove(m_beastObject.getID());
+                        m_box.setPrefHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
+                        m_box.setMinHeight(m_box.getPrefHeight());
                     } else {
                     	try {
-                        editButton.setImg(RIGHT_ICON);
+                    		editButton.setImg(RIGHT_ICON);
 	                    }catch (Exception e2) {
-							// TODO: handle exception
+							// ignore
 						}
+                        m_box.setPrefHeight(0);
+                        m_box.setMinHeight(0);
                         g_collapsedIDs.add(m_beastObject.getID());
                     }
                 }
@@ -279,16 +302,19 @@ public class ListInputEditor extends InputEditor.Base {
 
         } else {
             if (BEASTObjectPanel.countInputs(beastObject, doc) == 0) {
+System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
                 editButton.setVisible(false);
             }
         }
 
         if (m_validateLabel == null) {
-            m_listBox.getChildren().add(itemBox);
+        	rowCount++;
+            m_listBox.add(itemBox, 0, rowCount);
         } else {
-            Node c = m_listBox.getChildren().get(m_listBox.getChildren().size() - 1);
+        	rowCount++;
+        	Node c = m_listBox.getChildren().get(m_listBox.getChildren().size() - 1);
             m_listBox.getChildren().remove(c);
-            m_listBox.getChildren().add(itemBox);
+            m_listBox.add(itemBox, 0, rowCount);
             m_listBox.getChildren().add(c);
         }
     } // addSingleItem

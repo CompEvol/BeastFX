@@ -7,9 +7,10 @@ package beastfx.app.inputeditor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import javax.swing.UIManager;
+//import javax.swing.UIManager;
 
 import org.apache.commons.math.MathException;
+import org.apache.commons.math.MathRuntimeException;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -17,16 +18,17 @@ import beast.base.evolution.tree.MRCAPrior;
 import beast.base.evolution.tree.TreeDistribution;
 import beast.base.inference.distribution.ParametricDistribution;
 import beastfx.app.util.FXUtils;
-import javafx.geometry.Dimension2D;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.control.Label;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
@@ -62,7 +64,8 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             super.init(input, beastObject, itemNr, ExpandOption.TRUE, addButtons);
         }
         Pane pane1 = pane;
-        pane = FXUtils.newVBox();
+        registerAsListener(pane);        
+        pane = FXUtils.newHBox();
         pane.getChildren().add(pane1);
         pane.getChildren().add(createGraph());
         getChildren().add(pane);
@@ -70,7 +73,18 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
     } // init
 
 
-    @Override
+    private void registerAsListener(Node node) {
+		if (node instanceof InputEditor) {
+			((InputEditor)node).addValidationListener(_this);
+		}
+		if (node instanceof Pane) {
+			for (Node child : ((Pane)node).getChildren()) {
+				registerAsListener(child);
+			}
+		}
+	}
+    
+	@Override
     /** suppress combobox **/
     protected void addComboBox(Pane box, Input<?> input, BEASTInterface beastObject0) {
         if (useDefaultBehavior) {
@@ -94,7 +108,13 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
     PDPanel graphPanel;
     
     /* class for drawing information for a parametric distribution **/
-    class PDPanel extends Canvas {
+    class PDPanel extends VBox {
+    	
+    	LineChart<Number,Number> chart;
+    	LineChart.Series<Number,Number> series;
+    	Label infoLabel1;
+    	Label infoLabel2;
+    	
         // the length in pixels of a tick
         private static final int TICK_LENGTH = 5;
 
@@ -109,49 +129,81 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 
         int m_nTicks;
 
+        PDPanel() {
+    		NumberAxis xAxis = new NumberAxis();
+            //xAxis.setLabel("x");                
+            NumberAxis yAxis = new NumberAxis();        
+            yAxis.setLabel("p(x)");
+            chart = new LineChart<Number,Number>(xAxis,yAxis);
+            //chart.setAnimated(false);
+            chart.setLegendVisible(false);
+            chart.setCreateSymbols(false);
+            chart.getXAxis().setAutoRanging(true);
+            chart.getYAxis().setAutoRanging(true);
+            series = new LineChart.Series<>();
+	        for (int i = 0; i < 100; i++) {
+	        	series.getData().add(new XYChart.Data<Number,Number>(0,0));
+	        }
+	        chart.getData().add(series);
+	        getChildren().add(chart);
+	        
+	    	infoLabel1 = new Label();
+	    	infoLabel1.setStyle("-fx-font-size:6pt;");
+	    	infoLabel1.setPadding(new Insets(0, 100, 0, MARGIN_LEFT_OF_Y_LABELS));
+	    	infoLabel2 = new Label();
+	    	infoLabel2.setStyle("-fx-font-size:6pt;");
+	    	HBox box = new HBox();
+	    	// box.setSpacing(50);
+	    	box.setAlignment(Pos.CENTER);
+	    	box.getChildren().addAll(infoLabel1, infoLabel2);
+	    	getChildren().add(box);
+        }
+        
         // @Override
-        public void paintComponent() {
-        	GraphicsContext g = getGraphicsContext2D();
+        synchronized private void paintComponent() {
+        	
+        	//GraphicsContext g = getGraphicsContext2D();
             // g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             // Record current font, since drawError can take over part-way
             // through the call to drawGraph, which alters the graphics font size.
-            Font originalFont = g.getFont();
+            // Font originalFont = g.getFont();
 
             ParametricDistribution m_distr = (ParametricDistribution)m_input.get();
             if (m_distr == null) {
-                drawError(g);
+                drawError();
             } else {
                 try {
                     m_distr.initAndValidate();
-                    int fsize = UIManager.getFont("Label.font").getSize();
-                    drawGraph(m_distr, fsize * 9/2, g);
+                    //int fsize = UIManager.getFont("Label.font").getSize();
+                    drawGraph(m_distr);//, fsize * 9/2);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
-                    ex.printStackTrace();
-                    g.setFont(originalFont);
-                    drawError(g);
+                    // ex.printStackTrace();
+                    //g.setFont(originalFont);
+                    drawError();
                 }
             }
 
         }
 
-        private void drawError(GraphicsContext g) {
-            g.setFill(Color.WHITE);
-            g.fillRect(0, 0, getWidth(), getHeight());
-            g.setStroke(Color.BLACK);
-            g.rect(0, 0, getWidth()-1, getHeight()-1);
-
-            String errorString = "Cannot display distribution.";
-            
-            int stringWidth = stringWidth(errorString);
-            int stringHeight = stringHeight(errorString);
-            g.strokeText(errorString,
-                    (getWidth() - stringWidth)/2,
-                    (getHeight() - stringHeight)/2);
+        private void drawError() {
+        	// chart.getData().clear();
+//            g.setFill(Color.WHITE);
+//            g.fillRect(0, 0, getWidth(), getHeight());
+//            g.setStroke(Color.BLACK);
+//            g.rect(0, 0, getWidth()-1, getHeight()-1);
+//
+//            String errorString = "Cannot display distribution.";
+//            
+//            int stringWidth = stringWidth(errorString);
+//            int stringHeight = stringHeight(errorString);
+//            g.strokeText(errorString,
+//                    (getWidth() - stringWidth)/2,
+//                    (getHeight() - stringHeight)/2);
         }
 
-		private void drawGraph(ParametricDistribution m_distr, int labelOffset, GraphicsContext g) {
+		private void drawGraph(ParametricDistribution m_distr) {//, int labelOffset) {
             final int width = (int)getWidth();
             final int height = (int)getHeight();
 
@@ -210,7 +262,8 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             double yMax = 0;
             for (int i = 0; i < points; i++) {
                 //try {
-                    fyPoints[i] = getDensityForPlot(m_distr, minValue + (xRange * i) / points);
+            	xPoints[i] = minValue + (xRange * i) / points;
+                fyPoints[i] = getDensityForPlot(m_distr, minValue + (xRange * i) / points);
                 //}
                 if (Double.isInfinite(fyPoints[i]) || Double.isNaN(fyPoints[i])) {
                     fyPoints[i] = 0;
@@ -221,101 +274,127 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 
             yMax = adjust(yMax);
             final int NR_OF_TICKS_Y = m_nTicks;
+            
+            
+//            // draw ticks on edge
+//            Font font = g.getFont();
+//            Font smallFont = new Font(font.getName(), font.getSize() * 2/3);
+//            g.setFont(smallFont);
+//
+//            // collect the ylabels and the maximum label width in small font
+//            String[] ylabels = new String[NR_OF_TICKS_Y+1];
+//            int maxLabelWidth = 0;
+//            //FontMetrics sfm = getFontMetrics(smallFont);
+//            for (int i = 0; i <= NR_OF_TICKS_Y; i++) {
+//                ylabels[i] = format(yMax * i / NR_OF_TICKS_Y);
+//                double stringWidth = stringWidth(ylabels[i]);
+//                if (stringWidth > maxLabelWidth) maxLabelWidth = (int) stringWidth;
+//            }
+//
+//            // collect the xlabels
+//            String[] xlabels = new String[NR_OF_TICKS_X+1];
+//            for (int i = 0; i <= NR_OF_TICKS_X; i++) {
+//                xlabels[i] = format(minValue + xRange * i / NR_OF_TICKS_X);
+//            }
+//            int maxLabelHeight = stringHeight("Hfg");//sfm.getMaxAscent()+sfm.getMaxDescent();
+//
+//            int leftMargin = maxLabelWidth + TICK_LENGTH + 1 + MARGIN_LEFT_OF_Y_LABELS;
+//            int bottomMargin = maxLabelHeight + TICK_LENGTH + 1;
+//
+//            int graphWidth = width - leftMargin - RIGHT_MARGIN;
+//            int graphHeight = height - TOP_MARGIN - bottomMargin - labelOffset;
+//
+//            // DRAW GRAPH PAPER
+//            g.setFill(Color.web("0xf0f0f0"));
+//            g.fillRect(0, 0, getWidth(), getHeight());
+//            g.setFill(Color.WHITE);
+//            g.fillRect(leftMargin, TOP_MARGIN, graphWidth, graphHeight);
+//            g.setStroke(Color.BLACK);
+//            g.rect(leftMargin, TOP_MARGIN, graphWidth, graphHeight);
 
-            // draw ticks on edge
-            Font font = g.getFont();
-            Font smallFont = new Font(font.getName(), font.getSize() * 2/3);
-            g.setFont(smallFont);
-
-            // collect the ylabels and the maximum label width in small font
-            String[] ylabels = new String[NR_OF_TICKS_Y+1];
-            int maxLabelWidth = 0;
-            //FontMetrics sfm = getFontMetrics(smallFont);
-            for (int i = 0; i <= NR_OF_TICKS_Y; i++) {
-                ylabels[i] = format(yMax * i / NR_OF_TICKS_Y);
-                double stringWidth = stringWidth(ylabels[i]);
-                if (stringWidth > maxLabelWidth) maxLabelWidth = (int) stringWidth;
-            }
-
-            // collect the xlabels
-            String[] xlabels = new String[NR_OF_TICKS_X+1];
-            for (int i = 0; i <= NR_OF_TICKS_X; i++) {
-                xlabels[i] = format(minValue + xRange * i / NR_OF_TICKS_X);
-            }
-            int maxLabelHeight = stringHeight("Hfg");//sfm.getMaxAscent()+sfm.getMaxDescent();
-
-            int leftMargin = maxLabelWidth + TICK_LENGTH + 1 + MARGIN_LEFT_OF_Y_LABELS;
-            int bottomMargin = maxLabelHeight + TICK_LENGTH + 1;
-
-            int graphWidth = width - leftMargin - RIGHT_MARGIN;
-            int graphHeight = height - TOP_MARGIN - bottomMargin - labelOffset;
-
-            // DRAW GRAPH PAPER
-            g.setFill(Color.web("0xf0f0f0"));
-            g.fillRect(0, 0, getWidth(), getHeight());
-            g.setFill(Color.WHITE);
-            g.fillRect(leftMargin, TOP_MARGIN, graphWidth, graphHeight);
-            g.setStroke(Color.BLACK);
-            g.rect(leftMargin, TOP_MARGIN, graphWidth, graphHeight);
 
             for (int i = 0; i < points; i++) {
-                xPoints[i] = leftMargin + graphWidth * i / points;
-                yPoints[i] = 1 + (int) (TOP_MARGIN + graphHeight - graphHeight * fyPoints[i] / yMax);
+//                xPoints[i] = leftMargin + graphWidth * i / points;
+//                yPoints[i] = 1 + (int) (TOP_MARGIN + graphHeight - graphHeight * fyPoints[i] / yMax);
+            	Data<Number, Number> p = series.getData().get(i);
+            	p.setXValue(xPoints[i]);
+            	p.setYValue(fyPoints[i]);
             }
-            if (!m_distr.isIntegerDistribution()) {
-                g.strokePolyline(xPoints, yPoints, points);
-            } else {
-                int y0 = 1 + TOP_MARGIN + graphHeight;
-                int dotDiameter = graphHeight/20;
-                for (int i=0; i<points; i++) {
-                    g.strokeLine(xPoints[i], y0, xPoints[i], yPoints[i]);
-                    g.fillOval(xPoints[i]-dotDiameter/2, yPoints[i]-dotDiameter/2, dotDiameter, dotDiameter);
+            synchronized (this) {
+                if (chart.getData().size() == 0) {
+                	try {
+                		chart.getData().add(series);
+                	} catch (IllegalArgumentException e) {
+                		// ignore
+                	}
                 }
-            }
+			}
 
-            for (int i = 0; i <= NR_OF_TICKS_X; i++) {
-                int x = leftMargin + i * graphWidth / NR_OF_TICKS_X;
-                g.strokeLine(x, TOP_MARGIN + graphHeight, x, TOP_MARGIN + graphHeight + TICK_LENGTH);
-                g.strokeText(xlabels[i], x-stringWidth(xlabels[i])/2, TOP_MARGIN + graphHeight + TICK_LENGTH + 1 /* + sfm.getMaxAscent()*/);
-            }
+//            if (!m_distr.isIntegerDistribution()) {
+//                g.strokePolyline(xPoints, yPoints, points);
+//            } else {
+//                int y0 = 1 + TOP_MARGIN + graphHeight;
+//                int dotDiameter = graphHeight/20;
+//                for (int i=0; i<points; i++) {
+//                    g.strokeLine(xPoints[i], y0, xPoints[i], yPoints[i]);
+//                    g.fillOval(xPoints[i]-dotDiameter/2, yPoints[i]-dotDiameter/2, dotDiameter, dotDiameter);
+//                }
+//            }
+//
+//            for (int i = 0; i <= NR_OF_TICKS_X; i++) {
+//                int x = leftMargin + i * graphWidth / NR_OF_TICKS_X;
+//                g.strokeLine(x, TOP_MARGIN + graphHeight, x, TOP_MARGIN + graphHeight + TICK_LENGTH);
+//                g.strokeText(xlabels[i], x-stringWidth(xlabels[i])/2, TOP_MARGIN + graphHeight + TICK_LENGTH + 1 /* + sfm.getMaxAscent()*/);
+//            }
+//
+//            // draw the y labels and ticks
+//            for (int i = 0; i <= NR_OF_TICKS_Y; i++) {
+//                int y = TOP_MARGIN + graphHeight - i * graphHeight / NR_OF_TICKS_Y;
+//                g.strokeLine(leftMargin - TICK_LENGTH, y, leftMargin, y);
+//                g.strokeText(ylabels[i], leftMargin - TICK_LENGTH - 1 - stringWidth(ylabels[i]), y + 3);
+//            }
 
-            // draw the y labels and ticks
-            for (int i = 0; i <= NR_OF_TICKS_Y; i++) {
-                int y = TOP_MARGIN + graphHeight - i * graphHeight / NR_OF_TICKS_Y;
-                g.strokeLine(leftMargin - TICK_LENGTH, y, leftMargin, y);
-                g.strokeText(ylabels[i], leftMargin - TICK_LENGTH - 1 - stringWidth(ylabels[i]), y + 3);
-            }
+            
+            //int fontHeight = (int)(font.getSize() * 10 / 12);
+            //g.setFont(new Font(font.getName(), fontHeight));
 
-            int fontHeight = (int)(font.getSize() * 10 / 12);
-            g.setFont(new Font(font.getName(), fontHeight));
-
-
+            String info1 = "", info2 = "";
             String[] strs = new String[]{"2.5% Quantile", "5% Quantile", "Median", "95% Quantile", "97.5% Quantile"};
             Double[] quantiles = new Double[]{0.025, 0.05, 0.5, 0.95, 0.975};
             mayBeUnstable = false;
             for (k = 0; k < 5; k++) {
 
-                int y = TOP_MARGIN + graphHeight + bottomMargin + /* g.getFontMetrics().getMaxAscent() +*/ k * fontHeight;
-
+                //int y = TOP_MARGIN + graphHeight + bottomMargin + /* g.getFontMetrics().getMaxAscent() +*/ k * fontHeight;
                 try {
-                    g.strokeText(format(m_distr.inverseCumulativeProbability(quantiles[k])), graphWidth / 2 + leftMargin, y);
-                } catch (MathException e) {
-                    g.strokeText("not available", graphWidth / 2 + leftMargin, y);
+                    info1 += format(m_distr.inverseCumulativeProbability(quantiles[k]));
+                    //g.strokeText(format(m_distr.inverseCumulativeProbability(quantiles[k])), graphWidth / 2 + leftMargin, y);
+                } catch (MathException | RuntimeException e) {
+                	info1 += "not available";
+                    //g.strokeText("not available", graphWidth / 2 + leftMargin, y);
                 }
-                g.strokeText(strs[k], graphWidth / 2 - stringWidth(strs[k]) + leftMargin - fontHeight, y);
+                info1 += strs[k];
+                info1 += "\n";
+                // g.strokeText(strs[k], graphWidth / 2 - stringWidth(strs[k]) + leftMargin - fontHeight, y);
             }
             if (mayBeUnstable) {
-                int x = graphWidth * 3/ 4 + leftMargin; int y =TOP_MARGIN + graphHeight + bottomMargin + fontHeight;
-                g.strokeText("* numbers", x, y + 2*fontHeight);
-                g.strokeText("may not be", x, y + 3*fontHeight);
-                g.strokeText("accurate", x, y + 4*fontHeight);
+                //int x = graphWidth * 3/ 4 + leftMargin; int y =TOP_MARGIN + graphHeight + bottomMargin + fontHeight;
+                info1 += "* numbers\n";
+                info1 += "may not be\n";
+                info1 += "accurate\n";
+                //g.strokeText("* numbers", x, y + 2*fontHeight);
+                //g.strokeText("may not be", x, y + 3*fontHeight);
+                //g.strokeText("accurate", x, y + 4*fontHeight);
+                
             }
             try {
-                g.strokeText("mean " + format(m_distr.getMean()),
-                        graphWidth * 3/ 4 + leftMargin, TOP_MARGIN + graphHeight + bottomMargin + fontHeight);
+            	info2 += "mean " + format(m_distr.getMean());
+                //g.strokeText("mean " + format(m_distr.getMean()),
+                //       graphWidth * 3/ 4 + leftMargin, TOP_MARGIN + graphHeight + bottomMargin + fontHeight);
             } catch (RuntimeException e) {
                 // catch in case it is not implemented.
             }
+            infoLabel1.setText(info1);
+            infoLabel2.setText(info2);
         }
         
         private int stringWidth(String string) {
@@ -400,6 +479,13 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         graphPanel.paintComponent();
         return graphPanel;
 //        return box;
+    }
+    
+    
+    @Override
+    public void validateInput() {
+		graphPanel.paintComponent();
+		super.validateInput();
     }
 
 //    @Override

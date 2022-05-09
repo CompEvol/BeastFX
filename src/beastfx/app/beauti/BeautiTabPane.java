@@ -10,13 +10,9 @@ import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 
-// import jam.framework.DocumentFrame;
-
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
-//import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -984,7 +980,10 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 //        viewMenu.getItems().add(zoomIn);
 //        viewMenu.getItems().add(zoomOut);
 
-    	for (String name: ThemeProvider.getThemeMap().keySet()) {
+        List<String> themes = new ArrayList<>();
+        themes.addAll(ThemeProvider.getThemeMap().keySet());
+        Collections.sort(themes);
+    	for (String name: themes) {
     		ThemeProvider provider = ThemeProvider.getThemeProvider(name);
     		if (name != null & name.length() > 0) {
             	MyAction themeAction = new MyAction("Theme " + name, "Choose " + name + " theme to skin BEAUti", null, null) {

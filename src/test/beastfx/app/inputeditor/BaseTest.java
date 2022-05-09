@@ -57,10 +57,10 @@ public class BaseTest extends javafx.application.Application {
 		final public Input<File> fileInput = new Input<>("file", "file valued input for test class");
 		final public Input<List<File>> filesInput = new Input<>("files", "file valued input for test class", new ArrayList<>());
 		final public Input<Tree> treeInput = new Input<>("tree", "tree valued input for test class");
-		final public Input<ParametricDistribution> paramDistrInput = new Input<>("paramDistr", "parametric distribution valued input for test class");
 		final public Input<List<Alignment>> alignmentListInput = new Input<>("data", "alignment list valued input for test class", new ArrayList<>());
+		final public Input<List<Distribution>> distributionInput = new Input<>("distribution", "distribution valued input for test class", new ArrayList<>());
 */		
-		final public Input<List<Distribution>> filesInput = new Input<>("distribution", "distribution valued input for test class", new ArrayList<>());
+		final public Input<ParametricDistribution> paramDistrInput = new Input<>("paramDistr", "parametric distribution valued input for test class");
 		
 		
 		@Override
@@ -176,7 +176,9 @@ public class BaseTest extends javafx.application.Application {
 			YuleModel yule = new YuleModel();
 			yule.setID("Tree.t:tree");
 			yule.initByName("tree", tree, "birthDiffRate", "1.0");
-			oi.getInput("distribution").setValue(yule, oi);
+			if (oi.getInputs().containsKey("distribution")) {
+				oi.getInput("distribution").setValue(yule, oi);
+			}
 
 			
 			InputEditor e = new BEASTObjectInputEditor(doc);

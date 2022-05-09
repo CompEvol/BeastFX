@@ -10,7 +10,6 @@ import java.util.Set;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import beastfx.app.util.Alert;
