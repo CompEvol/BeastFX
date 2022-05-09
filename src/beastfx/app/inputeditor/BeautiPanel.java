@@ -148,17 +148,23 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     void addPartitionPanel(Partition hasPartition, int panelIndex) {
         VBox box = FXUtils.newVBox();
         if (splitPane != null && hasPartition != Partition.none) {
-            box.getChildren().add(createList());
+        	splitPane.getItems().add(createList());
+            //box.getChildren().add(createList());
         } else {
             return;
         }
         box.getChildren().add(new Separator(Orientation.VERTICAL));
-        box.getChildren().add(getIcon(panelIndex, config));
+        try {
+        	box.getChildren().add(getIcon(panelIndex, config));
+        } catch (IllegalArgumentException e) {        	
+        	// something went wrong with loading the panel icon. Ignore
+        }
 
         splitPane.getItems().add(box);
         if (listOfPartitions != null) {
             listOfPartitions.getSelectionModel().select(partitionIndex);
         }
+        splitPane.setDividerPositions(0.2,0.8);
     }
     
 	private ImageView getIcon(int panelIndex, BeautiPanelConfig config) {
@@ -195,16 +201,17 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
 
         listOfPartitions.getSelectionModel().selectedItemProperty().addListener(this);
         updateList();
+        return listOfPartitions;
 
-        // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
-        //listOfPartitions.setBorder(new BevelBorder(BevelBorder.RAISED));
-
-        ScrollPane listPane = new ScrollPane();
-        listPane.setContent(listOfPartitions);
-        partitionComponent.setCenter(listPane);
-        // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
-        //partitionComponent.setBorder(new EtchedBorder());
-        return partitionComponent;
+//        // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
+//        //listOfPartitions.setBorder(new BevelBorder(BevelBorder.RAISED));
+//
+//        ScrollPane listPane = new ScrollPane();
+//        listPane.setContent(listOfPartitions);
+//        partitionComponent.setCenter(listPane);
+//        // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
+//        //partitionComponent.setBorder(new EtchedBorder());
+//        return partitionComponent;
     }
 
     public void updateList() {
@@ -309,9 +316,9 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
             centralComponent = new Label("No input editors.");
         }
         if (splitPane != null) {
-            BorderPane panel = new BorderPane();
-            panel.setTop(centralComponent);
-            splitPane.getItems().add(panel);
+            //BorderPane panel = new BorderPane();
+            //panel.setTop(centralComponent);
+            splitPane.getItems().add(centralComponent);
         } else {
             pane.setCenter(centralComponent);
         }

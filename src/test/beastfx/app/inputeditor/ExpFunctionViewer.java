@@ -50,7 +50,7 @@ public class ExpFunctionViewer extends javafx.application.Application {
 	final static int N = 6;
 	
 	double a0 = 0.25, a1 = 0.0, b1=0.25, b2 = 0.75, a2=-0.25;
-	LineChart<Number,Number> chartX;
+	LineChart<Number,Number> chart;
 	Label a0label, a1label, a2label, b1label, b2label;
 	DecimalFormat format = new DecimalFormat("#.##");
 	DecimalFormat format3= new DecimalFormat("#.####");

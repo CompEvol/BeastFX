@@ -15,6 +15,7 @@ import beast.base.inference.operator.DeltaExchangeOperator;
 import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
 import beastfx.app.util.FXUtils;
+import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
@@ -127,8 +128,6 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     	SiteModel sitemodel = ((SiteModel) m_input.get()); 
         final Input<?> input = sitemodel.gammaCategoryCount;
         categoryCountEditor = new IntegerInputEditor(doc) {
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			public void validateInput() {
         		super.validateInput();
@@ -169,6 +168,8 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
         String categories = categoryCountEntry.getText();
         try {
             int categoryCount = Integer.parseInt(categories);
+            SiteModel s = (SiteModel) m_input.get();
+            s.getInput("gammaCategoryCount").setValue(categoryCount, s);
         	RealParameter shapeParameter = ((SiteModel) m_input.get()).shapeParameterInput.get();
             if (!gammaShapeEditor.getComponent().isVisible() && categoryCount >= 2) {
             	// we are flipping from no gamma to gamma heterogeneity accross sites
@@ -185,6 +186,8 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 	            e.m_isEstimatedBox.setSelected(shapeParameter.isEstimatedInput.get());
             }
             gammaShapeEditor.getComponent().setVisible(categoryCount >= 2);
+            gammaShapeEditor.getComponent().setManaged(categoryCount >= 2);
+            ((Node)gammaShapeEditor.getComponent()).prefHeight(categoryCount >= 2 ? USE_COMPUTED_SIZE : 0);
             repaint();
         } catch (java.lang.NumberFormatException e) {
             // ignore.
@@ -194,7 +197,10 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     public InputEditor createShapeEditor() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         final Input<?> input = ((SiteModel) m_input.get()).shapeParameterInput;
         gammaShapeEditor = doc.getInputEditorFactory().createInputEditor(input, (BEASTInterface) m_input.get(), doc);
-        gammaShapeEditor.getComponent().setVisible(((SiteModel) m_input.get()).gammaCategoryCount.get() >= 2);
+        boolean b = ((SiteModel) m_input.get()).gammaCategoryCount.get() >= 2;
+        gammaShapeEditor.getComponent().setVisible(b);
+        gammaShapeEditor.getComponent().setManaged(b);
+        ((Node)gammaShapeEditor.getComponent()).prefHeight(b ? USE_COMPUTED_SIZE : 0);
         return gammaShapeEditor;
     }
 

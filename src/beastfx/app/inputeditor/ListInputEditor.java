@@ -60,7 +60,7 @@ public class ListInputEditor extends InputEditor.Base {
     protected List<SmallButton> delButtonList;
     protected List<SmallButton> m_editButton;
     protected List<SmallLabel> m_validateLabels;
-    protected GridPane m_listBox;
+    protected VBox m_listBox;
     private int rowCount;
     protected ExpandOption m_bExpandOption;
 
@@ -141,7 +141,7 @@ public class ListInputEditor extends InputEditor.Base {
             //m_inputLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
 
-        m_listBox = new GridPane();// FXUtils.newVBox();
+        m_listBox = FXUtils.newVBox();
         // list of inputs
         rowCount = 1;
         for (Object o : (List<?>) input.get()) {
@@ -220,6 +220,21 @@ public class ListInputEditor extends InputEditor.Base {
         itemBox.getChildren().add(validateLabel);
         validateLabel.setVisible(true);
         m_validateLabels.add(validateLabel);
+        
+        m_listBox.getChildren().add(itemBox);
+//        if (m_validateLabel == null) {
+//        	rowCount++;
+//            // m_listBox.add(itemBox, 0, rowCount);
+//            m_listBox.getChildren().add(itemBox);
+//        } else {
+//        	rowCount++;
+//        	Node c = m_listBox.getChildren().get(m_listBox.getChildren().size() - 1);
+//            m_listBox.getChildren().remove(c);
+//            //m_listBox.add(itemBox, 0, rowCount);
+//            m_listBox.getChildren().add(itemBox);
+//            m_listBox.getChildren().add(c);
+//        }
+
 
         if (m_bExpandOption == ExpandOption.TRUE || m_bExpandOption == ExpandOption.TRUE_START_COLLAPSED ||
                 (m_bExpandOption == ExpandOption.IF_ONE_ITEM && ((List<?>) m_input.get()).size() == 1)) {
@@ -244,20 +259,24 @@ public class ListInputEditor extends InputEditor.Base {
 	                //box2.getChildren().add(itemBox);
 //TODO: find out what this line does:  itemBox.getChildren().add(0, editButton);
 	                //box2.getChildren().add(expandBox);
-//        		expandBox.setVisible(false);
 //        		//itemBox.remove(editButton);
 //        		editButton.setVisible(false);
 //        	} else {
 	                //itemBox = box2;
 	                rowCount++;
-	                m_listBox.add(expandBox, 0, rowCount);
+	                // m_listBox.add(expandBox, 0, rowCount);
 	            if (g_collapsedIDs.contains(beastObject.getID())) {
-	            	expandBox.setPrefHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
-	            	expandBox.setMinHeight(expandBox.getPrefHeight());
-            	} else {
             		expandBox.setPrefHeight(0);
 	            	expandBox.setMinHeight(0);
+	        		expandBox.setVisible(false);
+	        		expandBox.setManaged(false);
+            	} else {
+	            	expandBox.setPrefHeight(USE_COMPUTED_SIZE);
+	            	expandBox.setMinHeight(expandBox.getPrefHeight());
+	        		expandBox.setVisible(true);
+	        		expandBox.setManaged(true);
             	}
+                m_listBox.getChildren().add(expandBox);
             } else {
                 editButton.setVisible(false);
             }
@@ -265,24 +284,28 @@ public class ListInputEditor extends InputEditor.Base {
                 @Override
 				public void handle(ActionEvent e) {
                     SmallButton editButton = (SmallButton) e.getSource();
-                    m_box.setVisible(!m_box.isVisible());
-                    if (m_box.isVisible()) {
+                    expandBox.setVisible(!expandBox.isVisible());
+                    if (expandBox.isVisible()) {
                         try {
                         	editButton.setImg(DOWN_ICON);
                         }catch (Exception e2) {
 							// ignore
 						}
+                        expandBox.setPrefHeight(USE_COMPUTED_SIZE);
+                        expandBox.setMinHeight(m_box.getPrefHeight());
+                        expandBox.setVisible(true);
+                        expandBox.setManaged(true);
                         g_collapsedIDs.remove(m_beastObject.getID());
-                        m_box.setPrefHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
-                        m_box.setMinHeight(m_box.getPrefHeight());
                     } else {
                     	try {
                     		editButton.setImg(RIGHT_ICON);
 	                    }catch (Exception e2) {
 							// ignore
 						}
-                        m_box.setPrefHeight(0);
-                        m_box.setMinHeight(0);
+                    	expandBox.setPrefHeight(0);
+                    	expandBox.setMinHeight(0);
+                    	expandBox.setVisible(false);
+                    	expandBox.setManaged(false);
                         g_collapsedIDs.add(m_beastObject.getID());
                     }
                 }
@@ -307,16 +330,6 @@ System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
             }
         }
 
-        if (m_validateLabel == null) {
-        	rowCount++;
-            m_listBox.add(itemBox, 0, rowCount);
-        } else {
-        	rowCount++;
-        	Node c = m_listBox.getChildren().get(m_listBox.getChildren().size() - 1);
-            m_listBox.getChildren().remove(c);
-            m_listBox.add(itemBox, 0, rowCount);
-            m_listBox.getChildren().add(c);
-        }
     } // addSingleItem
 
     /**
