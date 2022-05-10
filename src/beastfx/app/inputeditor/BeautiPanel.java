@@ -1,16 +1,11 @@
 package beastfx.app.inputeditor;
 
 
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.DefaultListModel;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Dimension2D;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -20,6 +15,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
+import javafx.scene.control.Skin;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.image.ImageView;
@@ -29,12 +25,12 @@ import beastfx.app.util.FXUtils;
 
 
 import beastfx.app.beauti.ClonePartitionPanel;
-// import beastfx.app.inputeditor.BeautiDoc;
-//import beastfx.app.inputeditor.BeautiDocProvider;
-//import beastfx.app.inputeditor.BeautiPanelConfig;
-//import beastfx.app.inputeditor.InputEditor;
+import beastfx.app.beauti.theme.Dark;
 import beastfx.app.inputeditor.BeautiPanelConfig.Partition;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
+
+import java.lang.reflect.InvocationTargetException;
+
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Taxon;
@@ -55,9 +51,7 @@ import javafx.scene.layout.VBox;
  */
 public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvider {
 
-    public final static String ICONPATH = "beastfx.app.beauti/";
-
-    static int partitionListPreferredWidth = 120;
+	static int partitionListPreferredWidth = 120;
 
     private SplitPane splitPane;
 
@@ -99,8 +93,8 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     /**
      * box containing the list of partitions, to make (in)visible on update *
      */
-    BorderPane partitionComponent;
-    BorderPane pane;
+    //BorderPane partitionComponent;
+    SplitPane pane;
     /**
      * list of partitions in m_listBox *
      */
@@ -116,28 +110,37 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     /**
      * component containing main input editor *
      */
-    Parent centralComponent = null;
+    Node centralComponent = null;
 
     public BeautiPanel() {
     }
 
+    
+    private void addPane(Node pane, int location) {
+    	if (this.pane.getItems().size() > location) {
+        	this.pane.getItems().set(location, pane);
+    	} else {
+    		this.pane.getItems().add(pane);
+    	}
+    }
+    
     public BeautiPanel(int panelIndex, BeautiDoc doc, BeautiPanelConfig config) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         this.doc = doc;
         this.panelIndex = panelIndex;
-        pane = new BorderPane();
+        pane = new SplitPane();
         //setLayout(new BorderLayout());
 
         this.config = config;
         if (this.config.hasPartition() != Partition.none &&
                 doc.getPartitions(config.hasPartitionsInput.get().toString()).size() > 1) {
-            splitPane = new SplitPane();
-            //splitPane.setJSplitPane.HORIZONTAL_SPLIT);
-            pane.setCenter(splitPane);
+        	splitPane = pane;
+            //splitPane = new SplitPane();
+            //pane.setCenter(splitPane);
         } else {
             splitPane = null;
         }
 
-        refreshPanel();
+        // refreshPanel();
         addPartitionPanel(this.config.hasPartition(), panelIndex);
 
         setContent(pane);
@@ -145,22 +148,22 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         
     } // c'tor
 
-    void addPartitionPanel(Partition hasPartition, int panelIndex) {
+    private void addPartitionPanel(Partition hasPartition, int panelIndex) {
         VBox box = FXUtils.newVBox();
         if (splitPane != null && hasPartition != Partition.none) {
-        	splitPane.getItems().add(createList());
-            //box.getChildren().add(createList());
+            box.getChildren().add(createList());
         } else {
             return;
         }
-        box.getChildren().add(new Separator(Orientation.VERTICAL));
+        // box.getChildren().add(new Separator(Orientation.VERTICAL));
         try {
         	box.getChildren().add(getIcon(panelIndex, config));
         } catch (IllegalArgumentException e) {        	
         	// something went wrong with loading the panel icon. Ignore
         }
 
-        splitPane.getItems().add(box);
+        addPane(box, 0);
+        // splitPane.getItems().add(box);
         if (listOfPartitions != null) {
             listOfPartitions.getSelectionModel().select(partitionIndex);
         }
@@ -168,9 +171,9 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     }
     
 	private ImageView getIcon(int panelIndex, BeautiPanelConfig config) {
-		String iconLocation = BeautiPanel.ICONPATH + panelIndex + ".png";
+		String iconLocation = BEASTObjectDialog.ICONPATH + panelIndex + ".png";
 		if (config != null) {
-			iconLocation = BeautiPanel.ICONPATH + config.getIcon();
+			iconLocation = BEASTObjectDialog.ICONPATH + config.getIcon();
 		}
 		return FXUtils.getIcon(iconLocation);
 	}
@@ -180,8 +183,8 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
      * Create a list of partitions and return as a JComponent;
      * @return
      */
-    Node createList() {
-        partitionComponent = new BorderPane();
+    private Node createList() {
+    	BorderPane partitionComponent = new BorderPane();
         // partitionComponent.setLayout(new BorderLayout());
         Label partitionLabel = new Label("Partition");
         partitionLabel.setAlignment(Pos.CENTER);
@@ -192,7 +195,7 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         listOfPartitions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listOfPartitions.setItems(listModel);
 
-        Dimension size = new Dimension(partitionListPreferredWidth, 300);
+        Dimension2D size = new Dimension2D(partitionListPreferredWidth, 300);
         //listOfPartitions.setFixedCellWidth(120);
 //    	m_listOfPartitions.setSize(size);
         //listOfPartitions.setPrefSize(size);
@@ -200,8 +203,9 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
 //    	m_listOfPartitions.setBounds(0, 0, 100, 100);
 
         listOfPartitions.getSelectionModel().selectedItemProperty().addListener(this);
+        partitionComponent.setCenter(listOfPartitions);
         updateList();
-        return listOfPartitions;
+        return partitionComponent;
 
 //        // AJD: This is unnecessary and not appropriate for Mac OS X look and feel
 //        //listOfPartitions.setBorder(new BevelBorder(BevelBorder.RAISED));
@@ -258,27 +262,39 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         // toggle splitpane
         if (splitPane == null && config.hasPartition() != Partition.none &&
                 doc.getPartitions(config.hasPartitionsInput.get().toString()).size() > 1) {
-            splitPane = new SplitPane();//JSplitPane.HORIZONTAL_SPLIT);
-            pane.setCenter(splitPane);
+            //splitPane = new SplitPane();//JSplitPane.HORIZONTAL_SPLIT);
+            //pane = splitPane;
+        	splitPane = pane;
             addPartitionPanel(config.hasPartition(), panelIndex);
         }
         if (splitPane != null && (config.hasPartition() == Partition.none ||
                 doc.getPartitions(config.hasPartitionsInput.get().toString()).size() <= 1)) {
-        	((BorderPane)getContent()).setCenter(null);
+        	//((BorderPane)getContent()).setCenter(null);
+        	//pane.getItems().remove(0);
             splitPane = null;
         }
+        // setContent(pane);
 
         refreshInputPanel();
-        if (partitionComponent != null && config.getType() != null) {
-            partitionComponent.setVisible(doc.getPartitions(config.getType()).size() > 1);
+        if (pane.getItems().size() > 1 /*partitionComponent != null*/ && config.getType() != null &&
+        		this.config.hasPartition() != Partition.none) {
+            // partitionComponent.setVisible(doc.getPartitions(config.getType()).size() > 1);
+            if (doc.getPartitions(config.getType()).size() > 1) {
+            	pane.setDividerPositions(0.2, 0.8);
+            } else {
+            	pane.setDividerPositions(0, 1);
+            }
+        } else {
+        	pane.setDividerPositions(0, 1);
         }
 
 //		g_currentPanel = this;
     }
     
     void refreshInputPanel(BEASTInterface beastObject, Input<?> input, boolean addButtons, InputEditor.ExpandOption forceExpansion) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if (centralComponent != null && ((BorderPane)getContent()) != null) {
-        	((BorderPane)getContent()).setCenter(null);
+        if (centralComponent != null && pane.getItems().size() > 1) {// ((BorderPane)getContent()) != null) {
+        	// pane.getItems().remove(1);
+        	// ((BorderPane)getContent()).setCenter(null);
         }
         if (input != null && input.get() != null && input.getType() != null) {
             InputEditor.ButtonStatus bs = config.buttonStatusInput.get();
@@ -318,9 +334,9 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         if (splitPane != null) {
             //BorderPane panel = new BorderPane();
             //panel.setTop(centralComponent);
-            splitPane.getItems().add(centralComponent);
+            addPane(centralComponent, 1);
         } else {
-            pane.setCenter(centralComponent);
+            addPane(centralComponent, 1);
         }
     }
 
@@ -501,12 +517,12 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
 //            repaint();
 
             // hack to ensure m_centralComponent is repainted RRB: is there a better way???
-            if (Frame.getFrames().length == 0) {
-                // happens at startup
-                return;
-            }
-            Frame frame = Frame.getFrames()[Frame.getFrames().length - 1];
-            frame.setSize(frame.getSize());
+//            if (Frame.getFrames().length == 0) {
+//                // happens at startup
+//                return;
+//            }
+//            Frame frame = Frame.getFrames()[Frame.getFrames().length - 1];
+//            frame.setSize(frame.getSize());
             //Frame frame = frames[frames.length - 1];
 //			Dimension size = frames[frames.length-1].getSize();
 //			frames[frames.length-1].setSize(size);

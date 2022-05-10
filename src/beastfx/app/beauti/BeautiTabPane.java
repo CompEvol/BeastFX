@@ -73,17 +73,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 
 
 public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane implements BeautiDocListener {
-    static final String BEAUTI_ICON = "beastfx/app/inputeditor/icon/beauti.png";
-
-    // ExtensionFileFilter ef0 = new ExtensionFileFilter(".nex", "Nexus files");
-    // ExtensionFileFilter ef1 = new ExtensionFileFilter(".xml", "BEAST files");
+    static final String BEAUTI_ICON = "/beastfx/app/inputeditor/icon/beauti.png";
 
     /**
      * File extension for Beast specifications

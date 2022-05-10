@@ -6,11 +6,12 @@ package beastfx.app.beauti;
 
 
 
+
 import beast.base.core.Description;
 import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.PackageVersion;
-import beastfx.app.inputeditor.BeautiPanel;
+import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
@@ -34,7 +34,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
@@ -202,7 +201,7 @@ public class JPackageDialog extends DialogPane {
 			} else {
 				col1.setCellFactory(e->{
 					TableCell cell = new TableCell();
-					ImageView imageview = FXUtils.getIcon(BeautiPanel.ICONPATH + "link.png");
+					ImageView imageview = FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "link.png");
 					cell.setGraphic(imageview);
 				    return cell;
 				});
