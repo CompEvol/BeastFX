@@ -27,7 +27,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -207,7 +206,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
         addLinkUnlinkPair(box, "Clock Models");
         //box.getChildren().add(separator);
         addLinkUnlinkPair(box, "Trees");
-        box.getChildren().add(new Separator());
+        // box.getChildren().add(new Separator());
 		return box;
 	}
 
@@ -253,7 +252,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
         splitButton.setOnAction(e -> splitItem());
         buttonBox.getChildren().add(splitButton);
 
-        buttonBox.getChildren().add(new Separator());
+        // buttonBox.getChildren().add(new Separator());
 
         return buttonBox;
     }

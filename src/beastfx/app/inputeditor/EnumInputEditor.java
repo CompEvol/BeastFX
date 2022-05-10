@@ -1,5 +1,6 @@
 package beastfx.app.inputeditor;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,6 @@ import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beastfx.app.util.FXUtils;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 
 
 
@@ -74,7 +72,7 @@ public class EnumInputEditor extends InputEditor.Base {
             m_selectPluginBox.setTooltip(new Tooltip(input.getHTMLTipText()));
             pane.getChildren().add(m_selectPluginBox);
             // add(Box.createGlue());
-            pane.getChildren().add(new Separator());
+            // pane.getChildren().add(new Separator());
         }
         getChildren().add(pane);
     } // init

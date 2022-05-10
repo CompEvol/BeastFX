@@ -1,6 +1,6 @@
 package beastfx.app.inputeditor;
 
-import java.awt.Dimension;
+
 import java.util.List;
 
 import javafx.geometry.Dimension2D;
@@ -13,7 +13,6 @@ import beast.base.inference.Logger;
 
 
 public class LoggerListInputEditor extends ListInputEditor {
-    private static final long serialVersionUID = 1L;
 
 	public LoggerListInputEditor(BeautiDoc doc) {
 		super(doc);

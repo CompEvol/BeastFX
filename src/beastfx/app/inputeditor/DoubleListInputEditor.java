@@ -1,28 +1,17 @@
 package beastfx.app.inputeditor;
 
-import java.awt.Color;
-import java.awt.Component;
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
 
 import beast.base.core.BEASTInterface;
@@ -170,7 +159,7 @@ public class DoubleListInputEditor extends ListInputEditor {
             setUpEntry();
 
             pane.getChildren().add(m_entry);
-            pane.getChildren().add(new Separator());
+            // pane.getChildren().add(new Separator());
             addValidationLabel();
             getChildren().add(pane);
         } // init

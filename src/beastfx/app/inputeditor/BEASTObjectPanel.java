@@ -4,8 +4,8 @@ package beastfx.app.inputeditor;
 
 
 
-import java.awt.Dimension;
-import java.awt.Point;
+
+// import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,12 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-
-import javax.swing.JPanel;
 import javafx.scene.control.TextField;
 
 import beast.base.core.BEASTInterface;
@@ -28,14 +23,9 @@ import beast.base.inference.MCMC;
 import beast.base.parser.XMLProducer;
 import beast.pkgmgmt.BEASTClassLoader;
 import beastfx.app.util.FXUtils;
-import javafx.geometry.Dimension2D;
-import javafx.geometry.Orientation;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
@@ -68,7 +58,7 @@ public class BEASTObjectPanel extends Pane {
 //    static public Set<Loggable> g_loggers = null;
 //    static public Set<Distribution> g_distributions = null;
 
-    public static Point m_position;
+    //public static Point m_position;
 
     /**
      * map that identifies the InputEditor to use for a particular type of Input *
@@ -95,7 +85,7 @@ public class BEASTObjectPanel extends Pane {
 //            registerInputEditors(inputEditors.toArray(new String[0]));
 //        }
 
-        m_position = new Point(0, 0);
+        //m_position = new Point(0, 0);
         g_plugins = new HashMap<>();
 //        g_operators = new HashSet<>();
 //        g_stateNodes = new HashSet<>();
@@ -188,7 +178,7 @@ public class BEASTObjectPanel extends Pane {
         //setTitle(m_beastObject.getID() + " Editor");
 
         VBox mainBox = FXUtils.newVBox();
-        mainBox.getChildren().add(new Separator());
+        //mainBox.getChildren().add(new Separator());
 
         if (showHeader) {
             /* add beastObject + help button at the top */
@@ -216,16 +206,16 @@ public class BEASTObjectPanel extends Pane {
         pane.getChildren().add(mainBox);
         setPrefSize(mainBox.getPrefWidth() + 10, mainBox.getPrefHeight() + 30);
 
-        BEASTObjectPanel.m_position.x += 30;
-        BEASTObjectPanel.m_position.y += 30;
+        //BEASTObjectPanel.m_position.x += 30;
+        //BEASTObjectPanel.m_position.y += 30;
         
         getChildren().add(pane);
         // setLocation(BEASTObjectPanel.m_position);
     } // c'tor
 
     public boolean getOK() {
-        BEASTObjectPanel.m_position.x -= 30;
-        BEASTObjectPanel.m_position.y -= 30;
+        //BEASTObjectPanel.m_position.x -= 30;
+        //BEASTObjectPanel.m_position.y -= 30;
         return m_bOK;
     }
 
@@ -263,7 +253,7 @@ public class BEASTObjectPanel extends Pane {
         HBox box = FXUtils.newHBox();
         //jLabel icon = new Label();
         // box.add(new Separator());
-        box.getChildren().add(new Separator());
+        // box.getChildren().add(new Separator());
 
         Label label = new Label(m_beastObjectClass.getName().replaceAll(".*\\.", "") + ":");
         box.getChildren().add(label);

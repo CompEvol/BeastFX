@@ -1,20 +1,14 @@
 package beastfx.app.beauti;
 
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.util.List;
 
-import javax.swing.Box;
-
 import javafx.event.ActionEvent;
-import javafx.geometry.Dimension2D;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import javax.swing.SwingUtilities;
@@ -24,16 +18,12 @@ import beastfx.app.inputeditor.BeautiSubTemplate;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.SmallLabel;
 import beastfx.app.util.FXUtils;
-import beastfx.app.inputeditor.InputEditor.Base;
-import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeDistribution;
 import beast.base.parser.PartitionContext;
 
-//import beast.evolution.speciation.BirthDeathGernhard08Model;
-//import beast.evolution.speciation.YuleModel;
 public class TreeDistributionInputEditor extends InputEditor.Base {
 
     public TreeDistributionInputEditor(BeautiDoc doc) {
@@ -68,6 +58,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         this.itemNr = listItemNr;
 
         pane = FXUtils.newVBox();
+        // pane = new VBox();
         HBox itemBox = FXUtils.newHBox();
 
         TreeDistribution distr = (TreeDistribution) beastObject;
@@ -78,10 +69,8 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
             text += distr.treeIntervalsInput.get().treeInput.get().getID();
         }
         Label label = new Label(text);
-        Font font = label.getFont();
-        Dimension2D size = new Dimension2D(font.getSize() * 200 / 12, font.getSize() * 2);
-        label.setMinSize(size.getWidth(), size.getHeight());
-        label.setPrefSize(size.getWidth(), size.getHeight());
+        label.setMinSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
+        label.setPrefSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
         itemBox.getChildren().add(label);
         // List<String> availableBEASTObjects =
         // PluginPanel.getAvailablePlugins(m_input, m_beastObject, null);

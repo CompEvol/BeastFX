@@ -1,5 +1,6 @@
 package beastfx.app.inputeditor;
 
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,10 +11,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
@@ -180,7 +179,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
 				doc.unregisterPlugin(prior0);
 				refreshPanel();
         });
-        itemBox.getChildren().add(new Separator());
+        // itemBox.getChildren().add(new Separator());
         itemBox.getChildren().add(deleteButton);
 
         pane.getChildren().add(itemBox);

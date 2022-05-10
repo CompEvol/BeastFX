@@ -1,5 +1,6 @@
 package beastfx.app.inputeditor;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,9 +15,7 @@ import javafx.scene.control.DialogPane;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Separator;
 import beastfx.app.beauti.ThemeProvider;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
@@ -60,7 +59,7 @@ public class TaxonSetDialog extends DialogPane {
         box.getChildren().add(createIDBox());
         box.getChildren().add(createFilterBox());
         box.getChildren().add(createTaxonSelector());
-        box.getChildren().add(new Separator());
+        //box.getChildren().add(new Separator());
         //box.add(createCancelOKButtons());
 
         // initialise lists
@@ -123,7 +122,7 @@ public class TaxonSetDialog extends DialogPane {
         //int fontsize = filterEntry.getFont().getSize();
         //filterEntry.setMaxSize(new Dimension(1024 * fontsize / 13, 50 * fontsize / 13));
         box.getChildren().add(filterEntry);
-        box.getChildren().add(new Separator());
+        //box.getChildren().add(new Separator());
         filterEntry.setOnKeyReleased(e -> processEntry());
         return box;
     }
@@ -179,7 +178,7 @@ public class TaxonSetDialog extends DialogPane {
 
         // add buttons to select/deselect taxa
         VBox buttonBox = FXUtils.newVBox();
-        buttonBox.getChildren().add(new Separator());
+        //buttonBox.getChildren().add(new Separator());
         Button selectButton = new Button(">>");
         selectButton.setId(">>");
         selectButton.setMinSize(50,30);
@@ -208,7 +207,7 @@ public class TaxonSetDialog extends DialogPane {
                 }
             });
         buttonBox.getChildren().add(deselectButton);
-        buttonBox.getChildren().add(new Separator());
+        //buttonBox.getChildren().add(new Separator());
         box.getChildren().add(buttonBox);
 
 //        ScrollPane scroller2 = new ScrollPane();

@@ -2,23 +2,15 @@ package beastfx.app.inputeditor;
 
 
 
-// import java.awt.Dimension;
 import java.util.List;
 
-//import javax.swing.Box;
-//import javafx.scene.control.ComboBox;
-//import javax.swing.JComponent;
-//import javafx.scene.control.Label;
-//import beastfx.app.util.Alert;
-//import javax.swing.border.EtchedBorder;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beastfx.app.util.Alert;
-import beastfx.app.util.FXUtils;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -59,6 +51,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
         m_beastObject = beastObject;
 		this.itemNr = itemNr;
     	pane = new HBox();
+    	pane.setPadding(new Insets(5));
 
         if (isExpandOption == ExpandOption.FALSE) {
             simpleInit(input, beastObject);
@@ -347,6 +340,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
             //int fontsize = m_selectBEASTObjectBox.getFont().getSize();
             //m_selectBEASTObjectBox.setMaxSize(1024, 200 * fontsize / 13);
             box.getChildren().add(m_selectBEASTObjectBox);
+            HBox.setMargin(m_selectBEASTObjectBox, new Insets(0,5,0,5));
         }
     }
 

@@ -90,7 +90,7 @@ public class FXUtils {
 
 	public static HBox newHBox() {
 		HBox box = new HBox();
-        box.setSpacing(10);
+        box.setSpacing(5);
         box.setPadding(new Insets(5));
         return box;
 	}

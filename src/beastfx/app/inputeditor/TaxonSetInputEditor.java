@@ -2,6 +2,7 @@ package beastfx.app.inputeditor;
 
 
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +20,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import beastfx.app.util.Alert;
@@ -337,11 +337,11 @@ public class TaxonSetInputEditor extends InputEditor.Base {
                 guess();
             });
 
-        buttonBox.getChildren().add(new Separator());
+        //buttonBox.getChildren().add(new Separator());
         buttonBox.getChildren().add(fillDownButton);
-        buttonBox.getChildren().add(new Separator());
+        //buttonBox.getChildren().add(new Separator());
         buttonBox.getChildren().add(guessButton);
-        buttonBox.getChildren().add(new Separator());
+        //buttonBox.getChildren().add(new Separator());
         return buttonBox;
     }
 
@@ -553,7 +553,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 //		int size = filterEntry.getFont().getSize();
 //        filterEntry.setMaxSize(new Dimension(1024, 20 * size/13));
         filterBox.getChildren().add(filterEntry);
-        filterBox.getChildren().add(new Separator());
+        //filterBox.getChildren().add(new Separator());
         filterBox.setOnKeyReleased(e->processFilter());
         
 //        filterEntry.getDocument().addDocumentListener(new DocumentListener() {

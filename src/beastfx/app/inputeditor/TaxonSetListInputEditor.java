@@ -1,6 +1,7 @@
 package beastfx.app.inputeditor;
 
 
+
 import java.awt.Dimension;
 import java.awt.datatransfer.*;
 import java.util.*;
@@ -15,7 +16,6 @@ import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
@@ -39,7 +39,6 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 		super();
 	}
 
-	private static final long serialVersionUID = 1L;
 	List<TaxonSet> m_taxonset;
 	Map<String,Taxon> m_taxonMap;
 	DefaultTreeModel m_treemodel;
@@ -210,9 +209,9 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 				firstNode.getParent().getChildren().remove(firstNode);
 				modelToTaxonset();
 		});
-		buttonBox.getChildren().add(new Separator());
+		// buttonBox.getChildren().add(new Separator());
 		buttonBox.getChildren().add(delButton);
-		buttonBox.getChildren().add(new Separator());
+		// buttonBox.getChildren().add(new Separator());
 
 
 		Button addButton = new Button("New");
@@ -224,7 +223,7 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 			}
 		);
 		buttonBox.getChildren().add(addButton);
-		buttonBox.getChildren().add(new Separator());
+		// buttonBox.getChildren().add(new Separator());
 		return buttonBox;
 	}
 

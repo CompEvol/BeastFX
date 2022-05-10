@@ -143,7 +143,7 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         // refreshPanel();
         addPartitionPanel(this.config.hasPartition(), panelIndex);
 
-        setContent(pane);
+        //setContent(pane);
         //setOpaque(false);
         
     } // c'tor
@@ -255,6 +255,7 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     public void refreshPanel() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (doc.alignments.size() == 0) {
             refreshInputPanel();
+            setContent();
             return;
         }
         doc.scrubAll(true, false);
@@ -276,22 +277,33 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         // setContent(pane);
 
         refreshInputPanel();
-        if (pane.getItems().size() > 1 /*partitionComponent != null*/ && config.getType() != null &&
-        		this.config.hasPartition() != Partition.none) {
-            // partitionComponent.setVisible(doc.getPartitions(config.getType()).size() > 1);
-            if (doc.getPartitions(config.getType()).size() > 1) {
-            	pane.setDividerPositions(0.2, 0.8);
-            } else {
-            	pane.setDividerPositions(0, 1);
-            }
-        } else {
-        	pane.setDividerPositions(0, 1);
-        }
+        setContent();
 
 //		g_currentPanel = this;
     }
     
-    void refreshInputPanel(BEASTInterface beastObject, Input<?> input, boolean addButtons, InputEditor.ExpandOption forceExpansion) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    private void setContent() {
+        if (pane.getItems().size() > 1 /*partitionComponent != null*/ && 
+        		config.getType() != null &&
+        		this.config.hasPartition() != Partition.none) {
+            // partitionComponent.setVisible(doc.getPartitions(config.getType()).size() > 1);
+            if (doc.getPartitions(config.getType()).size() > 1) {
+            	pane.setDividerPositions(0.2, 0.8);
+            	// make splitpane the content of the tab
+            	setContent(pane);
+            } else {
+            	pane.setDividerPositions(0, 1);
+            	// make last item the content of the tab
+            	setContent(pane.getItems().get(pane.getItems().size()-1));
+            }
+        } else {
+        	pane.setDividerPositions(0, 1);
+        	// make last item the content of the tab
+        	setContent(pane.getItems().get(pane.getItems().size()-1));
+        }
+	}
+
+	void refreshInputPanel(BEASTInterface beastObject, Input<?> input, boolean addButtons, InputEditor.ExpandOption forceExpansion) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (centralComponent != null && pane.getItems().size() > 1) {// ((BorderPane)getContent()) != null) {
         	// pane.getItems().remove(1);
         	// ((BorderPane)getContent()).setCenter(null);
@@ -331,6 +343,11 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         } else {
             centralComponent = new Label("No input editors.");
         }
+        
+        ScrollPane scroller = new ScrollPane();
+        scroller.setContent(centralComponent);
+        centralComponent = scroller;
+        
         if (splitPane != null) {
             //BorderPane panel = new BorderPane();
             //panel.setTop(centralComponent);

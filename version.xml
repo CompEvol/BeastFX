@@ -34,7 +34,6 @@
 				<provider classname="beastfx.app.inputeditor.TreeFileListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.XMLFileInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.XMLFileListInputEditor"/>
-				<provider classname="beastfx.app.beauti.FrequenciesInputEditor"/>
 				<provider classname="beastfx.app.beauti.PriorInputEditor"/>
 				<provider classname="beastfx.app.beauti.PriorListInputEditor"/>
 

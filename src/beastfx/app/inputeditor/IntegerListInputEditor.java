@@ -17,6 +17,7 @@
 
 package beastfx.app.inputeditor;
 
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,10 +26,8 @@ import java.util.Set;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
 
 import javax.swing.event.ListSelectionListener;
 
@@ -177,7 +176,7 @@ public class IntegerListInputEditor extends ListInputEditor {
             setUpEntry();
 
             pane.getChildren().add(m_entry);
-            pane.getChildren().add(new Separator());
+            // pane.getChildren().add(new Separator());
             addValidationLabel();
             getChildren().add(pane);
         } // init

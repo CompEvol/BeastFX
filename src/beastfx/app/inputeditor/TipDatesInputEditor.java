@@ -2,6 +2,7 @@ package beastfx.app.inputeditor;
 
 
 
+
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -22,7 +23,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
@@ -574,7 +574,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         relativeToComboBox.setMaxSize(relativeToComboBox.getPrefWidth(), relativeToComboBox.getPrefHeight());
         relativeToComboBox.setDisable(!numericRadioButton.isSelected());
         formatBoxFirstLine.getChildren().add(relativeToComboBox);
-        formatBoxFirstLine.getChildren().add(new Separator());
+        //formatBoxFirstLine.getChildren().add(new Separator());
         formatBox.getChildren().add(formatBoxFirstLine);
 
         formattedDateRadioButton = new RadioButton("as dates with format");
@@ -623,13 +623,13 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
                         DATE_FORMAT_HELP_MESSAGE, "Menlo"));
         formatBoxSecondLine.getChildren().add(dateFormatHelpButton);
 
-        formatBoxSecondLine.getChildren().add(new Separator());
+        //formatBoxSecondLine.getChildren().add(new Separator());
 
         formatBox.getChildren().add(formatBoxSecondLine);
         formatBox.setAlignment(Pos.TOP_CENTER);
         buttonBox.getChildren().add(formatBox);
 
-        buttonBox.getChildren().add(new Separator());
+        //buttonBox.getChildren().add(new Separator());
 
         Button guessButton = new Button("Auto-configure");
         guessButton.setAlignment(Pos.TOP_CENTER);

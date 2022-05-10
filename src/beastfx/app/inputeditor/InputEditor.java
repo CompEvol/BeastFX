@@ -10,10 +10,10 @@ import javax.swing.event.ListSelectionListener;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
+import beastfx.app.util.FXUtils;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -113,6 +113,7 @@ public abstract class Base extends Pane implements InputEditor {
     }
 
     Label m_inputLabel;
+    protected static Dimension2D LABEL_SIZE = new Dimension2D(200, 20);
     protected static Dimension2D PREFERRED_SIZE = new Dimension2D(150, 25);
     protected static Dimension2D MAX_SIZE = new Dimension2D(1024, 25);
 
@@ -204,7 +205,7 @@ public abstract class Base extends Pane implements InputEditor {
         m_beastObject = beastObject;
         this.itemNr= itemNr;
         
-        pane = new 	HBox();
+        pane = FXUtils.newHBox();
         
         addInputLabel();
 
@@ -212,7 +213,7 @@ public abstract class Base extends Pane implements InputEditor {
 
         pane.getChildren().add(m_entry);
         HBox.setHgrow(new Region(), Priority.ALWAYS);
-        pane.getChildren().add(new Separator());
+        //pane.getChildren().add(new Separator());
         // pane.getChildren().add(new Separator());
         addValidationLabel();
         getChildren().add(pane);
@@ -316,10 +317,9 @@ public abstract class Base extends Pane implements InputEditor {
             m_inputLabel.setTooltip(new Tooltip(tipText));
             m_inputLabel.setTextAlignment(TextAlignment.RIGHT);
             //Dimension size = new Dimension(g_nLabelWidth, 20);
-            Dimension2D size = new Dimension2D(200, 20);
-            m_inputLabel.setMaxSize(size.getWidth(), size.getHeight());
-            m_inputLabel.setMinSize(size.getWidth(), size.getHeight());
-            m_inputLabel.setPrefSize(size.getWidth(), size.getHeight());
+            m_inputLabel.setMaxSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
+            m_inputLabel.setMinSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
+            m_inputLabel.setPrefSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
             m_inputLabel.setStyle("-fx-border-width: 0 5 0 5;");
             // setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 

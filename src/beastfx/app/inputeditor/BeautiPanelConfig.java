@@ -340,10 +340,13 @@ public class BeautiPanelConfig extends BEASTObject {
      * returns name of the beastObject *
      */
     public String getType() {
-        if (isList) {
+    	if (isList) {
+    		if (inputs.size() == 0) {
+    			return null;
+    		}
             return inputs.get(0).getClass().getName();
         }
-        if (_input == null) {
+        if (_input == null || _input.get() == null) {
             return null;
         }
         return _input.get().getClass().getName();

@@ -4,6 +4,7 @@ package beastfx.app.inputeditor;
 //import javax.swing.event.DocumentEvent;
 //import javax.swing.event.DocumentListener;
 
+
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Alignment;
@@ -17,11 +18,10 @@ import beast.base.inference.parameter.RealParameter;
 import beastfx.app.util.FXUtils;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -79,16 +79,20 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     		doc.addPlugin(operator);
     	}
 		fixMeanRatesCheckBox.setSelected(operators.contains(operator));
+		
 		HBox box = FXUtils.newHBox();
 		box.getChildren().add(fixMeanRatesCheckBox);
-		box.getChildren().add(new Separator());
+		// box.getChildren().add(new Separator());
 		fixMeanRatesValidateLabel = new SmallLabel("x", "green");
 		fixMeanRatesValidateLabel.setVisible(false);
 		box.getChildren().add(fixMeanRatesValidateLabel);
 		
 		
     	if (doc.alignments.size() >= 1 && operator != null) {
-    		pane.getChildren().add(box);
+    		VBox vbox = new VBox();
+    		vbox.getChildren().addAll(pane, box);
+    		pane = vbox;
+    		getChildren().add(vbox);
         	//Pane component = (Pane) getChildren().get(0);
     		//component.getChildren().add(box);
     	}

@@ -4,6 +4,7 @@ package beastfx.app.inputeditor;
 
 import java.util.List;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -51,6 +52,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
     	super.init(input, beastObject, itemNr, isExpandOption, addButtons);
     	m_beastObject = beastObject;
+    	pane.setPadding(new Insets(5));
     }
 
     @Override
@@ -162,7 +164,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 				}
             }            
             
-            paramBox.getChildren().add(new Separator());
+            // paramBox.getChildren().add(new Separator());
 
             m_isEstimatedBox = new CheckBox(doc.beautiConfig.getInputLabel(parameter, parameter.isEstimatedInput.getName()));
             m_isEstimatedBox.setId(input.getName() + ".isEstimated");

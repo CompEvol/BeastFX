@@ -7,16 +7,13 @@ import java.util.Set;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -39,12 +36,6 @@ public class ListInputEditor extends InputEditor.Base {
         try {
         	DOWN_ICON = FXUtils.getIcon(ICONPATH + "down.png").getImage();
         	RIGHT_ICON = FXUtils.getIcon(ICONPATH + "right.png").getImage();
-//            java.net.URL downURL = ListInputEditor.class.getClassLoader().getResource(ICONPATH + "down.png");
-//            if (downURL != null)
-//            	DOWN_ICON = ImageIO.read(downURL); 
-//            java.net.URL rightURL = ListInputEditor.class.getClassLoader().getResource(ICONPATH + "right.png");
-//            if (rightURL != null)
-//            	RIGHT_ICON = ImageIO.read(rightURL);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,7 +52,6 @@ public class ListInputEditor extends InputEditor.Base {
     protected List<SmallButton> m_editButton;
     protected List<SmallLabel> m_validateLabels;
     protected VBox m_listBox;
-    private int rowCount;
     protected ExpandOption m_bExpandOption;
 
     // the box containing any buttons
@@ -143,7 +133,6 @@ public class ListInputEditor extends InputEditor.Base {
 
         m_listBox = FXUtils.newVBox();
         // list of inputs
-        rowCount = 1;
         for (Object o : (List<?>) input.get()) {
             if (o instanceof BEASTInterface) {
                 BEASTInterface beastObject2 = (BEASTInterface) o;
@@ -263,7 +252,6 @@ public class ListInputEditor extends InputEditor.Base {
 //        		editButton.setVisible(false);
 //        	} else {
 	                //itemBox = box2;
-	                rowCount++;
 	                // m_listBox.add(expandBox, 0, rowCount);
 	            if (g_collapsedIDs.contains(beastObject.getID())) {
             		expandBox.setPrefHeight(0);
@@ -347,9 +335,9 @@ System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
         }
         Label label = new Label(name);
 
-        itemBox.getChildren().add(new Separator());
+        //itemBox.getChildren().add(new Separator());
         itemBox.getChildren().add(label);
-        itemBox.getChildren().add(new Separator());
+        //itemBox.getChildren().add(new Separator());
         return this;
     }
 
@@ -422,8 +410,8 @@ System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
             dlg.accept((BEASTInterface) o, doc);
             refreshPanel();
         }
-        BEASTObjectPanel.m_position.x -= 20;
-        BEASTObjectPanel.m_position.y -= 20;
+        //BEASTObjectPanel.m_position.x -= 20;
+        //BEASTObjectPanel.m_position.y -= 20;
         validateAllEditors();
         updateState();
         //doLayout();

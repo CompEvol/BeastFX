@@ -1,10 +1,9 @@
 package beastfx.app.beauti;
 
 
+
 import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.Box;
 
 import javafx.geometry.Dimension2D;
 import javafx.scene.control.Button;
@@ -13,18 +12,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-
-import javax.swing.JPanel;
-import javax.swing.text.StyledEditorKit.FontSizeAction;
 
 import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiSubTemplate;
 import beastfx.app.inputeditor.InputEditor;
-import beastfx.app.inputeditor.InputEditor.Base;
-import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -34,7 +27,6 @@ import beast.base.inference.parameter.RealParameter;
 import beast.base.parser.PartitionContext;
 
 public class PriorInputEditor extends InputEditor.Base {
-	private static final long serialVersionUID = 1L;
 
 	public PriorInputEditor(BeautiDoc doc) {
 		super(doc);
@@ -123,7 +115,7 @@ public class PriorInputEditor extends InputEditor.Base {
                     refreshPanel();
                 }
             });
-            itemBox.getChildren().add(new Separator());
+            // itemBox.getChildren().add(new Separator());
             itemBox.getChildren().add(rangeButton);
         } else if (prior.m_x.get() instanceof IntegerParameter) {
             // add range button for real parameters
