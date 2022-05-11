@@ -323,7 +323,6 @@ public class TaxonSetListInputEditor extends ListInputEditor implements TreeMode
 	}
 
 	public class TreeTransferHandler extends TransferHandler {
-		private static final long serialVersionUID = 1L;
 
 		DataFlavor nodesFlavor;
 		DataFlavor[] flavors = new DataFlavor[1];

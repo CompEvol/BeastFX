@@ -222,7 +222,6 @@ public class JPackageRepositoryDialog extends DialogPane {
      * Class of tables containing the current list of package repositories.
      */
 //    class RepoTableModel extends AbstractTableModel {
-//		private static final long serialVersionUID = 1L;
 //		
 //		public List<URL> urls;
 //

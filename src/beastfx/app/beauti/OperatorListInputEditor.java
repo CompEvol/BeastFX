@@ -1,20 +1,16 @@
 package beastfx.app.beauti;
 
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
-import javax.swing.Box;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -24,8 +20,6 @@ import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.ListInputEditor;
 import beastfx.app.util.FXUtils;
-import beastfx.app.inputeditor.InputEditor.ButtonStatus;
-import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.inference.Operator;
@@ -86,7 +80,7 @@ public class OperatorListInputEditor extends ListInputEditor {
         m_entries.add(entry);
         entry.setBackground(getBackground());
         entry.setBorder(null);
-        itemBox.getChildren().add(new Separator());//Box.createRigidArea(new Dimension(5, 1)));
+        // itemBox.getChildren().add(new Separator());//Box.createRigidArea(new Dimension(5, 1)));
         itemBox.getChildren().add(entry);
         entry.setEditable(false);
 
@@ -97,7 +91,7 @@ public class OperatorListInputEditor extends ListInputEditor {
 //        itemBox.add(label);
 
 
-        itemBox.getChildren().add(new Separator());
+        // itemBox.getChildren().add(new Separator());
         TextField weightEntry = new TextField();
         weightEntry.setTooltip(new Tooltip(operator.m_pWeight.getHTMLTipText()));
         weightEntry.setText(operator.m_pWeight.get() + "");

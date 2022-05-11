@@ -2,6 +2,7 @@ package beastfx.app.beauti;
 
 
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,7 +11,6 @@ import java.util.Set;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import beastfx.app.util.Alert;
@@ -134,10 +134,6 @@ public class PriorListInputEditor extends ListInputEditor {
 	        buttonBox.alignmentProperty().set(Pos.CENTER);
 	        buttonBox.getChildren().add(addButton);
         }
-        
-//        ScrollPane scroller = new ScrollPane();
-//        scroller.setContent(pane);
-//        getChildren().set(0, scroller);
     }
 
 

@@ -511,7 +511,6 @@ public class JPackageDialog extends DialogPane {
     }
 
 //	class DataTableModel extends AbstractTableModel {
-//		private static final long serialVersionUID = 1L;
 //
 //		String[] columnNames = {"Name", "Installed", "Latest", "Dependencies", "Link", "Detail"};
 //
@@ -608,7 +607,6 @@ public class JPackageDialog extends DialogPane {
 	DialogPane dlgPane = null;
 
 //    class PackageTable extends TableView<Package> {
-//		private static final long serialVersionUID = 1L;
 //
 //        Map<Package, PackageVersion> packagesToInstall = new HashMap<>();
 //

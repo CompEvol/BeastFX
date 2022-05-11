@@ -1,23 +1,18 @@
 package beastfx.app.beauti;
 
 
-import java.awt.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import beastfx.app.inputeditor.BeautiDoc;
-import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.ListInputEditor;
 import beastfx.app.inputeditor.SmallLabel;
 import beastfx.app.util.FXUtils;
-import beastfx.app.inputeditor.InputEditor.ButtonStatus;
-import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -34,7 +29,6 @@ import beast.base.inference.parameter.RealParameter;
 
 
 public class ClockModelListInputEditor extends ListInputEditor {
-    private static final long serialVersionUID = 1L;
     List<TextField> textFields = new ArrayList<>();
     List<Operator> operators = new ArrayList<>();
 
@@ -102,7 +96,7 @@ public class ClockModelListInputEditor extends ListInputEditor {
 		fixMeanRatesCheckBox.setSelected(operators.contains(operator));
 		HBox box = FXUtils.newHBox();
 		box.getChildren().add(fixMeanRatesCheckBox);
-		box.getChildren().add(new Separator());
+		// box.getChildren().add(new Separator());
 		fixMeanRatesValidateLabel = new SmallLabel("x", "green");
 		fixMeanRatesValidateLabel.setVisible(false);
 		box.getChildren().add(fixMeanRatesValidateLabel);

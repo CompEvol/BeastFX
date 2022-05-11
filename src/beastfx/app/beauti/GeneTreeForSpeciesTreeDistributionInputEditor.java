@@ -1,11 +1,10 @@
 package beastfx.app.beauti;
 
 
+
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.util.FXUtils;
@@ -42,7 +41,7 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
         	id = id.substring(id.indexOf(".t:") + 3);
         }
         pane.getChildren().add(new Label("Gene Tree " + id));
-        pane.getChildren().add(new Separator());
+        // pane.getChildren().add(new Separator());
         getChildren().add(pane);
 	}
 	
@@ -53,7 +52,6 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
 	
 	public InputEditor createPloidyEditor() {
 		InputEditor editor = new InputEditor.Base(doc) {
-			private static final long serialVersionUID = 1L;
 
 			@Override
 			public Class<?> type() {
@@ -89,7 +87,7 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
 	                });
 	            m_selectBeastObjectBox.setTooltip(new Tooltip(input.getHTMLTipText()));
 	            pane.getChildren().add(m_selectBeastObjectBox);
-	            pane.getChildren().add(new Separator());
+	            // pane.getChildren().add(new Separator());
 			}
 
 			private void setSelection() {

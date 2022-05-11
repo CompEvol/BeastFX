@@ -1,16 +1,14 @@
 package beastfx.app.inputeditor;
 
 
+
 import java.io.File;
 
-import beastfx.app.inputeditor.BeautiDoc;
 import beast.app.util.LogFile;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 
 public class LogFileInputEditor extends FileInputEditor {
-	
-	private static final long serialVersionUID = 1L;
 
 	@Override
 	public Class<?> type() {

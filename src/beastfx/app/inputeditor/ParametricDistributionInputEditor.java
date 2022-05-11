@@ -62,6 +62,8 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 		this.itemNr = itemNr;
         if (input.get() != null) {
             super.init(input, beastObject, itemNr, ExpandOption.TRUE, addButtons);
+        } else {
+        	pane = new HBox();
         }
         Pane pane1 = pane;
         registerAsListener(pane);        

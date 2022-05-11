@@ -907,7 +907,6 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		// table.setItems(tableEntries);
 		
 //		table = new JTable(tableData, columnData) {
-//			private static final long serialVersionUID = 1L;
 //
 //			// method that induces table row shading
 //			@Override
@@ -1470,7 +1469,6 @@ public class AlignmentListInputEditor extends ListInputEditor {
 //	}
 
 //	public class MyCheckBoxRenderer extends Button implements TableCellRenderer {
-//		private static final long serialVersionUID = 1L;
 //
 //		public MyCheckBoxRenderer() {
 //			super();

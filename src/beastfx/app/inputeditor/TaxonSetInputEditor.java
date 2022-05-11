@@ -208,7 +208,6 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         
         
 //        		new JTable(m_model) {
-//            private static final long serialVersionUID = 1L;
 //
 //            // method that induces table row shading
 //            @Override

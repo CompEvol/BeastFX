@@ -1,6 +1,7 @@
 package beastfx.app.inputeditor;
 
 
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,14 +15,11 @@ import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.core.Input.Validate;
-import beast.base.inference.ModelLogger;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 import beastfx.app.inputeditor.InputEditor.ButtonStatus;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beastfx.app.util.Alert;
-import javafx.geometry.Orientation;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 
 

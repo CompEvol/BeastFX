@@ -3,14 +3,11 @@ package beastfx.app.inputeditor;
 
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.File;
 
 import javafx.scene.control.Button;
 
-import beastfx.app.inputeditor.BeautiDoc;
-import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.util.FXUtils;
 import beast.app.util.OutFile;
 import beast.app.util.Utils;
@@ -19,8 +16,6 @@ import beast.base.core.Input;
 import beast.base.core.ProgramStatus;
 
 public class OutFileInputEditor extends InputEditor.Base {
-	
-	private static final long serialVersionUID = 1L;
 
 	@Override
 	public Class<?> type() {

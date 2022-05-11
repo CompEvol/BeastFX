@@ -2,16 +2,14 @@ package beastfx.app.inputeditor;
 
 
 
+
 import java.io.File;
 
-import beastfx.app.inputeditor.BeautiDoc;
 import beast.app.util.TreeFile;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 
 public class TreeFileInputEditor extends FileInputEditor {
-	
-	private static final long serialVersionUID = 1L;
 
 	@Override
 	public Class<?> type() {

@@ -2,6 +2,7 @@ package beastfx.app.beauti;
 
 
 
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,7 +10,6 @@ import javafx.geometry.Dimension2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
@@ -134,7 +134,7 @@ public class PriorInputEditor extends InputEditor.Base {
                     refreshPanel();
                 }
             });
-            itemBox.getChildren().add(new Separator());
+            // itemBox.getChildren().add(new Separator());
             itemBox.getChildren().add(rangeButton);
         }
         int fontsize = (int) comboBox.getEditor().getFont().getSize();
@@ -146,7 +146,7 @@ public class PriorInputEditor extends InputEditor.Base {
             Label tipTextLabel = new Label(" " + tipText);
             itemBox.getChildren().add(tipTextLabel);
         }
-        itemBox.getChildren().add(new Separator());
+        // itemBox.getChildren().add(new Separator());
 
         pane.getChildren().add(itemBox);
         getChildren().add(pane);

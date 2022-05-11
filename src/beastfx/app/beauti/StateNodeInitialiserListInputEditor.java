@@ -1,16 +1,12 @@
 package beastfx.app.beauti;
 
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.Pane;
 
 import javax.swing.SwingUtilities;
@@ -29,7 +25,6 @@ import beast.base.inference.StateNodeInitialiser;
 import beast.base.parser.PartitionContext;
 
 public class StateNodeInitialiserListInputEditor extends ListInputEditor {
-	private static final long serialVersionUID = 1L;
 
 	public StateNodeInitialiserListInputEditor(BeautiDoc doc) {
 		super(doc);
@@ -121,12 +116,12 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 		}
 		Label label = new Label("Initial " + name + ":");
 
-		itemBox.getChildren().add(new Separator());// Box.createRigidArea(new Dimension(5, 1)));
+		// itemBox.getChildren().add(new Separator());// Box.createRigidArea(new Dimension(5, 1)));
 		itemBox.getChildren().add(label);
 		if (comboBox != null) {
 			itemBox.getChildren().add(comboBox);
 		}
-		itemBox.getChildren().add(new Separator());
+		// itemBox.getChildren().add(new Separator());
 		return this;
 	}
 

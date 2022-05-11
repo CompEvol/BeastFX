@@ -211,7 +211,6 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     public InputEditor createProportionInvariantEditor() {
         final Input<?> input = ((SiteModel) m_input.get()).invarParameterInput;
         inVarEditor = new ParameterInputEditor(doc) {
-			private static final long serialVersionUID = 1L;
 
 			@Override
             public void validateInput() {

@@ -11,7 +11,6 @@ import beast.base.inference.StateNode;
 
 
 public class StateNodeListInputEditor extends ListInputEditor {
-	private static final long serialVersionUID = 1L;
 
 	public StateNodeListInputEditor(BeautiDoc doc) {
 		super(doc);

@@ -1,15 +1,14 @@
 package beastfx.app.beauti;
 
 
+
 import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
 
 import javax.swing.SwingUtilities;
 
@@ -133,7 +132,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
                 });
             });
         itemBox.getChildren().add(comboBox);
-        itemBox.getChildren().add(new Separator());
+        // itemBox.getChildren().add(new Separator());
 
         m_validateLabel = new SmallLabel("x", "red");
         m_validateLabel.setVisible(false);

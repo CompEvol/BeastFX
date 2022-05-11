@@ -289,7 +289,6 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         // special features: background shading of rows
         // custom editor allowing only Date column to be edited.
 //        table = new JTable(tableData, columnData) {
-//            private static final long serialVersionUID = 1L;
 //
 //            // method that induces table row shading
 //            @Override

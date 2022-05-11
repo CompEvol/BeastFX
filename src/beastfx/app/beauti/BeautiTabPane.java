@@ -1186,6 +1186,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             getTabs().add(panels[panelIndex]);
             getTabs().get(panelIndex).setTooltip(new Tooltip(panelConfig.getTipText()));
             getTabs().get(panelIndex).setText(panelConfig.getName());
+            getTabs().get(panelIndex).setId(panelConfig.getName());
         }
 
         for (int panelIndex = doc.beautiConfig.panels.size() - 1; panelIndex >= 0; panelIndex--) {
@@ -1485,6 +1486,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             // // beauti.addPropertyChangeListener(plistener);
 
 //        	Utils6.endSplashScreen();
+            beauti.setId("BeautiTabPane");
             return beauti;
         } catch (Exception e) {
             e.printStackTrace();

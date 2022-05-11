@@ -1,7 +1,6 @@
 package beastfx.app.inputeditor;
 
 public class StringInputEditor extends InputEditor.Base {
-    private static final long serialVersionUID = 1L;
 
     //public StringInputEditor()) {}
     public StringInputEditor(BeautiDoc doc) {

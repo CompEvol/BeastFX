@@ -1,11 +1,8 @@
 package beastfx.app.beauti;
 
-import javax.swing.Box;
-import javax.swing.JComponent;
 
 import beastfx.app.inputeditor.BEASTObjectInputEditor;
 import beastfx.app.inputeditor.BeautiDoc;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.Pane;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -38,6 +35,6 @@ public class SpeciesTreePriorInputEditor extends BEASTObjectInputEditor {
     	String label = "Species Tree Population Size";
     	addInputLabel(label, label);
     	m_bAddButtons = false;
-    	getChildren().add(new Separator());
+    	// getChildren().add(new Separator());
     }
 }
