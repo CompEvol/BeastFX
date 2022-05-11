@@ -20,6 +20,7 @@ import beast.pkgmgmt.PackageManager;
 import beastfx.app.inputeditor.InputEditor.ButtonStatus;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 import beastfx.app.util.Alert;
+import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
 
@@ -264,6 +265,7 @@ public class InputEditorFactory {
         // ((JComponent) inputEditor).setBorder(BorderFactory.createEmptyBorder());
         inputEditor.getComponent().setVisible(true);
         //Log.trace.println(inputEditor.getClass().getName());
+        ((Node)inputEditor).setId(input.getName());
         return inputEditor;
     } // createInputEditor
 

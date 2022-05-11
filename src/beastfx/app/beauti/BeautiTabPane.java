@@ -1186,7 +1186,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             getTabs().add(panels[panelIndex]);
             getTabs().get(panelIndex).setTooltip(new Tooltip(panelConfig.getTipText()));
             getTabs().get(panelIndex).setText(panelConfig.getName());
-            getTabs().get(panelIndex).setId(panelConfig.getName());
+            getTabs().get(panelIndex).setId(panelConfig.getName().replaceAll(" ",""));
         }
 
         for (int panelIndex = doc.beautiConfig.panels.size() - 1; panelIndex >= 0; panelIndex--) {

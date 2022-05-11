@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.params.shadow.com.univocity.parsers.common.processor.ConcurrentRowProcessor;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -32,7 +33,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
-
+import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.scene.control.TextField;
@@ -45,7 +46,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-
+import javafx.util.Callback;
 import beast.app.util.FileDrop;
 import beast.app.util.PartitionContextUtil;
 import beast.base.core.BEASTInterface;
@@ -1212,7 +1213,12 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	        case 0: 
 	        	column.setCellValueFactory(cellData -> cellData.getValue().siteModelProperty());
 	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[0]));
-//			    
+	        	column.setCellFactory(col -> {
+	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[0]);
+	        		cell.setId("cell-" + 0 + "-" + SITEMODEL_COLUMN);
+	        		return cell;
+	        	});
+
 //	        	column.setCellValueFactory(i -> {
 //			        final StringProperty value = i.getValue().siteModelProperty();
 //			        return Bindings.createObjectBinding(() -> value);
@@ -1240,6 +1246,11 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	    	case 1: 
 	        	column.setCellValueFactory(cellData -> cellData.getValue().clockModelProperty());
 	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[1]));
+	        	column.setCellFactory(col -> {
+	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[1]);
+	        		cell.setId("cell-" + 0 + "-" + CLOCKMODEL_COLUMN);
+	        		return cell;
+	        	});
 //			    column.setCellValueFactory(i -> {
 //			        final StringProperty value = i.getValue().clockModelProperty();
 //			        return Bindings.createObjectBinding(() -> value);
@@ -1266,6 +1277,11 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	    	case 2: 
 	        	column.setCellValueFactory(cellData -> cellData.getValue().treeProperty());
 	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[2]));
+	        	column.setCellFactory(col -> {
+	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[2]);
+	        		cell.setId("cell-" + 0 + "-" + TREE_COLUMN);
+	        		return cell;
+	        	});
 //			    column.setCellValueFactory(i -> {
 //			        final StringProperty value = i.getValue().treeProperty();
 //			        return Bindings.createObjectBinding(() -> value);
