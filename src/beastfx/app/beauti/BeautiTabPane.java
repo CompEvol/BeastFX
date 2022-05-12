@@ -747,6 +747,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         modeMenu.setMnemonicParsing(true);
 
         autoSetClockRate = new CheckMenuItem("Automatic set clock rate");
+        autoSetClockRate.setId("autoSetClockRate");
         autoSetClockRate.setSelected(this.doc.autoSetClockRate);
         autoSetClockRate.setOnAction(ae -> {
                 doc.autoSetClockRate = autoSetClockRate.isSelected();
@@ -755,6 +756,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         modeMenu.getItems().add(autoSetClockRate);
 
         allowLinking = new CheckMenuItem("Allow parameter linking");
+        allowLinking.setId("allowLinking");
         allowLinking.setSelected(this.doc.allowLinking);
         allowLinking.setOnAction(ae -> {
                 doc.allowLinking = allowLinking.isSelected();
@@ -764,6 +766,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         modeMenu.getItems().add(allowLinking);
 
         autoUpdateFixMeanSubstRate = new CheckMenuItem("Automatic set fix mean substitution rate flag");
+        autoUpdateFixMeanSubstRate.setId("autoUpdateFixMeanSubstRate");
         autoUpdateFixMeanSubstRate.setSelected(this.doc.autoUpdateFixMeanSubstRate);
         autoUpdateFixMeanSubstRate.setOnAction(ae -> {
                 doc.autoUpdateFixMeanSubstRate = autoUpdateFixMeanSubstRate.isSelected();

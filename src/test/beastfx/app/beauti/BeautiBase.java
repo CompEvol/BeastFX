@@ -24,17 +24,22 @@ import org.testfx.framework.junit5.Start;
 
 import beastfx.app.beauti.Beauti;
 import beastfx.app.beauti.BeautiTabPane;
+import beastfx.app.inputeditor.AlignmentListInputEditor;
 import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
+import beast.app.beauti.BeautiPanel;
 import beast.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
@@ -408,6 +413,11 @@ public class BeautiBase extends Beauti {
 	        table.getFocusModel().focus(rows[0]);
 			
 			if (table.getSelectionModel().getSelectedIndices().size() == rows.length) {
+				Parent p = table;
+				while (p != null & !(p instanceof AlignmentListInputEditor)) {
+					p = p.getParent();
+				}
+				((AlignmentListInputEditor)p).updateStatus();
 				return;
 			}
 			try {
@@ -430,6 +440,16 @@ public class BeautiBase extends Beauti {
 		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
 		int rowCount = table.getItems().size();
 		return rowCount;
+	}
+
+	protected void clickOnButton(FxRobot robot, String buttonText) {
+		Node node = (Node) robot.lookup(target -> {
+			if (target instanceof Button) {
+				return buttonText.equals(((Button)target).getText());
+			}
+		    return false;
+		}).queryAs(Node.class);
+		robot.clickOn(node);
 	}
 
 }

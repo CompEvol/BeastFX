@@ -14,6 +14,7 @@ import org.testfx.framework.junit5.Start;
 
 import beast.app.util.Utils;
 import beastfx.app.beauti.BeautiTabPane;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
@@ -33,33 +34,6 @@ public class LinkUnlinkTest extends BeautiBase {
 		}
     }
 	
-	
-	protected void clickOn(FxRobot robot, String buttonText) {
-//		robot.clickOn(".button[text=\""+buttonText+"\"]");
-		Node node = (Node) robot.lookup(target -> {
-			if (target instanceof Button) {
-				return buttonText.equals(((Button)target).getText());
-			}
-		    return false;
-		}).queryAs(Node.class);
-		
-////		Node node = robot.lookup(new BaseMatcher<Node>() {
-////			  @Override
-////			  public boolean matches(Object target)
-////			  {
-////				if (target instanceof Button) {
-////					return buttonText.equals(((Button)target).getText());
-////				}
-////			    return false;
-////			  }
-////
-////			@Override
-////			public void describeTo(Description arg0) {
-////			}
-////		}).query();
-//
-		robot.clickOn(node);
-	}
 
 	@Test
 	public void simpleLinkUnlinkTwoAlignmentTest(FxRobot robot) throws Exception {
@@ -73,12 +47,12 @@ public class LinkUnlinkTest extends BeautiBase {
 		
 		warning("Link site models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Site Models");
+		clickOnButton(robot, "Link Site Models");
 		printBeautiState();
 
 		warning("Unlink site models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Unlink Site Models");
+		clickOnButton(robot, "Unlink Site Models");
 		printBeautiState();
 		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47");
 		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47");
@@ -87,12 +61,12 @@ public class LinkUnlinkTest extends BeautiBase {
 		
 		warning("Link clock models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 		printBeautiState();
 
 		warning("Unlink clock models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Unlink Clock Models");
+		clickOnButton(robot, "Unlink Clock Models");
 		printBeautiState();
 		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47");
 		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47");
@@ -101,12 +75,12 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 
 		warning("Unlink trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Unlink Trees");
+		clickOnButton(robot, "Unlink Trees");
 		printBeautiState();
 		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47");
 		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47");
@@ -132,12 +106,12 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link site models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Site Models");
+		clickOnButton(robot, "Link Site Models");
 		printBeautiState();
 
 		warning("Unlink site models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Unlink Site Models");
+		clickOnButton(robot, "Unlink Site Models");
 		printBeautiState();
 		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
 		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
@@ -146,12 +120,12 @@ public class LinkUnlinkTest extends BeautiBase {
 		
 		warning("Link clock models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 		printBeautiState();
 
 		warning("Unlink clock models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Unlink Clock Models");
+		clickOnButton(robot, "Unlink Clock Models");
 		printBeautiState();
 		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
 		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
@@ -160,12 +134,12 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 
 		warning("Unlink trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Unlink Trees");
+		clickOnButton(robot, "Unlink Trees");
 		printBeautiState();
 		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
@@ -188,13 +162,13 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26");
 		
@@ -213,14 +187,14 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "ClockPrior.c:47");
 
 		warning("Delete first partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 0);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26");
 		
@@ -234,16 +208,15 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		// JTabbedPaneFixture f = beautiFrame.tabbedPane();
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "clockRate.c:59", "YuleModel.t:59", "birthRate.t:59");
-
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47", "Tree.t:59", "birthRate.t:59");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "YuleModel.t:59", "birthRate.t:59");
 		selectPartitions(robot, 2, 1, 0);
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "ClockPrior.c:47", "ClockPrior.c:59");
 		makeSureXMLParses();
@@ -251,7 +224,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		warning("Delete second partition (47)");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "ClockPrior.c:59");
 		makeSureXMLParses();
@@ -259,7 +232,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		warning("Delete first partition (26)");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 0);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26");
 
@@ -283,27 +256,27 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 
 		warning("Link clocks");
 		selectPartitions(robot, 0, 1, 2);
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 		printBeautiState();
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 
 		warning("Delete first partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 0, 1);
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 		selectPartitions(robot, 0);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26");
 
@@ -328,7 +301,7 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 
 		assertParameterCountInPriorIs(3);
@@ -342,11 +315,11 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		warning("Link site models");
 		selectPartitions(robot, 0, 1, 2);
-		clickOn(robot, "Link Site Models");
+		clickOnButton(robot, "Link Site Models");
 		printBeautiState();
 
 		assertParameterCountInPriorIs(7);		
-		clickOn(robot, "Unlink Site Models");
+		clickOnButton(robot, "Unlink Site Models");
 
 		printBeautiState();
 		assertParameterCountInPriorIs(15);		
@@ -354,7 +327,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 
 		assertParameterCountInPriorIs(10);		
@@ -362,9 +335,9 @@ public class LinkUnlinkTest extends BeautiBase {
 		warning("Delete first partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 0, 1);
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 		selectPartitions(robot, 0);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "KappaPrior.s:59", "FrequenciesPrior.s:59");		
 		assertParameterCountInPriorIs(5);
@@ -396,12 +369,12 @@ public class LinkUnlinkTest extends BeautiBase {
 		warning("Link trees");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1, 0);
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 		assertPriorsEqual("CoalescentConstant.t:26", "ClockPrior.c:47", "PopSizePrior.t:26");
 
 		warning("Unlink trees");
-		clickOn(robot, "Unlink Trees");
+		clickOnButton(robot, "Unlink Trees");
 		// should have PopSizePrior.t:47 as well?
 		assertPriorsEqual("CoalescentConstant.t:26", "CoalescentConstant.t:47", "ClockPrior.c:47", "PopSizePrior.t:26", "PopSizePrior.t:47");
 		
@@ -415,7 +388,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		warning("Delete partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 0);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("CoalescentConstant.t:47", "PopSizePrior.t:47");
 
@@ -435,13 +408,13 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link clocks");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 		printBeautiState();
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
 
@@ -463,13 +436,13 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link clocks");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Site Models");
+		clickOnButton(robot, "Link Site Models");
 		printBeautiState();
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
 
@@ -491,17 +464,17 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link clocks");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 
 		warning("Link site models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Site Models");
+		clickOnButton(robot, "Link Site Models");
 		printBeautiState();
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
 
@@ -523,22 +496,22 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link clocks");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 
 		warning("Link site models");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Site Models");
+		clickOnButton(robot, "Link Site Models");
 		printBeautiState();
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26");
 
@@ -560,12 +533,15 @@ public class LinkUnlinkTest extends BeautiBase {
 //			execute(new GuiTask() {
 //		        @Override
 //				protected void executeInEDT() {
+			Platform.runLater(() -> {
 		        	try {
 		    			doc.loadNewTemplate(TEMPLATE_DIR +"/StarBeast.xml");
 		    			doc.beauti.refreshPanel();
 		        	} catch (Exception e) {
 						e.printStackTrace();
 					}
+			});
+			Thread.sleep(500);
 //		        }
 //		    });
 		}
@@ -582,13 +558,13 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Trees");
+		clickOnButton(robot, "Link Trees");
 		printBeautiState();
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 1);
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 		printBeautiState();
 //		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26");
 		
@@ -611,9 +587,9 @@ public class LinkUnlinkTest extends BeautiBase {
 
 		warning("Link clocks");
 		selectTab(robot, "Partitions");
-		clickOn(robot, "Link Clock Models");
+		clickOnButton(robot, "Link Clock Models");
 		
-		clickOn(robot, "-");
+		clickOnButton(robot, "-");
 
 		// JTableFixture t = beautiFrame.table();
 		Assertions.assertThat(getPartitionCount(robot)).isEqualTo(0);

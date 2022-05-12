@@ -1770,7 +1770,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	} // splitItem
 
 	/** enable/disable buttons, etc **/
-	void updateStatus() {
+	public void updateStatus() {
 		boolean status = (alignments.size() > 1);
 		if (alignments.size() >= 2 && getTableRowSelection().size() == 0) {
 			status = false;
