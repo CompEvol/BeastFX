@@ -736,11 +736,13 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
     public MenuBar createMenuBar() {
         MenuBar menuBar = new MenuBar();
         fileMenu = new Menu("_File");
+        fileMenu.setId("File");
         fileMenu.setMnemonicParsing(true);
         menuBar.getMenus().add(fileMenu);
         createFileMenu();
 
         Menu modeMenu = new Menu("Mode");
+        modeMenu.setId("Mode");
         menuBar.getMenus().add(modeMenu);
         modeMenu.setMnemonicParsing(true);
 
@@ -780,11 +782,13 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         // modeMenu.add(muteSound);
 
         viewMenu = new Menu("_View");
+        viewMenu.setId("View");
         menuBar.getMenus().add(viewMenu);
         viewMenu.setMnemonicParsing(true);
         setUpViewMenu();
 
         Menu helpMenu = new Menu("_Help");
+        helpMenu.setId("Help");
         menuBar.getMenus().add(helpMenu);
         helpMenu.setMnemonicParsing(true);
         helpMenu.getItems().add(a_help);
@@ -849,6 +853,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         addAlignmentProviderMenus(fileMenu);
         fileMenu.getItems().add(new SeparatorMenuItem());
         templateMenu = new Menu("Template");
+        templateMenu.setId("Template");
         fileMenu.getItems().add(templateMenu);
         List<MyAction> templateActions = getTemplateActions();
         for (MenuItem a : templateActions) {
@@ -1013,6 +1018,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
                     i, m_sFileName.length() - 4);
             //putValue(Action.NAME, name);
             setText(name);
+            setId(name.replaceAll(" ", ""));
             //((Label)getContent()).setText(name);
             try {
                 DocumentBuilderFactory factory = DocumentBuilderFactory

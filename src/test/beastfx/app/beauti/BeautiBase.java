@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
@@ -393,5 +394,42 @@ public class BeautiBase extends Beauti {
 	}
 
 
+
+	/** robustly select rows in partition table -- don't give up after first attempt **/
+	protected void selectPartitions(FxRobot robot, int ... rows) {
+		robot.clickOn("#Partitions");
+
+		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
+		
+		for (int attempt = 0; attempt < 5; attempt++) {
+			robot.bounds(table); //table.requestFocus();
+	        table.getSelectionModel().clearSelection();
+	        table.getSelectionModel().selectIndices(rows[0], rows);
+	        table.getFocusModel().focus(rows[0]);
+			
+			if (table.getSelectionModel().getSelectedIndices().size() == rows.length) {
+				return;
+			}
+			try {
+				Thread.sleep(500);
+			} catch (Exception e) {
+				
+			}
+		}
+	}
+	
+	protected void selectTab(FxRobot robot, String tab) {
+		tab = tab.replaceAll(" ", "");
+		robot.clickOn("#" + tab);
+
+	}
+	
+	protected int getPartitionCount(FxRobot robot) {
+		robot.clickOn("#Partitions");
+
+		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
+		int rowCount = table.getItems().size();
+		return rowCount;
+	}
 
 }
