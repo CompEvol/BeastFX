@@ -1,5 +1,6 @@
 package beastfx.app.inputeditor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beastfx.app.util.FXUtils;
+import javafx.application.Platform;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -445,10 +447,12 @@ public abstract class Base extends Pane implements InputEditor {
         Object c = this;
         while (c instanceof Parent && ((Parent)c).getParent() != null) {
             c = ((Parent)c).getParent();
-            if (c instanceof BeautiPanel) {
-                BeautiPanel panel = (BeautiPanel) c;
+            if (c instanceof BeautiTabPane) {
+            	BeautiTabPane beauti = (BeautiTabPane) c;
+            	BeautiPanel panel = beauti.getCurrentPanel();
                 BeautiPanelConfig cfgPanel = panel.config;
                 cfgPanel.sync(panel.partitionIndex);
+            	Platform.runLater(() ->	beauti.refreshPanel());
             }
         }
     }

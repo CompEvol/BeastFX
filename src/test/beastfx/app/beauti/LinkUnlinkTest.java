@@ -16,6 +16,7 @@ import beast.app.util.Utils;
 import beastfx.app.beauti.BeautiTabPane;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 @ExtendWith(ApplicationExtension.class)
@@ -575,6 +576,8 @@ public class LinkUnlinkTest extends BeautiBase {
 		// JTabbedPaneFixture f = beautiFrame.tabbedPane();
 		printBeautiState();
 
+		Thread.sleep(500);
+		robot.clickOn(robot.lookup(".table-view").queryAs(TableView.class));
 		selectPartitions(robot, 0, 1);
 
 		warning("Link trees");

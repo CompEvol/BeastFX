@@ -845,7 +845,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
 	private void createFileMenu() {
     	// first clear menu
-   		fileMenu.getItems().removeAll();
+   		fileMenu.getItems().clear();
 
         fileMenu.getItems().add(a_new);
         fileMenu.getItems().add(a_load);
@@ -944,7 +944,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 	
 	void setUpViewMenu() {
         m_viewPanelCheckBoxMenuItems = null;
-        viewMenu.getItems().removeAll();
+        viewMenu.getItems().clear();
         for (int panelIndex = 0; panelIndex < doc.beautiConfig.panels.size(); panelIndex++) {
             final ViewPanelCheckBoxMenuItem viewPanelAction = new ViewPanelCheckBoxMenuItem(
                     panelIndex);
@@ -1514,6 +1514,11 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 	@Override
 	public void autoUpdateFixMeanSubstRate(boolean flag) {
 		autoUpdateFixMeanSubstRate.setSelected(flag);		
+	}
+
+	@Override
+	public BeautiPanel getCurrentPanel() {
+		return currentTab;
 	}
 
 } // class Beauti
