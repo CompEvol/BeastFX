@@ -3,6 +3,7 @@ package test.beastfx.app.beauti;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public class BeautiSimpleTest extends BeautiBase {
 		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
 		String[][] tc = tableContents(table);
 		System.err.println(Arrays.toString(tc[0]));
-//		assertArrayEquals(tc[0],"[anolis, anolis, 29, 1456, nucleotide, anolis, anolis, anolis, false]");
+		assertEquals(Arrays.toString(tc[0]),"[anolis, anolis, 29, 1456, nucleotide, anolis, anolis, anolis, false]");
 		assertThat(f).isNotNull();
 		assertStateEquals("Tree.t:anolis", "birthRate.t:anolis");
 		assertOperatorsEqual("YuleBirthRateScaler.t:anolis", "YuleModelTreeScaler.t:anolis", "YuleModelTreeRootScaler.t:anolis", "YuleModelUniformOperator.t:anolis", "YuleModelSubtreeSlide.t:anolis", "YuleModelNarrow.t:anolis", "YuleModelWide.t:anolis", "YuleModelWilsonBalding.t:anolis");
@@ -78,7 +79,7 @@ public class BeautiSimpleTest extends BeautiBase {
 //		
 //		// Set the site model to HKY (estimated)
 		robot.clickOn("#SiteModel");
-//		JComboBoxFixture substModel = beautiFrame.comboBox("substModel");
+//		robot.clickOn("#substModel");
 		robot.clickOn("#substModel").clickOn("HKY");
 		//substModel.selectItem("HKY");
 		printBeautiState();
@@ -100,7 +101,7 @@ public class BeautiSimpleTest extends BeautiBase {
 ////		assertPriorsEqual("YuleModel.t:anolis", "YuleBirthRatePrior.t:anolis", "KappaPrior.s:anolis");
 ////		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:anolis", "YuleModel.t:anolis", "birthRate.t:anolis", "kappa.s:anolis", "freqParameter.s:anolis");
 ////
-////		f.selectTab("Site Model");
+////		selectTab(robot, "Site Model");
 ////		JCheckBoxFixture shapeIsEstimated = beautiFrame.checkBox("shape.isEstimated");
 ////		shapeIsEstimated.check();
 ////		printBeautiState(f);

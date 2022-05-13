@@ -261,27 +261,28 @@ public class BeautiBase extends Beauti {
 		System.err.println(traceLogAsString());
 	}
 
-//	void printTableContents(JTableFixture t) {
-//		String [][] contents = t.contents();
-//		for (int i = 0; i < contents.length; i++) {
-//			System.err.print("\"" + Arrays.toString(contents[i]));
-//			if (i < contents.length - 1) {
-//				System.err.print("*\" +");
-//			} else {
-//				System.err.print("\"");
-//			}
-//			System.err.println();
-//		}
-//	}
-//	
-//	void checkTableContents(JTableFixture t, String str) {
-//		String [][] contents = t.contents();
-//		String [] strs = str.split("\\*");
-//		assertThat(contents.length).as("tables do not match: different #rows").isEqualTo(strs.length);
-//		for (int i = 0; i < contents.length; i++) {
-//			assertArrayEquals(contents[i], strs[i]);
-//		}
-//	}
+	void printTableContents(FxRobot robot) {
+		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
+		String [][] contents = tableContents(table);
+		for (int i = 0; i < contents.length; i++) {
+			System.err.print("\"" + Arrays.toString(contents[i]));
+			if (i < contents.length - 1) {
+				System.err.print("*\" +");
+			} else {
+				System.err.print("\"");
+			}
+			System.err.println();
+		}
+	}
+	void checkTableContents(FxRobot robot, String str) {
+		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
+		String [][] contents = tableContents(table);
+		String [] strs = str.split("\\*");
+		assertThat(contents.length).as("tables do not match: different #rows").isEqualTo(strs.length);
+		for (int i = 0; i < contents.length; i++) {
+			assertArrayEquals(contents[i], strs[i]);
+		}
+	}
 
 	void warning(String str) {
 		System.err.println("\n\n=====================================================\n");
