@@ -4,6 +4,7 @@ package beastfx.app.inputeditor;
 
 
 
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -17,6 +18,8 @@ import beast.base.core.Input;
 import beast.base.evolution.tree.MRCAPrior;
 import beast.base.evolution.tree.TreeDistribution;
 import beast.base.inference.distribution.ParametricDistribution;
+import beast.base.inference.distribution.Prior;
+import beast.base.inference.parameter.RealParameter;
 import beastfx.app.util.FXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -262,10 +265,17 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             double[] yPoints = new double[points];
             double[] fyPoints = new double[points];
             double yMax = 0;
+            
+            RealParameter param = getRealParameter();
             for (int i = 0; i < points; i++) {
                 //try {
             	xPoints[i] = minValue + (xRange * i) / points;
-                fyPoints[i] = getDensityForPlot(m_distr, minValue + (xRange * i) / points);
+            	double y0 = minValue + (xRange * i) / points;
+            	if (param != null && (y0 < param.getLower() || y0 > param.getUpper())) {
+            		fyPoints[i] = 0;
+            	} else {
+            		fyPoints[i] = getDensityForPlot(m_distr, y0);
+            	}
                 //}
                 if (Double.isInfinite(fyPoints[i]) || Double.isNaN(fyPoints[i])) {
                     fyPoints[i] = 0;
@@ -467,7 +477,15 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         }
     }
 
-    private Node createGraph() {
+    public RealParameter getRealParameter() {
+    	if (m_beastObject instanceof Prior) {
+    		if (((Prior)m_beastObject).m_x.get() instanceof RealParameter) {
+    			return (RealParameter) ((Prior)m_beastObject).m_x.get();
+    		}
+    	}
+		return null;
+	}
+	private Node createGraph() {
     	
     	graphPanel = new PDPanel();
 //        int fsize = UIManager.getFont("Label.font").getSize();

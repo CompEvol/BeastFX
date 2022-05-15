@@ -10,6 +10,7 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
 import beastfx.app.beauti.BeautiTabPane;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -32,8 +33,8 @@ public class BeautiStarBeastTest extends BeautiBase {
 
 	@Test
 	public void simpleStarBeastTest(FxRobot robot) throws Exception {
-		ScreenshotTaker screenshotTaker = new ScreenshotTaker();
-		beauti.frame.setSize(1024, 640);
+//		ScreenshotTaker screenshotTaker = new ScreenshotTaker();
+//		beauti.frame.setSize(1024, 640);
 
 		String BASE_DIR = PREFIX.substring(0, PREFIX.lastIndexOf('/'));
 		for (File file : new File(BASE_DIR).listFiles()) {
@@ -44,12 +45,15 @@ public class BeautiStarBeastTest extends BeautiBase {
 		
 		// create screen-shot showing template menu item
 		warning("Select StarBeast template");
-		beautiFrame.menuItemWithPath("File", "Template").click();
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "selectTemplate.png");
-		JMenuItemFixture templateMenu = beautiFrame.menuItemWithPath("File", "Template", "StarBeast");
-		templateMenu.click();
+		robot.clickOn("#File").clickOn("Template");
+		//beautiFrame.menuItemWithPath("File", "Template").click();
+		screenshot( PREFIX + "selectTemplate.png");
+		robot.clickOn("#File").clickOn("Template").clickOn("StarBeast");
+		//JMenuItemFixture templateMenu = beautiFrame.menuItemWithPath("File", "Template", "StarBeast");
+		//templateMenu.click();
 		// remove menu from screen
-		beautiFrame.menuItemWithPath("File").click();
+		// beautiFrame.menuItemWithPath("File").click();
+		robot.clickOn("#File");
 		//JTabbedPaneFixture f = beautiFrame.tabbedPane();
 		selectTab(robot, "Priors");
 
@@ -58,74 +62,76 @@ public class BeautiStarBeastTest extends BeautiBase {
 		warning("1. Load gopher data 26.nex, 29.nex, 47.nex");
 		importAlignment(NEXUS_DIR, new File("26.nex"), new File("29.nex"), new File("47.nex"));
 
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "DataPartitions.png");
+		screenshot( PREFIX + "DataPartitions.png");
 		printBeautiState();
 
 		
 		// 2. Define Taxon sets
 		warning("2. Define taxon sets");
 		selectTab(robot, "Taxon sets");
-		beautiFrame.button("Guess").click();
-		JOptionPaneFixture dialog = new JOptionPaneFixture(robot());
+		robot.clickOn("Guess");
+		//JOptionPaneFixture dialog = new JOptionPaneFixture(robot());
 		//DialogFixture dialog = WindowFinder.findDialog("GuessTaxonSets").using(robot());
-		dialog.radioButton("split on character").click();
-		dialog.comboBox("splitCombo").selectItem("2");
-		dialog.textBox("SplitChar2").deleteText().enterText("_");
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "Guess_Taxonsets.png");
+		robot.clickOn("split on character");
+		robot.clickOn("#splitCombo").clickOn("2");
+		robot.clickOn("#SplitChar2"); robot.write("_");
+		screenshot( PREFIX + "Guess_Taxonsets.png");
 		//JButton okButton = dialog.robot.finder().find(JButtonMatcher.withText("OK"));
 		//new JButtonFixture(dialog.robot, okButton).click();
-		dialog.okButton().click();
+		robot.clickOn("#ok");
 		printBeautiState();
 
 		// 3. Set site model to HKY + empirical frequencies
 		warning("3. Set site model to HKY + empirical frequencies");
 		selectTab(robot, "Site Model");
+		ListView<?> list = robot.lookup(".list-view").queryAs(ListView.class);
 		for (int i = 0; i < 3; i++) {
-			beautiFrame.list().selectItem(i);
-			beautiFrame.comboBox("substModel").selectItem("HKY");
-			JComboBoxFixture freqs = beautiFrame.comboBox("frequencies");
-			freqs.selectItem("Empirical");
+			list.getSelectionModel().select(i);
+			//beautiFrame.list().selectItem(i);
+			robot.clickOn("substModel").clickOn("HKY");
+			robot.clickOn("frequencies").clickOn("Empirical");
 			//beautiFrame.checkBox("mutationRate.isEstimated").check();
 		}
 		//JCheckBoxFixture fixMeanMutationRate = beautiFrame.checkBox("FixMeanMutationRate");
 		//fixMeanMutationRate.check();
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "Site_Model.png");
+		screenshot( PREFIX + "Site_Model.png");
 		printBeautiState();
 		
 		// 4. Inspect clock models
 		warning("4. Inspect clock models");
+		list = robot.lookup(".list-view").queryAs(ListView.class);
 		selectTab(robot, "Clock Model");
-		beautiFrame.list().selectItem(0);
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "ClockModel1.png");
-		beautiFrame.list().selectItem(1);
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "ClockModel2.png");
-		beautiFrame.list().selectItem(2);
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "ClockModel3.png");
+		list.getSelectionModel().select(0);
+		screenshot( PREFIX + "ClockModel1.png");
+		list.getSelectionModel().select(1);
+		screenshot( PREFIX + "ClockModel2.png");
+		list.getSelectionModel().select(2);
+		screenshot( PREFIX + "ClockModel3.png");
 		
 		// 5. Inspect multispecies coalescent
 		warning("5. Inspect multispecies coalescent");
 		selectTab(robot, "Multi Species Coalescent");
-		beautiFrame.button("treePrior.t:26.editButton").click();
-		beautiFrame.button("treePrior.t:29.editButton").click();
-		beautiFrame.button("treePrior.t:47.editButton").click();
-		beautiFrame.comboBox().selectItem("linear_with_constant_root");
-		beautiFrame.button("treePrior.t:26.editButton").click();
-		beautiFrame.button("treePrior.t:29.editButton").click();
-		beautiFrame.button("treePrior.t:47.editButton").click();
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "MSP.png");
+		robot.clickOn("#treePrior.t:26.editButton");
+		robot.clickOn("#treePrior.t:29.editButton");
+		robot.clickOn("#treePrior.t:47.editButton");
+		robot.clickOn(".comboBox").clickOn("linear_with_constant_root");
+		robot.clickOn("#treePrior.t:26.editButton");
+		robot.clickOn("#treePrior.t:29.editButton");
+		robot.clickOn("#treePrior.t:47.editButton");
+		screenshot(PREFIX + "MSP.png");
 		
 		// 6. Set up MCMC parameters
 		warning("6. Set up MCMC parameters");
-		f = selectTab(robot, "MCMC");
-		beautiFrame.textBox("chainLength").selectAll().setText("5000000");
-		beautiFrame.button("speciesTreeLogger.editButton").click();
-		beautiFrame.textBox("logEvery").selectAll().setText("1000");
-		beautiFrame.button("speciesTreeLogger.editButton").click();
+		selectTab(robot, "MCMC");
+		robot.clickOn("#chainLength"); robot.write("5000000");
+		robot.clickOn("#speciesTreeLogger.editButton");
+		robot.clickOn("#logEvery"); robot.write("1000");
+		robot.clickOn("#speciesTreeLogger.editButton");
 
-		beautiFrame.button("screenlog.editButton").click();
-		beautiFrame.textBox("logEvery").selectAll().setText("10000");
-		beautiFrame.button("speciesTreeLogger.editButton").click();
-		screenshotTaker.saveComponentAsPng(beauti.frame, PREFIX + "MCMC.png");
+		robot.clickOn("#screenlog.editButton");
+		robot.clickOn("#logEvery"); robot.write("10000");
+		robot.clickOn("#speciesTreeLogger.editButton");
+		screenshot(PREFIX + "MCMC.png");
 		
 		makeSureXMLParses();
 

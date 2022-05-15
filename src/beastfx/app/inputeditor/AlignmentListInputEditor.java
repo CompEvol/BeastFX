@@ -894,15 +894,14 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		table.setPlaceholder(new Label("No partitions loaded yet"));
 
 		for (int i = 0; i < columnData.length; i++) {
-			TableColumn<Partition0, String> col1 = new TableColumn<>(columnData[i]);
+			TableColumn<Partition0, String> col = new TableColumn<>(columnData[i]);
 			String str = columnData[i].substring(0,1).toLowerCase() + columnData[i].substring(1);
 			str = str.replaceAll(" ","");
 			if (i != 5 && i!= 6 && i != 7)
-				col1.setCellValueFactory(new PropertyValueFactory<>(str));
-			table.getColumns().add(col1);
+				col.setCellValueFactory(new PropertyValueFactory<>(str));
+			table.getColumns().add(col);
 		}
 
-		initTableData();
 		// table.setItems(tableEntries);
 		
 //		table = new JTable(tableData, columnData) {
@@ -960,8 +959,6 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		//table.setRowSelectionAllowed(true);
 		table.setId("alignmenttable");
 
-		setUpComboBoxes();
-		
 		// make columns 0, 5, 6 and 7 editable
 		for (int i : new int[] {0, 5, 6, 7}) {
 			TableColumn<Partition0, ?> tblColID = table.getColumns().get(i);
@@ -970,6 +967,8 @@ public class AlignmentListInputEditor extends ListInputEditor {
 				processPartitionName(e);
 			});
 		}
+
+		setUpComboBoxes();
 		
 		// make column 9 use checkboxes
 		if (table.getColumns().size() > 8) {
@@ -1078,6 +1077,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 //
 //		});
 
+
 		// show alignment viewer when double clicking a row
 		table.setOnMouseClicked(e->{
 			if (e.getClickCount() > 1) {
@@ -1108,6 +1108,8 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			}			
 		});
 		
+		initTableData();
+
 //		table.addMouseListener(new MouseListener() {
 //
 //			@Override
@@ -1634,6 +1636,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 
 	@Override
     public void refreshPanel() {
+		setUpComboBoxes();
 		initTableData();
     }
 	

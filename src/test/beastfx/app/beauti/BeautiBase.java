@@ -38,6 +38,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import beast.app.beauti.BeautiPanel;
 import beast.app.util.Utils;
@@ -451,6 +452,14 @@ public class BeautiBase extends Beauti {
 		    return false;
 		}).queryAs(Node.class);
 		robot.clickOn(node);
+	}
+	
+    protected void setPartitionTableCell(FxRobot robot, int row, int col, String string) {
+		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
+		robot.clickOn("#cell-" + row + "-" + col);
+		robot.eraseText(10);
+		robot.write("tree\n");
+		robot.press(KeyCode.ENTER);
 	}
 
 }
