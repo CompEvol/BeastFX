@@ -1235,15 +1235,15 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         }
 
 
-        Log.trace.print("InPosterior=");
-        for (BEASTInterface o : posteriorPredecessors) {
-            pluginmap.put(o.getID(), o);
-            Log.trace.print(o.getID() + " ");
-            //if (!pluginmap.containsKey(o)) {
-            //	System.err.println("MISSING: " + o.getID());
-            //}
-        }
-        Log.trace.println();
+//        Log.trace.print("InPosterior=");
+//        for (BEASTInterface o : posteriorPredecessors) {
+//            pluginmap.put(o.getID(), o);
+//            Log.trace.print(o.getID() + " ");
+//            //if (!pluginmap.containsKey(o)) {
+//            //	System.err.println("MISSING: " + o.getID());
+//            //}
+//        }
+//        Log.trace.println();
     }
 
     public static String translatePartitionNames(String str, PartitionContext partition) {
@@ -1294,7 +1294,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
 
     public void applyBeautiRules(List<BeautiSubTemplate> templates, boolean isInitial, PartitionContext context) {
     	setUpActivePlugins();
-    	System.err.println(Arrays.toString(likelihoodPredecessors.toArray()));
+    	// System.err.println(Arrays.toString(likelihoodPredecessors.toArray()));
         for (BeautiSubTemplate template : templates) {
             String templateID = translatePartitionNames(template.getMainID(), context);
             BEASTInterface beastObject = pluginmap.get(templateID);

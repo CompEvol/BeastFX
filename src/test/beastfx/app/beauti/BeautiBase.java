@@ -119,7 +119,7 @@ public class BeautiBase extends Beauti {
 		return "(" + str.substring(0, str.length()-2) + ");";
 	}
 
-static private boolean skip = true;
+static private boolean skip = false;
 	void assertPriorsEqual(String... ids) {
 if (skip) return;
 		System.err.println("assertPriorsEqual");

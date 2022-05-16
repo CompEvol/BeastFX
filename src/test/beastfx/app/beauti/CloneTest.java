@@ -26,6 +26,7 @@ public class CloneTest extends BeautiBase {
     public void start(Stage stage) {
     	try {
     		System.setProperty("java.only", "true");
+    		System.setProperty("beast.is.junit.testing", "true");
     		BeautiTabPane tabPane = BeautiTabPane.main2(new String[] {}, stage);
     		this.doc = tabPane.doc;
             stage.show();
@@ -152,9 +153,9 @@ public class CloneTest extends BeautiBase {
 //		final ListView<?> list = robot.lookup(".list-view").queryAs(ListView.class);
 		robot.clickOn("noncoding");
 		robot.clickOn(".combo-box");//.clickOn("coding");
-		robot.interact(()->robot.lookup(".combo-box").queryAs(ComboBox.class).getSelectionModel().select(2));
-		//robot.clickOn("Relaxed Clock Exponential");
-		robot.clickOn("Relaxed Clock Log Normal");
+		robot.interact(()->robot.lookup(".combo-box").queryAs(ComboBox.class).getSelectionModel().select(1));
+		robot.clickOn("Relaxed Clock Exponential");
+		//robot.clickOn("Relaxed Clock Log Normal");
 		
 		// Platform.runLater(()->list.getSelectionModel().select(1));
         //beautiFrame.list("listOfPartitions").selectItems(1);
@@ -171,7 +172,7 @@ public class CloneTest extends BeautiBase {
 		// beautiFrame.list("listOfPartitions").selectItems(0,1,4);
 //        beautiFrame.comboBox().selectItem(1);
 		// robot.clickOn(".combo-box").clickOn("2ndpos");
-		robot.interact(()->robot.lookup(".combo-box").queryAs(ComboBox.class).getSelectionModel().select(4));
+		robot.interact(()->robot.lookup(".combo-box").queryAs(ComboBox.class).getSelectionModel().select(1));
 //        beautiFrame.button("ok").click();
         robot.clickOn("OK");
         printBeautiState();

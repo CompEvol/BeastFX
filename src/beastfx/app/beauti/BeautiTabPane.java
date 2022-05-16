@@ -1234,6 +1234,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 //    	Utils6.startSplashScreen();
 //    	Utils6.logToSplashScreen("Initialising BEAUti");
     	
+    	ProgramStatus.name = "BEAUti";
     	
     	// retrieve previously stored working directory
     	String currentDir = Utils.getBeautiProperty("currentDir");
