@@ -25,9 +25,6 @@
 ]]>
             <connect srcID='clockRate.c:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'/>
-
-            <connect srcID='clockRate.c:$(n)' targetID='state' inputName='stateNode'
-                     if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'/>
             <connect srcID='ClockPrior.c:$(n)' targetID='prior' inputName='distribution'
                      if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'>substitution rate of
                 partition c:$(n)

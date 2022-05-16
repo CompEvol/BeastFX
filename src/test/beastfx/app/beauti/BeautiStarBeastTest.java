@@ -78,7 +78,7 @@ public class BeautiStarBeastTest extends BeautiBase {
 		screenshot( PREFIX + "Guess_Taxonsets.png");
 		//JButton okButton = dialog.robot.finder().find(JButtonMatcher.withText("OK"));
 		//new JButtonFixture(dialog.robot, okButton).click();
-		robot.clickOn("#ok");
+		robot.clickOn("OK");
 		printBeautiState();
 
 		// 3. Set site model to HKY + empirical frequencies

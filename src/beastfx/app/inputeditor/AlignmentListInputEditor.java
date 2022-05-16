@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -1186,6 +1187,9 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		for (int i = 0; i < 3; i++) {
 			partitionNames[i] = new HashSet<>();
 		}
+		if (partitionCount > 0 && likelihoods == null) {
+			initTableData();
+		}
 		for (int i = 0; i < partitionCount; i++) {
 			partitionNames[0].add(((BEASTInterface) likelihoods[i].siteModelInput.get()).getID());
 			partitionNames[1].add(likelihoods[i].branchRateModelInput.get().getID());
@@ -1208,102 +1212,105 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		int [] colPos = {SITEMODEL_COLUMN, CLOCKMODEL_COLUMN, TREE_COLUMN};
 		
 		for (int k = 0; k < 3; k++) {
-			TableColumn<Partition0, String> column = new TableColumn<>(colName[k]);
+			TableColumn<Partition0, StringProperty> column = new TableColumn<>(colName[k]);
 	        switch (k) {
 	        case 0: 
-	        	column.setCellValueFactory(cellData -> cellData.getValue().siteModelProperty());
-	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[0]));
-	        	column.setCellFactory(col -> {
-	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[0]);
-	        		cell.setId("cell-" + 0 + "-" + SITEMODEL_COLUMN);
-	        		return cell;
-	        	});
+//	        	column.setCellValueFactory(cellData -> cellData.getValue().siteModelProperty());
+//	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[0]));
+//	        	column.setCellFactory(col -> {
+//	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[0]);
+//	        		cell.setId("cell-" + 0 + "-" + SITEMODEL_COLUMN);
+//	        		return cell;
+//	        	});
 
-//	        	column.setCellValueFactory(i -> {
-//			        final StringProperty value = i.getValue().siteModelProperty();
-//			        return Bindings.createObjectBinding(() -> value);
-//			    });
-//			    column.setCellFactory(col -> {
-//			        TableCell<Partition0, StringProperty> c = new TableCell<>();
-//			        final ComboBox<String> comboBox = new ComboBox<>();
-//			        comboBox.getItems().addAll(partitionNameStrings[0]);
-//			        comboBox.setEditable(true);
-//			        c.itemProperty().addListener((observable, oldValue, newValue) -> {
-//			        	int row = c.getTableRow().getIndex();
-//			            if (oldValue != null) {
-//			                comboBox.valueProperty().unbindBidirectional(oldValue);
-//			            }
-//			            if (newValue != null) {
-//			                comboBox.valueProperty().bindBidirectional(newValue);
-//			            }
-//			        });
-//			        c.graphicProperty().bind(comboBox);
-//			        		//Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
-//			        return c;
-//			    });
+	        	column.setCellValueFactory(i -> {
+			        final StringProperty value = i.getValue().siteModelProperty();
+			        return Bindings.createObjectBinding(() -> value);
+			    });
+			    column.setCellFactory(col -> {
+			        TableCell<Partition0, StringProperty> c = new TableCell<>();
+			        final ComboBox<String> comboBox = new ComboBox<>();
+			        comboBox.getItems().addAll(partitionNameStrings[0]);
+			        comboBox.setEditable(true);
+			        c.itemProperty().addListener((observable, oldValue, newValue) -> {
+			        	// int row = c.getTableRow().getIndex();
+			            if (oldValue != null) {
+			                comboBox.valueProperty().unbindBidirectional(oldValue);
+			            }
+			            if (newValue != null) {
+			                comboBox.valueProperty().bindBidirectional(newValue);
+			            }
+			        });
+			        c.setGraphic(comboBox);
+			        //c.graphicProperty().bind(comboBox);
+			        		//Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
+			        return c;
+			    });
 			    
 			    break;
 	    	case 1: 
-	        	column.setCellValueFactory(cellData -> cellData.getValue().clockModelProperty());
-	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[1]));
-	        	column.setCellFactory(col -> {
-	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[1]);
-	        		cell.setId("cell-" + 0 + "-" + CLOCKMODEL_COLUMN);
-	        		return cell;
-	        	});
-//			    column.setCellValueFactory(i -> {
-//			        final StringProperty value = i.getValue().clockModelProperty();
-//			        return Bindings.createObjectBinding(() -> value);
-//			    });
-//			    column.setCellFactory(col -> {
-//			        TableCell<Partition0, StringProperty> c = new TableCell<>();
-//			        final ComboBox<String> comboBox = new ComboBox<>();
-//			        comboBox.getItems().addAll(partitionNameStrings[1]);
-//			        comboBox.setEditable(true);
-//			        c.itemProperty().addListener((observable, oldValue, newValue) -> {
-//			        	int row = c.getTableRow().getIndex();
-//			            if (oldValue != null) {
-//			                comboBox.valueProperty().unbindBidirectional(oldValue);
-//			            }
-//			            if (newValue != null) {
-//			                comboBox.valueProperty().bindBidirectional(newValue);
-//			            }
-//			        });
-//			        // c.graphicProperty().bind(comboBox);
-//			        		//Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
-//			        return c;
-//			    });
+//	        	column.setCellValueFactory(cellData -> cellData.getValue().clockModelProperty());
+//	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[1]));
+//	        	column.setCellFactory(col -> {
+//	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[1]);
+//	        		cell.setId("cell-" + 0 + "-" + CLOCKMODEL_COLUMN);
+//	        		return cell;
+//	        	});
+			    column.setCellValueFactory(i -> {
+			        final StringProperty value = i.getValue().clockModelProperty();
+			        return Bindings.createObjectBinding(() -> value);
+			    });
+			    column.setCellFactory(col -> {
+			        TableCell<Partition0, StringProperty> c = new TableCell<>();
+			        final ComboBox<String> comboBox = new ComboBox<>();
+			        comboBox.getItems().addAll(partitionNameStrings[1]);
+			        comboBox.setEditable(true);
+			        c.itemProperty().addListener((observable, oldValue, newValue) -> {
+			        	// int row = c.getTableRow().getIndex();
+			            if (oldValue != null) {
+			                comboBox.valueProperty().unbindBidirectional(oldValue);
+			            }
+			            if (newValue != null) {
+			                comboBox.valueProperty().bindBidirectional(newValue);
+			            }
+			        });
+			        // c.graphicProperty().bind(comboBox);
+			        		//Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
+			        c.setGraphic(comboBox);
+			        return c;
+			    });
 			    break;
 	    	case 2: 
-	        	column.setCellValueFactory(cellData -> cellData.getValue().treeProperty());
-	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[2]));
-	        	column.setCellFactory(col -> {
-	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[2]);
-	        		cell.setId("cell-" + 0 + "-" + TREE_COLUMN);
-	        		return cell;
-	        	});
-//			    column.setCellValueFactory(i -> {
-//			        final StringProperty value = i.getValue().treeProperty();
-//			        return Bindings.createObjectBinding(() -> value);
-//			    });
-//			    column.setCellFactory(col -> {
-//			        TableCell<Partition0, StringProperty> c = new TableCell<>();
-//			        final ComboBox<String> comboBox = new ComboBox<>();
-//			        comboBox.getItems().addAll(partitionNameStrings[2]);
-//			        comboBox.setEditable(true);
-//			        c.itemProperty().addListener((observable, oldValue, newValue) -> {
-//			        	int row = c.getTableRow().getIndex();
-//			            if (oldValue != null) {
-//			                comboBox.valueProperty().unbindBidirectional(oldValue);
-//			            }
-//			            if (newValue != null) {
-//			                comboBox.valueProperty().bindBidirectional(newValue);
-//			            }
-//			        });
-//			        // c.graphicProperty().bind(comboBox);
-//			        		//Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
-//			        return c;
-//			    });
+//	        	column.setCellValueFactory(cellData -> cellData.getValue().treeProperty());
+//	        	column.setCellFactory(ComboBoxTableCell.forTableColumn(partitionNameStrings[2]));
+//	        	column.setCellFactory(col -> {
+//	        		ComboBoxTableCell cell = new ComboBoxTableCell(partitionNameStrings[2]);
+//	        		cell.setId("cell-" + 0 + "-" + TREE_COLUMN);
+//	        		return cell;
+//	        	});
+			    column.setCellValueFactory(i -> {
+			        final StringProperty value = i.getValue().treeProperty();
+			        return Bindings.createObjectBinding(() -> value);
+			    });
+			    column.setCellFactory(col -> {
+			        TableCell<Partition0, StringProperty> c = new TableCell<>();
+			        final ComboBox<String> comboBox = new ComboBox<>();
+			        comboBox.getItems().addAll(partitionNameStrings[2]);
+			        comboBox.setEditable(true);
+			        c.itemProperty().addListener((observable, oldValue, newValue) -> {
+			        	// int row = c.getTableRow().getIndex();
+			            if (oldValue != null) {
+			                comboBox.valueProperty().unbindBidirectional(oldValue);
+			            }
+			            if (newValue != null) {
+			                comboBox.valueProperty().bindBidirectional(newValue);
+			            }
+			        });
+			        c.setGraphic(comboBox);
+			        // c.graphicProperty().bind(comboBox);
+			        		//Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
+			        return c;
+			    });
 			}
 		    
 			

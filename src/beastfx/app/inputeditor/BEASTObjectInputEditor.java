@@ -187,7 +187,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 //        	}
             m_selectBEASTObjectBox = new ComboBox<>();
             m_selectBEASTObjectBox.getItems().addAll(availableTemplates.toArray());
-            m_selectBEASTObjectBox.setId(input.getName());
+            m_selectBEASTObjectBox.setId(input.getName()+"ComboBox");
 
             Object o = input.get();
             if (itemNr >= 0) {
