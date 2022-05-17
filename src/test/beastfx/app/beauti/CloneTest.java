@@ -15,8 +15,6 @@ import org.testfx.framework.junit5.Start;
 import beastfx.app.beauti.BeautiTabPane;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 
 @ExtendWith(ApplicationExtension.class)

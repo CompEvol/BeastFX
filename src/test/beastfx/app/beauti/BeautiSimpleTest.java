@@ -17,11 +17,9 @@ import org.testfx.framework.junit5.Start;
 
 import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
-import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.Stage;
 
 
@@ -115,7 +113,7 @@ public class BeautiSimpleTest extends BeautiBase {
 		robot.clickOn("#Partitions");
 		table = robot.lookup(".table-view").queryAs(TableView.class);
 //		JTableCellFixture cell = beautiFrame.table().cell(TableCell.row(0).column(7));
-		robot.clickOn("#cell-0-7");
+		robot.clickOn("#treeModelCell");
 //		Component editor = cell.editor();
 //		JComboBoxFixture comboBox = new JComboBoxFixture(robot(), (JComboBox<?>) editor);
 //		cell.startEditing();

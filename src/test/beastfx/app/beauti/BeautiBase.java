@@ -28,6 +28,8 @@ import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
 import javafx.application.Platform;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -62,6 +64,10 @@ import beast.base.parser.XMLParser;
 public class BeautiBase extends Beauti {
 	final static String TEMPLATE_DIR = BeautiConfig.TEMPLATE_DIR;
 	final static String NEXUS_DIR = "../beast2/examples/nexus/";
+
+	// If skipAssertions = true, the BEAUti status will not be checked
+	// Can be handy for debugging TestFX unit tests
+	final static private boolean skipAssertions = false;
 
 //	protected FrameFixture beautiFrame;
 //	protected Beauti beauti;
@@ -119,9 +125,8 @@ public class BeautiBase extends Beauti {
 		return "(" + str.substring(0, str.length()-2) + ");";
 	}
 
-static private boolean skip = false;
 	void assertPriorsEqual(String... ids) {
-if (skip) return;
+		if (skipAssertions) return;
 		System.err.println("assertPriorsEqual");
 		CompoundDistribution prior = (CompoundDistribution) doc.pluginmap.get("prior");
 		List<Distribution> priors = prior.pDistributions.get();
@@ -199,7 +204,7 @@ if (skip) return;
 	}
 
 	void assertStateEquals(String... ids) {
-		if (skip) return;
+		if (skipAssertions) return;
 		System.err.println("assertStateEquals");
 		State state = (State) doc.pluginmap.get("state");
 		List<StateNode> stateNodes = state.stateNodeInput.get();
@@ -207,7 +212,7 @@ if (skip) return;
 	}
 
 	void assertOperatorsEqual(String... ids) {
-		if (skip) return;
+		if (skipAssertions) return;
 		System.err.println("assertOperatorsEqual");
 		MCMC mcmc = (MCMC) doc.mcmc.get();
 		List<Operator> operators = mcmc.operatorsInput.get();
@@ -215,7 +220,7 @@ if (skip) return;
 	}
 
 	void assertTraceLogEqual(String... ids) {
-		if (skip) return;
+		if (skipAssertions) return;
 		System.err.println("assertTraceLogEqual");
 		Logger logger = (Logger) doc.pluginmap.get("tracelog");
 		List<BEASTObject> logs = logger.loggersInput.get();
@@ -397,7 +402,12 @@ if (skip) return;
 			Partition0 partition = table.getItems().get(i);
 			for (int j = 0; j < contents[0].length; j++) {
 			    TableColumn col = table.getColumns().get(j);
-			    contents[i][j] = col.getCellObservableValue(partition).getValue().toString() +"";
+			    Object o = col.getCellObservableValue(partition).getValue();
+			    if (o instanceof SimpleStringProperty) {
+			    		contents[i][j] = ((SimpleStringProperty) o).get();
+			    } else {
+			    		contents[i][j] = o.toString();
+			    }
 			}
 		}
 		return contents;
