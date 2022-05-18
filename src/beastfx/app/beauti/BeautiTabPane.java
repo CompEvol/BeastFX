@@ -1412,7 +1412,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             }
 
             MenuBar menuBar = beauti.createMenuBar();
-            if (Utils.isMac()) {
+            if (Utils.isMac() && System.getProperty("beast.is.junit.testing") == null) {
             	menuBar.useSystemMenuBarProperty().set(true);
             }
 
@@ -1433,7 +1433,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             
             frame.setScene(scene);
             frame.setX(BEAUtiIntances * 10);
-            frame.setY(BEAUtiIntances * 10);
+            frame.setY(10 + BEAUtiIntances * 10);
             // frame.setVisible(true);
 
             // check file needs to be save on closing main frame

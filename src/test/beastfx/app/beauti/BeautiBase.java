@@ -168,6 +168,7 @@ public class BeautiBase extends Beauti {
 					break;
 				}
 			}
+			printBeautiState();
 			assertThat(found).as("Could not find beastObject with ID " + id).isEqualTo(true);
 		}
 		// check all items in list have a unique ie
@@ -255,18 +256,14 @@ public class BeautiBase extends Beauti {
 		}
 		System.err.println("Number of parameters in prior = " + parameters.size());
 		if (parameters.size() != i) {
-			try {
-				printBeautiState();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			printBeautiState();
 		}
 		if (i >= 0) {
 			assertThat(parameters.size()).as("Expected " + i + " parameters in prior").isEqualTo(i);
 		}
 	}
 	
-	void printBeautiState() throws InterruptedException {
+	void printBeautiState() {
 		// Thread.sleep(500);
 		// String s = stateAsString();
         doc.scrubAll(true, false);
@@ -482,11 +479,15 @@ public class BeautiBase extends Beauti {
 		robot.clickOn(node);
 	}
 
-    protected void setPartitionTableCell(FxRobot robot, int row, int col, String string) {
+    protected void setPartitionTableCell(FxRobot robot, int col, String string) {
 		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
-		robot.clickOn("#cell-" + row + "-" + col);
+		switch (col) {
+		case 5:robot.clickOn("#siteModelCell");break;
+		case 6:robot.clickOn("#clockModelCell");break;
+		case 7:robot.clickOn("#treeModelCell");break;
+		}
 		robot.eraseText(10);
-		robot.write("tree\n");
+		robot.write(string + "\n");
 		robot.press(KeyCode.ENTER);
 	}
 

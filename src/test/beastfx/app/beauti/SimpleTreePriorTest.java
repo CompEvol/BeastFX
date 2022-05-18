@@ -1,6 +1,5 @@
 package test.beastfx.app.beauti;
 
-
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,6 @@ public class SimpleTreePriorTest extends BeautiBase {
 		warning("Load anolis.nex");
 		importAlignment(NEXUS_DIR, new File("anolis.nex"));
 
-		//JTabbedPaneFixture f = beautiFrame.tabbedPane();
 		selectTab(robot, "Priors");
 		
 		warning("Change to Coalescent - constant population");

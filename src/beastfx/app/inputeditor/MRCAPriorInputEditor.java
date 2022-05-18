@@ -183,6 +183,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         itemBox.getChildren().add(deleteButton);
 
         pane.getChildren().add(itemBox);
+        getChildren().add(pane);
 	}
 	
 	public static void customConnector(BeautiDoc doc) {

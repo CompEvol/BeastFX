@@ -1315,7 +1315,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 						        comboBox.setUserData(item);
 						        comboBox.setOnKeyReleased(k->{
 						        	if (k.getCode().equals(KeyCode.ENTER) || k.getCode().equals(KeyCode.TAB)) {
-						        		comboActionListener(comboBox, item, SITEMODEL_COLUMN);
+						        		comboActionListener(comboBox, item, CLOCKMODEL_COLUMN);
 						        	}
 						        });
 							}
@@ -1372,7 +1372,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 						        comboBox.setUserData(item);
 						        comboBox.setOnKeyReleased(k->{
 						        	if (k.getCode().equals(KeyCode.ENTER) || k.getCode().equals(KeyCode.TAB)) {
-						        		comboActionListener(comboBox, item, SITEMODEL_COLUMN);
+						        		comboActionListener(comboBox, item, TREE_COLUMN);
 						        	}
 						        });
 							}

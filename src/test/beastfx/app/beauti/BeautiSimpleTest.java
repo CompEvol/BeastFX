@@ -19,7 +19,6 @@ import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 
@@ -63,67 +62,45 @@ public class BeautiSimpleTest extends BeautiBase {
 		assertOperatorsEqual("YuleBirthRateScaler.t:anolis", "YuleModelTreeScaler.t:anolis", "YuleModelTreeRootScaler.t:anolis", "YuleModelUniformOperator.t:anolis", "YuleModelSubtreeSlide.t:anolis", "YuleModelNarrow.t:anolis", "YuleModelWide.t:anolis", "YuleModelWilsonBalding.t:anolis");
 		assertPriorsEqual("YuleModel.t:anolis", "YuleBirthRatePrior.t:anolis");
 		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:anolis", "YuleModel.t:anolis", "birthRate.t:anolis");
-//		
-//		
-//		ScreenshotTaker screenshotTaker = new ScreenshotTaker();
+
 		(new File("/tmp/simpleTest1.png")).delete();
 		(new File("/tmp/simpleTest2.png")).delete();
 		(new File("/tmp/simpleTest3.png")).delete();
 		(new File("/tmp/simpleTest4.png")).delete();
-//		screenshotTaker.saveComponentAsPng(beauti.frame, "/tmp/simpleTest1.png");
+
 		screenshot("/tmp/simpleTest1.png");
 		
-//		
-//		
-//		// Set the site model to HKY (estimated)
+
+		// Set the site model to HKY (estimated)
 		robot.clickOn("#SiteModel");
-//		robot.clickOn("#substModel");
 		robot.clickOn("#substModel").clickOn("HKY");
-		//substModel.selectItem("HKY");
+
 		printBeautiState();
 		assertStateEquals("Tree.t:anolis", "birthRate.t:anolis", "kappa.s:anolis", "freqParameter.s:anolis");
 		assertOperatorsEqual("YuleBirthRateScaler.t:anolis", "YuleModelTreeScaler.t:anolis", "YuleModelTreeRootScaler.t:anolis", "YuleModelUniformOperator.t:anolis", "YuleModelSubtreeSlide.t:anolis", "YuleModelNarrow.t:anolis", "YuleModelWide.t:anolis", "YuleModelWilsonBalding.t:anolis", "KappaScaler.s:anolis", "FrequenciesExchanger.s:anolis");
 		assertPriorsEqual("YuleModel.t:anolis", "YuleBirthRatePrior.t:anolis", "KappaPrior.s:anolis", "FrequenciesPrior.s:anolis");
 		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:anolis", "YuleModel.t:anolis", "birthRate.t:anolis", "kappa.s:anolis", "freqParameter.s:anolis");
-//
-//		
-//		// Set the site model to HKY (G4) (estimated)
+
+		// Set the site model to HKY (G4) (estimated)
 		robot.clickOn("#SiteModel");
-//		JTextComponentFixture categoryCount = beautiFrame.textBox("gammaCategoryCount");
-//		categoryCount.setText("4");
 		robot.clickOn("#gammaCategoryCount");
-		robot.type(KeyCode.DIGIT4);
+		robot.write("4");
+		
 		printBeautiState();
-////		assertStateEquals("Tree.t:anolis", "birthRate.t:anolis", "kappa.s:anolis", "freqParameter.s:anolis");
-////		assertOperatorsEqual("YuleBirthRateScaler.t:anolis", "YuleModelTreeScaler.t:anolis", "YuleModelTreeRootScaler.t:anolis", "YuleModelUniformOperator.t:anolis", "YuleModelSubtreeSlide.t:anolis", "YuleModelNarrow.t:anolis", "YuleModelWide.t:anolis", "YuleModelWilsonBalding.t:anolis", "KappaScaler.s:anolis", "FrequenciesExchanger.s:anolis");
-////		assertPriorsEqual("YuleModel.t:anolis", "YuleBirthRatePrior.t:anolis", "KappaPrior.s:anolis");
-////		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:anolis", "YuleModel.t:anolis", "birthRate.t:anolis", "kappa.s:anolis", "freqParameter.s:anolis");
-////
-////		selectTab(robot, "Site Model");
-////		JCheckBoxFixture shapeIsEstimated = beautiFrame.checkBox("shape.isEstimated");
-////		shapeIsEstimated.check();
-////		printBeautiState(f);
 		assertStateEquals("Tree.t:anolis", "birthRate.t:anolis", "kappa.s:anolis", "gammaShape.s:anolis", "freqParameter.s:anolis");
 		assertOperatorsEqual("YuleBirthRateScaler.t:anolis", "YuleModelTreeScaler.t:anolis", "YuleModelTreeRootScaler.t:anolis", "YuleModelUniformOperator.t:anolis", "YuleModelSubtreeSlide.t:anolis", "YuleModelNarrow.t:anolis", "YuleModelWide.t:anolis", "YuleModelWilsonBalding.t:anolis", "KappaScaler.s:anolis", "gammaShapeScaler.s:anolis", "FrequenciesExchanger.s:anolis");
 		assertPriorsEqual("YuleModel.t:anolis", "YuleBirthRatePrior.t:anolis", "KappaPrior.s:anolis", "GammaShapePrior.s:anolis", "FrequenciesPrior.s:anolis");
 		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:anolis", "YuleModel.t:anolis", "birthRate.t:anolis", "kappa.s:anolis", "gammaShape.s:anolis", "freqParameter.s:anolis");
-//
-		screenshot("/tmp/simpleTest2.png");		
-//		// rename tree from 'anolis' to 'tree'
+
+		screenshot("/tmp/simpleTest2.png");
+		
+		// rename tree from 'anolis' to 'tree'
 		robot.clickOn("#Partitions");
-		table = robot.lookup(".table-view").queryAs(TableView.class);
-//		JTableCellFixture cell = beautiFrame.table().cell(TableCell.row(0).column(7));
+		// table = robot.lookup(".table-view").queryAs(TableView.class);
 		robot.clickOn("#treeModelCell");
-//		Component editor = cell.editor();
-//		JComboBoxFixture comboBox = new JComboBoxFixture(robot(), (JComboBox<?>) editor);
-//		cell.startEditing();
-//		comboBox.selectAllText();
 		robot.eraseText(10);
-//		comboBox.enterText("tree\n");
 		robot.write("tree\n");
-		robot.press(KeyCode.ENTER);
-//		//comboBox.pressAndReleaseKeys(KeyEvent.VK_ENTER);
-//		cell.stopEditing();
+
 		printBeautiState();
 		assertStateEquals("Tree.t:tree", "birthRate.t:tree", "kappa.s:anolis", "gammaShape.s:anolis", "freqParameter.s:anolis");
 		assertOperatorsEqual("YuleBirthRateScaler.t:tree", "YuleModelTreeScaler.t:tree", "YuleModelTreeRootScaler.t:tree", "YuleModelUniformOperator.t:tree", "YuleModelSubtreeSlide.t:tree", "YuleModelNarrow.t:tree", "YuleModelWide.t:tree", "YuleModelWilsonBalding.t:tree", "KappaScaler.s:anolis", "gammaShapeScaler.s:anolis", "FrequenciesExchanger.s:anolis");
@@ -131,7 +108,6 @@ public class BeautiSimpleTest extends BeautiBase {
 		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:tree", "YuleModel.t:tree", "birthRate.t:tree", "kappa.s:anolis", "gammaShape.s:anolis", "freqParameter.s:anolis");
 
 		screenshot("/tmp/simpleTest3.png");
-		// Create a Normal calibration prior and monophyletic constraint on Human-Chimp split of 6 +/- 0.5.
 		robot.clickOn("#Priors");
 		screenshot("/tmp/simpleTest4.png");
 		

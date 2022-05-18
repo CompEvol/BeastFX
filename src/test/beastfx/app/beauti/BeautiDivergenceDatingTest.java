@@ -1,9 +1,6 @@
 package test.beastfx.app.beauti;
 
 
-
-import javax.swing.*;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
@@ -11,24 +8,21 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
 import beastfx.app.beauti.BeautiTabPane;
-import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
-import javafx.scene.control.TableView;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(ApplicationExtension.class)
 public class BeautiDivergenceDatingTest extends BeautiBase {
 
 	@Start
     public void start(Stage stage) {
+		System.setProperty("beast.is.junit.testing", "true");
     	try {
     		BeautiTabPane tabPane = BeautiTabPane.main2(new String[] {}, stage);
     		this.doc = tabPane.doc;
@@ -101,7 +95,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         warning("2b. ...and call the tree \"tree\"");
         selectTab(robot, "Partitions");
         
-        setPartitionTableCell(robot, 0, 7, "tree");
+        setPartitionTableCell(robot, 7, "tree");
 //        JTableCellFixture cell = beautiFrame.table().cell(TableCell.row(0).column(7));
 //        Component editor = cell.editor();
 //        JComboBoxFixture comboBox = new JComboBoxFixture(robot(), (JComboBox<?>) editor);
@@ -132,7 +126,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 
         //3b. and call the uncorrelated relaxed molecular clock "clock"
         warning("3b. and call the uncorrelated relaxed molecular clock \"clock\"");
-        setPartitionTableCell(robot, 0, 6, "clock");
+        setPartitionTableCell(robot, 6, "clock");
 //        cell = beautiFrame.table().cell(TableCell.row(0).column(6));
 //        editor = cell.editor();
 //        comboBox = new JComboBoxFixture(robot(), (JComboBox<?>) editor);
@@ -174,7 +168,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         robot.type(KeyCode.DIGIT4);
 
         
-        robot.clickOn("#shape.isEstimated");
+        // clickOnCheckbox(robot, "shape.isEstimated");
         //JCheckBoxFixture shapeIsEstimated = beautiFrame.checkBox("shape.isEstimated");
         //shapeIsEstimated.check();
         	
@@ -182,6 +176,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
                 "[1stpos, primate-mtDNA, 12, 231, nucleotide, noncoding, clock, tree, false]*" +
                 "[2ndpos, primate-mtDNA, 12, 231, nucleotide, noncoding, clock, tree, false]*" +
                 "[3rdpos, primate-mtDNA, 12, 231, nucleotide, noncoding, clock, tree, false]");
+        Thread.sleep(500);
         assertStateEquals("Tree.t:tree", "birthRate.t:tree", "kappa.s:noncoding", "gammaShape.s:noncoding", "freqParameter.s:noncoding");
         assertOperatorsEqual("YuleBirthRateScaler.t:tree", "YuleModelTreeScaler.t:tree", "YuleModelTreeRootScaler.t:tree", "YuleModelUniformOperator.t:tree", "YuleModelSubtreeSlide.t:tree", "YuleModelNarrow.t:tree", "YuleModelWide.t:tree", "YuleModelWilsonBalding.t:tree", "KappaScaler.s:noncoding", "gammaShapeScaler.s:noncoding", "FrequenciesExchanger.s:noncoding");
         assertPriorsEqual("YuleModel.t:tree", "YuleBirthRatePrior.t:tree", "KappaPrior.s:noncoding", "GammaShapePrior.s:noncoding", "FrequenciesPrior.s:noncoding");
@@ -202,38 +197,38 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         selectTab(robot, "Site Model");
 //        JListFixture partitionList = beautiFrame.list();
 //        partitionList.selectItem("noncoding");
-        robot.clickOn(".list").clickOn("noncoding");
-        robot.clickOn("#mutationRate.isEstimated");
+        robot.clickOn(".list-view").clickOn("noncoding");
+        clickOnCheckbox(robot, "mutationRate.isEstimated");
 //        mutationRateIsEstimated.requireNotSelected();
 //        mutationRateIsEstimated.check();
 //        mutationRateIsEstimated.requireSelected();
 
-        robot.clickOn(".list").clickOn("1stpos");
+        robot.clickOn(".list-view").clickOn("1stpos");
 //        partitionList.selectItem("1stpos");
-        robot.clickOn("#mutationRate.isEstimated");
+        clickOnCheckbox(robot, "mutationRate.isEstimated");
 //        mutationRateIsEstimated = beautiFrame.checkBox("mutationRate.isEstimated");
 //        mutationRateIsEstimated.requireNotSelected();
 //        mutationRateIsEstimated.check();
 //        mutationRateIsEstimated.requireSelected();
 
-        robot.clickOn(".list").clickOn("2ndpos");
+        robot.clickOn(".list-view").clickOn("2ndpos");
 //        partitionList.selectItem("2ndpos");
-        robot.clickOn("#mutationRate.isEstimated");
+        clickOnCheckbox(robot, "mutationRate.isEstimated");
 //        mutationRateIsEstimated = beautiFrame.checkBox("mutationRate.isEstimated");
 //        mutationRateIsEstimated.requireNotSelected();
 //        mutationRateIsEstimated.check();
 //        mutationRateIsEstimated.requireSelected();
 
-        robot.clickOn(".list").clickOn("3rdpos");
+        robot.clickOn(".list-view").clickOn("3rdpos");
 //        partitionList.selectItem("3rdpos");
-        robot.clickOn("#mutationRate.isEstimated");
+        clickOnCheckbox(robot, "mutationRate.isEstimated");
 //        mutationRateIsEstimated = beautiFrame.checkBox("mutationRate.isEstimated");
 //        mutationRateIsEstimated.requireNotSelected();
         printBeautiState();
-        assertStateEquals("Tree.t:tree", "birthRate.t:tree", "kappa.s:noncoding", "gammaShape.s:noncoding", "gammaShape.s:1stpos", "kappa.s:1stpos", "gammaShape.s:2ndpos", "kappa.s:2ndpos", "gammaShape.s:3rdpos", "kappa.s:3rdpos", "mutationRate.s:noncoding", "mutationRate.s:1stpos", "mutationRate.s:2ndpos", "freqParameter.s:noncoding", "freqParameter.s:1stpos", "freqParameter.s:3rdpos", "freqParameter.s:2ndpos");
-        assertOperatorsEqual("YuleBirthRateScaler.t:tree", "YuleModelTreeScaler.t:tree", "YuleModelTreeRootScaler.t:tree", "YuleModelUniformOperator.t:tree", "YuleModelSubtreeSlide.t:tree", "YuleModelNarrow.t:tree", "YuleModelWide.t:tree", "YuleModelWilsonBalding.t:tree", "KappaScaler.s:noncoding", "gammaShapeScaler.s:noncoding", "gammaShapeScaler.s:1stpos", "KappaScaler.s:1stpos", "gammaShapeScaler.s:2ndpos", "KappaScaler.s:2ndpos", "gammaShapeScaler.s:3rdpos", "KappaScaler.s:3rdpos", "mutationRateScaler.s:noncoding", "mutationRateScaler.s:1stpos", "mutationRateScaler.s:2ndpos", "FrequenciesExchanger.s:noncoding", "FrequenciesExchanger.s:1stpos", "FrequenciesExchanger.s:3rdpos", "FrequenciesExchanger.s:2ndpos");
-        assertPriorsEqual("YuleModel.t:tree", "YuleBirthRatePrior.t:tree", "GammaShapePrior.s:1stpos", "GammaShapePrior.s:2ndpos", "GammaShapePrior.s:3rdpos", "GammaShapePrior.s:noncoding", "KappaPrior.s:1stpos", "KappaPrior.s:2ndpos", "KappaPrior.s:3rdpos", "KappaPrior.s:noncoding", "MutationRatePrior.s:noncoding", "MutationRatePrior.s:1stpos", "MutationRatePrior.s:2ndpos", "FrequenciesPrior.s:noncoding", "FrequenciesPrior.s:1stpos", "FrequenciesPrior.s:2ndpos", "FrequenciesPrior.s:3rdpos");
-        assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.3rdpos", "treeLikelihood.noncoding", "TreeHeight.t:tree", "YuleModel.t:tree", "birthRate.t:tree", "treeLikelihood.1stpos", "treeLikelihood.2ndpos", "kappa.s:noncoding", "gammaShape.s:noncoding", "kappa.s:1stpos", "gammaShape.s:1stpos", "kappa.s:2ndpos", "gammaShape.s:2ndpos", "kappa.s:3rdpos", "gammaShape.s:3rdpos", "mutationRate.s:noncoding", "mutationRate.s:1stpos", "mutationRate.s:2ndpos", "freqParameter.s:2ndpos", "freqParameter.s:noncoding", "freqParameter.s:3rdpos", "freqParameter.s:1stpos");
+        assertStateEquals("Tree.t:tree", "birthRate.t:tree", "gammaShape.s:noncoding", "kappa.s:noncoding", "kappa.s:1stpos", "gammaShape.s:1stpos", "kappa.s:2ndpos", "gammaShape.s:2ndpos", "kappa.s:3rdpos", "gammaShape.s:3rdpos", "mutationRate.s:noncoding", "mutationRate.s:1stpos", "mutationRate.s:2ndpos", "mutationRate.s:3rdpos", "freqParameter.s:2ndpos", "freqParameter.s:noncoding", "freqParameter.s:1stpos", "freqParameter.s:3rdpos");
+        assertOperatorsEqual("YuleBirthRateScaler.t:tree", "YuleModelTreeScaler.t:tree", "YuleModelTreeRootScaler.t:tree", "YuleModelUniformOperator.t:tree", "YuleModelSubtreeSlide.t:tree", "YuleModelNarrow.t:tree", "YuleModelWide.t:tree", "YuleModelWilsonBalding.t:tree", "gammaShapeScaler.s:noncoding", "KappaScaler.s:noncoding", "KappaScaler.s:1stpos", "gammaShapeScaler.s:1stpos", "KappaScaler.s:2ndpos", "gammaShapeScaler.s:2ndpos", "KappaScaler.s:3rdpos", "gammaShapeScaler.s:3rdpos", "mutationRateScaler.s:noncoding", "mutationRateScaler.s:1stpos", "mutationRateScaler.s:2ndpos", "mutationRateScaler.s:3rdpos", "FrequenciesExchanger.s:2ndpos", "FrequenciesExchanger.s:noncoding", "FrequenciesExchanger.s:1stpos", "FrequenciesExchanger.s:3rdpos");
+        assertPriorsEqual("YuleModel.t:tree", "YuleBirthRatePrior.t:tree", "GammaShapePrior.s:noncoding", "KappaPrior.s:noncoding", "FrequenciesPrior.s:noncoding", "FrequenciesPrior.s:1stpos", "KappaPrior.s:1stpos", "GammaShapePrior.s:1stpos", "FrequenciesPrior.s:2ndpos", "KappaPrior.s:2ndpos", "GammaShapePrior.s:2ndpos", "FrequenciesPrior.s:3rdpos", "KappaPrior.s:3rdpos", "GammaShapePrior.s:3rdpos", "MutationRatePrior.s:noncoding", "MutationRatePrior.s:1stpos", "MutationRatePrior.s:2ndpos", "MutationRatePrior.s:3rdpos");
+        assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.2ndpos", "treeLikelihood.3rdpos", "treeLikelihood.noncoding", "TreeHeight.t:tree", "YuleModel.t:tree", "birthRate.t:tree", "treeLikelihood.1stpos", "gammaShape.s:noncoding", "kappa.s:noncoding", "kappa.s:1stpos", "gammaShape.s:1stpos", "kappa.s:2ndpos", "gammaShape.s:2ndpos", "kappa.s:3rdpos", "gammaShape.s:3rdpos", "mutationRate.s:noncoding", "mutationRate.s:1stpos", "mutationRate.s:2ndpos", "mutationRate.s:3rdpos", "freqParameter.s:2ndpos", "freqParameter.s:noncoding", "freqParameter.s:1stpos", "freqParameter.s:3rdpos");
 
         //7a. Create a Normal calibration prior
         warning("7a. Create a Normal calibration prior");
@@ -381,7 +376,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             //2b. ...and call the tree "tree"
             warning("2b. ...and call the tree \"tree\"");
             selectTab(robot, "Partitions");
-            setPartitionTableCell(robot, 0, 7, "tree");
+            setPartitionTableCell(robot, 7, "tree");
 //            JTableCellFixture cell = beautiFrame.table().cell(TableCell.row(0).column(7));
 //            Component editor = cell.editor();
 //            JComboBoxFixture comboBox = new JComboBoxFixture(robot(), (JComboBox<?>) editor);
@@ -408,7 +403,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 
             //3b. and call the uncorrelated relaxed molecular clock "clock"
             warning("3b. and call the uncorrelated relaxed molecular clock \"clock\"");
-            setPartitionTableCell(robot, 0, 6, "clock");
+            setPartitionTableCell(robot, 6, "clock");
 //            cell = beautiFrame.table().cell(TableCell.row(0).column(6));
 //            editor = cell.editor();
 //            comboBox = new JComboBoxFixture(robot(), (JComboBox<?>) editor);
@@ -452,9 +447,10 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             robot.clickOn("#gammaCategoryCount");
             robot.type(KeyCode.DIGIT4);
 
-            robot.clickOn("#shape.isEstimated");
+            // clickOnCheckbox(robot, "shape.isEstimated");
 
-            robot.clickOn("#mutationRate.isEstimated");
+            clickOnCheckbox(robot, "mutationRate.isEstimated");
+            clickOnCheckbox(robot, "FixMeanMutationRate");
             robot.clickOn("#FixMeanMutationRate");
             screenshot(PREFIX + "Model.png");
             printBeautiState();
@@ -559,5 +555,84 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
     }
 
 
+
+    @Test
+    public void DivergenceDatingPrior(FxRobot robot) throws Exception {
+        long t0 = System.currentTimeMillis();
+
+        // 0. Load primate-mtDNA.nex
+        warning("// 0. Load primate-mtDNA.nex");
+        importAlignment(NEXUS_DIR, new File("primate-mtDNA.nex"));
+
+        selectPartitions(robot, 0, 1, 2, 3);
+        clickOnButton(robot, "-");
+
+        //7a. Create a Normal calibration prior
+        warning("7a. Create a Normal calibration prior");
+        selectTab(robot, "Priors");
+//        Component c = beautiFrame.robot().finder().findByName("addItem");
+//        JButtonFixture addButton = new JButtonFixture(robot(), (JButton) c);
+//        addButton.click();
+        clickOnButton(robot, "+ Add Prior");
+        
+        //JOptionPaneFixture dialog = new JOptionPaneFixture(robot());
+        //dialog.textBox("idEntry").setText("Human-Chimp");
+        robot.clickOn("#idEntry").write("Human-Chimp");
+        robot.clickOn("#listOfTaxonCandidates").clickOn("Homo_sapiens");
+        clickOnButton(robot, ">>");
+//        robot.clickOn("#listOfTaxonCandidates").clickOn("Pan");
+//        clickOnButton(robot, ">>");
+//        dialog.list("listOfTaxonCandidates").selectItems("Homo_sapiens", "Pan");
+//        dialog.button(">>").click();
+//        dialog.okButton().click();
+        robot.clickOn("OK");
+        
+        selectTab(robot, "MCMC");
+        selectTab(robot, "Priors");
+
+        //7b. and monophyletic constraint on Human-Chimp split of 6 +/- 0.5.
+        warning("7b. and monophyletic constraint on Human-Chimp split of 6 +/- 0.5.");
+        selectTab(robot, "Priors");
+        clickOnCheckbox(robot, "Human-Chimp.prior.isMonophyletic");
+        clickOnCheckbox(robot, "Human-Chimp.prior.distr");
+        robot.clickOn("Normal");
+		//robot.interact(()->robot.lookup("#Human-Chimp.prior.distr").queryAs(ComboBox.class).getSelectionModel().select("Normal"));
+
+        selectTab(robot, "MCMC");
+        selectTab(robot, "Priors");
+        
+        clickOnCheckbox(robot, "Human-Chimp.prior.editButton");
+        robot.clickOn("Mean").write("6");//.selectAll().setText("6");
+        robot.clickOn("Sigma").write("0.5");//.selectAll().setText("0.5");
+        printBeautiState();
+
+        //8. Run MCMC and look at results in Tracer, TreeAnnotator->FigTree
+        warning("8. Run MCMC and look at results in Tracer, TreeAnnotator->FigTree");
+        File fout = new File(org.assertj.core.util.Files.temporaryFolder() + "/primates.xml");
+        if (fout.exists()) {
+            fout.delete();
+        }
+
+		// 9. Set up MCMC parameters
+		warning("8. Set up MCMC parameters");
+		selectTab(robot, "MCMC");
+		robot.clickOn("#chainLength");
+		robot.write("2000000");
+//		beautiFrame.textBox("chainLength").selectAll().setText("2000000");
+
+
+        fout = new File(org.assertj.core.util.Files.temporaryFolder() + "/divtutorial.xml");
+        if (fout.exists()) {
+            fout.delete();
+        }
+		saveFile(""+org.assertj.core.util.Files.temporaryFolder(), "divtutorial.xml");
+
+		makeSureXMLParses();
+
+        long t1 = System.currentTimeMillis();
+        System.err.println("total time: " + (t1 - t0) / 1000 + " seconds");
+
+    }
 }
+
 
