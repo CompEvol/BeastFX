@@ -72,7 +72,7 @@ public class FixedMeanRateTest extends BeautiBase {
 		
 		warning("Setting fixed mean rates");
 		selectTab(robot, "Site Model");		
-		robot.clickOn("#mutationRate.isEstimated");
+		clickOnCheckbox(robot, "mutationRate.isEstimated");
 		//beautiFrame.checkBox("FixMeanMutationRate").check();
 
 		warning("link/unlink site models");

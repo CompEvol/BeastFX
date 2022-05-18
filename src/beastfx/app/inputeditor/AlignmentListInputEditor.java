@@ -43,6 +43,7 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.Clipboard;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -101,6 +102,8 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	List<Button> linkButtons;
 	List<Button> unlinkButtons;
 	Button splitButton;
+	
+	boolean updateInProgress = false;
 
     /**
      * The button for deleting an alignment in the alignment list.
@@ -192,8 +195,9 @@ public class AlignmentListInputEditor extends ListInputEditor {
         bpane.setBottom(createAddRemoveSplitButtons());
         
         ScrollPane scroller = new ScrollPane(pane);
-        scroller.setMinSize(doc.beauti.frame.getWidth(), doc.beauti.frame.getHeight()-155);
-        table.setMinSize(doc.beauti.frame.getWidth()-10, doc.beauti.frame.getHeight()-160);
+        //scroller.setMinSize(doc.beauti.frame.getWidth(), doc.beauti.frame.getHeight()-155);
+        //table.setMinSize(doc.beauti.frame.getWidth()-10, doc.beauti.frame.getHeight()-160);
+        table.setMinWidth(1020);
         getChildren().add(scroller);
         updateStatus();
 	}
@@ -315,6 +319,9 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			int rowNr = selected.get(i);
 			link(columnNr, rowNr, selected.get(0));
 		}
+		for (int i : selected) {
+			table.getSelectionModel().select(i);
+		}
 	}
 	
 	/** links partition in row "rowToLink" with partition in "rowToLinkWith" so that
@@ -352,11 +359,16 @@ public class AlignmentListInputEditor extends ListInputEditor {
 				ex.printStackTrace();
 			}
 		}
+		for (int i : selected) {
+			table.getSelectionModel().select(i);
+		}
 	}
 
 
     List<Integer> getTableRowSelection() {
-        return table.getSelectionModel().getSelectedIndices();
+    	List<Integer> selected = new ArrayList<>();
+    	selected.addAll(table.getSelectionModel().getSelectedIndices());
+        return selected;
 	}
 
 	/** set partition of type columnNr to partition model nr rowNr **/
@@ -679,6 +691,9 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	}
 
 	void initTableData() {
+		List<Integer> selected = getTableRowSelection();
+		boolean b = updateInProgress;
+		updateInProgress = true;
 		this.likelihoods = new GenericTreeLikelihood[partitionCount];
 		if (tableData == null) {
 			tableData = new Object[partitionCount][NR_OF_COLUMNS];
@@ -727,6 +742,11 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		tableEntries = FXCollections.observableArrayList(list);
 		table.setItems(tableEntries);
 		table.refresh();
+		updateInProgress = b;
+
+		for (int i : selected) {
+			table.getSelectionModel().select(i);
+		}
 	}
 	
 //	void initTableEntries() {
@@ -1247,17 +1267,24 @@ public class AlignmentListInputEditor extends ListInputEditor {
 							setVisible(!empty);
 							if (!empty) {
 								comboBox.getSelectionModel().select(item.get());
+								comboBox.setUserData(item);
+						        comboBox.setOnKeyReleased(k->{
+						        	if (k.getCode().equals(KeyCode.ENTER) || k.getCode().equals(KeyCode.TAB)) {
+						        		comboActionListener(comboBox, item, SITEMODEL_COLUMN);
+						        	}
+						        });
 							}
 						}
 			        };
 			        comboBox.getItems().addAll(partitionNameStrings[0]);
 			        comboBox.setEditable(true);
-			        comboBox.setOnAction(value -> {
-			        	System.err.println("SiteModelCellFactoryCB " + value.getSource() + " " + 
-			        			((ComboBox)value.getSource()).getValue());
-			        	System.err.println("SiteModelCellFactoryCB " + value.getTarget());
-			        	comboActionListener(value, SITEMODEL_COLUMN);//((ComboBox)value.getSource()).getValue()));
-			        });
+//			        comboBox.setOnAction(value -> {
+//			        	if (updateInProgress) {return;}
+//			        	System.err.println("SiteModelCellFactoryCB " + value.getSource() + " " + 
+//			        			((ComboBox)value.getSource()).getValue());
+//			        	System.err.println("SiteModelCellFactoryCB " + value.getTarget());
+//			        	comboActionListener(value, SITEMODEL_COLUMN);//((ComboBox)value.getSource()).getValue()));
+//			        });
 			        c.setId("siteModelCell");
 			        c.setGraphic(comboBox);
 			        return c;
@@ -1285,6 +1312,12 @@ public class AlignmentListInputEditor extends ListInputEditor {
 							setVisible(!empty);
 							if (!empty) {
 								comboBox.getSelectionModel().select(item.get());
+						        comboBox.setUserData(item);
+						        comboBox.setOnKeyReleased(k->{
+						        	if (k.getCode().equals(KeyCode.ENTER) || k.getCode().equals(KeyCode.TAB)) {
+						        		comboActionListener(comboBox, item, SITEMODEL_COLUMN);
+						        	}
+						        });
 							}
 						}
 			        };
@@ -1301,12 +1334,13 @@ public class AlignmentListInputEditor extends ListInputEditor {
 //			                comboBox.valueProperty().bindBidirectional(newValue);
 //			            }
 //			        });
-			        comboBox.setOnAction(value -> {
-			        	System.err.println("ClockModelCellFactoryCB " + value.getSource() + " " + 
-			        			((ComboBox)value.getSource()).getValue());
-			        	System.err.println("ClockModelCellFactoryCB " + value.getTarget());
-			        	comboActionListener(value, CLOCKMODEL_COLUMN);//((ComboBox)value.getSource()).getValue()));
-			        });
+//			        comboBox.setOnAction(value -> {
+//			        	if (updateInProgress) {return;}
+//			        	System.err.println("ClockModelCellFactoryCB " + value.getSource() + " " + 
+//			        			((ComboBox)value.getSource()).getValue());
+//			        	System.err.println("ClockModelCellFactoryCB " + value.getTarget());
+//			        	comboActionListener(value, CLOCKMODEL_COLUMN);//((ComboBox)value.getSource()).getValue()));
+//			        });
 			        // c.graphicProperty().bind(comboBox);
 			        		//Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
 			        c.setId("clockModelCell");
@@ -1335,6 +1369,12 @@ public class AlignmentListInputEditor extends ListInputEditor {
 							setVisible(!empty);
 							if (!empty) {
 								comboBox.getSelectionModel().select(item.get());
+						        comboBox.setUserData(item);
+						        comboBox.setOnKeyReleased(k->{
+						        	if (k.getCode().equals(KeyCode.ENTER) || k.getCode().equals(KeyCode.TAB)) {
+						        		comboActionListener(comboBox, item, SITEMODEL_COLUMN);
+						        	}
+						        });
 							}
 						}
 			        };
@@ -1351,12 +1391,13 @@ public class AlignmentListInputEditor extends ListInputEditor {
 //			                comboBox.valueProperty().bindBidirectional(newValue);
 //			            }
 //			        });
-			        comboBox.setOnAction(value -> {
-			        	System.err.println("TreeModelCellFactoryCB " + value.getSource() + " " + 
-			        			((ComboBox)value.getSource()).getValue());
-			        	System.err.println("TreeModelCellFactoryCB " + value.getTarget());
-			        	comboActionListener(value, TREE_COLUMN);//((ComboBox)value.getSource()).getValue()));
-			        });
+//			        comboBox.setOnAction(value -> {
+//			        	if (updateInProgress) {return;}
+//			        	System.err.println("TreeModelCellFactoryCB " + value.getSource() + " " + 
+//			        			((ComboBox)value.getSource()).getValue());
+//			        	System.err.println("TreeModelCellFactoryCB " + value.getTarget());
+//			        	comboActionListener(value, TREE_COLUMN);//((ComboBox)value.getSource()).getValue()));
+//			        });
 			        c.setId("treeModelCell");
 			        c.setGraphic(comboBox);
 			        // c.graphicProperty().bind(comboBox);
@@ -1444,26 +1485,71 @@ public class AlignmentListInputEditor extends ListInputEditor {
 //		col.setMaxWidth(20);
 	}
 
-	private void comboActionListener(ActionEvent value, int column) {
-		Partition0 partition0 = table.getFocusModel().getFocusedItem();
-		String newValue = (String) ((ComboBox)value.getSource()).getValue();
-		
-		tableData[partition0.getRow()][column] = newValue;
-		switch (column) {
-		case SITEMODEL_COLUMN: partition0.siteModelProperty().setValue(newValue); break;
-		case CLOCKMODEL_COLUMN: partition0.clockModelProperty().setValue(newValue); break;
-		case TREE_COLUMN: partition0.treeProperty().setValue(newValue); break;
-		}
-		
-		for (int i = 0; i < partitionCount; i++) {
-			try {
-				updateModel(column, i);
-			} catch (Exception ex) {
-				Log.warning.println(ex.getMessage());
+	private void comboActionListener(ComboBox comboBox /*ActionEvent e, */,StringProperty item, int column) {
+		Partition0 partition0 = null;
+		for (Partition0 partition : tableEntries) {
+			if (partition.siteModel == item ||
+					partition.clockModelProperty() == item ||
+					partition.tree == item) {
+				partition0 = partition;
 			}
 		}
-
+		
+		//Partition0 partition0 = table.getFocusModel().getFocusedItem();
+		// ComboBox comboBox = ((ComboBox)e.getSource());
+		String newValue = (String) comboBox.getValue();
+		String oldValue = (String) item.get();
+		
+		if (!oldValue.equals(newValue)) {
+			tableData[partition0.getRow()][column] = newValue;
+			switch (column) {
+			case SITEMODEL_COLUMN: partition0.siteModelProperty().setValue(newValue); break;
+			case CLOCKMODEL_COLUMN: partition0.clockModelProperty().setValue(newValue); break;
+			case TREE_COLUMN: partition0.treeProperty().setValue(newValue); break;
+			}
+			
+			for (int i = 0; i < partitionCount; i++) {
+				try {
+					updateModel(column, i);
+				} catch (Exception ex) {
+					Log.warning.println(ex.getMessage());
+				}
+			}	
+		}
 	}
+
+//	private void comboActionListener(ActionEvent value, int column) {
+//		if (true) return;
+//		ComboBox comboBox = ((ComboBox)value.getSource());
+//		StringProperty s = (StringProperty) comboBox.getUserData();
+//		Partition0 partition0 = null;
+//		for (Partition0 partition : tableEntries) {
+//			if (partition.siteModel == s ||
+//					partition.clockModelProperty() == s ||
+//					partition.tree == s) {
+//				partition0 = partition;
+//			}
+//		}
+//		
+//		//Partition0 partition0 = table.getFocusModel().getFocusedItem();
+//		String newValue = (String) comboBox.getValue();
+//		
+//		tableData[partition0.getRow()][column] = newValue;
+//		switch (column) {
+//		case SITEMODEL_COLUMN: partition0.siteModelProperty().setValue(newValue); break;
+//		case CLOCKMODEL_COLUMN: partition0.clockModelProperty().setValue(newValue); break;
+//		case TREE_COLUMN: partition0.treeProperty().setValue(newValue); break;
+//		}
+//		
+//		for (int i = 0; i < partitionCount; i++) {
+//			try {
+//				updateModel(column, i);
+//			} catch (Exception ex) {
+//				Log.warning.println(ex.getMessage());
+//			}
+//		}
+//
+//	}
 
 	void processPartitionName(int row, int col, String newName) {
 		Log.warning.println("processPartitionName");
@@ -1606,6 +1692,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	private void addItem(File[] fileArray) {
 		List<BEASTInterface> beastObjects = doc.beautiConfig.selectAlignments(doc, this, fileArray);
 
+		updateInProgress = true;
 		if (beastObjects != null) {
 			for (BEASTInterface b : beastObjects) {
 				GenericTreeLikelihood likelihood = null;
@@ -1626,6 +1713,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	    	table.refresh();
 			refreshPanel();
 		}
+		updateInProgress = false;
 	}
 
 	void delItem() {
@@ -1717,8 +1805,12 @@ public class AlignmentListInputEditor extends ListInputEditor {
 
 	@Override
     public void refreshPanel() {
+		List<Integer> selected = table.getSelectionModel().getSelectedIndices();
 		setUpComboBoxes();
 		initTableData();
+		for (int i : selected) {
+			table.getSelectionModel().select(i);
+		}
     }
 	
 	void replaceItem() {

@@ -254,16 +254,23 @@ public class BeautiBase extends Beauti {
 			}
 		}
 		System.err.println("Number of parameters in prior = " + parameters.size());
+		if (parameters.size() != i) {
+			try {
+				printBeautiState();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		if (i >= 0) {
 			assertThat(parameters.size()).as("Expected " + i + " parameters in prior").isEqualTo(i);
 		}
 	}
 	
 	void printBeautiState() throws InterruptedException {
-		String s = stateAsString();
+		// Thread.sleep(500);
+		// String s = stateAsString();
         doc.scrubAll(true, false);
 		// f.selectTab("MCMC");
-		System.err.println(s);
 		System.err.println(stateAsString());
 		System.err.println(operatorsAsString());
 		System.err.println(priorsAsString());

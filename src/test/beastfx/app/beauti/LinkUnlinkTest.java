@@ -15,8 +15,6 @@ import org.testfx.framework.junit5.Start;
 import beast.app.util.Utils;
 import beastfx.app.beauti.BeautiTabPane;
 import javafx.application.Platform;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
@@ -54,10 +52,10 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		clickOnButton(robot, "Unlink Site Models");
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47");
 		
 		warning("Link clock models");
 		selectTab(robot, "Partitions");
@@ -68,10 +66,10 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		clickOnButton(robot, "Unlink Clock Models");
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47");
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
@@ -82,10 +80,10 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		clickOnButton(robot, "Unlink Trees");
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47");
 
 		makeSureXMLParses();
 	}
@@ -96,11 +94,12 @@ public class LinkUnlinkTest extends BeautiBase {
 		importAlignment(NEXUS_DIR, new File("26.nex"), new File("47.nex"), new File("59.nex"));
 
 		// JTabbedPaneFixture f = beautiFrame.tabbedPane();
+		Thread.sleep(500);
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "clockRate.c:59", "YuleModel.t:59", "birthRate.t:59");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47", "Tree.t:59", "birthRate.t:59");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "YuleModel.t:59", "birthRate.t:59");
 
 		selectPartitions(robot, 0, 1, 2);
 
@@ -113,10 +112,10 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		clickOnButton(robot, "Unlink Site Models");
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "clockRate.c:59", "YuleModel.t:59", "birthRate.t:59");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47", "Tree.t:59", "birthRate.t:59");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "YuleModel.t:59", "birthRate.t:59");
 		
 		warning("Link clock models");
 		selectTab(robot, "Partitions");
@@ -127,10 +126,10 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		clickOnButton(robot, "Unlink Clock Models");
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "clockRate.c:59", "YuleModel.t:59", "birthRate.t:59");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47", "Tree.t:59", "birthRate.t:59");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "YuleModel.t:59", "birthRate.t:59");
 
 		warning("Link trees");
 		selectTab(robot, "Partitions");
@@ -141,10 +140,10 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		clickOnButton(robot, "Unlink Trees");
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "clockRate.c:59", "YuleModel.t:59", "birthRate.t:59");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47", "Tree.t:59", "birthRate.t:59");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "YuleModel.t:59", "birthRate.t:59");
 
 		makeSureXMLParses();
 	}
@@ -207,6 +206,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		importAlignment(NEXUS_DIR, new File("26.nex"), new File("47.nex"), new File("59.nex"));
 
 		// JTabbedPaneFixture f = beautiFrame.tabbedPane();
+		Thread.sleep(500);
 		printBeautiState();
 		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47", "Tree.t:59", "birthRate.t:59");
 		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59");
@@ -246,11 +246,12 @@ public class LinkUnlinkTest extends BeautiBase {
 		importAlignment(NEXUS_DIR, new File("26.nex"), new File("47.nex"), new File("59.nex"));
 
 		// JTabbedPaneFixture f = beautiFrame.tabbedPane();
+		Thread.sleep(500);
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "clockRate.c:59", "YuleModel.t:59", "birthRate.t:59");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47", "Tree.t:59", "birthRate.t:59");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "YuleModel.t:59", "birthRate.t:59");
 
 		selectPartitions(robot, 0, 1, 2);
 
@@ -289,13 +290,14 @@ public class LinkUnlinkTest extends BeautiBase {
 		importAlignment(NEXUS_DIR, new File("26.nex"), new File("47.nex"), new File("59.nex"));
 
 		// JTabbedPaneFixture f = beautiFrame.tabbedPane();
+		Thread.sleep(500);
 		printBeautiState();
-		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "clockRate.c:47", "birthRate.t:47", "Tree.t:59", "clockRate.c:59", "birthRate.t:59");
-		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "StrictClockRateScaler.c:47", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "strictClockUpDownOperator.c:47", "StrictClockRateScaler.c:59", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59", "strictClockUpDownOperator.c:59");
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47", "ClockPrior.c:47", "YuleBirthRatePrior.t:47", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
-		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "clockRate.c:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "clockRate.c:59", "YuleModel.t:59", "birthRate.t:59");
+		assertStateEquals("Tree.t:26", "birthRate.t:26", "Tree.t:47", "birthRate.t:47", "Tree.t:59", "birthRate.t:59");
+		assertOperatorsEqual("YuleBirthRateScaler.t:26", "YuleModelTreeScaler.t:26", "YuleModelTreeRootScaler.t:26", "YuleModelUniformOperator.t:26", "YuleModelSubtreeSlide.t:26", "YuleModelNarrow.t:26", "YuleModelWide.t:26", "YuleModelWilsonBalding.t:26", "YuleBirthRateScaler.t:47", "YuleModelTreeScaler.t:47", "YuleModelTreeRootScaler.t:47", "YuleModelUniformOperator.t:47", "YuleModelSubtreeSlide.t:47", "YuleModelNarrow.t:47", "YuleModelWide.t:47", "YuleModelWilsonBalding.t:47", "YuleBirthRateScaler.t:59", "YuleModelTreeScaler.t:59", "YuleModelTreeRootScaler.t:59", "YuleModelUniformOperator.t:59", "YuleModelSubtreeSlide.t:59", "YuleModelNarrow.t:59", "YuleModelWide.t:59", "YuleModelWilsonBalding.t:59");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:47","YuleBirthRatePrior.t:47", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
+		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.26", "TreeHeight.t:26", "YuleModel.t:26", "birthRate.t:26", "treeLikelihood.47", "TreeHeight.t:47", "YuleModel.t:47", "birthRate.t:47", "treeLikelihood.59", "TreeHeight.t:59", "YuleModel.t:59", "birthRate.t:59");
 
-		assertParameterCountInPriorIs(5);		
+		assertParameterCountInPriorIs(3);		
 
 		selectPartitions(robot, 0, 1, 2);
 
@@ -310,7 +312,8 @@ public class LinkUnlinkTest extends BeautiBase {
 		robot.clickOn("#substModel").clickOn("HKY");
         //JComboBoxFixture substModel = beautiFrame.comboBox("substModel");
         //substModel.selectItem("HKY");
-		assertParameterCountInPriorIs(7);		
+		printBeautiState();
+		assertParameterCountInPriorIs(5+2);		
 		
 		selectTab(robot, "Partitions");
 		warning("Link site models");
@@ -318,11 +321,12 @@ public class LinkUnlinkTest extends BeautiBase {
 		clickOnButton(robot, "Link Site Models");
 		printBeautiState();
 
-		assertParameterCountInPriorIs(7);		
+		selectPartitions(robot, 0, 1, 2);
+		assertParameterCountInPriorIs(5+2);		
 		clickOnButton(robot, "Unlink Site Models");
 
 		printBeautiState();
-		assertParameterCountInPriorIs(15);		
+		assertParameterCountInPriorIs(9+6);		
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
@@ -330,7 +334,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		clickOnButton(robot, "-");
 		printBeautiState();
 
-		assertParameterCountInPriorIs(10);		
+		assertParameterCountInPriorIs(6+4);		
 
 		warning("Delete first partition");
 		selectTab(robot, "Partitions");
@@ -340,7 +344,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		clickOnButton(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "KappaPrior.s:59", "FrequenciesPrior.s:59");		
-		assertParameterCountInPriorIs(5);
+		assertParameterCountInPriorIs(3+2);
 		
 		makeSureXMLParses();
 	}
@@ -444,7 +448,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectPartitions(robot, 1);
 		clickOnButton(robot, "-");
 		printBeautiState();
-		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:59", "ClockPrior.c:59", "YuleBirthRatePrior.t:59");
+		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "YuleModel.t:59", "YuleBirthRatePrior.t:59");
 
 		// JTableFixture t = beautiFrame.table();
 		Assertions.assertThat(getPartitionCount(robot)).isEqualTo(2);
@@ -533,7 +537,7 @@ public class LinkUnlinkTest extends BeautiBase {
 //			execute(new GuiTask() {
 //		        @Override
 //				protected void executeInEDT() {
-			Platform.runLater(() -> {
+			robot.interact(() -> {
 		        	try {
 		    			doc.loadNewTemplate(TEMPLATE_DIR +"/StarBeast.xml");
 		    			doc.beauti.refreshPanel();
@@ -589,8 +593,10 @@ public class LinkUnlinkTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		clickOnButton(robot, "Link Clock Models");
 		
-		clickOnButton(robot, "-");
+		selectPartitions(robot, 0, 1, 2);
 
+		clickOnButton(robot, "-");
+		Thread.sleep(500);
 		// JTableFixture t = beautiFrame.table();
 		Assertions.assertThat(getPartitionCount(robot)).isEqualTo(0);
 	}
