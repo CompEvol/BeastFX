@@ -3,6 +3,7 @@ package beastfx.app.beauti;
 
 
 
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import beastfx.app.inputeditor.BEASTObjectDialog;
@@ -19,6 +21,7 @@ import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiSubTemplate;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.util.FXUtils;
+import beastfx.app.inputeditor.ListInputEditor;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.inference.distribution.Prior;
@@ -167,4 +170,17 @@ public class PriorInputEditor extends InputEditor.Base {
                 " [" + (lower == null ? "-\u221E" : lower + "") +
                 "," + (upper == null ? "\u221E" : upper + "") + "]";
     }
+
+    VBox expandBox = null;
+	public void setExpandBox(VBox expandBox) {
+		this.expandBox = expandBox;
+	}
+	
+	@Override
+	public void refreshPanel() {
+		if (expandBox != null) {
+			ListInputEditor.updateExpandBox(doc, expandBox, m_beastObject, this);
+		}
+		super.refreshPanel();
+	}	
 }

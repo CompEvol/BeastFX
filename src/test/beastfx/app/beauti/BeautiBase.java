@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
-
+import org.testfx.service.query.NodeQuery;
 
 import beastfx.app.beauti.Beauti;
 import beastfx.app.beauti.BeautiTabPane;
@@ -421,7 +421,7 @@ public class BeautiBase extends Beauti {
 
 	/** robustly select rows in partition table -- don't give up after first attempt **/
 	protected void selectPartitions(FxRobot robot, int ... rows) {
-		robot.clickOn("#Partitions");
+		robot.clickOn("Partitions");
 
 		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
 		
@@ -450,18 +450,17 @@ public class BeautiBase extends Beauti {
 	protected void selectTab(FxRobot robot, String tab) {
 		tab = tab.replaceAll(" ", "");
 		robot.clickOn("#" + tab);
-
 	}
 	
 	protected int getPartitionCount(FxRobot robot) {
-		robot.clickOn("#Partitions");
+		robot.clickOn("Partitions");
 
 		TableView<Partition0> table = robot.lookup(".table-view").queryAs(TableView.class);
 		int rowCount = table.getItems().size();
 		return rowCount;
 	}
 
-	protected void clickOnButton(FxRobot robot, String buttonText) {
+	protected FxRobot clickOnButtonWithText(FxRobot robot, String buttonText) {
 		Node node = (Node) robot.lookup(target -> {
 			if (target instanceof Button) {
 				return buttonText.equals(((Button)target).getText());
@@ -469,14 +468,19 @@ public class BeautiBase extends Beauti {
 		    return false;
 		}).queryAs(Node.class);
 		robot.clickOn(node);
+		return robot;
 	}
 
-	protected void clickOnCheckbox(FxRobot robot, String id) {
-		Node node = (Node) robot.lookup(target -> {
-			// System.err.println(target.getId());
-			return id.equals(target.getId());
-		}).queryAs(Node.class);
-		robot.clickOn(node);
+	protected FxRobot clickOnNodesWithID(FxRobot robot, String id) {
+		NodeQuery q = robot.lookup(target -> {
+			System.err.println(target.getId());
+			return id.equals(target.getId()) && target.isVisible();
+		});
+		Set<Node> nodes = q.queryAll();
+		for (Node node : nodes) {
+			robot.clickOn(node);
+		}
+		return robot;
 	}
 
     protected void setPartitionTableCell(FxRobot robot, int col, String string) {

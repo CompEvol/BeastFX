@@ -1,6 +1,7 @@
 package beastfx.app.inputeditor;
 
 
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,8 +14,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
+import beastfx.app.inputeditor.ListInputEditor;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -348,5 +351,18 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
     		operators.remove(operator);
     	}
 	}
+
+    VBox expandBox = null;
+	public void setExpandBox(VBox expandBox) {
+		this.expandBox = expandBox;
+	}
+	
+	@Override
+	public void refreshPanel() {
+		if (expandBox != null) {
+			ListInputEditor.updateExpandBox(doc, expandBox, m_beastObject, this);
+		}
+		super.refreshPanel();
+	}	
 
 }

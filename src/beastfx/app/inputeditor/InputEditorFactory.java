@@ -265,7 +265,7 @@ public class InputEditorFactory {
         // ((JComponent) inputEditor).setBorder(BorderFactory.createEmptyBorder());
         inputEditor.getComponent().setVisible(true);
         //Log.trace.println(inputEditor.getClass().getName());
-        ((Node)inputEditor).setId(input.getName());
+        // ((Node)inputEditor).setId(input.getName());
         return inputEditor;
     } // createInputEditor
 

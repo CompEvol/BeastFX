@@ -1,5 +1,6 @@
 package beastfx.app.inputeditor;
 
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import beastfx.app.beauti.PriorInputEditor;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -66,17 +68,6 @@ public class ListInputEditor extends InputEditor.Base {
         public ActionListenerObject(Object o) {
             super();
             m_o = o;
-        }
-    }
-
-    public abstract class ExpandActionListener implements EventHandler<ActionEvent> {
-        VBox m_box;
-        BEASTInterface m_beastObject;
-
-        public ExpandActionListener(VBox box, BEASTInterface beastObject) {
-            super();
-            m_box = box;
-            m_beastObject = beastObject;
         }
     }
 
@@ -227,58 +218,19 @@ public class ListInputEditor extends InputEditor.Base {
 
         if (m_bExpandOption == ExpandOption.TRUE || m_bExpandOption == ExpandOption.TRUE_START_COLLAPSED ||
                 (m_bExpandOption == ExpandOption.IF_ONE_ITEM && ((List<?>) m_input.get()).size() == 1)) {
-            VBox expandBox = FXUtils.newVBox();
-            //box.add(itemBox);
-            List<InputEditor> editors = doc.getInputEditorFactory().addInputs(expandBox, beastObject, editor, null, doc);
-            
-            boolean addExpansionBox = editors.size() > 1;
-            //System.err.print(expandBox.getComponentCount());
-            if (editors.size() == 1 && editors.get(0) instanceof BEASTObjectInputEditor) {
-            	BEASTObjectInputEditor boie = (BEASTObjectInputEditor) editors.get(0);
-            	if (boie.m_expansionBox != null && boie.m_expansionBox.getChildren().size() > 1) {
-            		addExpansionBox = true;
-            	}
-            }
-            
-            if (addExpansionBox) {
-                    // only go here if it is worth showing expanded box
-                    //expandBox.setBorder(BorderFactory.createMatteBorder(1, 5, 1, 1, Color.gray));
-                    //itemBox = box;
-	                //VBox box2 = FXUtils.newVBox();
-	                //box2.getChildren().add(itemBox);
-//TODO: find out what this line does:  itemBox.getChildren().add(0, editButton);
-	                //box2.getChildren().add(expandBox);
-//        		//itemBox.remove(editButton);
-//        		editButton.setVisible(false);
-//        	} else {
-	                //itemBox = box2;
-	                // m_listBox.add(expandBox, 0, rowCount);
-	            if (g_collapsedIDs.contains(beastObject.getID())) {
-            		expandBox.setPrefHeight(0);
-	            	expandBox.setMinHeight(0);
-	        		expandBox.setVisible(false);
-	        		expandBox.setManaged(false);
-            	} else {
-	            	expandBox.setPrefHeight(USE_COMPUTED_SIZE);
-	            	expandBox.setMinHeight(expandBox.getPrefHeight());
-	        		expandBox.setVisible(true);
-	        		expandBox.setManaged(true);
-            	}
-                m_listBox.getChildren().add(expandBox);
-            } else {
-                editButton.setVisible(false);
-            }
+        	VBox expandBox = createExpandBox(beastObject, editor, editButton);
+        	
             editButton.setOnAction(new ExpandActionListener(expandBox, beastObject) {
                 @Override
-				public void handle(ActionEvent e) {
+    			public void handle(ActionEvent e) {
                     SmallButton editButton = (SmallButton) e.getSource();
                     expandBox.setVisible(!expandBox.isVisible());
                     if (expandBox.isVisible()) {
                         try {
                         	editButton.setImg(DOWN_ICON);
                         }catch (Exception e2) {
-							// ignore
-						}
+    						// ignore
+    					}
                         expandBox.setPrefHeight(USE_COMPUTED_SIZE);
                         expandBox.setMinHeight(m_box.getPrefHeight());
                         expandBox.setVisible(true);
@@ -287,9 +239,9 @@ public class ListInputEditor extends InputEditor.Base {
                     } else {
                     	try {
                     		editButton.setImg(RIGHT_ICON);
-	                    }catch (Exception e2) {
-							// ignore
-						}
+                        }catch (Exception e2) {
+    						// ignore
+    					}
                     	expandBox.setPrefHeight(0);
                     	expandBox.setMinHeight(0);
                     	expandBox.setVisible(false);
@@ -298,19 +250,15 @@ public class ListInputEditor extends InputEditor.Base {
                     }
                 }
             });
-            String id = beastObject.getID();
-            expandBox.setVisible(!g_collapsedIDs.contains(id));
             try {
-            if (expandBox.isVisible()) {
-                editButton.setImg(DOWN_ICON);
-            } else {
-                editButton.setImg(RIGHT_ICON);
-            }
+    	        if (expandBox.isVisible()) {
+    	            editButton.setImg(DOWN_ICON);
+    	        } else {
+    	            editButton.setImg(RIGHT_ICON);
+    	        }
             } catch (Exception e) {
-				// TODO: handle exception
-			}
-
-
+    			// TODO: handle exception
+    		}
         } else {
             if (BEASTObjectPanel.countInputs(beastObject, doc) == 0) {
 System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
@@ -320,7 +268,74 @@ System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
 
     } // addSingleItem
 
-    /**
+    private VBox createExpandBox(BEASTInterface beastObject, InputEditor editor, SmallButton editButton) {
+        VBox expandBox = FXUtils.newVBox();
+        boolean editButtonIsVisible = updateExpandBox(doc, expandBox, beastObject, editor);
+
+        if (editButtonIsVisible) {
+        	m_listBox.getChildren().add(expandBox);
+        } else {
+            editButton.setVisible(false);
+        }
+        return expandBox;
+	}
+
+    public static boolean updateExpandBox(BeautiDoc doc, VBox expandBox, BEASTInterface beastObject, InputEditor editor) {
+        //box.add(itemBox);
+    	boolean editButtonIsVisible = true;
+
+    	expandBox.getChildren().clear();
+        List<InputEditor> editors = doc.getInputEditorFactory().addInputs(expandBox, beastObject, editor, null, doc);
+        
+        boolean addExpansionBox = editors.size() > 1;
+        //System.err.print(expandBox.getComponentCount());
+        if (editors.size() == 1 && editors.get(0) instanceof BEASTObjectInputEditor) {
+        	BEASTObjectInputEditor boie = (BEASTObjectInputEditor) editors.get(0);
+        	if (boie.m_expansionBox != null && boie.m_expansionBox.getChildren().size() > 1) {
+        		addExpansionBox = true;
+        	}
+        }
+        
+        if (addExpansionBox) {
+                // only go here if it is worth showing expanded box
+                //expandBox.setBorder(BorderFactory.createMatteBorder(1, 5, 1, 1, Color.gray));
+                //itemBox = box;
+                //VBox box2 = FXUtils.newVBox();
+                //box2.getChildren().add(itemBox);
+//TODO: find out what this line does:  itemBox.getChildren().add(0, editButton);
+                //box2.getChildren().add(expandBox);
+//    		//itemBox.remove(editButton);
+//    		editButton.setVisible(false);
+//    	} else {
+                //itemBox = box2;
+                // m_listBox.add(expandBox, 0, rowCount);
+            if (g_collapsedIDs.contains(beastObject.getID())) {
+        		expandBox.setPrefHeight(0);
+            	expandBox.setMinHeight(0);
+        		expandBox.setVisible(false);
+        		expandBox.setManaged(false);
+        	} else {
+            	expandBox.setPrefHeight(USE_COMPUTED_SIZE);
+            	expandBox.setMinHeight(expandBox.getPrefHeight());
+        		expandBox.setVisible(true);
+        		expandBox.setManaged(true);
+        	}
+            
+            if (editor instanceof PriorInputEditor) {
+            	((PriorInputEditor)editor).setExpandBox(expandBox);
+            }
+            if (editor instanceof MRCAPriorInputEditor) {
+            	((MRCAPriorInputEditor)editor).setExpandBox(expandBox);
+            }
+        } else {
+        	editButtonIsVisible = false;
+        }
+        String id = beastObject.getID();
+        expandBox.setVisible(!g_collapsedIDs.contains(id));
+        return editButtonIsVisible;
+    }
+
+	/**
      * add components to box that are specific for the beastObject.
      * By default, this just inserts a label with the beastObject ID
      *

@@ -98,7 +98,7 @@ public class CloneTest extends BeautiBase {
 
         // set category count back to 1
         //beautiFrame.checkBox("shape.isEstimated").uncheck();
-        clickOnCheckbox(robot, "shape.isEstimated");
+        clickOnNodesWithID(robot, "shape.isEstimated");
         robot.doubleClickOn("#gammaCategoryCount").write("1");
         printBeautiState();
         assertStateEquals("Tree.t:3rdpos", "birthRate.t:3rdpos", "Tree.t:2ndpos", "birthRate.t:2ndpos", "Tree.t:noncoding", "birthRate.t:noncoding", "Tree.t:coding", "birthRate.t:coding", "Tree.t:1stpos", "birthRate.t:1stpos", "kappa.s:coding", "gammaShape.s:coding", "kappa.s:1stpos", "gammaShape.s:1stpos", "kappa.s:2ndpos", "gammaShape.s:2ndpos", "kappa.s:3rdpos", "gammaShape.s:3rdpos", "freqParameter.s:2ndpos", "freqParameter.s:3rdpos", "freqParameter.s:1stpos", "freqParameter.s:coding");
@@ -142,7 +142,7 @@ public class CloneTest extends BeautiBase {
 		// 0. link trees
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 0,1,2,3,4);
-		clickOnButton(robot, "Link Trees");
+		clickOnButtonWithText(robot, "Link Trees");
 
 		
         //1. Set the clock model of second partition to UCLD exponential

@@ -50,8 +50,8 @@ public class FixedMeanRateTest extends BeautiBase {
 		// f.selectTab("Partitions");
 		// beautiFrame.table().selectCells(TableCell.row(0).column(0), TableCell.row(1).column(0));
 		selectPartitions(robot, 0, 1);
-		clickOnButton(robot, "Link Site Models");
-		clickOnButton(robot, "Unlink Site Models");
+		clickOnButtonWithText(robot, "Link Site Models");
+		clickOnButtonWithText(robot, "Unlink Site Models");
 
 		//saveFile("/Users/remcobouckaert/tmp", "x.xml");
 		makeSureXMLParses();
@@ -72,14 +72,14 @@ public class FixedMeanRateTest extends BeautiBase {
 		
 		warning("Setting fixed mean rates");
 		selectTab(robot, "Site Model");		
-		clickOnCheckbox(robot, "mutationRate.isEstimated");
+		clickOnNodesWithID(robot, "mutationRate.isEstimated");
 		//beautiFrame.checkBox("FixMeanMutationRate").check();
 
 		warning("link/unlink site models");
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 0, 1, 2);
-		clickOnButton(robot, "Link Site Models");
-		clickOnButton(robot, "Unlink Site Models");
+		clickOnButtonWithText(robot, "Link Site Models");
+		clickOnButtonWithText(robot, "Unlink Site Models");
 		
 		DeltaExchangeOperator operator = (DeltaExchangeOperator) doc.pluginmap.get("FixMeanMutationRatesOperator");
 		int nrOfParameters = operator.parameterInput.get().size();
@@ -95,7 +95,7 @@ public class FixedMeanRateTest extends BeautiBase {
 
 		selectPartitions(robot, 0, 2);
 		// beautiFrame.table().selectCells(TableCell.row(0).column(1), TableCell.row(2).column(1));
-		clickOnButton(robot, "Link Site Models");
+		clickOnButtonWithText(robot, "Link Site Models");
 		operator = (DeltaExchangeOperator) doc.pluginmap.get("FixMeanMutationRatesOperator");
 		nrOfParameters = operator.parameterInput.get().size();
 		

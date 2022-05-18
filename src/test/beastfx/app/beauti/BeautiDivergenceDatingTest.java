@@ -8,7 +8,6 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
 import beastfx.app.beauti.BeautiTabPane;
-import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
@@ -70,7 +69,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         warning("1. Delete \"coding\" partition as it covers the same sites as the 1stpos, 2ndpos and 3rdpos partitions.");
         selectTab(robot, "Partitions");
         selectPartitions(robot, 0);
-        clickOnButton(robot, "-");
+        clickOnButtonWithText(robot, "-");
         printBeautiState();
         checkTableContents(robot, "[noncoding, primate-mtDNA, 12, 205, nucleotide, noncoding, noncoding, noncoding, false]*" +
                 "[1stpos, primate-mtDNA, 12, 231, nucleotide, 1stpos, 1stpos, 1stpos, false]*" +
@@ -85,7 +84,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         warning("2a. Link trees...");
         selectTab(robot, "Partitions");
         selectPartitions(robot, 0, 1, 2, 3);
-        clickOnButton(robot, "Link Trees");
+        clickOnButtonWithText(robot, "Link Trees");
         printBeautiState();
         assertStateEquals("Tree.t:noncoding", "birthRate.t:noncoding", "clockRate.c:2ndpos", "clockRate.c:3rdpos", "clockRate.c:1stpos");
         assertOperatorsEqual("YuleBirthRateScaler.t:noncoding", "YuleModelTreeScaler.t:noncoding", "YuleModelTreeRootScaler.t:noncoding", "YuleModelUniformOperator.t:noncoding", "YuleModelSubtreeSlide.t:noncoding", "YuleModelNarrow.t:noncoding", "YuleModelWide.t:noncoding", "YuleModelWilsonBalding.t:noncoding", "StrictClockRateScaler.c:2ndpos", "StrictClockRateScaler.c:3rdpos", "StrictClockRateScaler.c:1stpos", "strictClockUpDownOperator.c:2ndpos", "strictClockUpDownOperator.c:1stpos", "strictClockUpDownOperator.c:3rdpos");
@@ -118,7 +117,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         warning("3a. Link clocks");
         selectTab(robot, "Partitions");
         selectPartitions(robot, 0, 1, 2, 3);
-        clickOnButton(robot, "Link Clock Models");
+        clickOnButtonWithText(robot, "Link Clock Models");
         printBeautiState();
 
         
@@ -149,7 +148,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         warning("4. Link site models temporarily in order to set the same model for all of them.");
         selectTab(robot, "Partitions");
         selectPartitions(robot, 0, 1, 2, 3);
-        clickOnButton(robot, "Link Site Models");
+        clickOnButtonWithText(robot, "Link Site Models");
         printBeautiState();
         checkTableContents(robot, "[noncoding, primate-mtDNA, 12, 205, nucleotide, noncoding, clock, tree, false]*" +
                 "[1stpos, primate-mtDNA, 12, 231, nucleotide, noncoding, clock, tree, false]*" +
@@ -185,7 +184,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         warning("6a. Unlink the site models,");
         selectTab(robot, "Partitions");
         selectPartitions(robot, 0, 1, 2, 3);
-        clickOnButton(robot, "Unlink Site Models");
+        clickOnButtonWithText(robot, "Unlink Site Models");
         printBeautiState();
         checkTableContents(robot, "[noncoding, primate-mtDNA, 12, 205, nucleotide, noncoding, clock, tree, false]*" +
                 "[1stpos, primate-mtDNA, 12, 231, nucleotide, 1stpos, clock, tree, false]*" +
@@ -198,14 +197,14 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 //        JListFixture partitionList = beautiFrame.list();
 //        partitionList.selectItem("noncoding");
         robot.clickOn(".list-view").clickOn("noncoding");
-        clickOnCheckbox(robot, "mutationRate.isEstimated");
+        clickOnNodesWithID(robot, "mutationRate.isEstimated");
 //        mutationRateIsEstimated.requireNotSelected();
 //        mutationRateIsEstimated.check();
 //        mutationRateIsEstimated.requireSelected();
 
         robot.clickOn(".list-view").clickOn("1stpos");
 //        partitionList.selectItem("1stpos");
-        clickOnCheckbox(robot, "mutationRate.isEstimated");
+        clickOnNodesWithID(robot, "mutationRate.isEstimated");
 //        mutationRateIsEstimated = beautiFrame.checkBox("mutationRate.isEstimated");
 //        mutationRateIsEstimated.requireNotSelected();
 //        mutationRateIsEstimated.check();
@@ -213,7 +212,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 
         robot.clickOn(".list-view").clickOn("2ndpos");
 //        partitionList.selectItem("2ndpos");
-        clickOnCheckbox(robot, "mutationRate.isEstimated");
+        clickOnNodesWithID(robot, "mutationRate.isEstimated");
 //        mutationRateIsEstimated = beautiFrame.checkBox("mutationRate.isEstimated");
 //        mutationRateIsEstimated.requireNotSelected();
 //        mutationRateIsEstimated.check();
@@ -221,7 +220,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 
         robot.clickOn(".list-view").clickOn("3rdpos");
 //        partitionList.selectItem("3rdpos");
-        clickOnCheckbox(robot, "mutationRate.isEstimated");
+        clickOnNodesWithID(robot, "mutationRate.isEstimated");
 //        mutationRateIsEstimated = beautiFrame.checkBox("mutationRate.isEstimated");
 //        mutationRateIsEstimated.requireNotSelected();
         printBeautiState();
@@ -236,15 +235,15 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 //        Component c = beautiFrame.robot().finder().findByName("addItem");
 //        JButtonFixture addButton = new JButtonFixture(robot(), (JButton) c);
 //        addButton.click();
-        clickOnButton(robot, "+Add Prior");
+        clickOnButtonWithText(robot, "+Add Prior");
         
         //JOptionPaneFixture dialog = new JOptionPaneFixture(robot());
         //dialog.textBox("idEntry").setText("Human-Chimp");
         robot.clickOn("#idEntry").write("Human-Chimp");
         robot.clickOn("#listOfTaxonCandidates").clickOn("Homo_sapiens");
-        clickOnButton(robot, ">>");
+        clickOnButtonWithText(robot, ">>");
         robot.clickOn("#listOfTaxonCandidates").clickOn("Pan");
-        clickOnButton(robot, ">>");
+        clickOnButtonWithText(robot, ">>");
 //        dialog.list("listOfTaxonCandidates").selectItems("Homo_sapiens", "Pan");
 //        dialog.button(">>").click();
 //        dialog.okButton().click();
@@ -255,8 +254,8 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         robot.clickOn("Human-Chimp.prior.isMonophyletic");
         robot.clickOn("Human-Chimp.prior.distr").clickOn("Normal");
         robot.clickOn("Human-Chimp.prior.editButton");
-        robot.clickOn("mean").write("6");//.selectAll().setText("6");
-        robot.clickOn("sigma").write("0.5");//.selectAll().setText("0.5");
+        robot.clickOn("#mean").write("6");//.selectAll().setText("6");
+        robot.clickOn("#sigma").write("0.5");//.selectAll().setText("0.5");
         printBeautiState();
         assertStateEquals("Tree.t:tree", "birthRate.t:tree", "kappa.s:noncoding", "gammaShape.s:noncoding", "kappa.s:1stpos", "gammaShape.s:1stpos", "kappa.s:2ndpos", "gammaShape.s:2ndpos", "kappa.s:3rdpos", "gammaShape.s:3rdpos", "mutationRate.s:noncoding", "mutationRate.s:1stpos", "mutationRate.s:2ndpos", "clockRate.c:clock", "freqParameter.s:1stpos", "freqParameter.s:3rdpos", "freqParameter.s:2ndpos", "freqParameter.s:noncoding");
         assertOperatorsEqual("YuleBirthRateScaler.t:tree", "YuleModelTreeScaler.t:tree", "YuleModelTreeRootScaler.t:tree", "YuleModelUniformOperator.t:tree", "YuleModelSubtreeSlide.t:tree", "YuleModelNarrow.t:tree", "YuleModelWide.t:tree", "YuleModelWilsonBalding.t:tree", "KappaScaler.s:noncoding", "gammaShapeScaler.s:noncoding", "KappaScaler.s:1stpos", "gammaShapeScaler.s:1stpos", "KappaScaler.s:2ndpos", "gammaShapeScaler.s:2ndpos", "KappaScaler.s:3rdpos", "gammaShapeScaler.s:3rdpos", "mutationRateScaler.s:noncoding", "mutationRateScaler.s:1stpos", "mutationRateScaler.s:2ndpos", "StrictClockRateScaler.c:clock", "strictClockUpDownOperator.c:clock", "FrequenciesExchanger.s:1stpos", "FrequenciesExchanger.s:3rdpos", "FrequenciesExchanger.s:2ndpos", "FrequenciesExchanger.s:noncoding");
@@ -273,8 +272,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 		// 9. Set up MCMC parameters
 		warning("8. Set up MCMC parameters");
 		selectTab(robot, "MCMC");
-		robot.clickOn("#chainLength");
-		robot.write("2000000");
+        clickOnNodesWithID(robot, "chainLength").eraseText(8).write("2000000");
 //		beautiFrame.textBox("chainLength").selectAll().setText("2000000");
 
 
@@ -353,7 +351,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             warning("1. Delete \"coding\" partition as it covers the same sites as the 1stpos, 2ndpos and 3rdpos partitions.");
             selectTab(robot, "Partitions");
             selectPartitions(robot, 0);
-            clickOnButton(robot, "-");
+            clickOnButtonWithText(robot, "-");
             printBeautiState();
             checkTableContents(robot, "[noncoding, primate-mtDNA, 12, 205, nucleotide, noncoding, noncoding, noncoding, false]*" +
                     "[1stpos, primate-mtDNA, 12, 231, nucleotide, 1stpos, 1stpos, 1stpos, false]*" +
@@ -367,7 +365,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             warning("2a. Link trees...");
             selectTab(robot, "Partitions");
             selectPartitions(robot, 0, 1, 2, 3);
-            clickOnButton(robot, "Link Trees");
+            clickOnButtonWithText(robot, "Link Trees");
             printBeautiState();
             assertStateEquals("Tree.t:noncoding", "birthRate.t:noncoding", "Tree.t:3rdpos", "birthRate.t:3rdpos", "Tree.t:1stpos", "birthRate.t:1stpos", "Tree.t:2ndpos", "birthRate.t:2ndpos");
             assertOperatorsEqual("YuleBirthRateScaler.t:noncoding", "YuleModelTreeScaler.t:noncoding", "YuleModelTreeRootScaler.t:noncoding", "YuleModelUniformOperator.t:noncoding", "YuleModelSubtreeSlide.t:noncoding", "YuleModelNarrow.t:noncoding", "YuleModelWide.t:noncoding", "YuleModelWilsonBalding.t:noncoding", "YuleBirthRateScaler.t:3rdpos", "YuleModelTreeScaler.t:3rdpos", "YuleModelTreeRootScaler.t:3rdpos", "YuleModelUniformOperator.t:3rdpos", "YuleModelSubtreeSlide.t:3rdpos", "YuleModelNarrow.t:3rdpos", "YuleModelWide.t:3rdpos", "YuleModelWilsonBalding.t:3rdpos", "YuleBirthRateScaler.t:1stpos", "YuleModelTreeScaler.t:1stpos", "YuleModelTreeRootScaler.t:1stpos", "YuleModelUniformOperator.t:1stpos", "YuleModelSubtreeSlide.t:1stpos", "YuleModelNarrow.t:1stpos", "YuleModelWide.t:1stpos", "YuleModelWilsonBalding.t:1stpos", "YuleBirthRateScaler.t:2ndpos", "YuleModelTreeScaler.t:2ndpos", "YuleModelTreeRootScaler.t:2ndpos", "YuleModelUniformOperator.t:2ndpos", "YuleModelSubtreeSlide.t:2ndpos", "YuleModelNarrow.t:2ndpos", "YuleModelWide.t:2ndpos", "YuleModelWilsonBalding.t:2ndpos");
@@ -399,7 +397,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             warning("3a. Link clocks");
             selectTab(robot, "Partitions");
             selectPartitions(robot, 0, 1, 2, 3);
-            clickOnButton(robot, "Link Clock Models");
+            clickOnButtonWithText(robot, "Link Clock Models");
 
             //3b. and call the uncorrelated relaxed molecular clock "clock"
             warning("3b. and call the uncorrelated relaxed molecular clock \"clock\"");
@@ -427,7 +425,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             warning("4. Link site models temporarily in order to set the same model for all of them.");
             selectTab(robot, "Partitions");
             selectPartitions(robot, 0, 1, 2, 3);
-            clickOnButton(robot, "Link Site Models");
+            clickOnButtonWithText(robot, "Link Site Models");
             printBeautiState();
             checkTableContents(robot, "[noncoding, primate-mtDNA, 12, 205, nucleotide, noncoding, clock, tree, false]*" +
                     "[1stpos, primate-mtDNA, 12, 231, nucleotide, noncoding, clock, tree, false]*" +
@@ -449,8 +447,8 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 
             // clickOnCheckbox(robot, "shape.isEstimated");
 
-            clickOnCheckbox(robot, "mutationRate.isEstimated");
-            clickOnCheckbox(robot, "FixMeanMutationRate");
+            clickOnNodesWithID(robot, "mutationRate.isEstimated");
+            clickOnNodesWithID(robot, "FixMeanMutationRate");
             robot.clickOn("#FixMeanMutationRate");
             screenshot(PREFIX + "Model.png");
             printBeautiState();
@@ -467,7 +465,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             warning("6 Unlink the site models,");
             selectTab(robot, "Partitions");
             selectPartitions(robot, 0, 1, 2, 3);
-            clickOnButton(robot, "Unlink Site Models");
+            clickOnButtonWithText(robot, "Unlink Site Models");
             printBeautiState();
             checkTableContents(robot, "[noncoding, primate-mtDNA, 12, 205, nucleotide, noncoding, clock, tree, false]*" +
                     "[1stpos, primate-mtDNA, 12, 231, nucleotide, 1stpos, clock, tree, false]*" +
@@ -493,9 +491,9 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             //JOptionPaneFixture dialog = new JOptionPaneFixture(robot());
             robot.clickOn("#idEntry"); robot.write("Human-Chimp");
             robot.clickOn("#listOfTaxonCandidates").clickOn("Homo_sapiens");
-            clickOnButton(robot, ">>");
+            clickOnButtonWithText(robot, ">>");
             robot.clickOn("#listOfTaxonCandidates").clickOn("Pan");
-            clickOnButton(robot, ">>");
+            clickOnButtonWithText(robot, ">>");
             printBeautiState();
             assertStateEquals("Tree.t:tree", "kappa.s:noncoding", "gammaShape.s:noncoding", "mutationRate.s:noncoding", "kappa.s:1stpos", "gammaShape.s:1stpos", "mutationRate.s:1stpos", "kappa.s:2ndpos", "gammaShape.s:2ndpos", "mutationRate.s:2ndpos", "kappa.s:3rdpos", "gammaShape.s:3rdpos", "mutationRate.s:3rdpos", "birthRateY.t:tree");
             assertOperatorsEqual("CalibratedYuleModelTreeScaler.t:tree", "CalibratedYuleModelTreeRootScaler.t:tree", "CalibratedYuleModelUniformOperator.t:tree", "CalibratedYuleModelSubtreeSlide.t:tree", "CalibratedYuleModelNarrow.t:tree", "CalibratedYuleModelWide.t:tree", "CalibratedYuleModelWilsonBalding.t:tree", "KappaScaler.s:noncoding", "gammaShapeScaler.s:noncoding", "FixMeanMutationRatesOperator", "gammaShapeScaler.s:1stpos", "KappaScaler.s:1stpos", "gammaShapeScaler.s:2ndpos", "KappaScaler.s:2ndpos", "gammaShapeScaler.s:3rdpos", "KappaScaler.s:3rdpos", "CalibratedYuleBirthRateScaler.t:tree");
@@ -508,8 +506,8 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             robot.clickOn("#Human-Chimp.prior.isMonophyletic");
             robot.clickOn("#Human-Chimp.prior.distr").clickOn("Normal");
             robot.clickOn("#Human-Chimp.prior.editButton");
-            robot.clickOn("#mean"); robot.write("6");
-            robot.clickOn("sigma");robot.write("0.5");
+            robot.clickOn("#Mean"); robot.write("6");
+            robot.clickOn("#Sigma");robot.write("0.5");
             // beautiFrame.scrollBar().scrollToMaximum();
             screenshot(PREFIX + "TaxonSets.png");
             printBeautiState();
@@ -565,7 +563,11 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         importAlignment(NEXUS_DIR, new File("primate-mtDNA.nex"));
 
         selectPartitions(robot, 0, 1, 2, 3);
-        clickOnButton(robot, "-");
+        clickOnButtonWithText(robot, "-");
+
+        selectTab(robot, "MCMC");
+		clickOnNodesWithID(robot, "chainLength");
+		robot.doubleClickOn("#chainLength").write("2000000");
 
         //7a. Create a Normal calibration prior
         warning("7a. Create a Normal calibration prior");
@@ -573,13 +575,13 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 //        Component c = beautiFrame.robot().finder().findByName("addItem");
 //        JButtonFixture addButton = new JButtonFixture(robot(), (JButton) c);
 //        addButton.click();
-        clickOnButton(robot, "+ Add Prior");
+        clickOnButtonWithText(robot, "+ Add Prior");
         
         //JOptionPaneFixture dialog = new JOptionPaneFixture(robot());
         //dialog.textBox("idEntry").setText("Human-Chimp");
         robot.clickOn("#idEntry").write("Human-Chimp");
         robot.clickOn("#listOfTaxonCandidates").clickOn("Homo_sapiens");
-        clickOnButton(robot, ">>");
+        clickOnButtonWithText(robot, ">>");
 //        robot.clickOn("#listOfTaxonCandidates").clickOn("Pan");
 //        clickOnButton(robot, ">>");
 //        dialog.list("listOfTaxonCandidates").selectItems("Homo_sapiens", "Pan");
@@ -587,23 +589,19 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 //        dialog.okButton().click();
         robot.clickOn("OK");
         
-        selectTab(robot, "MCMC");
-        selectTab(robot, "Priors");
-
         //7b. and monophyletic constraint on Human-Chimp split of 6 +/- 0.5.
         warning("7b. and monophyletic constraint on Human-Chimp split of 6 +/- 0.5.");
         selectTab(robot, "Priors");
-        clickOnCheckbox(robot, "Human-Chimp.prior.isMonophyletic");
-        clickOnCheckbox(robot, "Human-Chimp.prior.distr");
+        clickOnNodesWithID(robot, "Human-Chimp.prior.isMonophyletic");
+        clickOnNodesWithID(robot, "Human-Chimp.prior.distr");
         robot.clickOn("Normal");
 		//robot.interact(()->robot.lookup("#Human-Chimp.prior.distr").queryAs(ComboBox.class).getSelectionModel().select("Normal"));
 
-        selectTab(robot, "MCMC");
-        selectTab(robot, "Priors");
         
-        clickOnCheckbox(robot, "Human-Chimp.prior.editButton");
-        robot.clickOn("Mean").write("6");//.selectAll().setText("6");
-        robot.clickOn("Sigma").write("0.5");//.selectAll().setText("0.5");
+        clickOnNodesWithID(robot, "Human-Chimp.prior.editButton");
+
+        robot.doubleClickOn("#mean").write("6");//.selectAll().setText("6");
+        robot.doubleClickOn("#sigma").write("0.5");//.selectAll().setText("0.5");
         printBeautiState();
 
         //8. Run MCMC and look at results in Tracer, TreeAnnotator->FigTree
@@ -616,8 +614,8 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 		// 9. Set up MCMC parameters
 		warning("8. Set up MCMC parameters");
 		selectTab(robot, "MCMC");
-		robot.clickOn("#chainLength");
-		robot.write("2000000");
+		clickOnNodesWithID(robot, "#chainLength");
+		robot.doubleClickOn("#chainLength").write("2000000");
 //		beautiFrame.textBox("chainLength").selectAll().setText("2000000");
 
 
