@@ -4,7 +4,9 @@ package beastfx.app.beauti;
 
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -13,7 +15,10 @@ import javafx.scene.layout.HBox;
 import javax.swing.SwingUtilities;
 
 import beastfx.app.inputeditor.BeautiDoc;
+import beastfx.app.inputeditor.BeautiPanel;
+import beastfx.app.inputeditor.BeautiPanelConfig;
 import beastfx.app.inputeditor.BeautiSubTemplate;
+import beastfx.app.inputeditor.BeautiTabPane;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.SmallLabel;
 import beastfx.app.util.FXUtils;
@@ -126,7 +131,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                        sync();
+                        hardSync();
                         refreshPanel();
                     }
                 });
@@ -141,6 +146,8 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         pane.getChildren().add(itemBox);
         getChildren().add(pane);
     }
+    
+
 
     @Override
     public void validateInput() {

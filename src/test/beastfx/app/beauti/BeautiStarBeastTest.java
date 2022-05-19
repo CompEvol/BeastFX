@@ -88,8 +88,8 @@ public class BeautiStarBeastTest extends BeautiBase {
 		for (int i = 0; i < 3; i++) {
 			list.getSelectionModel().select(i);
 			//beautiFrame.list().selectItem(i);
-			robot.clickOn("substModel").clickOn("HKY");
-			robot.clickOn("frequencies").clickOn("Empirical");
+			robot.clickOn("#substModelComboBox").clickOn("HKY");
+			robot.clickOn("#frequencies").clickOn("Empirical");
 			//beautiFrame.checkBox("mutationRate.isEstimated").check();
 		}
 		//JCheckBoxFixture fixMeanMutationRate = beautiFrame.checkBox("FixMeanMutationRate");

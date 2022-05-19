@@ -73,7 +73,7 @@ public class BeautiSimpleTest extends BeautiBase {
 
 		// Set the site model to HKY (estimated)
 		robot.clickOn("#SiteModel");
-		robot.clickOn("#substModel").clickOn("HKY");
+		robot.clickOn("#substModelComboBox").clickOn("HKY");
 
 		printBeautiState();
 		assertStateEquals("Tree.t:anolis", "birthRate.t:anolis", "kappa.s:anolis", "freqParameter.s:anolis");

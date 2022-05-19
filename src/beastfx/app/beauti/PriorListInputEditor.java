@@ -9,10 +9,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import beastfx.app.util.Alert;
 
 import beastfx.app.inputeditor.BeautiDoc;
@@ -134,6 +137,15 @@ public class PriorListInputEditor extends ListInputEditor {
 	        buttonBox.alignmentProperty().set(Pos.CENTER);
 	        buttonBox.getChildren().add(addButton);
         }
+
+        Node n = pane.getChildren().get(0);
+        for (Node node : ((Pane)n).getChildren()) {
+        	if (node instanceof Region) {
+        		System.err.println(node);
+        		((Region)node).setPadding(new Insets(0,0,0,0));
+        		((Region) node).setPrefHeight(30);
+        	}
+        }
     }
 
 
@@ -213,6 +225,10 @@ public class PriorListInputEditor extends ListInputEditor {
     @Override
     protected void addItem() {
         super.addItem();
+        // make sure button box with "+ Add Prior" button is last
+        List<Node> children = m_listBox.getChildren();
+        children.remove(buttonBox);
+        children.add(buttonBox);
         sync();
         refreshPanel();
     } // addItem

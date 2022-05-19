@@ -457,6 +457,25 @@ public abstract class Base extends Pane implements InputEditor {
         }
     }
 
+    /**
+     * synchronise values in panel with current network
+     * and completely refresh panel
+     */
+    protected void hardSync() {
+        Object c = this;
+        while (c instanceof Parent && ((Parent)c).getParent() != null) {
+            c = ((Parent)c).getParent();
+            if (c instanceof BeautiTabPane) {
+            	BeautiTabPane beauti = (BeautiTabPane) c;
+            	BeautiPanel panel = beauti.getCurrentPanel();
+                BeautiPanelConfig cfgPanel = panel.config;
+                cfgPanel.sync(panel.partitionIndex);
+            	Platform.runLater(() ->	beauti.refreshPanel());
+            }
+        }
+    }
+
+    
     // we should leave it to the component to set its own border
 //    @Override
 //	@Deprecated

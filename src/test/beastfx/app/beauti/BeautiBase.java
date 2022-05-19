@@ -35,6 +35,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -473,7 +476,7 @@ public class BeautiBase extends Beauti {
 
 	protected FxRobot clickOnNodesWithID(FxRobot robot, String id) {
 		NodeQuery q = robot.lookup(target -> {
-			System.err.println(target.getId());
+			if (target.getId() != null) System.err.println(target.getId());
 			return id.equals(target.getId()) && target.isVisible();
 		});
 		Set<Node> nodes = q.queryAll();
@@ -495,4 +498,52 @@ public class BeautiBase extends Beauti {
 		robot.press(KeyCode.ENTER);
 	}
 
+
+    protected void scrollToBottom(FxRobot robot) {
+        ScrollPane scrollPane = robot.lookup(".scroll-pane").queryAs(ScrollPane.class);
+		robot.interact(()-> {
+			scrollPane.setVvalue(scrollPane.getVmax());
+		});
+	}
+
+	protected void scrollToTop(FxRobot robot) {
+        ScrollPane scrollPane = robot.lookup(".scroll-pane").queryAs(ScrollPane.class);
+		robot.interact(()-> {
+			scrollPane.setVvalue(scrollPane.getVmin());
+		});		
+	}
+
+    protected void setCheckBox(FxRobot robot, String id) {
+		NodeQuery q = robot.lookup(target -> {
+			if (target.getId()!=null) System.err.println(target.getId());
+			return id.equals(target.getId()) && target.isVisible();
+		});
+		Set<Node> nodes = q.queryAll();
+    	for (Node n : nodes) {
+    		CheckBox cb = (CheckBox) n;
+    		if (!cb.isSelected()) {
+    			robot.clickOn(cb);
+    		}
+    	}		
+	}
+
+	protected void selectFromCombobox(FxRobot robot, String id, String str) {
+		NodeQuery q = robot.lookup(target -> {
+			if (target.getId()!=null) System.err.println(target.getId());
+			return id.equals(target.getId()) && target.isVisible();
+		});
+		Set<Node> nodes = q.queryAll();
+
+        robot.interact(()-> {
+        	for (Node n : nodes) {
+        		ComboBox cb = (ComboBox)n;
+        		List<Object> items = cb.getItems();
+        		for (int i = 0; i < items.size(); i++) {
+        			if (items.get(i).toString().equals(str)) {
+        				cb.getSelectionModel().select(i);
+        			}
+        		}
+        	}
+        });
+	}
 }

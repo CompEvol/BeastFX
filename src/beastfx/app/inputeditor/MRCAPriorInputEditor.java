@@ -149,6 +149,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
+                hardSync();
                 refreshPanel();
         });
         itemBox.getChildren().add(comboBox);
@@ -180,6 +181,8 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
 					disableTipSampling(m_beastObject, doc);
 				}
 				doc.unregisterPlugin(prior0);
+				list.remove(listItemNr);
+				hardSync();
 				refreshPanel();
         });
         // itemBox.getChildren().add(new Separator());

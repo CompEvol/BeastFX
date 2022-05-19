@@ -1882,7 +1882,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		}
 		String[] options = { "{1,2} + 3", "{1,2} + 3 frame 2", "{1,2} + 3 frame 3", "1 + 2 + 3", "1 + 2 + 3 frame 2", "1 + 2 + 3 frame 3"};
 
-		String option = (String)Alert.showInputDialog(null, "Split selected alignments into partitions", "Option",
+		String option = (String)Alert.showInputDialog(this, "Split selected alignments into partitions", "Option",
 		                    Alert.WARNING_MESSAGE, null, options, "1 + 2 + 3");
 		if (option == null) {
 			return;

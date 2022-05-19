@@ -49,7 +49,7 @@ public class CloneTest extends BeautiBase {
 	       //1. Set the site model to HKY+G4 (estimated)
         warning("1. Set the site model of first partition to HKY+G4 (estimated)");
         selectTab(robot, "Site Model");
-        robot.clickOn("#substModel").clickOn("HKY");
+        robot.clickOn("#substModelComboBox").clickOn("HKY");
 
         robot.clickOn("#gammaCategoryCount").write("4");
 

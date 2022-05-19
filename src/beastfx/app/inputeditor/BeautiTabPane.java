@@ -14,6 +14,6 @@ abstract public class BeautiTabPane extends TabPane {
     abstract public void allowLinking(boolean flag);
     abstract public void autoUpdateFixMeanSubstRate(boolean flag);
     abstract public BeautiPanel getCurrentPanel();
-	protected abstract void refreshPanel();
+	public abstract void refreshPanel();
 
 }
