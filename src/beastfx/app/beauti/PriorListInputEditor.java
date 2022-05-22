@@ -229,7 +229,7 @@ public class PriorListInputEditor extends ListInputEditor {
         List<Node> children = m_listBox.getChildren();
         children.remove(buttonBox);
         children.add(buttonBox);
-        sync();
+//        sync();
         refreshPanel();
     } // addItem
     

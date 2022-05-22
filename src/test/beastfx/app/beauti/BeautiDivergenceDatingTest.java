@@ -609,10 +609,6 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         selectPartitions(robot, 0, 1, 2, 3);
         clickOnButtonWithText(robot, "-");
 
-        selectTab(robot, "MCMC");
-		clickOnNodesWithID(robot, "chainLength");
-		robot.doubleClickOn("#chainLength").write("2000000");
-
         //7a. Create a Normal calibration prior
         warning("7a. Create a Normal calibration prior");
         selectTab(robot, "Priors");
@@ -665,7 +661,6 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 		selectTab(robot, "MCMC");
 		clickOnNodesWithID(robot, "#chainLength");
 		robot.doubleClickOn("#chainLength").write("2000000");
-//		beautiFrame.textBox("chainLength").selectAll().setText("2000000");
 
 
         fout = new File(org.assertj.core.util.Files.temporaryFolder() + "/divtutorial.xml");
