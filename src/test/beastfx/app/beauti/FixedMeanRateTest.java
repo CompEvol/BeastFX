@@ -43,7 +43,7 @@ public class FixedMeanRateTest extends BeautiBase {
 		warning("Setting fixed mean rates");
 		//JTabbedPaneFixture f = beautiFrame.tabbedPane();
 		selectTab(robot, "Site Model");		
-		robot.clickOn("#mutationRate.isEstimated");
+        clickOnNodesWithID(robot, "mutationRate.isEstimated");
 		robot.clickOn("#FixMeanMutationRate");
 
 		warning("link/unlink site models");

@@ -70,7 +70,7 @@ public class BeautiBase extends Beauti {
 
 	// If skipAssertions = true, the BEAUti status will not be checked
 	// Can be handy for debugging TestFX unit tests
-	final static private boolean skipAssertions = false;
+	final static private boolean skipAssertions = true;
 
 //	protected FrameFixture beautiFrame;
 //	protected Beauti beauti;
@@ -530,6 +530,13 @@ public class BeautiBase extends Beauti {
 	protected void selectFromCombobox(FxRobot robot, String id, String str) {
 		NodeQuery q = robot.lookup(target -> {
 			if (target.getId()!=null) System.err.println(target.getId());
+			if (target instanceof ComboBox) {
+				ComboBox cb = (ComboBox)target;
+				if (cb.getValue() == null || 
+					 cb.getValue().toString().equals(id)) {
+					return cb.isVisible();
+				}
+			}
 			return id.equals(target.getId()) && target.isVisible();
 		});
 		Set<Node> nodes = q.queryAll();

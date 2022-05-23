@@ -634,12 +634,17 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 //        dialog.okButton().click();
         robot.clickOn("OK");
         
+        printBeautiState();
+        
+        
         //7b. and monophyletic constraint on Human-Chimp split of 6 +/- 0.5.
         warning("7b. and monophyletic constraint on Human-Chimp split of 6 +/- 0.5.");
         selectTab(robot, "Priors");
         clickOnNodesWithID(robot, "Human-Chimp.prior.isMonophyletic");
+        printBeautiState();
         clickOnNodesWithID(robot, "Human-Chimp.prior.distr");
         robot.clickOn("Normal");
+        printBeautiState();
 		//robot.interact(()->robot.lookup("#Human-Chimp.prior.distr").queryAs(ComboBox.class).getSelectionModel().select("Normal"));
 
         

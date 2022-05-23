@@ -3,7 +3,7 @@ package test.beastfx.app.beauti;
 
 
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -48,6 +48,8 @@ public class BeautiStarBeastTest extends BeautiBase {
 		robot.clickOn("#File").clickOn("Template");
 		//beautiFrame.menuItemWithPath("File", "Template").click();
 		screenshot( PREFIX + "selectTemplate.png");
+		selectTab(robot, "Priors");
+		selectTab(robot, "Partitions");
 		robot.clickOn("#File").clickOn("Template").clickOn("StarBeast");
 		//JMenuItemFixture templateMenu = beautiFrame.menuItemWithPath("File", "Template", "StarBeast");
 		//templateMenu.click();

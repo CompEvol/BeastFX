@@ -47,7 +47,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
     List<Taxon> m_lineageset;
     Map<String, String> m_taxonMap;
 
-    class TaxonMap {
+    public class TaxonMap {
 		String taxon;
     	String taxon2;
 
@@ -123,9 +123,11 @@ public class TaxonSetInputEditor extends InputEditor.Base {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            taxonSetToModel();
-            modelToTaxonset();
+//            taxonSetToModel();
+//            modelToTaxonset();
         }
+        modelToTaxonset();
+        taxonSetToModel();
         getChildren().add(pane);
     }
 
@@ -150,6 +152,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         m_table = new TableView<>();        
         m_table.setPrefWidth(1024);
         m_table.setEditable(true);
+        m_table.setItems(taxonMapping);
 
         TableColumn<TaxonMap, String> col1 = new TableColumn<>("Taxon");
         col1.setPrefWidth(500);
@@ -158,17 +161,17 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         	    new PropertyValueFactory<TaxonMap,String>("Taxon")
         	);
         m_table.getColumns().add(col1);
-        col1.getSortNode().setOnMouseClicked(e -> {
-            // The index of the column whose header was clicked
-			int vColIndex = 0;
-            if (vColIndex != m_sortByColumn) {
-                m_sortByColumn = vColIndex;
-                m_bIsAscending = true;
-            } else {
-                m_bIsAscending = !m_bIsAscending;
-            }
-            taxonSetToModel();
-        });
+//        col1.getSortNode().setOnMouseClicked(e -> {
+//            // The index of the column whose header was clicked
+//			int vColIndex = 0;
+//            if (vColIndex != m_sortByColumn) {
+//                m_sortByColumn = vColIndex;
+//                m_bIsAscending = true;
+//            } else {
+//                m_bIsAscending = !m_bIsAscending;
+//            }
+//            taxonSetToModel();
+//        });
 
         TableColumn<TaxonMap, String> col2 = new TableColumn<>("Species/Population");
         col2.setPrefWidth(500);
@@ -176,17 +179,17 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         col2.setCellValueFactory(
         	    new PropertyValueFactory<TaxonMap,String>("Taxon2")
         	);
-        col2.getSortNode().setOnMouseClicked(e -> {
-                    // The index of the column whose header was clicked
-        			int vColIndex = 1;
-                    if (vColIndex != m_sortByColumn) {
-                        m_sortByColumn = vColIndex;
-                        m_bIsAscending = true;
-                    } else {
-                        m_bIsAscending = !m_bIsAscending;
-                    }
-                    taxonSetToModel();
-            });
+//        col2.getSortNode().setOnMouseClicked(e -> {
+//                    // The index of the column whose header was clicked
+//        			int vColIndex = 1;
+//                    if (vColIndex != m_sortByColumn) {
+//                        m_sortByColumn = vColIndex;
+//                        m_bIsAscending = true;
+//                    } else {
+//                        m_bIsAscending = !m_bIsAscending;
+//                    }
+//                    taxonSetToModel();
+//            });
         m_table.getColumns().add(col2);
         m_table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         
@@ -603,8 +606,8 @@ public class TaxonSetInputEditor extends InputEditor.Base {
                 e.printStackTrace();
             }
         }
-
-    	
+        m_table.refresh();
+	    	
 //        // clear table model
 //        while (m_model.getRowCount() > 0) {
 //            m_model.removeRow(0);
@@ -699,13 +702,18 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         for (Taxon taxon : m_taxonset) {
             try {
                 taxonset.taxonsetInput.setValue(taxon, taxonset);
-                taxonMapping.get(i).setTaxon(taxon.getID());
-                taxonMapping.get(i).setTaxon2(taxonset.getID());
+                if (i <= taxonMapping.size()) {
+                	taxonMapping.add(new TaxonMap(taxon.getID(), taxonset.getID()));
+                } else {
+	                taxonMapping.get(i).setTaxon(taxon.getID());
+	                taxonMapping.get(i).setTaxon2(taxonset.getID());
+                }
                 i++;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        m_table.refresh();
 
     }
 

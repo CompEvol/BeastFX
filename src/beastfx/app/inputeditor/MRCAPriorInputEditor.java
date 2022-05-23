@@ -151,6 +151,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
                 }
                 hardSync();
                 refreshPanel();
+                scrubPrior();
         });
         itemBox.getChildren().add(comboBox);
 
@@ -192,6 +193,24 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         getChildren().add(pane);
 	}
 	
+	private void scrubPrior() {
+		// may be necessary to remove duplicates of MRCAPriors from the prior
+		// due to something going wrong when syncing
+		// TODO: create more elegant solution than cleaning up afterwards like so:
+		Object o = doc.pluginmap.get("prior");
+		if (o != null && o instanceof CompoundDistribution) {
+			CompoundDistribution distr = (CompoundDistribution) o;
+			Set<Distribution> ds = new HashSet<>();
+			for (int i = distr.pDistributions.get().size()-1; i>=0; i--) {
+				Distribution d = distr.pDistributions.get().get(i);
+				if (ds.contains(d)) {
+					distr.pDistributions.get().remove(i);
+				}
+				ds.add(d);
+			}
+		}
+	}
+
 	public static void customConnector(BeautiDoc doc) {
 		Object o0 = doc.pluginmap.get("prior");
 		if (o0 != null && o0 instanceof CompoundDistribution) {
