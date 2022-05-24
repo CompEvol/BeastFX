@@ -135,7 +135,7 @@
 
 		<panel spec='BeautiPanelConfig' panelname="Multi Species Coalescent" tiptext="Multi Species Coalescent specific settings"
             path='distribution/distribution[id="speciescoalescent"]/distribution'
-            hasPartitions="none" icon='2.pngx' forceExpansion='TRUE'
+            hasPartitions="none" icon='2.pngx' forceExpansion='TRUE_START_COLLAPSED'
         />
 
 		<panel spec='BeautiPanelConfig' panelname="Priors" tiptext="Other priors"

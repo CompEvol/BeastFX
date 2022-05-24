@@ -87,62 +87,60 @@ public class BeautiStarBeastTest extends BeautiBase {
 		printBeautiState();
 
 		
-//		// 2. Define Taxon sets
-//		warning("2. Define taxon sets");
-//		robot.clickOn("Taxon sets");
-//		robot.clickOn("Guess");
-//		//JOptionPaneFixture dialog = new JOptionPaneFixture(robot());
-//		//DialogFixture dialog = WindowFinder.findDialog("GuessTaxonSets").using(robot());
-//		robot.clickOn("split on character");
-//		robot.clickOn("#splitCombo").clickOn("2");
-//		robot.doubleClickOn("#SplitChar2").write("_");
-//		screenshot( PREFIX + "Guess_Taxonsets.png");
-//		//JButton okButton = dialog.robot.finder().find(JButtonMatcher.withText("OK"));
-//		//new JButtonFixture(dialog.robot, okButton).click();
-//		robot.clickOn("OK");
-//		printBeautiState();
-//
-//		// 3. Set site model to HKY + empirical frequencies
-//		warning("3. Set site model to HKY + empirical frequencies");
-//		robot.clickOn("Site Model");
-//		final ListView<?> list0 = robot.lookup(".list-view").queryAs(ListView.class);
-//		robot.interact(()->list0.getSelectionModel().select(0));
-//		robot.clickOn("#substModelComboBox").clickOn("HKY");
-//		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
-//		robot.interact(()->list0.getSelectionModel().clearAndSelect(1));
-//		robot.clickOn("#substModelComboBox").clickOn("HKY");
-//		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
-//		robot.interact(()->list0.getSelectionModel().clearAndSelect(2));
-//		robot.clickOn("#substModelComboBox").clickOn("HKY");
-//		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
-//
-//		//JCheckBoxFixture fixMeanMutationRate = beautiFrame.checkBox("FixMeanMutationRate");
-//		//fixMeanMutationRate.check();
-//		screenshot( PREFIX + "Site_Model.png");
-//		printBeautiState();
-//		
-//		// 4. Inspect clock models
-//		warning("4. Inspect clock models");
-//		final ListView<?> list = robot.lookup(".list-view").queryAs(ListView.class);
-//		robot.clickOn("Clock Model");
-//		robot.interact(()->list.getSelectionModel().select(0));
-//		screenshot( PREFIX + "ClockModel1.png");
-//		robot.interact(()->list.getSelectionModel().clearAndSelect(1));
-//		screenshot( PREFIX + "ClockModel2.png");
-//		robot.interact(()->list.getSelectionModel().clearAndSelect(2));
-//		screenshot( PREFIX + "ClockModel3.png");
+		// 2. Define Taxon sets
+		warning("2. Define taxon sets");
+		robot.clickOn("Taxon sets");
+		robot.clickOn("Guess");
+		//JOptionPaneFixture dialog = new JOptionPaneFixture(robot());
+		//DialogFixture dialog = WindowFinder.findDialog("GuessTaxonSets").using(robot());
+		robot.clickOn("split on character");
+		robot.clickOn("#splitCombo").clickOn("2");
+		robot.doubleClickOn("#SplitChar2").write("_");
+		screenshot( PREFIX + "Guess_Taxonsets.png");
+		//JButton okButton = dialog.robot.finder().find(JButtonMatcher.withText("OK"));
+		//new JButtonFixture(dialog.robot, okButton).click();
+		robot.clickOn("OK");
+		printBeautiState();
+
+		// 3. Set site model to HKY + empirical frequencies
+		warning("3. Set site model to HKY + empirical frequencies");
+		robot.clickOn("Site Model");
+		final ListView<?> list0 = robot.lookup(".list-view").queryAs(ListView.class);
+		robot.interact(()->list0.getSelectionModel().select(0));
+		robot.clickOn("#substModelComboBox").clickOn("HKY");
+		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
+		robot.interact(()->list0.getSelectionModel().clearAndSelect(1));
+		robot.clickOn("#substModelComboBox").clickOn("HKY");
+		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
+		robot.interact(()->list0.getSelectionModel().clearAndSelect(2));
+		robot.clickOn("#substModelComboBox").clickOn("HKY");
+		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
+
+		//JCheckBoxFixture fixMeanMutationRate = beautiFrame.checkBox("FixMeanMutationRate");
+		//fixMeanMutationRate.check();
+		screenshot( PREFIX + "Site_Model.png");
+		printBeautiState();
+		
+		// 4. Inspect clock models
+		warning("4. Inspect clock models");
+		final ListView<?> list = robot.lookup(".list-view").queryAs(ListView.class);
+		robot.clickOn("Clock Model");
+		robot.interact(()->list.getSelectionModel().select(0));
+		screenshot( PREFIX + "ClockModel1.png");
+		robot.interact(()->list.getSelectionModel().clearAndSelect(1));
+		screenshot( PREFIX + "ClockModel2.png");
+		robot.interact(()->list.getSelectionModel().clearAndSelect(2));
+		screenshot( PREFIX + "ClockModel3.png");
 		
 		// 5. Inspect multispecies coalescent
 		warning("5. Inspect multispecies coalescent");
 		robot.clickOn("Multi Species Coalescent");
+		clickOnNodesWithID(robot, "SpeciesTreePopSize.Species.editButton");
 		clickOnNodesWithID(robot, "treePrior.t:26.editButton");
 		clickOnNodesWithID(robot, "treePrior.t:29.editButton");
 		clickOnNodesWithID(robot, "treePrior.t:47.editButton");
-		selectFromCombobox(robot, "", "linear_with_constant_root");
-		// robot.clickOn(".comboBox").clickOn("linear_with_constant_root");
-		clickOnNodesWithID(robot, "treePrior.t:26.editButton");
-		clickOnNodesWithID(robot, "treePrior.t:29.editButton");
-		clickOnNodesWithID(robot, "treePrior.t:47.editButton");
+		selectFromCombobox(robot, "popFunctionComboBox", "linear_with_constant_root");
+		selectFromCombobox(robot, "26ComboBox", "Y or mitochondrial");
 		screenshot(PREFIX + "MSP.png");
 		
 		// 6. Set up MCMC parameters

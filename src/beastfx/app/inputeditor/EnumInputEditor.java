@@ -51,6 +51,7 @@ public class EnumInputEditor extends InputEditor.Base {
         }
         if (availableValues.size() > 1) {
             m_selectPluginBox = new ComboBox<>();
+            m_selectPluginBox.setId(input.getName()+"ComboBox");
             m_selectPluginBox.getItems().addAll(availableValues.toArray(new String[]{}));
             // Dimension2D maxDim = m_selectPluginBox.getPrefHeight();
             // m_selectPluginBox.setMaxSize(m_selectPluginBox.getPrefWidth(), m_selectPluginBox.getPrefHeight());
