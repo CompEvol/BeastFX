@@ -28,7 +28,6 @@ import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
 import javafx.application.Platform;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -337,6 +336,7 @@ public class BeautiBase extends Beauti {
 //			fileChooser.selectFile(new File(file)).approve();
 //		} else {
 			File _file = new File(dir + "/" + file);
+			warning("Writing to file " + dir + "/" + file);
 			//Platform.runLater(()-> {
 		        	try {
 		        		doc.save(_file);

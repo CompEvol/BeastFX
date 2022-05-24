@@ -37,7 +37,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
-import beast.app.util.Utils;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
 
@@ -100,26 +99,27 @@ public class GuessPatternDialog implements Initializable {
 
     Parent m_parent;
     @FXML
-    GridPane guessPanel = new GridPane();
-    ToggleGroup group = new ToggleGroup();
+    public GridPane guessPanel;// = new GridPane();
     @FXML
-    RadioButton useEverything = new RadioButton("use everything");
+    public ToggleGroup group;// = new ToggleGroup();
     @FXML
-    RadioButton isSplitOnChar = new RadioButton("split on character");
+    public RadioButton useEverything;// = new RadioButton("use everything");
     @FXML
-    RadioButton useRegexp = new RadioButton("use regular expression");
+    public RadioButton isSplitOnChar;// = new RadioButton("split on character");
     @FXML
-    RadioButton readFromFile = new RadioButton("read from file");
+    public RadioButton useRegexp;// = new RadioButton("use regular expression");
+    @FXML
+    public RadioButton readFromFile;// = new RadioButton("read from file");
 
     String m_location = "after first";
     int m_splitlocation = 0;
     String m_sDelimiter = ".";
     @FXML
-    TextField textRegExp = new TextField();
+    public TextField textRegExp;// = new TextField();
     @FXML
-    ComboBox<String> combo = new ComboBox<String>();
+    public ComboBox<String> combo;// = new ComboBox<String>();
     @FXML
-    ComboBox<String> combo_1 = new ComboBox<String>();
+    public ComboBox<String> combo_1;// = new ComboBox<String>();
     String pattern;
 
     public String getPattern() {
@@ -127,29 +127,29 @@ public class GuessPatternDialog implements Initializable {
     }
 
     @FXML
-    private TextField txtFile = new TextField();
+    public TextField txtFile;// = new TextField();
     @FXML
-    private TextField textSplitChar = new TextField();
+    public TextField textSplitChar;// = new TextField();
     @FXML
-    private TextField textSplitChar2 = new TextField();
+    public TextField textSplitChar2;// = new TextField();
     @FXML
-    private TextField textAddValue = new TextField();
+    public TextField textAddValue;// = new TextField();
     @FXML
-    private TextField textUnlessLessThan = new TextField();
+    public TextField textUnlessLessThan;// = new TextField();
     @FXML
-    private TextField textThenAdd = new TextField();
+    public TextField textThenAdd;// = new TextField();
     @FXML
-    CheckBox chckbxAddFixedValue = new CheckBox();
+    public CheckBox chckbxAddFixedValue;// = new CheckBox();
     @FXML
-    CheckBox chckbxUnlessLessThan = new CheckBox();
+    public CheckBox chckbxUnlessLessThan;// = new CheckBox();
     @FXML
-    Label lblThenAdd = new Label();
+    public Label lblThenAdd;// = new Label();
     @FXML
-    Label lblAndTakeGroups = new Label();
+    public Label lblAndTakeGroups;// = new Label();
     @FXML
-    Button btnBrowse = new Button();
+    public Button btnBrowse;// = new Button();
     @FXML
-    Button btnHelp = new Button("?");
+    public Button btnHelp;// = new Button("?");
     
     DialogPane root;
     
@@ -164,17 +164,17 @@ public class GuessPatternDialog implements Initializable {
     public GuessPatternDialog(Parent parent, String pattern) {
         m_parent = parent;
         this.pattern = pattern;
-        initialize(null, null);
         
-	    FXMLLoader fl = new FXMLLoader();
-	    fl.setLocation(this.getClass().getResource("GuessPatternDialog.fxml"));
-	    try {
-			root = fl.load();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return;
-		}
+//	    FXMLLoader fl = new FXMLLoader();
+//	    fl.setLocation(this.getClass().getResource("GuessPatternDialog.fxml"));
+//	    try {
+//			root = fl.load();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			return;
+//		}
+        // initialize(null, null);
     }
     
 	@Override
@@ -188,7 +188,7 @@ public class GuessPatternDialog implements Initializable {
 //        gbl_guessPanel.columnWeights = new double[] { 1.0, 1.0, 1.0, 0.0, 1.0, 0.0 };
 //        guessPanel.setLayout(gbl_guessPanel);
 
-        group = new ToggleGroup();
+        //group = new ToggleGroup();
         useEverything.setToggleGroup(group);
         isSplitOnChar.setToggleGroup(group);
         useRegexp.setToggleGroup(group);
@@ -555,22 +555,36 @@ public class GuessPatternDialog implements Initializable {
     }
 
     public Status showDialog(String title) {
-
+	    FXMLLoader fl = new FXMLLoader();
+	    fl.setLocation(this.getClass().getResource("GuessPatternDialog.fxml"));
+	    try {
+			root = fl.load();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return Status.canceled;
+		}
         final Dialog dialog = new Dialog();
         dialog.setDialogPane(root);
         dialog.getDialogPane().setId("GuessTaxonSets");
         dialog.setResizable(true);
-        // dialog.pack();
-        updateFields();
-        // dialog.setVisible(true);
+
         dialog.getDialogPane().getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
     	ThemeProvider.loadStyleSheet(root.getScene());
         ButtonType result = (ButtonType) dialog.showAndWait().get();
-        
+	    
         if (result != Alert.OK_OPTION) {
             return Status.canceled;
         }
 
+	    GuessPatternDialog dlg = fl.getController();
+	    Status status = dlg.process();
+	    pattern = dlg.getPattern();
+	    traitMap = dlg.getTraitMap();
+	    return status;
+    }
+        
+    private Status process() {
         if (group.getSelectedToggle() == useEverything) {
             String delimiter = normalise(textSplitChar.getText());
             switch (m_location) {
@@ -647,11 +661,11 @@ public class GuessPatternDialog implements Initializable {
                 fin.close();
 
                if (traitMap.isEmpty()) {
-            	   Alert.showMessageDialog(dialog.getDialogPane(), "Could not find trait information in the file. " +
+            	   Alert.showMessageDialog(root, "Could not find trait information in the file. " +
             			   "Perhaps this is not a tab-delimited but space file?");
                }
             } catch (Exception e) {
-                Alert.showMessageDialog(dialog.getDialogPane(), "Loading trait from file failed:" + e.getMessage());
+                Alert.showMessageDialog(root, "Loading trait from file failed:" + e.getMessage());
                 return Status.canceled;
             }
             return Status.trait;

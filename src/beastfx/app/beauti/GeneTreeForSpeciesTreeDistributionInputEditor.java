@@ -88,6 +88,7 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
 	            m_selectBeastObjectBox.setTooltip(new Tooltip(input.getHTMLTipText()));
 	            pane.getChildren().add(m_selectBeastObjectBox);
 	            // pane.getChildren().add(new Separator());
+	            getChildren().add(pane);
 			}
 
 			private void setSelection() {

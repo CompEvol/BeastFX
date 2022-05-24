@@ -102,32 +102,32 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         if (taxonset == null) {
             return;
         }
-        List<Taxon> taxonsets = new ArrayList<>();
+        // List<Taxon> taxonsets = new ArrayList<>();
 
         List<Taxon> taxa = taxonset.taxonsetInput.get();
-        for (Taxon taxon : taxa) {
-            taxonsets.add(taxon);
-        }
-        pane.getChildren().add(getContent(taxonsets));
+//        for (Taxon taxon : taxa) {
+//            taxonsets.add(taxon);
+//        }
+        pane.getChildren().add(getContent(taxa));
         if (taxa.size() == 1 && taxa.get(0).getID().equals("Beauti2DummyTaxonSet") || taxa.size() == 0) {
             taxa.clear();
             try {
                 // species is first character of taxon
                 guessTaxonSets("(.).*", 0);
-                for (Taxon taxonset2 : m_taxonset) {
-                    for (Taxon taxon : ((TaxonSet) taxonset2).taxonsetInput.get()) {
-                        m_lineageset.add(taxon);
-                        m_taxonMap.put(taxon.getID(), taxonset2.getID());
-                    }
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 //            taxonSetToModel();
 //            modelToTaxonset();
         }
-        modelToTaxonset();
+        for (Taxon taxonset2 : m_taxonset) {
+            for (Taxon taxon : ((TaxonSet) taxonset2).taxonsetInput.get()) {
+                m_lineageset.add(taxon);
+                m_taxonMap.put(taxon.getID(), taxonset2.getID());
+            }
+        }
         taxonSetToModel();
+        modelToTaxonset();
         getChildren().add(pane);
     }
 
@@ -136,15 +136,15 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         m_taxonMap = new HashMap<>();
         m_lineageset = new ArrayList<>();
         taxonMapping = FXCollections.observableArrayList();
-        for (Taxon taxonset2 : m_taxonset) {
-        	if (taxonset2 instanceof TaxonSet) {
-		        for (Taxon taxon : ((TaxonSet) taxonset2).taxonsetInput.get()) {
-		            m_lineageset.add(taxon);
-		            m_taxonMap.put(taxon.getID(), taxonset2.getID());
-		            taxonMapping.add(new TaxonMap(taxon.getID(), taxonset2.getID()));
-		        }
-        	}
-        }
+//        for (Taxon taxonset2 : m_taxonset) {
+//        	if (taxonset2 instanceof TaxonSet) {
+//		        for (Taxon taxon : ((TaxonSet) taxonset2).taxonsetInput.get()) {
+//		            m_lineageset.add(taxon);
+//		            m_taxonMap.put(taxon.getID(), taxonset2.getID());
+//		            taxonMapping.add(new TaxonMap(taxon.getID(), taxonset2.getID()));
+//		        }
+//        	}
+//        }
 
         // set up table.
         // special features: background shading of rows
@@ -193,7 +193,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         m_table.getColumns().add(col2);
         m_table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         
-        taxonSetToModel();
+//        taxonSetToModel();
 
         col2.setOnEditCommit(
                 new EventHandler<CellEditEvent<TaxonMap, String>>() {
@@ -599,9 +599,18 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         int i = 0;
         for (Taxon taxon : m_taxonset) {
             try {
-                taxonMapping.get(i).setTaxon(taxon.getID());
-                taxonMapping.get(i).setTaxon2(taxonset.getID());
-                i++;
+            	if (taxon instanceof TaxonSet) {
+            		for (Taxon t2 : ((TaxonSet)taxon).taxonsetInput.get()) {
+                    	if (i < taxonMapping.size()) {
+                    		taxonMapping.get(i).setTaxon(t2.getID());
+                    		taxonMapping.get(i).setTaxon2(taxon.getID());
+                    	} else {
+                    		taxonMapping.add(new TaxonMap(t2.getID(), taxon.getID()));
+                    	}
+                        i++;
+            			
+            		}
+            	}
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -648,13 +657,19 @@ public class TaxonSetInputEditor extends InputEditor.Base {
      */
     private void modelToTaxonset() {
 
+    	Set<String> existingTaxa = new HashSet<>();
+        for (Taxon taxon : m_taxonset) {
+            existingTaxa.add(taxon.getID());
+        }    	
+    	
+    	
         // update map
         for (int i = 0; i < taxonMapping.size(); i++) {
             String lineageID = taxonMapping.get(i).getTaxon();
             String taxonSetID = taxonMapping.get(i).getTaxon2();
 
             // new taxon set?
-            if (!m_taxonMap.containsValue(taxonSetID)) {
+            if (!existingTaxa.contains(taxonSetID)) {
                 // create new taxon set
                 TaxonSet taxonset = newTaxonSet(taxonSetID);
                 m_taxonset.add(taxonset);
@@ -696,24 +711,25 @@ public class TaxonSetInputEditor extends InputEditor.Base {
             }
         }
 
-        TaxonSet taxonset = (TaxonSet) m_input.get();
-        taxonset.taxonsetInput.get().clear();
-        int i = 0;
-        for (Taxon taxon : m_taxonset) {
-            try {
-                taxonset.taxonsetInput.setValue(taxon, taxonset);
-                if (i <= taxonMapping.size()) {
-                	taxonMapping.add(new TaxonMap(taxon.getID(), taxonset.getID()));
-                } else {
-	                taxonMapping.get(i).setTaxon(taxon.getID());
-	                taxonMapping.get(i).setTaxon2(taxonset.getID());
-                }
-                i++;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        m_table.refresh();
+        taxonSetToModel();
+//        TaxonSet taxonset = (TaxonSet) m_input.get();
+//        taxonset.taxonsetInput.get().clear();
+//        int i = 0;
+//        for (Taxon taxon : m_taxonset) {
+//            try {
+//                taxonset.taxonsetInput.setValue(taxon, taxonset);
+//                if (i > taxonMapping.size()) {
+//                	taxonMapping.add(new TaxonMap(taxon.getID(), taxonset.getID()));
+//                } else {
+//	                taxonMapping.get(i).setTaxon(taxon.getID());
+//	                taxonMapping.get(i).setTaxon2(taxonset.getID());
+//                }
+//                i++;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        m_table.refresh();
 
     }
 

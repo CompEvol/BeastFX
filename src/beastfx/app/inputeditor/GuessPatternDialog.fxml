@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
@@ -8,6 +9,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -33,10 +35,14 @@
       <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <RadioButton fx:id="useEverything" mnemonicParsing="false" text="use everything" GridPane.rowIndex="1" />
-      <RadioButton fx:id="isSplitOnChar" mnemonicParsing="false" text="split on character" GridPane.rowIndex="2" />
-      <RadioButton fx:id="useRegexp" mnemonicParsing="false" text="use regular expression" GridPane.rowIndex="3" />
-      <RadioButton fx:id="readFromFile" mnemonicParsing="false" text="read from file" GridPane.rowIndex="4" />
+      <RadioButton fx:id="useEverything" mnemonicParsing="false" text="use everything" GridPane.rowIndex="1">
+               <toggleGroup>
+                  <ToggleGroup fx:id="group" />
+               </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="isSplitOnChar" mnemonicParsing="false" text="split on character" toggleGroup="$group" GridPane.rowIndex="2" />
+      <RadioButton fx:id="useRegexp" mnemonicParsing="false" text="use regular expression" toggleGroup="$group" GridPane.rowIndex="3" />
+      <RadioButton fx:id="readFromFile" mnemonicParsing="false" text="read from file" toggleGroup="$group" GridPane.rowIndex="4" />
       <ComboBox fx:id="combo" prefWidth="150.0" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <TextField fx:id="textSplitChar" maxWidth="50.0" prefColumnCount="3" prefWidth="50.0" text="_" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <GridPane.margin>
@@ -45,7 +51,7 @@
       <ComboBox fx:id="combo_1" prefWidth="60.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
       <TextField fx:id="textSplitChar2" maxWidth="50.0" prefColumnCount="3" prefWidth="50.0" text="_" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <TextField fx:id="textRegExp" prefHeight="25.0" prefWidth="355.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-      <Label text="and take group(s):" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+      <Label fx:id="lblAndTakeGroups" text="and take group(s):" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
          <padding>
             <Insets right="5.0" />
          </padding>
@@ -63,6 +69,7 @@
       <TextField fx:id="textUnlessLessThan" text="20" GridPane.columnIndex="1" GridPane.rowIndex="6" />
       <Label fx:id="lblThenAdd" text="...then add " GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
       <TextField fx:id="textThenAdd" text="2000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Group id="group" GridPane.rowIndex="1" />
    </children>
 </GridPane>
           </content>
