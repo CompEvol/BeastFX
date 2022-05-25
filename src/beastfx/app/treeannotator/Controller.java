@@ -9,10 +9,7 @@ import beastfx.app.treeannotator.TreeAnnotator.Target;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -21,31 +18,31 @@ import javafx.stage.FileChooser;
 public class Controller implements Initializable {
 
 	@FXML
-	CheckBox lowMemory = new CheckBox();
+	public CheckBox lowMemory; // = new CheckBox();
 
 	@FXML
-	TextField burninPercentage = new TextField("10");
+	public TextField burninPercentage; // = new TextField("10");
 
 	@FXML
-	TextField posteriorLimit = new TextField("10");
+	public TextField posteriorLimit; // = new TextField("10");
 
 	@FXML
-	TextField targetTreeFile = new TextField();
+	public TextField targetTreeFile; // = new TextField();
 
 	@FXML
-	TextField inputTreeFile = new TextField();
+	public TextField inputTreeFile; // = new TextField();
 
 	@FXML
-	TextField outputFile = new TextField();
+	public TextField outputFile; // = new TextField();
 
 	@FXML
-	ComboBox<String> nodeHeights = new ComboBox<>();
+	public ComboBox<String> nodeHeights; // = new ComboBox<>();
 
 	@FXML
-	ComboBox<String> treeType = new ComboBox<>();
+	public ComboBox<String> treeType; // = new ComboBox<>();
 
 	@FXML
-	Button targetTreeFileButton = new Button();
+	public Button targetTreeFileButton; // = new Button();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

@@ -360,7 +360,7 @@
             </distribution>
         </distribution>
 
-        <logger id='tracelog' logEvery="1000" fileName="beast.log" sort="smart" sanitiseHeaders='true'>
+        <logger id='tracelog' logEvery="1000" fileName="$(filebase).log" sort="smart" sanitiseHeaders='true'>
 	        <model idref='posterior'/>
             <log idref="posterior"/>
             <log idref="likelihood"/>
