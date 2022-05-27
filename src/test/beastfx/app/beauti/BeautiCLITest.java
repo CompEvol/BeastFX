@@ -1,17 +1,17 @@
 package test.beastfx.app.beauti;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.PrintStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import beastfx.app.beauti.Beauti;
-import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
-import junit.framework.TestCase;
 import test.beast.integration.ExampleXmlParsingTest;
 
-public class BeautiCLITest extends TestCase {
+public class BeautiCLITest {
 
 	{
 		ExampleXmlParsingTest.setUpTestDir();

@@ -174,9 +174,11 @@ Text {
 /* We must use the actual Button class instead of the "button" styleclass because ColorPicker also uses
 that styleclass but isn't an actual button
 */
+/*
 Button {
     -fx-skin: "impl.jfxtras.styles.jmetro.FluentButtonSkin";
 }
+*/
 
 .button:default
 {
@@ -194,9 +196,11 @@ Button {
 
 /**************************** Toggle Button ***********************************/
 
+/*
 .toggle-button {
     -fx-skin: "impl.jfxtras.styles.jmetro.FluentToggleButtonSkin";
 }
+*/
 
 .toggle-button:selected {
     -fx-background-color: accent_color;
@@ -843,9 +847,11 @@ Button {
 
 /*==========================  Editable ComboBox  =============================*/
 
+/*
 .combo-box-base.combo-box:editable > .text-input {
     -fx-skin: "javafx.scene.control.skin.TextFieldSkin"
 }
+*/
 
 .combo-box-base.combo-box:editable > .text-input {
     -fx-background-color: transparent, transparent;
@@ -932,8 +938,9 @@ Button {
    TextField which will cause an IllegalArgumentException when creating the impl.jfxtras.styles.jmetro.TextFieldSkin object and passing it,
    for instance, the WebColorField */
 TextField {
+/*
     -fx-skin: "impl.jfxtras.styles.jmetro.TextFieldSkin";
-
+*/
     -right-button-visible: true;
 }
 
@@ -962,8 +969,9 @@ TextField {
  ******************************************************************************/
 
 .password-field {
+/*
     -fx-skin: "impl.jfxtras.styles.jmetro.PasswordFieldSkin";
-
+*/
     -right-button-visible: true;
 }
 
@@ -1031,10 +1039,11 @@ TextField {
     dot_color: accent_color;
 }
 
+/*
 .progress-bar {
     -fx-skin: "impl.jfxtras.styles.jmetro.ProgressBarSkin";
 }
-
+*/
 .progress-bar > .bar {
     -fx-background-color: bar_color;
     -fx-background-radius: 0;
@@ -1069,10 +1078,11 @@ TextField {
  *                                                                             *
  ******************************************************************************/
 
+/*
 .slider {
     -fx-skin: "impl.jfxtras.styles.jmetro.SliderSkin";
 }
-
+*/
 .slider {
     -show-value-on-interaction: true;
 }
@@ -1138,11 +1148,11 @@ TextField {
  * Spinner                                                                     *
  *                                                                             *
  ******************************************************************************/
-
+/*
 .spinner > .text-field{
     -fx-skin: "javafx.scene.control.skin.TextFieldSkin";
 }
-
+*/
 .spinner {
     -fx-background-color: spinner_background_color;
     -fx-background-insets: 0;
@@ -1238,10 +1248,11 @@ TextField {
 }
 
 /* "Textfield"  - most properties will be inherited by what was defined for the textfield */
-
+/*
 .date-picker > .text-field{
     -fx-skin: "javafx.scene.control.skin.TextFieldSkin";
 }
+*/
 
 .date-picker > .text-input{
     -fx-background-radius: 0;
@@ -1294,9 +1305,11 @@ TextField {
 }
 
 /***************************** Date Picker popup ********************************/
+/*
 .date-picker-popup .button {
     -fx-skin: "javafx.scene.control.skin.ButtonSkin"; /* Without also specifying this an exception sometimes happens when opening the DatePicker for the second time */
 }
+*/
 
 .date-picker-popup {
     -fx-border-color: popup_border_color;
