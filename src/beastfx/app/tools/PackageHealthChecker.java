@@ -24,8 +24,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import beast.app.util.OutFile;
-import beast.app.util.Utils;
+import beastfx.app.util.OutFile;
+import beastfx.app.util.Utils;
 import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Log;

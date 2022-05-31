@@ -9,8 +9,8 @@ import java.io.File;
 import javafx.scene.control.Button;
 
 import beastfx.app.util.FXUtils;
-import beast.app.util.OutFile;
-import beast.app.util.Utils;
+import beastfx.app.util.OutFile;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.ProgramStatus;

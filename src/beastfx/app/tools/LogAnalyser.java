@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTVersion2;
 import beast.base.core.Log;
 import beast.base.inference.util.ESS;

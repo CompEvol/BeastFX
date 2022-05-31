@@ -3,7 +3,7 @@ package beastfx.app.inputeditor;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beastfx.app.beauti.ThemeProvider;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonType;

@@ -8,7 +8,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.base.core.Log;
 import javafx.event.ActionEvent;
 import javafx.scene.control.CustomMenuItem;

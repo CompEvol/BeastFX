@@ -15,10 +15,10 @@ import org.w3c.dom.Element;
 
 import beagle.BeagleFlag;
 import beagle.BeagleInfo;
-import beast.app.beastapp.BeastMCMC;
-import beast.app.beastapp.BeastMain;
 import beast.base.core.Log;
 import beast.base.util.Randomizer;
+import beastfx.app.beast.BeastMCMC;
+import beastfx.app.beast.BeastMain;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;

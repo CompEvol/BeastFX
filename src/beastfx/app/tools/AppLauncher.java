@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.launcher.BeastLauncher;
@@ -364,7 +364,7 @@ System.err.println("Done invoking " + packageApp.className);
     
 	private String sanitise(String property) {
 		// sanitise for windows
-		if (beast.app.util.Utils.isWindows()) {
+		if (beastfx.app.util.Utils.isWindows()) {
 			String cwd = System.getProperty("user.dir");
 			cwd = cwd.replace("\\", "/");
 			property = property.replaceAll(";\\.", ";" +  cwd + ".");

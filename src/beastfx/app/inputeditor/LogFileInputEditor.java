@@ -4,7 +4,7 @@ package beastfx.app.inputeditor;
 
 import java.io.File;
 
-import beast.app.util.LogFile;
+import beastfx.app.util.LogFile;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 

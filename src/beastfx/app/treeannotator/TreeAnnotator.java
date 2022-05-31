@@ -30,11 +30,11 @@ import java.io.*;
 import java.util.*;
 
 
-import beast.app.treeannotator.CladeSystem;
-import beast.app.treeannotator.ContourMaker;
-import beast.app.treeannotator.ContourPath;
-import beast.app.treeannotator.ContourWithSynder;
-import beast.app.util.Utils;
+import beastfx.app.treeannotator.CladeSystem;
+import beastfx.app.treeannotator.ContourMaker;
+import beastfx.app.treeannotator.ContourPath;
+import beastfx.app.treeannotator.ContourWithSynder;
+import beastfx.app.util.Utils;
 import beast.base.core.Log;
 import beast.base.evolution.alignment.TaxonSet;
 import beast.base.evolution.tree.Node;

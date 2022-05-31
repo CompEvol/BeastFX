@@ -31,7 +31,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;

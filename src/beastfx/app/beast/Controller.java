@@ -9,8 +9,6 @@ import java.util.stream.IntStream;
 
 import beagle.BeagleFlag;
 import beagle.BeagleInfo;
-import beast.app.beastapp.BeastMCMC;
-import beast.app.beastapp.BeastMain;
 import beast.base.core.Log;
 import beast.base.util.Randomizer;
 import javafx.application.Platform;

@@ -6,7 +6,7 @@ import jam.console.ConsoleApplication;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTVersion2;
 import beast.base.core.Log;
 

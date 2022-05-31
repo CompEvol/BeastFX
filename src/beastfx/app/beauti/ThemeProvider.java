@@ -1,6 +1,6 @@
 package beastfx.app.beauti;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 import beastfx.app.util.Alert;

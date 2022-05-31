@@ -48,8 +48,8 @@ import org.xml.sax.SAXException;
 
 import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.inputeditor.*;
-import beast.app.util.PartitionContextUtil;
-import beast.app.util.Utils;
+import beastfx.app.util.PartitionContextUtil;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;

@@ -9,10 +9,9 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
-import beast.app.util.Utils;
 import beastfx.app.beauti.BeautiTabPane;
+import beastfx.app.util.Utils;
 import javafx.scene.control.ListView;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.io.File;

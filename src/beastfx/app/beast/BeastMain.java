@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import beast.base.core.Log;
 import beast.pkgmgmt.BEASTVersion;
-
+import beast.pkgmgmt.Version;
 import beastfx.app.util.Utils;
 import beastfx.app.beauti.ThemeProvider;
 import beastfx.app.treeannotator.TreeAnnotator;
@@ -74,6 +74,28 @@ public class BeastMain extends Console {
 
  	}
 	
+	
+	public static void printTitle() {
+		Version version = new BEASTVersion();
+        int pageWidth = 72;
+
+        Log.info.println();
+        centreLine("BEAST " + version.getVersionString() + ", " + version.getDateString(), pageWidth);
+        centreLine("Bayesian Evolutionary Analysis Sampling Trees", pageWidth);
+        for (final String creditLine : version.getCredits()) {
+            centreLine(creditLine, pageWidth);
+        }
+        Log.info.println();
+    }
+
+	public static void centreLine(final String line, final int pageWidth) {
+        final int n = pageWidth - line.length();
+        final int n1 = n / 2;
+        for (int i = 0; i < n1; i++) {
+            Log.info.print(" ");
+        }
+        Log.info.println(line);
+    }
 	
 //	@Override
 //	public void start(Stage primaryStage) {

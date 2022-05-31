@@ -1,7 +1,7 @@
 package beastfx.app.inputeditor;
 
 
-import beast.app.util.TreeFile;
+import beastfx.app.util.TreeFile;
 
 public class LogFileListInputEditor extends FileListInputEditor {
 

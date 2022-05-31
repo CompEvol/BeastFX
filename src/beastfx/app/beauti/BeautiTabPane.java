@@ -5,7 +5,6 @@ package beastfx.app.beauti;
 
 
 
-import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -23,12 +22,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 
 
 import beastfx.app.inputeditor.BEASTObjectPanel;
@@ -43,16 +40,16 @@ import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import beastfx.app.inputeditor.BeautiDoc.ActionOnExit;
 import beastfx.app.inputeditor.BeautiDoc.DOC_STATUS;
-import beast.app.tools.AppLauncher;
-import beast.app.tools.HelpBrowser;
-import beast.app.tools.ModelBuilder;
-import beast.app.util.Utils;
+import beastfx.app.tools.AppLauncher;
+import beastfx.app.tools.HelpBrowser;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTVersion2;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
 import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.tree.MRCAPrior;
+
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.Utils6;
@@ -60,8 +57,6 @@ import beast.pkgmgmt.Utils6;
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -369,7 +364,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         @Override
 		public void actionPerformed(ActionEvent ae) {
             setCursor(Cursor.WAIT);
-            File file = beast.app.util.Utils
+            File file = beastfx.app.util.Utils
                     .getLoadFile("Load Template XML File");
             // JFileChooser fileChooser = new
             // JFileChooser(System.getProperty("user.dir")+"/" + BeautiConfig.TEMPLATE_DIR);
@@ -696,25 +691,26 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
         @Override
 		public void actionPerformed(ActionEvent ae) {
-            Stage frame = new Stage();
-            frame.setTitle("Model Builder");
-            SwingNode pane = new SwingNode();
-            ModelBuilder modelBuilder = new ModelBuilder();
-            modelBuilder.init();
-            JPanel panel = new JPanel();
-            panel.setLayout(new BorderLayout());
-            panel.add(modelBuilder, BorderLayout.CENTER);
-            panel.add(modelBuilder.m_jTbTools2, BorderLayout.NORTH);
-            pane.setContent(panel);
-            modelBuilder.setEditable(false);
-            modelBuilder.m_doc.init(doc.mcmc.get());
-            modelBuilder.setDrawingFlag();
-            panel.setPreferredSize(new Dimension(600, 800));
-            StackPane pane2 = new StackPane();
-            pane2.getChildren().add(pane);
-            Scene scene = new Scene(pane2);
-            frame.setScene(scene);
-            // frame.seVisible(true);
+//            Stage frame = new Stage();
+//            frame.setTitle("Model Builder");
+//            SwingNode pane = new SwingNode();
+//            ModelBuilder modelBuilder = new ModelBuilder();
+//            modelBuilder.init();
+//            JPanel panel = new JPanel();
+//            panel.setLayout(new BorderLayout());
+//            panel.add(modelBuilder, BorderLayout.CENTER);
+//            panel.add(modelBuilder.m_jTbTools2, BorderLayout.NORTH);
+//            pane.setContent(panel);
+//            modelBuilder.setEditable(false);
+//            modelBuilder.m_doc.init(doc.mcmc.get());
+//            modelBuilder.setDrawingFlag();
+//            panel.setPreferredSize(new Dimension(600, 800));
+//            StackPane pane2 = new StackPane();
+//            pane2.getChildren().add(pane);
+//            Scene scene = new Scene(pane2);
+//            frame.setScene(scene);
+        	// TODO: make the above work
+        	Alert.showMessageDialog(null, "ModelBuilder is not implemented yet");
         }
     } // class ActionViewModel
 
@@ -1361,7 +1357,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 //
 //                    // https://github.com/CompEvol/beast2/issues/805
 //                    if (Utils6.isMajorAtLeast(Utils6.JAVA_9)) // >= Java 9
-//                        beast.app.util.Utils.macOSXRegistration(application);
+//                        beastfx.app.util.Utils.macOSXRegistration(application);
 //                    else // <= Java 8
 //                        jam.mac.Utils.macOSXRegistration(application);
 //                } catch (Throwable e) {

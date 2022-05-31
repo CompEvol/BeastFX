@@ -62,9 +62,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
-import beast.app.util.FileDrop;
-import beast.app.util.Utils;
-import beast.app.util.WholeNumberField;
+import beastfx.app.util.FileDrop;
+import beastfx.app.util.Utils;
+import beastfx.app.util.WholeNumberField;
 import beast.base.core.ProgramStatus;
 
 //import dr.app.gui.FileDrop;

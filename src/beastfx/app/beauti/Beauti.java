@@ -1,6 +1,6 @@
 package beastfx.app.beauti;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.base.core.ProgramStatus;
 import beast.pkgmgmt.PackageManager;
 import javafx.application.Application;

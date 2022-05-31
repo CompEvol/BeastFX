@@ -12,9 +12,8 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
-import beast.app.util.Utils;
 import beastfx.app.beauti.BeautiTabPane;
-import javafx.application.Platform;
+import beastfx.app.util.Utils;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 

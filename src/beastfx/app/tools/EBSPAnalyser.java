@@ -23,8 +23,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
-import beast.app.util.Utils;
-import beast.app.util.WholeNumberField;
+import beastfx.app.util.Utils;
+import beastfx.app.util.WholeNumberField;
 import beast.base.core.BEASTVersion2;
 import beast.base.core.Log;
 import beast.base.evolution.tree.coalescent.CompoundPopulationFunction;

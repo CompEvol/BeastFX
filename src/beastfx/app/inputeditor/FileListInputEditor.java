@@ -33,7 +33,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.BorderPane;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.ProgramStatus;

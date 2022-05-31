@@ -23,7 +23,7 @@ import beastfx.app.inputeditor.BeautiPanelConfig;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.ListInputEditor;
 import beastfx.app.inputeditor.SmallButton;
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Taxon;

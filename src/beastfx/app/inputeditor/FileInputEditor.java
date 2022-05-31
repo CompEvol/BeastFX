@@ -5,7 +5,7 @@ import java.io.File;
 
 import javafx.scene.control.Button;
 
-import beast.app.util.Utils;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.ProgramStatus;
