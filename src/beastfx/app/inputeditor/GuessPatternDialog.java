@@ -385,6 +385,9 @@ public class GuessPatternDialog implements Initializable {
     }
 
     public void allowAddingValues() {
+    	if (chckbxAddFixedValue == null) {
+    		return;
+    	}
         chckbxAddFixedValue.setVisible(true);
         textAddValue.setVisible(true);
         chckbxUnlessLessThan.setVisible(true);

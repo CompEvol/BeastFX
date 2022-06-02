@@ -418,7 +418,7 @@ public class XML2HTMLPaneFX extends Application {
         List<TemplateMenu> actions = new ArrayList<>();
         List<String> beastDirectories = PackageManager.getBeastDirectories();
         for (String dirName : beastDirectories) {
-            File dir = new File(dirName + "/templates");
+            File dir = new File(dirName + "/" + BeautiConfig.TEMPLATE_DIR);
             getTemplateActionForDir(dir, actions);
         }
         return actions;

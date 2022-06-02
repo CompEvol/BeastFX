@@ -10,6 +10,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -18,6 +19,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.Skin;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 
 import beastfx.app.util.Alert;
@@ -145,6 +147,13 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
 
         //setContent(pane);
         //setOpaque(false);
+        
+        Button hmcButton= new Button("?");
+    	hmcButton.setTooltip(new Tooltip("Click to help me choose"));
+    	hmcButton.setOnAction(e->FXUtils.helpMeChoose(
+    			doc.getTemplateName(),
+    			config.nameInput.get()));
+        setGraphic(hmcButton);
         
     } // c'tor
 

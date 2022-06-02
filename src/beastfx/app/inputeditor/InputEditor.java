@@ -1,6 +1,5 @@
 package beastfx.app.inputeditor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
+import beastfx.app.inputeditor.SmallButton.ButtonType;
 import beastfx.app.util.FXUtils;
 import javafx.application.Platform;
 import javafx.geometry.Dimension2D;
@@ -114,10 +114,12 @@ public abstract class Base extends Pane implements InputEditor {
         return m_entry;
     }
 
-    Label m_inputLabel;
+    protected Label m_inputLabel;
     protected static Dimension2D LABEL_SIZE = new Dimension2D(200, 20);
     protected static Dimension2D PREFERRED_SIZE = new Dimension2D(150, 25);
     protected static Dimension2D MAX_SIZE = new Dimension2D(1024, 25);
+
+    protected SmallButton hmcButton;
 
     /**
      * flag to indicate label, edit and validate buttons/labels should be added *
@@ -220,6 +222,14 @@ public abstract class Base extends Pane implements InputEditor {
         addValidationLabel();
         getChildren().add(pane);
     } // init
+    
+    
+    public void addHMCButton() {
+    	hmcButton = new SmallButton("?", true, ButtonType.square);
+    	hmcButton.setTooltip(new Tooltip("Click to help me choose"));
+    	hmcButton.setOnAction(e->FXUtils.helpMeChoose(m_beastObject, m_input));
+    	pane.getChildren().add(hmcButton);
+    }
 
     void setUpEntry() {
         m_entry = new TextField();
@@ -330,6 +340,7 @@ public abstract class Base extends Pane implements InputEditor {
             // RRB: temporary
             //m_inputLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
            pane.getChildren().add(m_inputLabel);
+           addHMCButton();
         }
     }
 

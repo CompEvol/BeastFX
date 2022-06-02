@@ -6,8 +6,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
+import java.awt.Desktop;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+
+import beast.base.core.BEASTInterface;
+import beast.base.core.Input;
 
 public class FXUtils {
 
@@ -101,4 +107,43 @@ public class FXUtils {
         box.setPadding(new Insets(2));
         return box;
 	}
+	
+	
+	
+	public static void helpMeChoose(BEASTInterface o, Input<?> input)  {
+		String id = o.getID();
+		if (id.lastIndexOf('.') > 0) {
+			id = id.substring(0, id.lastIndexOf('.'));
+		}
+		String HMC_BASE = "file://" + System.getProperty("user.dir") + "/hmc";
+		String url = HMC_BASE + "/" + id + "/" + input.getName() + ".html";
+		openInBrowser(url);
+	}
+	
+	public static void helpMeChoose(String templateName, String tabName) {
+		String HMC_BASE = "file://" + System.getProperty("user.dir") + "/hmc";
+		String url = HMC_BASE + "/" + templateName + "/" + tabName + ".html";
+		url = url.replaceAll(" ", "_");
+		openInBrowser(url);
+	}
+
+	public static void openInBrowser(String url)  {
+		Desktop desktop;
+        if (Desktop.isDesktopSupported()) {
+            desktop = Desktop.getDesktop();
+            // Now enable buttons for actions that are supported.
+            if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                URI uri = null;
+                try {
+                    uri = new URI(url);
+                    desktop.browse(uri);
+                } catch (IOException e) {
+                	Alert.showMessageDialog(null, "Could not find help: " + e.getMessage());
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+	}
+
 }

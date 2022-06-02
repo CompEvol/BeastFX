@@ -17,6 +17,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -364,7 +365,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         @Override
 		public void actionPerformed(ActionEvent ae) {
             setCursor(Cursor.WAIT);
-            File file = beastfx.app.util.Utils
+            File file = beastfx.app.util.FXUtils
                     .getLoadFile("Load Template XML File");
             // JFileChooser fileChooser = new
             // JFileChooser(System.getProperty("user.dir")+"/" + BeautiConfig.TEMPLATE_DIR);
@@ -1192,7 +1193,14 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             getTabs().get(panelIndex).setTooltip(new Tooltip(panelConfig.getTipText()));
             getTabs().get(panelIndex).setText(panelConfig.getName());
             getTabs().get(panelIndex).setId(panelConfig.getName().replaceAll(" ",""));
+            getTabs().get(panelIndex).onSelectionChangedProperty().set(e -> {
+            	for (int i = 0; i < panels.length; i++) {
+            		panels[i].getGraphic().setVisible(false);
+            	}
+            	((BeautiPanel)e.getSource()).getGraphic().setVisible(true);
+            });
         }
+        setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
         for (int panelIndex = doc.beautiConfig.panels.size() - 1; panelIndex >= 0; panelIndex--) {
             if (!isPaneIsVisible[panelIndex]) {

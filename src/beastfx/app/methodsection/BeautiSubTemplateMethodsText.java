@@ -13,6 +13,7 @@ import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.parser.PartitionContext;
+import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiSubTemplate;
 
@@ -59,7 +60,7 @@ public class BeautiSubTemplateMethodsText {
         for (String dirName : dirs) {
             File cfgFile = new File(dirName + fileSep + METHODS_CSV);
             if (!cfgFile.exists()) {
-                cfgFile = new File(dirName + fileSep + "templates" + fileSep + METHODS_CSV);
+                cfgFile = new File(dirName + fileSep + BeautiConfig.TEMPLATE_DIR + fileSep + METHODS_CSV);
             }
             if (cfgFile.exists()) {
             	try {
