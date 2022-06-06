@@ -37,6 +37,8 @@ import beastfx.app.inputeditor.BeautiDocListener;
 import beastfx.app.inputeditor.BeautiPanel;
 import beastfx.app.inputeditor.BeautiPanelConfig;
 import beastfx.app.inputeditor.MyAction;
+import beastfx.app.methodsection.MethodsText;
+import beastfx.app.methodsection.XML2Text;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import beastfx.app.inputeditor.BeautiDoc.ActionOnExit;
@@ -50,7 +52,7 @@ import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
 import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.tree.MRCAPrior;
-
+import beast.base.inference.MCMC;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.Utils6;
@@ -566,8 +568,23 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         }
     }
 
-    ;
+    MyAction a_viewMethodSection = new MyAction("Show methods section", "Show text representation of the current model, which can be used as methods section.", "ccp", null) {
 
+		@Override
+		public void actionPerformed(ActionEvent ae) {
+			XML2Text xml2text = new XML2Text(doc);
+			try {
+				MethodsText.initNameMap();
+				String text = xml2text.initialise((MCMC) doc.mcmc.get());
+				Alert.showMessageDialog(null, text);
+			} catch (Exception e) {
+				e.printStackTrace();
+				Alert.showMessageDialog(null, e.getMessage());
+			}
+		} // actionPerformed
+	
+    };
+    
     /**
      * makes all panels visible *
      */
@@ -957,7 +974,9 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         viewMenu.getItems().add(a_viewall);
         
         viewMenu.getItems().add(new SeparatorMenuItem());
-        
+        viewMenu.getItems().add(a_viewMethodSection);
+        viewMenu.getItems().add(new SeparatorMenuItem());
+
         // TODO: do we still need zoom?
 //        MyAction zoomIn = new MyAction("Zoom in", "Increase font size of all components", null, new KeyCodeCombination(KeyCode.EQUALS)) {
 //

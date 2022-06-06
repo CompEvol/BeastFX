@@ -54,6 +54,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import beastfx.app.beauti.Beauti;
+import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.inputeditor.BeautiAlignmentProvider;
 import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
@@ -78,7 +79,7 @@ public class XML2HTMLPaneFX extends Application {
 	double zoom = 1.0;
 	
 	static BeautiDoc beautiDoc;
-	Beauti beauti;
+	BeautiTabPane beauti;
 	String html;
 	List<Phrase> m;
 	XML2Text xml2textProducer;
@@ -229,7 +230,7 @@ public class XML2HTMLPaneFX extends Application {
 				}
 				beautiDoc.beautiConfig = new BeautiConfig();
 				beautiDoc.beautiConfig.initAndValidate();
-				beauti = new Beauti(beautiDoc);
+				beauti = new BeautiTabPane(beautiDoc);
 
 				List<String> args = getParameters().getRaw();
 				try {

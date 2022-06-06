@@ -1,5 +1,6 @@
 package beastfx.app.methodsection;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 import beast.base.core.*;
@@ -22,12 +23,46 @@ public class CitationPhrase extends Phrase {
 			if (c != null && c.size() > 0) {				
 				if (citations.containsKey(c.get(0).DOI())) {
 					return citations.get(c.get(0).DOI());
+				} else {
+					CitationPhrase phrase = new CitationPhrase(source);
+					citations.put(c.get(0).DOI(), phrase);
+					return phrase;
 				}
 			}
 		}
 		
-		return new CitationPhrase(source);		
+		List<Citation> c = getCitationList(source);
+		if (c != null && c.size() > 0) {				
+			if (citations.containsKey(c.get(0).DOI())) {
+				return citations.get(c.get(0).DOI());
+			} else {
+				CitationPhrase phrase = new CitationPhrase(source);
+				citations.put(c.get(0).DOI(), phrase);
+				return phrase;
+			}
+		}
+
+		CitationPhrase phrase = new CitationPhrase(source);
+		return phrase;
 	}
+	
+	
+    static private List<Citation> getCitationList(Object o) {
+        final Annotation[] classAnnotations = o.getClass().getAnnotations();
+        List<Citation> citations = new ArrayList<>();
+        for (final Annotation annotation : classAnnotations) {
+            if (annotation instanceof Citation) {
+            	citations.add((Citation) annotation);
+            }
+            if (annotation instanceof Citation.Citations) {
+            	for (Citation citation : ((Citation.Citations) annotation).value()) {
+            		citations.add(citation);
+            	}
+            }
+        }
+       	return citations;
+    }
+
 	
 	static public CitationPhrase createCitationPhrase(String DOI) {
 		if (citations.containsKey(DOI)) {
@@ -45,9 +80,16 @@ public class CitationPhrase extends Phrase {
 			if (c != null && c.size() > 0) {
 				citation = c.get(0);
 				DOI = citation.DOI();
+				counter = citations.size() + 1;
 				if (DOI != null) {
-					counter = citations.size() + 1;
-					setText(toString());
+					String text = toString();
+					if (!text.equals(" (null)")) {
+						setText(text);
+					} else {
+						setText(citation.value());
+					}
+				} else {
+					setText(citation.value());
 				}
 			}
 		}
@@ -109,6 +151,9 @@ public class CitationPhrase extends Phrase {
 
 	/** format text reference from bibtex citation **/
 	public static String bibtex2textRef(String citation) {
+		if (citation == null) {
+			return null;
+		}
 		String [] strs = citation.split("\n");
 		String author = "";
 		String year = "";

@@ -20,7 +20,7 @@ import beastfx.app.tools.Application;
 
 @Description("Resolves citation entry for a DOI, e.g. to bibtex format")
 public class DOI2Citation extends beast.base.inference.Runnable {
-	final public static String DOI2BIB_FILE = "/beasy/doi2bib.properties";
+	final public static String DOI2BIB_FILE = "/BeastFX/doi2bib.properties";
 	
 	public Input<String> doiInput = new Input<>("doi","DOI to be resolved", "http://doi.org/10.1371/journal.pcbi.1003537");
 	public Input<String> styleInput = new Input<>("style","style used to format citations, can be 'bibtex' or any of the "
@@ -103,20 +103,23 @@ public class DOI2Citation extends beast.base.inference.Runnable {
 
 	@Override
 	public void run() throws Exception {
-		
+		if (true) {
+			// http://data.crossref.org/ not functioning any more?
+			return;
+		}
 		initialise();
 		
 		String DOI = doiInput.get().trim();
 		if (!DOI.toLowerCase().startsWith("http")) {
-			DOI = "http://data.crossref.org/" + DOI;
+			DOI = "http://citation.crosscite.org/" + DOI;
 		}
 		if (DOI.toLowerCase().contains("dx.doi.org")) {
 			int k = DOI.toLowerCase().indexOf("dx.doi.org");
-			DOI = DOI.substring(0,k) + "data.crossref.org" + DOI.substring(k + "dx.doi.org".length());
+			DOI = DOI.substring(0,k) + "citation.crosscite.org" + DOI.substring(k + "dx.doi.org".length());
 		}
 		if (DOI.toLowerCase().contains("doi.org")) {
 			int k = DOI.toLowerCase().indexOf("doi.org");
-			DOI = DOI.substring(0,k) + "data.crossref.org" + DOI.substring(k + "doi.org".length());
+			DOI = DOI.substring(0,k) + "citation.crosscite.org" + DOI.substring(k + "doi.org".length());
 		}
 		
 		// check the cache
@@ -131,6 +134,7 @@ public class DOI2Citation extends beast.base.inference.Runnable {
 		con.setRequestMethod("GET");
 		//con.setRequestProperty("Accept", "text/bibliography; style=bibtex");
 		con.setRequestProperty("Accept", "text/x-bibliography; style=" + styleInput.get());
+		con.setRequestProperty("User-Agent", "BEAST 2/2.7 (https://beast2.org/; mailto:r.bouckaert@auckland.ac.nz) BeastFX/2.7");
 		con.setDoOutput(true);
 		
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -155,6 +159,8 @@ public class DOI2Citation extends beast.base.inference.Runnable {
 	}
 
 	public static void main(String[] args) throws Exception {
+		new DOI2Citation().run();
+		if (true) {return;}
 		new Application(new DOI2Citation(), "DOI 2 Citation", args);		
 	}
 	

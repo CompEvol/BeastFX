@@ -3,13 +3,8 @@ package beastfx.app.methodsection;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
-import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Log;
-import beast.base.evolution.tree.TreeDistribution;
-import beast.base.inference.CompoundDistribution;
-import beast.base.inference.Distribution;
-import beast.base.inference.StateNode;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 import beastfx.app.inputeditor.BeautiDoc;
@@ -29,7 +24,7 @@ public class MethodsTextFactory {
 		}
 		Log.warning.print("Discovering MethodsText classes ... ");
 		object2MethodsText = new HashMap<>();
-        List<String> methodsTypes = PackageManager.find(MethodsText.class, new String[]{"methods"});
+        List<String> methodsTypes = PackageManager.find(MethodsText.class, new String[]{"beastfx.app.methodsection"});
         for (String methodsTypeName : methodsTypes) {
             try {
                 MethodsText methodsType = (MethodsText) BEASTClassLoader.forName(methodsTypeName).getDeclaredConstructor().newInstance();

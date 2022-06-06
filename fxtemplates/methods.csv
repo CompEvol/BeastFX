@@ -2,13 +2,13 @@ analysisIdentifier,SpeciesTreePopSize.Species
 analysisIdentifier,popModelAIM.Species
 analysisIdentifier,popModelBridge.Species
 
-auxTreePrior,beast.math.distributions.MRCAPrior
+auxTreePrior,beast.base.evolution.tree.MRCAPrior
 auxTreePrior,beast.math.distributions.MultiMonophyleticConstraint
-auxTreePrior,beast.math.distributions.MRCAPriorWithRogues
+auxTreePrior,beast.base.evolution.tree.MRCAPriorWithRogues
 auxTreePrior,beast.math.distributions.MultiMRCAPriors
 
 
-#beast.math.distributions.MRCAPrior,"Clade ",taxonset," is ",distr
+#beast.base.evolution.tree.MRCAPrior,"Clade ",taxonset," is ",distr
 # CladAage
 beast.math.distributions.FossilPrior,"Clade ",taxonset," has fossil prior",cite(10.1093/sysbio/syw076)," ",fossilDistr
 beast.math.distributions.FossilCalibration," with occurrance age (min=",minOccuranceAge,"&comma; max=",maxOccuranceAge,")&comma; divergence rate (min=",minDivRate,"&comma; max=",maxDivRate,")&comma; turnover rate (min=",minTurnoverRate,"&comma; max=",maxTurnoverRate,")&comma; sampling rate (min=",minSamplingRate,"&comma; max=",maxSamplingRate,")&comma; and sample gap (min=",minSamplingGap,"&comma; max=",maxSamplingGap,")"
@@ -35,7 +35,7 @@ beast.evolution.speciation.SABirthDeathModel," using a fossilised birth death mo
 # bdmm?
 beast.evolution.speciation.BirthDeathSkylineModel,"birth-death skyline model",cite(10.1371/journal.pcbi.1003919)," with with origin ",origin,"&comma; reproductive number ",reproductiveNumber,"&comma; rho ",rho,"&comma; and sampling proportion ",samplingProportion
 
-beast.evolution.alignment.TaxonSet,id
+beast.base.evolution.alignment.TaxonSet,id
 
 # MASCOT
 beast.mascot.distribution.Mascot,"structured coalescent approximated through MASCOT",cite(10.1093/molbev/msx186)," with ","dynamics"
@@ -80,13 +80,13 @@ beast.mascot.dynamics.Constant," constant population using population size ",Ne,
 "SpeciesTreePopSize.Species","This is a multi-species coalescent (*BEAST",cite(10.1093/molbev/msp274),") analysis with a ","popFunction"," population function and gamma ","gammaParameter"
 
 
-"beast.math.distributions.Uniform","uniformly"," distributed ","(lower=","lower"," and upper=","upper",")"
-"beast.math.distributions.Normal","normally"," distributed ","(mean=","mean"," and sigma=","sigma",")"
-"beast.math.distributions.OneOnX","1/X"," distributed"
-"beast.math.distributions.LogNormalDistributionModel","log-normally"," distributed ","(mean-log=","M"," and stdev-log=","S",")"
-"beast.math.distributions.Exponential","exponentially"," distributed ","(mean=","mean",")"
-"beast.math.distributions.Gamma","gamma"," distributed ","(alpha=","alpha"," and beta=","beta",")"
+"beast.base.inference.distribution.Uniform","uniformly"," distributed ","(lower=","lower"," and upper=","upper",")"
+"beast.base.inference.distribution.Normal","normally"," distributed ","(mean=","mean"," and sigma=","sigma",")"
+"beast.base.inference.distribution.OneOnX","1/X"," distributed"
+"beast.base.inference.distribution.LogNormalDistributionModel","log-normally"," distributed ","(mean-log=","M"," and stdev-log=","S",")"
+"beast.base.inference.distribution.Exponential","exponentially"," distributed ","(mean=","mean",")"
+"beast.base.inference.distribution.Gamma","gamma"," distributed ","(alpha=","alpha"," and beta=","beta",")"
 "beast.math.distributions.Beta","beta"," distributed ","(alpha=","alpha"," and beta=","beta",")"
-"beast.math.distributions.LaplaceDistribution","Laplace"," distributed ","(mu=","mu"," and scale=","scale",")"
-"beast.math.distributions.InverseGamma","inverse Gamma"," distributed ","(alpha=","alpha"," and beta=","beta",")"
-"beast.math.distributions.Poisson","Poisson"," distributed ","(lambda=","lambda",")"
+"beast.base.inference.distribution.LaplaceDistribution","Laplace"," distributed ","(mu=","mu"," and scale=","scale",")"
+"beast.base.inference.distribution.InverseGamma","inverse Gamma"," distributed ","(alpha=","alpha"," and beta=","beta",")"
+"beast.base.inference.distribution.Poisson","Poisson"," distributed ","(lambda=","lambda",")"
