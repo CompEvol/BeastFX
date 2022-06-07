@@ -26,8 +26,8 @@ package beastfx.app.beast;
 
 
 
-import beagle.BeagleFlag;
 import beastfx.app.util.ExtensionFileFilter;
+import jam.util.IconUtils;
 import beast.base.core.BEASTVersion2;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
@@ -41,7 +41,6 @@ import beast.base.util.FileUtils;
 import beast.base.util.Randomizer;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.Version;
-import jam.util.IconUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;

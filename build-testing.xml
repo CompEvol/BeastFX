@@ -30,7 +30,7 @@
 		<fileset dir="themes" includes="jmetro-11.6.15.jar"/>
         <path location="${buildFX}"/>
         
-		<fileset dir="${beast2path}/lib" includes="jam.jar"/>
+		<fileset dir="${libFX}/lib" includes="jam.jar"/>
 		<fileset dir="${beast2path}/lib" includes="beagle.jar"/>
 		<fileset dir="${beast2path}/lib" includes="fest.jar"/>
 		<fileset dir="${beast2path}/lib" includes="colt.jar"/>
@@ -38,7 +38,7 @@
 		<fileset dir="${beast2path}/lib" includes="commons-math3-3.6.1.jar"/>
 
         <fileset dir="${beast2path}/lib/junit" includes="junit-platform-console-standalone-1.8.2.jar"/>
-        <fileset dir="${beast2path}/lib/junit" includes="assertj-core-3.20.2.jar"/>
+        <fileset dir="${libFX}/junit" includes="assertj-core-3.20.2.jar"/>
 	
 		<fileset dir="${javafx-home}" includes="javafx-swt.jar"/>
 		<fileset dir="${javafx-home}" includes="javafx-base.jar"/>
