@@ -16,4 +16,10 @@ public class LongInputEditor extends InputEditor.Base {
         return Long.class;
     }
 
+    @Override
+    void setUpEntry() {
+        super.setUpEntry();
+        m_entry.setPrefWidth(150);
+    }
+
 } // class LongInputEditor

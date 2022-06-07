@@ -9,12 +9,21 @@ import org.junit.jupiter.api.Test;
 
 import beastfx.app.beauti.Beauti;
 import beastfx.app.inputeditor.BeautiDoc;
-import test.beast.integration.ExampleXmlParsingTest;
 
 public class BeautiCLITest {
 
+	
+	public static void setUpTestDir() {
+		// make sure output goes to test directory
+		File testDir = 	new File("./test");
+		if (!testDir.exists()) {
+			testDir.mkdir();
+		}
+		System.setProperty("file.name.prefix","test/");
+	}
+
 	{
-		ExampleXmlParsingTest.setUpTestDir();
+		setUpTestDir();
 	}
 	
     String fileName = "test/tmp123x666.xml";

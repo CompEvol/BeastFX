@@ -148,7 +148,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             BeautiPanelConfig panel = doc.beautiConfig.panels.get(panelNr);
             getTabs().add(tabNr, panels[panelNr]);
             getTabs().get(tabNr).getTabPane().setTooltip(new Tooltip(panel.tipTextInput.get()));
-            getTabs().get(tabNr).setText(panel.nameInput.get());
+            // getTabs().get(tabNr).setText(panel.nameInput.get());
             getSelectionModel().select(tabNr);
         }
     }
@@ -1207,16 +1207,16 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         panels = new BeautiPanel[doc.beautiConfig.panels.size()];
         for (int panelIndex = 0; panelIndex < doc.beautiConfig.panels.size(); panelIndex++) {
             BeautiPanelConfig panelConfig = doc.beautiConfig.panels.get(panelIndex);
-            panels[panelIndex] = new BeautiPanel(panelIndex, this.doc, panelConfig);
+            panels[panelIndex] = new BeautiPanel(panelIndex, panelConfig.getName(), this.doc, panelConfig);
             getTabs().add(panels[panelIndex]);
             getTabs().get(panelIndex).setTooltip(new Tooltip(panelConfig.getTipText()));
-            getTabs().get(panelIndex).setText(panelConfig.getName());
+            // getTabs().get(panelIndex).setText(panelConfig.getName());
             getTabs().get(panelIndex).setId(panelConfig.getName().replaceAll(" ",""));
             getTabs().get(panelIndex).onSelectionChangedProperty().set(e -> {
             	for (int i = 0; i < panels.length; i++) {
-            		panels[i].getGraphic().setVisible(false);
+            		panels[i].setHMCVisible(false);
             	}
-            	((BeautiPanel)e.getSource()).getGraphic().setVisible(true);
+            	((BeautiPanel)e.getSource()).setHMCVisible(true);
             });
         }
         setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
@@ -1403,6 +1403,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             beauti.setUpPanels();
 
             beauti.currentTab = beauti.panels[0];
+            beauti.currentTab.setHMCVisible(true);
             beauti.hidePanels();
 
             beauti.getSelectionModel().selectedItemProperty().addListener(e -> {
@@ -1472,6 +1473,12 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
                     }
             });
 
+            
+            
+            primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+                beauti.currentTab.setPrefWidth(newVal);
+            });
+            
             // Toolkit toolkit = Toolkit.getDefaultToolkit();
             // // PropertyChangeListener plistener = new
             // PropertyChangeListener() {

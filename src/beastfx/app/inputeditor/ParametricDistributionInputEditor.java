@@ -132,6 +132,8 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         // the top margin
         private static final int TOP_MARGIN = 10;
 
+        private static final int POINTS = 1000;
+
         int m_nTicks;
 
         PDPanel() {
@@ -146,7 +148,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             chart.getXAxis().setAutoRanging(true);
             chart.getYAxis().setAutoRanging(true);
             series = new LineChart.Series<>();
-	        for (int i = 0; i < 100; i++) {
+	        for (int i = 0; i < POINTS; i++) {
 	        	series.getData().add(new XYChart.Data<Number,Number>(0,0));
 	        }
 	        chart.getData().add(series);
@@ -257,7 +259,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 
             int points;
             if (!m_distr.isIntegerDistribution()) {
-                points = 100;
+                points = POINTS;
             } else {
                 points = (int) (xRange);
             }

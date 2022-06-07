@@ -8,6 +8,7 @@ import java.util.List;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Border;
@@ -17,7 +18,7 @@ import javafx.scene.layout.VBox;
 
 public class BEASTObjectInputEditor extends InputEditor.Base {
     ComboBox<Object> m_selectBEASTObjectBox;
-    SmallButton m_editBEASTObjectButton;
+    Button m_editBEASTObjectButton;
 
     BEASTObjectInputEditor _this;
 
@@ -74,33 +75,49 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
         addComboBox(pane, input, beastObject);
 
         if (m_bAddButtons) {
-            if (BEASTObjectPanel.countInputs(m_input.get(), doc) > 0) {
-                m_editBEASTObjectButton = new SmallButton("e", true);
-                if (input.get() == null) {
-                    m_editBEASTObjectButton.setDisable(true);
-                }
-                m_editBEASTObjectButton.setTooltip(new Tooltip("Edit " + m_inputLabel.getText()));
-
-                m_editBEASTObjectButton.setOnAction(e -> {
-                    BEASTObjectDialog dlg = new BEASTObjectDialog((BEASTInterface) m_input.get(), m_input.getType(), doc);
-                    if (dlg.showDialog()) {
-                        try {
-                            dlg.accept((BEASTInterface) m_input.get(), doc);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                    refresh();
-                    validateInput();
-                    refreshPanel();
-                });
-                pane.getChildren().add(m_editBEASTObjectButton);
+            if (BEASTObjectPanel.countInputs(m_input.get(), doc) > 0 && m_editBEASTObjectButton == null) {
+                pane.getChildren().add(createEditButton(input));
             }
         }
         addValidationLabel();
     } // init
 
-    void refresh() {
+    protected Button createEditButton(Input<?> input) {
+        m_editBEASTObjectButton = new Button();
+        m_editBEASTObjectButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "edit16.png"));
+        m_editBEASTObjectButton.setStyle(
+    	        "-fx-background-radius: 5em; " +
+    	                "-fx-min-width: 10px; " +
+    	                "-fx-min-height: 3px; " +
+    	                "-fx-max-width: 10px; " +
+    	                "-fx-max-height: 3px; " +
+    	                "-fx-background-color: -fx-body-color;" +
+    	                "-fx-background-insets: 5px; " +
+    	                "-fx-spacing: 5px;" +
+    	                "-fx-padding: 5px;"
+    	        );
+        if (input.get() == null) {
+            m_editBEASTObjectButton.setDisable(true);
+        }
+        m_editBEASTObjectButton.setTooltip(new Tooltip("Edit " + m_inputLabel.getText()));
+
+        m_editBEASTObjectButton.setOnAction(e -> {
+            BEASTObjectDialog dlg = new BEASTObjectDialog((BEASTInterface) m_input.get(), m_input.getType(), doc);
+            if (dlg.showDialog()) {
+                try {
+                    dlg.accept((BEASTInterface) m_input.get(), doc);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            refresh();
+            validateInput();
+            refreshPanel();
+        });
+        return m_editBEASTObjectButton;
+	}
+
+	void refresh() {
     	if (m_selectBEASTObjectBox != null) {
 	        String oldID = (String) m_selectBEASTObjectBox.getValue();
 	        String id = ((BEASTInterface) m_input.get()).getID();
@@ -340,6 +357,8 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
             //int fontsize = m_selectBEASTObjectBox.getFont().getSize();
             //m_selectBEASTObjectBox.setMaxSize(1024, 200 * fontsize / 13);
             box.getChildren().add(m_selectBEASTObjectBox);
+            box.getChildren().add(FXUtils.createHMCButton(m_beastObject, m_input));
+
             HBox.setMargin(m_selectBEASTObjectBox, new Insets(0,5,0,5));
         }
     }

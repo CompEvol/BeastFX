@@ -120,6 +120,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
         } else {
             setUpEntry();
             paramBox.getChildren().add(m_entry);
+            paramBox.getChildren().add(FXUtils.createHMCButton(m_beastObject, m_input));
             if (doc.allowLinking) {
 	            boolean isLinked = doc.isLinked(m_input);
 				if (isLinked || doc.suggestedLinks((BEASTInterface) m_input.get()).size() > 0) {
@@ -222,8 +223,15 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
                         Log.err.println("ParameterInputEditor " + ex.getMessage());
                     }
                 });
-            paramBox.getChildren().add(m_isEstimatedBox);
 
+            if (m_bAddButtons) {
+                if (BEASTObjectPanel.countInputs(m_input.get(), doc) > 0) {
+                	paramBox.getChildren().add(createEditButton(input));
+                }
+            }
+
+            paramBox.getChildren().add(m_isEstimatedBox);
+            
             // only show the estimate flag if there is an operator that works on this parameter
             m_isEstimatedBox.setVisible(doc.isExpertMode());
             m_isEstimatedBox.setTooltip(new Tooltip("Estimate value of this parameter in the MCMC chain"));

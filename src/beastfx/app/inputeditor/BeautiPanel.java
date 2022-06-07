@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,6 +20,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.Skin;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 
@@ -32,6 +34,8 @@ import beastfx.app.inputeditor.BeautiPanelConfig.Partition;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -45,7 +49,9 @@ import beast.base.inference.CompoundDistribution;
 import beast.base.inference.MCMC;
 import beast.base.parser.PartitionContext;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
@@ -95,7 +101,6 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     /**
      * box containing the list of partitions, to make (in)visible on update *
      */
-    //BorderPane partitionComponent;
     SplitPane pane;
     /**
      * list of partitions in m_listBox *
@@ -126,7 +131,14 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     	}
     }
     
-    public BeautiPanel(int panelIndex, BeautiDoc doc, BeautiPanelConfig config) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    private ToggleButton hmcButton;
+    
+    public void setHMCVisible(boolean isVisible) {
+    	hmcButton.setVisible(isVisible);
+    }
+    
+    
+    public BeautiPanel(int panelIndex, String text, BeautiDoc doc, BeautiPanelConfig config) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         this.doc = doc;
         this.panelIndex = panelIndex;
         pane = new SplitPane();
@@ -148,12 +160,35 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         //setContent(pane);
         //setOpaque(false);
         
-        Button hmcButton= new Button("?");
+        HBox box = new HBox();
+        Label label = new Label(text);
+        //label.setPadding(new Insets(5,0,0,3));
+        box.getChildren().add(label);
+        //box.setPadding(new Insets(0));
+        box.setSpacing(4);
+        
+        hmcButton= new ToggleButton();
+        hmcButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "help16.png"));
     	hmcButton.setTooltip(new Tooltip("Click to help me choose"));
     	hmcButton.setOnAction(e->FXUtils.helpMeChoose(
     			doc.getTemplateName(),
     			config.nameInput.get()));
-        setGraphic(hmcButton);
+    	hmcButton.setVisible(false);
+//    	hmcButton.setPrefSize(10, 10);
+//    	hmcButton.setMinSize(10, 10);
+//    	hmcButton.setMaxSize(10, 10);
+    	hmcButton.setStyle(
+    	        "-fx-background-radius: 5em; " +
+    	                "-fx-min-width: 3px; " +
+    	                "-fx-min-height: 3px; " +
+    	                "-fx-max-width: 3px; " +
+    	                "-fx-max-height: 3px; " +
+    	                "-fx-background-color: -fx-body-color;" +
+    	                "-fx-background-insets: 2px; " +
+    	                "-fx-padding: 2px;"
+    	        );
+        box.getChildren().add(hmcButton);
+        setGraphic(box);
         
     } // c'tor
 
@@ -560,6 +595,17 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
             ex.printStackTrace();
         }
     }
+
+   	
+   	private List<Region> resizeList = new ArrayList<>();
+   	
+   	public void setPrefWidth(Number newVal) {
+   		pane.setPrefWidth(newVal.doubleValue());
+		for (Region region : resizeList) {
+			region.setPrefWidth(newVal.doubleValue());
+			System.err.println("new width: " + newVal + " " + region.getId());
+		}
+	}
 
     
 } // class BeautiPanel

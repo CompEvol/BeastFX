@@ -137,6 +137,7 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
                 });
             });
         itemBox.getChildren().add(comboBox);
+        itemBox.getChildren().add(FXUtils.createHMCButton(m_beastObject, m_input));
         // itemBox.getChildren().add(new Separator());
 
         m_validateLabel = new SmallLabel("x", "red");
