@@ -131,7 +131,7 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     	}
     }
     
-    private ToggleButton hmcButton;
+    private Button hmcButton;
     
     public void setHMCVisible(boolean isVisible) {
     	hmcButton.setVisible(isVisible);
@@ -167,26 +167,9 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         //box.setPadding(new Insets(0));
         box.setSpacing(4);
         
-        hmcButton= new ToggleButton();
-        hmcButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "help16.png"));
+        hmcButton= FXUtils.createHMCButton(doc.getTemplateName(), config.nameInput.get());
     	hmcButton.setTooltip(new Tooltip("Click to help me choose"));
-    	hmcButton.setOnAction(e->FXUtils.helpMeChoose(
-    			doc.getTemplateName(),
-    			config.nameInput.get()));
     	hmcButton.setVisible(false);
-//    	hmcButton.setPrefSize(10, 10);
-//    	hmcButton.setMinSize(10, 10);
-//    	hmcButton.setMaxSize(10, 10);
-    	hmcButton.setStyle(
-    	        "-fx-background-radius: 5em; " +
-    	                "-fx-min-width: 3px; " +
-    	                "-fx-min-height: 3px; " +
-    	                "-fx-max-width: 3px; " +
-    	                "-fx-max-height: 3px; " +
-    	                "-fx-background-color: -fx-body-color;" +
-    	                "-fx-background-insets: 2px; " +
-    	                "-fx-padding: 2px;"
-    	        );
         box.getChildren().add(hmcButton);
         setGraphic(box);
         

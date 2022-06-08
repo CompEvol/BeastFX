@@ -67,7 +67,7 @@ public class BeautiPanelConfig extends BEASTObject {
      * beastObjects that are parents, i.e. contain inputs of m_inputs *
      */
     public List<BEASTInterface> parentBEASTObjects;
-    List<Input<?>> parentInputs = new ArrayList<>();
+    public List<Input<?>> parentInputs = new ArrayList<>();
     /**
      * flag to indicate we are dealing with a list input *
      */
@@ -79,11 +79,11 @@ public class BeautiPanelConfig extends BEASTObject {
     public class FlexibleInput<T> extends Input<T> {
         FlexibleInput() {
             // sets name to something non-trivial This is used by canSetValue()
-            super("xx", "");
+            super("index", "");
         }
 
         public FlexibleInput(T arrayList) {
-            super("xx", "", arrayList);
+            super("index", "", arrayList);
         }
 
         @Override

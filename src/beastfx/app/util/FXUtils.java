@@ -1,5 +1,6 @@
 package beastfx.app.util;
 
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
@@ -14,9 +15,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beastfx.app.inputeditor.BEASTObjectDialog;
+import beastfx.app.inputeditor.BeautiPanelConfig;
 
 public class FXUtils {
 
@@ -117,16 +120,33 @@ public class FXUtils {
 	
 	
 	public static Button createHMCButton(BEASTInterface o, Input<?> input)  {
-		String id = o.getID();
+        if (o instanceof BeautiPanelConfig) {
+        	BeautiPanelConfig cfg = (BeautiPanelConfig) o;
+        	return FXUtils.createHMCButton(cfg.parentBEASTObjects.get(0), cfg.parentInputs.get(0));
+        }
+        
+        if (input instanceof BeautiPanelConfig.FlexibleInput) {
+        	BeautiPanelConfig.FlexibleInput flexInput = (BeautiPanelConfig.FlexibleInput) input;
+        }
+
+        String id = o.getID();
 		if (id.lastIndexOf('.') > 0) {
 			id = id.substring(0, id.lastIndexOf('.'));
 		}
+				
 		String HMC_BASE = "file://" + System.getProperty("user.dir") + "/hmc";
 		String url = HMC_BASE + "/" + id + "/" + input.getName() + ".html";
-		return createHMCButton(url);
+		Button hmc = createHMCButton(url);
+        if (input instanceof BeautiPanelConfig.FlexibleInput) {
+        	BeautiPanelConfig.FlexibleInput flexInput = (BeautiPanelConfig.FlexibleInput) input;
+        	hmc.setTooltip(new Tooltip(o.getDescription()));
+        } else {
+        	hmc.setTooltip(new Tooltip(input.getTipText()));
+        }
+		return hmc;
 	}
 	
-	public static Button helpMeChoose(String templateName, String tabName) {
+	public static Button createHMCButton(String templateName, String tabName) {
 		String HMC_BASE = "file://" + System.getProperty("user.dir") + "/hmc";
 		String url = HMC_BASE + "/" + templateName + "/" + tabName + ".html";
 		url = url.replaceAll(" ", "_");
@@ -137,7 +157,7 @@ public class FXUtils {
 	   Button hmcButton = new Button();
     	hmcButton.setTooltip(new Tooltip("Click to 'help me choose'"));
     	hmcButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "help16.png"));
-    	hmcButton.setOnAction(e->openInBrowser(url));
+    	hmcButton.setOnAction(e->openInBrowser(url, hmcButton));
     	hmcButton.setStyle(
     	        "-fx-background-radius: 5em; " +
 //    	                "-fx-min-width: 3px; " +
@@ -154,8 +174,8 @@ public class FXUtils {
     	        );
     	return hmcButton;
     }
-   
-	public static void openInBrowser(String url)  {
+	   
+	public static void openInBrowser(String url, Button hmc)  {
 		Desktop desktop;
         if (Desktop.isDesktopSupported()) {
             desktop = Desktop.getDesktop();
@@ -164,6 +184,14 @@ public class FXUtils {
                 URI uri = null;
                 try {
                     uri = new URI(url);
+                    
+                    String s = "/Users/remco/workspace/hmc/_pages" + url.substring(("file://" + System.getProperty("user.dir")).length());
+                	creatDirs(s);
+            		PrintStream out = new PrintStream(new File(s));
+            		out.println(hmc.getTooltip().getText());
+            		out.close();
+                    
+                    
                     desktop.browse(uri);
                 } catch (IOException e) {
                 	Alert.showMessageDialog(null, "Could not find help: " + e.getMessage());
@@ -172,6 +200,13 @@ public class FXUtils {
                 }
             }
         }
+	}
+
+	private static void creatDirs(String file) {
+		if (!file.endsWith("/")) {
+			file = file.substring(0, file.lastIndexOf('/'));
+		}
+		new File(file).mkdirs();
 	}
 
 }
