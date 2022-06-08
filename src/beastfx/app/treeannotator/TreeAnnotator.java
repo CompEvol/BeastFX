@@ -1190,7 +1190,7 @@ public class TreeAnnotator extends Console {
 		    public void write(int b) {
 		    }
 		}));
-		Utils.loadUIManager();
+//		Utils.loadUIManager();
 		System.setErr(err);
 		
         System.setProperty("com.apple.macos.useScreenMenuBar", "true");

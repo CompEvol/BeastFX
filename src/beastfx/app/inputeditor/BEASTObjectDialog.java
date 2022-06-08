@@ -21,7 +21,9 @@ import beastfx.app.beauti.ThemeProvider;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -57,24 +59,29 @@ public class BEASTObjectDialog extends Dialog {
     final public static String ICONPATH = "/beastfx/app/inputeditor/icon/";
     
     public boolean showDialog() {
-        Image image = new Image(this.getClass().getResource("icon/beast.png").toString());
+        Image image = new Image(this.getClass().getResource("icon/beast.png").toString(), 100, 100, true, true);
         
-		Dialog<ButtonType> alert = new Dialog<>();
-		DialogPane pane = alert.getDialogPane();
-		pane.getChildren().add(m_panel);
+		Dialog<ButtonType> dlg = new Dialog<>();
+		DialogPane pane = dlg.getDialogPane();
+		
+		pane.setContent(new ScrollPane(m_panel));
 		pane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-		alert.setHeaderText(m_panel.m_beastObject.getClass().getName());
+		//dlg.setHeaderText(m_panel.m_beastObject.getClass().getName());
+		dlg.setTitle(m_panel.m_beastObject.getClass().getName());
 		Stage stage = (Stage) pane.getScene().getWindow();
-		stage.getIcons().add(image);
-
-		setResizable(true);
+		//stage.getIcons().add(image);
+		pane.setGraphic(new ImageView(image));
+		pane.setPrefSize(InputEditor.Base.PREFERRED_SIZE.getWidth() * 4, 
+				InputEditor.Base.PREFERRED_SIZE.getHeight() * 15);
+		
+		dlg.setResizable(true);
 //		if (parent != null) {
 //			Scene node = parent.getScene();
 //			alert.setX(node.getX() + node.getWidth()/2);
 //			alert.setY(node.getY() + node.getHeight()/2);
 //		}
     	ThemeProvider.loadStyleSheet(pane.getScene());
-		ButtonType result = alert.showAndWait().get();
+		ButtonType result = dlg.showAndWait().get();
 		m_bOK = (result != ButtonType.CANCEL);
         return m_bOK;
     }

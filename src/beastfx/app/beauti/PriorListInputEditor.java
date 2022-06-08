@@ -139,12 +139,14 @@ public class PriorListInputEditor extends ListInputEditor {
         }
 
         Node n = pane.getChildren().get(0);
-        for (Node node : ((Pane)n).getChildren()) {
-        	if (node instanceof Region) {
-        		System.err.println(node);
-        		((Region)node).setPadding(new Insets(0,0,0,0));
-        		((Region) node).setPrefHeight(30);
-        	}
+        if (n instanceof Pane) {
+	        for (Node node : ((Pane)n).getChildren()) {
+	        	if (node instanceof Region) {
+	        		System.err.println(node);
+	        		((Region)node).setPadding(new Insets(0,0,0,0));
+	        		((Region) node).setPrefHeight(30);
+	        	}
+	        }
         }
     }
 

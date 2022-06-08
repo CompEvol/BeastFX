@@ -13,7 +13,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-
+import javafx.scene.layout.Priority;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
@@ -169,6 +169,11 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 
             m_isEstimatedBox = new CheckBox(doc.beautiConfig.getInputLabel(parameter, parameter.isEstimatedInput.getName()));
             m_isEstimatedBox.setId(input.getName() + ".isEstimated");
+            ((HBox)box).setHgrow(m_isEstimatedBox, Priority.ALWAYS);
+            m_isEstimatedBox.setMaxWidth(Double.POSITIVE_INFINITY);
+            m_isEstimatedBox.setPrefWidth(400);
+            box.setMaxWidth(Double.POSITIVE_INFINITY);
+
             if (input.get() != null) {
                 m_isEstimatedBox.setSelected(parameter.isEstimatedInput.get());
             }

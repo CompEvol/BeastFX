@@ -10,10 +10,12 @@ import beast.base.core.Input;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class BEASTObjectInputEditor extends InputEditor.Base {
@@ -172,6 +174,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
         // box.setBorder(new EtchedBorder());
         //box.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         
+        ((HBox)pane).setHgrow(box, Priority.ALWAYS);
         pane.getChildren().add(box);
         m_expansionBox = box;
     } // expandedInit
