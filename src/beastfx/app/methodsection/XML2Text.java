@@ -5,12 +5,13 @@ package beastfx.app.methodsection;
 
 
 
+
 import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
 
-import beast.app.util.OutFile;
-import beast.app.util.XMLFile;
+import beastfx.app.util.OutFile;
+import beastfx.app.util.XMLFile;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Description;
 import beast.base.core.Input;
@@ -396,7 +397,7 @@ public class XML2Text extends beast.base.inference.Runnable {
 	}
 
 	private void addPartitionSection() {
-		m.add(new SectionPhrase("Data"));
+		m.add(new SectionPhrase("Data\n"));
 		List<Phrase> m = new ArrayList<>();
 
 		List<BEASTInterface> parts = beautiDoc.getPartitions("Partitions");

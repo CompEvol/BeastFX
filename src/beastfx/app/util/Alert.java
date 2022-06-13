@@ -84,6 +84,7 @@ public class Alert {
 		javafx.scene.control.Alert alert = new javafx.scene.control.Alert(AlertType.INFORMATION,
 				message, 
 				ButtonType.OK);
+		alert.setResizable(true);
 		if (parent != null) {
 			Scene node = parent.getScene();
 			alert.setX(node.getX() + node.getWidth()/2);

@@ -119,6 +119,7 @@ public class PriorInputEditor extends InputEditor.Base {
                     refreshPanel();
                 }
             });
+            rangeButton.setPrefWidth(InputEditor.Base.LABEL_SIZE.getWidth());
             // itemBox.getChildren().add(new Separator());
             itemBox.getChildren().add(rangeButton);
         } else if (prior.m_x.get() instanceof IntegerParameter) {

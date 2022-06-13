@@ -8,10 +8,7 @@ package beastfx.app.inputeditor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-//import javax.swing.UIManager;
-
 import org.apache.commons.math.MathException;
-import org.apache.commons.math.MathRuntimeException;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;

@@ -231,6 +231,10 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         
         table = new TableView<>();
         table.setPrefWidth(800);
+        table.setMinSize(doc.beauti.frame.getWidth()-12, doc.beauti.frame.getHeight()-230);
+        BeautiPanel.resizeList.clear();
+        BeautiPanel.resizeList.add(table);
+
         table.setEditable(true);
 
         TableColumn<TipDate,String> col1 = new TableColumn<>("Taxon");

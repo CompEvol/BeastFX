@@ -23,6 +23,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import org.w3c.dom.Document;
@@ -38,6 +39,8 @@ import beastfx.app.inputeditor.BeautiPanel;
 import beastfx.app.inputeditor.BeautiPanelConfig;
 import beastfx.app.inputeditor.MyAction;
 import beastfx.app.methodsection.MethodsText;
+import beastfx.app.methodsection.Phrase;
+import beastfx.app.methodsection.XML2HTMLPaneFX;
 import beastfx.app.methodsection.XML2Text;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
@@ -576,7 +579,15 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 			try {
 				MethodsText.initNameMap();
 				String text = xml2text.initialise((MCMC) doc.mcmc.get());
-				Alert.showMessageDialog(null, text);
+				List<Phrase> m = xml2text.getPhrases();
+				String html = XML2HTMLPaneFX.header + Phrase.toHTML(doc, m) + XML2HTMLPaneFX.footer + "</body>\n</html>";
+				WebView webView = new WebView();
+				webView.getEngine().loadContent(html);
+				Dialog dlg = new Dialog();
+				dlg.getDialogPane().setContent(webView);
+				dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+				dlg.showAndWait();
+				//Alert.showMessageDialog(null, webView);
 			} catch (Exception e) {
 				e.printStackTrace();
 				Alert.showMessageDialog(null, e.getMessage());
@@ -1476,7 +1487,10 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             
             
             primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
-                beauti.currentTab.setPrefWidth(newVal);
+                beauti.currentTab.setWidth(oldVal, newVal);
+            });
+            primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {
+                beauti.currentTab.setHeight(oldVal, newVal);
             });
             
             // Toolkit toolkit = Toolkit.getDefaultToolkit();

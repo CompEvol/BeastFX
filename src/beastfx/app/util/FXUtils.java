@@ -1,12 +1,16 @@
 package beastfx.app.util;
 
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 
 import java.awt.Desktop;
@@ -134,8 +138,8 @@ public class FXUtils {
 			id = id.substring(0, id.lastIndexOf('.'));
 		}
 				
-		String HMC_BASE = "file://" + System.getProperty("user.dir") + "/hmc";
-		String url = HMC_BASE + "/" + id + "/" + input.getName() + ".html";
+		String HMC_BASE = getHMCBase();
+		String url = HMC_BASE + "/" + id + "/" + input.getName() + "/";//.html";
 		Button hmc = createHMCButton(url);
         if (input instanceof BeautiPanelConfig.FlexibleInput) {
         	BeautiPanelConfig.FlexibleInput flexInput = (BeautiPanelConfig.FlexibleInput) input;
@@ -146,9 +150,14 @@ public class FXUtils {
 		return hmc;
 	}
 	
+	private static String getHMCBase() {
+		//return "file://" + System.getProperty("user.dir") + "/hmc";
+		return "http://127.0.0.1:4000/hmc/";
+	}
+
 	public static Button createHMCButton(String templateName, String tabName) {
-		String HMC_BASE = "file://" + System.getProperty("user.dir") + "/hmc";
-		String url = HMC_BASE + "/" + templateName + "/" + tabName + ".html";
+		String HMC_BASE = getHMCBase();
+		String url = HMC_BASE + "/" + templateName + "/" + tabName + "/index.html";
 		url = url.replaceAll(" ", "_");
 		return createHMCButton(url);
 	}
@@ -176,30 +185,40 @@ public class FXUtils {
     }
 	   
 	public static void openInBrowser(String url, Button hmc)  {
-		Desktop desktop;
-        if (Desktop.isDesktopSupported()) {
-            desktop = Desktop.getDesktop();
-            // Now enable buttons for actions that are supported.
-            if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                URI uri = null;
-                try {
-                    uri = new URI(url);
-                    
-                    String s = "/Users/remco/workspace/hmc/_pages" + url.substring(("file://" + System.getProperty("user.dir")).length());
-                	creatDirs(s);
-            		PrintStream out = new PrintStream(new File(s));
-            		out.println(hmc.getTooltip().getText());
-            		out.close();
-                    
-                    
-                    desktop.browse(uri);
-                } catch (IOException e) {
-                	Alert.showMessageDialog(null, "Could not find help: " + e.getMessage());
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+		
+		
+		WebView webView = new WebView();
+		webView.getEngine().load(url);
+		Dialog dlg = new Dialog();
+		dlg.getDialogPane().setContent(webView);
+		dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+		dlg.showAndWait();
+
+//        //Platform.runLater(() -> {
+//			Desktop desktop;
+//	        if (Desktop.isDesktopSupported()) {
+//	            desktop = Desktop.getDesktop();
+//	            // Now enable buttons for actions that are supported.
+//	            if (desktop.isSupported(Desktop.Action.BROWSE)) {
+//                    
+////                  String s = "/Users/remco/workspace/hmc/_pages" + url.substring(("file://" + System.getProperty("user.dir")).length());
+////                	creatDirs(s);
+////            		PrintStream out = new PrintStream(new File(s));
+////            		out.println(hmc.getTooltip().getText());
+////            		out.close();
+//                    
+//                    try {
+//                        URI uri = new URI(url);
+//                        desktop.browse(uri);                    		
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    	//Alert.showMessageDialog(null, "Could not find help: " + e.getMessage());
+//                    } catch (URISyntaxException e) {
+//                        e.printStackTrace();
+//                    }
+//	            }
+//	        }
+//        //});
 	}
 
 	private static void creatDirs(String file) {

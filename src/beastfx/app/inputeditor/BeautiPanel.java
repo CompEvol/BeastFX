@@ -580,13 +580,25 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     }
 
    	
-   	private List<Region> resizeList = new ArrayList<>();
+   	public static List<Region> resizeList = new ArrayList<>();
    	
-   	public void setPrefWidth(Number newVal) {
-   		pane.setPrefWidth(newVal.doubleValue());
+   	public void setWidth(Number oldVal, Number newVal) {
+   		//pane.setPrefWidth(newVal.doubleValue());
 		for (Region region : resizeList) {
-			region.setPrefWidth(newVal.doubleValue());
-			System.err.println("new width: " + newVal + " " + region.getId());
+			double w = region.getMinWidth();
+			w += newVal.doubleValue() - oldVal.doubleValue();
+			region.setMinWidth(w);
+			System.err.println("new width: " + w + " " + region.getId() + " " + region.getClass().getName());
+		}
+	}
+
+   	public void setHeight(Number oldVal, Number newVal) {
+   		//pane.setPrefWidth(newVal.doubleValue());
+		for (Region region : resizeList) {
+			double w = region.getMinHeight();
+			w += newVal.doubleValue() - oldVal.doubleValue();
+			region.setMinHeight(w);
+			System.err.println("new width: " + w + " " + region.getId() + " " + region.getClass().getName());
 		}
 	}
 

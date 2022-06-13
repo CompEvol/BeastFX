@@ -169,9 +169,9 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 
             m_isEstimatedBox = new CheckBox(doc.beautiConfig.getInputLabel(parameter, parameter.isEstimatedInput.getName()));
             m_isEstimatedBox.setId(input.getName() + ".isEstimated");
-            ((HBox)box).setHgrow(m_isEstimatedBox, Priority.ALWAYS);
+            //((HBox)box).setHgrow(m_isEstimatedBox, Priority.ALWAYS);
             m_isEstimatedBox.setMaxWidth(Double.POSITIVE_INFINITY);
-            m_isEstimatedBox.setPrefWidth(400);
+            //m_isEstimatedBox.setPrefWidth(400);
             box.setMaxWidth(Double.POSITIVE_INFINITY);
 
             if (input.get() != null) {

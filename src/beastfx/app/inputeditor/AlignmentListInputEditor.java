@@ -111,7 +111,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
     Button delButton;
     protected SmallButton replaceButton;
 
-	private ScrollPane scrollPane;
+	// private ScrollPane scrollPane;
 
 	public AlignmentListInputEditor(BeautiDoc doc) {
 		super(doc);
@@ -190,15 +190,14 @@ public class AlignmentListInputEditor extends ListInputEditor {
         	addItem(files.toArray(new File[]{}));
         });
         
-        
         // this should place the add/remove/split buttons at the bottom of the window.
         bpane.setBottom(createAddRemoveSplitButtons());
         
-        ScrollPane scroller = new ScrollPane(pane);
         //scroller.setMinSize(doc.beauti.frame.getWidth(), doc.beauti.frame.getHeight()-155);
-        //table.setMinSize(doc.beauti.frame.getWidth()-10, doc.beauti.frame.getHeight()-160);
-        table.setMinWidth(1020);
-        getChildren().add(scroller);
+        BeautiPanel.resizeList.clear();
+        BeautiPanel.resizeList.add(table);
+    	table.setMinWidth(1020);
+        getChildren().add(pane);
         updateStatus();
 	}
 
@@ -747,6 +746,14 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		for (int i : selected) {
 			table.getSelectionModel().select(i);
 		}
+		
+        try {
+        	table.setMinSize(doc.beauti.frame.getWidth() - 20, doc.beauti.frame.getHeight()-160);
+        } catch (NullPointerException e) {
+        	// ignore
+        	table.setMinWidth(1020);
+        }
+
 	}
 	
 //	void initTableEntries() {
@@ -1260,6 +1267,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			    });
 			    column.setCellFactory(col -> {
 			        final ComboBox<String> comboBox = new ComboBox<>();
+			        comboBox.setMaxWidth(150);
 			        TableCell<Partition0, StringProperty> c = new TableCell<Partition0, StringProperty>() {
 			        	@Override
 			        	protected void updateItem(StringProperty item, boolean empty) {
@@ -1305,6 +1313,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			    });
 			    column.setCellFactory(col -> {
 			        final ComboBox<String> comboBox = new ComboBox<>();
+			        comboBox.setMaxWidth(150);
 			        TableCell<Partition0, StringProperty> c = new TableCell<Partition0, StringProperty>() {
 			        	@Override
 			        	protected void updateItem(StringProperty item, boolean empty) {
@@ -1362,6 +1371,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			    });
 			    column.setCellFactory(col -> {
 			        final ComboBox<String> comboBox = new ComboBox<>();
+			        comboBox.setMaxWidth(150);
 			        TableCell<Partition0, StringProperty> c = new TableCell<Partition0, StringProperty>() {
 			        	@Override
 			        	protected void updateItem(StringProperty item, boolean empty) {
