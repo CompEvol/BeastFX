@@ -14,10 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 
-import java.awt.Desktop;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -151,9 +148,9 @@ public class FXUtils {
 		Button hmc = createHMCButton(url);
         if (input instanceof BeautiPanelConfig.FlexibleInput) {
         	BeautiPanelConfig.FlexibleInput flexInput = (BeautiPanelConfig.FlexibleInput) input;
-        	hmc.setTooltip(new Tooltip(o.getDescription()));
+        	hmc.setTooltip(new Tooltip(o.getDescription() + "\n" + o.getID()));
         } else {
-        	hmc.setTooltip(new Tooltip(input.getTipText()));
+        	hmc.setTooltip(new Tooltip(input.getTipText() + "\n" + o.getID()));
         }
         pane.getChildren().add(hmc);
 	}
@@ -182,7 +179,8 @@ public class FXUtils {
 
 	private static String getHMCBase() {
 		//return "file://" + System.getProperty("user.dir") + "/hmc";
-		return "http://127.0.0.1:4000/hmc/";
+		//return "http://127.0.0.1:4000/hmc/";
+		return "https://beast2-dev.github.io/hmc/hmc/";
 	}
 
 	
@@ -208,17 +206,13 @@ public class FXUtils {
     	hmcButton.setOnAction(e->openInBrowser(url, hmcButton));
     	hmcButton.setStyle(
     	        "-fx-background-radius: 5em; " +
-//    	                "-fx-min-width: 3px; " +
-//    	                "-fx-min-height: 3px; " +
-//    	                "-fx-max-width: 3px; " +
-//    	                "-fx-max-height: 3px; " +
-"-fx-min-width: 10px; " +
-"-fx-min-height: 3px; " +
-"-fx-max-width: 10px; " +
-"-fx-max-height: 3px; " +
-    	                "-fx-background-color: -fx-body-color;" +
-    	                "-fx-background-insets: 2px; " +
-    	                "-fx-padding: 2px;"
+				"-fx-min-width: 10px; " +
+				"-fx-min-height: 3px; " +
+				"-fx-max-width: 10px; " +
+				"-fx-max-height: 3px; " +
+                "-fx-background-color: -fx-body-color;" +
+                "-fx-background-insets: 2px; " +
+                "-fx-padding: 2px;"
     	        );
     	return hmcButton;
     }
@@ -231,6 +225,7 @@ public class FXUtils {
 		Dialog dlg = new Dialog();
 		dlg.getDialogPane().setContent(webView);
 		dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+		dlg.setResizable(true);
 		dlg.showAndWait();
 
 //        //Platform.runLater(() -> {

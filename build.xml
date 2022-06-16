@@ -18,7 +18,6 @@
 	<property name="srcBeast2" location="${beast2path}/src" />
 	<property name="beast2classpath" location="${beast2path}/build" />
 	<property name="Add_on_dir" value="${release_dir}/add-on" />
-	<property name="version" value="1.1.2" />
 
     <import file="${beast2path}/build.xml" />
 
@@ -43,6 +42,7 @@
         <fileset dir="${beast2path}/lib/junit" includes="junit-platform-console-standalone-1.8.2.jar"/>
         <fileset dir="${libFX}/junit" includes="assertj-core-3.20.2.jar"/>
 	
+		<!-- javafx -->
 		<fileset dir="${javafx-home}/lib" includes="javafx-swt.jar"/>
 		<fileset dir="${javafx-home}/lib" includes="javafx.base.jar"/>
 		<fileset dir="${javafx-home}/lib" includes="javafx.controls.jar"/>
@@ -53,11 +53,22 @@
 		<fileset dir="${javafx-home}/lib" includes="javafx.web.jar"/>
 
         <path location="${beast2classpath}"/>
+
 	</path>
 
 	<!-- start -->
 	<target name="initBeastFX">
 		<echo message="${ant.project.name}: ${ant.file}" />
+
+		<available file="version.xml" property="versionAvailable"/>
+        <fail unless="versionAvailable">
+              ** Required file version.xml does not exist. **
+        </fail>
+
+        <!-- Read package name and version from xml file -->
+        <xmlproperty file="version.xml" prefix="fromVersionFile" />
+        <property name="version" value="${fromVersionFile.package(version)}" />
+        <echo message="Version: ${version}" />
 	</target>
 
 	<target name="cleanBeastFX">

@@ -53,7 +53,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import beastfx.app.beauti.Beauti;
 import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.inputeditor.BeautiAlignmentProvider;
 import beastfx.app.inputeditor.BeautiConfig;
@@ -88,7 +87,7 @@ public class XML2HTMLPaneFX extends Application {
 	File file = null;
 
 	XML2HTMLPaneFX thisPane;
-	ModelEditor me = new ModelEditor(false);
+	// ModelEditor me = new ModelEditor(false);
 	Stage mainStage;
 
 	public XML2HTMLPaneFX() {
@@ -149,20 +148,20 @@ public class XML2HTMLPaneFX extends Application {
 		view.setContextMenuEnabled(false);
 		engine = view.getEngine();
 
-		engine.locationProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
-				System.out.println("changed:");
-				System.out.println(newValue);
-				if (me.handleCmd(newValue, beautiDoc, null)) {
-					refresh();
-				}
-				if (file != null) {
-					mainStage.setTitle(file.getPath());
-					createFileMenu();
-				}
-			}
-		});
+//		engine.locationProperty().addListener(new ChangeListener<String>() {
+//			@Override
+//			public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
+//				System.out.println("changed:");
+//				System.out.println(newValue);
+//				if (me.handleCmd(newValue, beautiDoc, null)) {
+//					refresh();
+//				}
+//				if (file != null) {
+//					mainStage.setTitle(file.getPath());
+//					createFileMenu();
+//				}
+//			}
+//		});
 
 		engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
 
@@ -746,28 +745,28 @@ public class XML2HTMLPaneFX extends Application {
 		return Phrase.toString(m);
 	}
 
-    public void doIt(String str) {
-        System.out.println("doIt(" + str + ") called");
-		if (me.handleCmd("/cmd=" + str, beautiDoc, null)) {
-			beautiDoc.determinePartitions();
-			beautiDoc.scrubAll(false, false);
-			CitationPhrase.citations.clear();
-
-			MethodsText.clear();
-			try {
-				initialise((MCMC) beautiDoc.mcmc.get(), false);
-				load(html);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-    }
-    
-    public void doIt(String str, String source) {
-        System.out.println("doIt(" + str + ") called with source = " + source);
-        me.handleCmd("/cmd=Text value=\""+str+"\" source=\"" + source + "\"", beautiDoc, null);
-    }
+//    public void doIt(String str) {
+//        System.out.println("doIt(" + str + ") called");
+//		if (me.handleCmd("/cmd=" + str, beautiDoc, null)) {
+//			beautiDoc.determinePartitions();
+//			beautiDoc.scrubAll(false, false);
+//			CitationPhrase.citations.clear();
+//
+//			MethodsText.clear();
+//			try {
+//				initialise((MCMC) beautiDoc.mcmc.get(), false);
+//				load(html);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//    }
+//    
+//    public void doIt(String str, String source) {
+//        System.out.println("doIt(" + str + ") called with source = " + source);
+//        me.handleCmd("/cmd=Text value=\""+str+"\" source=\"" + source + "\"", beautiDoc, null);
+//    }
 
     public static void main(String[] args) throws Exception {		
 		System.setProperty("apple.laf.useScreenMenuBar", "true");

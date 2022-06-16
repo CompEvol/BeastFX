@@ -250,21 +250,21 @@ public class XML2HTMLPane extends JPanel {
 //							public void run() {
 								System.out.println("changed:");
 								System.out.println(newValue);
-								ModelEditor me = new ModelEditor(false);
-								if (me.handleCmd(newValue, beautiDoc, panel)) {
-									beautiDoc.determinePartitions();
-									beautiDoc.scrubAll(false, false);
-									CitationPhrase.citations.clear();
-
-									MethodsText.clear();
-									try {
-										initialise((MCMC) beautiDoc.mcmc.get(), false);
-										load(html);
-									} catch (Exception e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-								}
+//								ModelEditor me = new ModelEditor(false);
+//								if (me.handleCmd(newValue, beautiDoc, panel)) {
+//									beautiDoc.determinePartitions();
+//									beautiDoc.scrubAll(false, false);
+//									CitationPhrase.citations.clear();
+//
+//									MethodsText.clear();
+//									try {
+//										initialise((MCMC) beautiDoc.mcmc.get(), false);
+//										load(html);
+//									} catch (Exception e) {
+//										// TODO Auto-generated catch block
+//										e.printStackTrace();
+//									}
+//								}
 							}
 //						});
 //					}
