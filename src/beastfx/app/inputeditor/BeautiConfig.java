@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.swing.JComponent;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.scene.Parent;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
@@ -41,6 +42,10 @@ public class BeautiConfig extends BEASTObject {
             "not be visible, e.g., beastfx.app.beauti.BeautiInitDlg.Analysis template:");
 //	public Input<String> m_editButtonStatus = new Input<>("editButtonStatus","comma separated list of list-inputs with custom " +
 //	"button status. One of 'none', 'addonly' 'delonly' +, e.g., beast.core.MCMC.operator=addonly");
+
+    final public Input<String> hmcInput = new Input<>("hmc", "comma delimited list of `help me choose` pages available "
+    		+ "from the https://beast2-dev.github.io/hmc/ site."
+    		+ "Pages can be redirected by adding an alias, e.g. CalibratedYuleModelNarrow/isNarrow/=Narrow/isNarrow/.");
 
     final public static String TEMPLATE_DIR = "fxtemplates";
     
@@ -100,6 +105,8 @@ public class BeautiConfig extends BEASTObject {
 
         parseMap(inputLabelMapInput.get(), inputLabelMap);
         parseMap(buttonLabelMapInput.get(), buttonLabelMap);
+        
+        FXUtils.processHMCPages(hmcInput.get());
 //		parseMap(m_editButtonStatus.get(), g_sEditButtonStatus);
         for (BeautiPanelConfig panel : panelsInput.get()) {
             panels.add(panel);
@@ -124,7 +131,7 @@ public class BeautiConfig extends BEASTObject {
 		}
     }
 
-    final static String HYPER_PRIOR_XML = 
+	final static String HYPER_PRIOR_XML = 
     		"    <beast version='2.0'\n" +
     		"    	       namespace='beastfx.app.beauti:beast.base.core:beast.base.evolution.operators:beast.base.inference.distribution'>\n" +
     		"    	<!-- Parameter Hyper Prior -->\n" +

@@ -6,21 +6,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Dimension2D;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Separator;
-import javafx.scene.control.Skin;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 
@@ -29,7 +23,6 @@ import beastfx.app.util.FXUtils;
 
 
 import beastfx.app.beauti.ClonePartitionPanel;
-import beastfx.app.beauti.theme.Dark;
 import beastfx.app.inputeditor.BeautiPanelConfig.Partition;
 import beastfx.app.inputeditor.InputEditor.ExpandOption;
 

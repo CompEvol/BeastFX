@@ -1,7 +1,7 @@
 package beastfx.app.util;
 
 
-import javafx.application.Platform;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -9,6 +9,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -17,6 +18,7 @@ import java.awt.Desktop;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -123,10 +125,11 @@ public class FXUtils {
 	
 	
 	
-	public static Button createHMCButton(BEASTInterface o, Input<?> input)  {
+	public static void createHMCButton(Pane pane, BEASTInterface o, Input<?> input)  {
         if (o instanceof BeautiPanelConfig) {
         	BeautiPanelConfig cfg = (BeautiPanelConfig) o;
-        	return FXUtils.createHMCButton(cfg.parentBEASTObjects.get(0), cfg.parentInputs.get(0));
+        	FXUtils.createHMCButton(pane, cfg.parentBEASTObjects.get(0), cfg.parentInputs.get(0));
+        	return;
         }
         
         if (input instanceof BeautiPanelConfig.FlexibleInput) {
@@ -137,9 +140,14 @@ public class FXUtils {
 		if (id.lastIndexOf('.') > 0) {
 			id = id.substring(0, id.lastIndexOf('.'));
 		}
-				
+		
+		if (!hmcPages.containsKey(id + "/" + input.getName() + "/")) {
+			return;
+		}
+		id = hmcPages.get(id + "/" + input.getName() + "/");		
+		
 		String HMC_BASE = getHMCBase();
-		String url = HMC_BASE + "/" + id + "/" + input.getName() + "/";//.html";
+		String url = HMC_BASE + "/" + id + "/";//.html";
 		Button hmc = createHMCButton(url);
         if (input instanceof BeautiPanelConfig.FlexibleInput) {
         	BeautiPanelConfig.FlexibleInput flexInput = (BeautiPanelConfig.FlexibleInput) input;
@@ -147,22 +155,53 @@ public class FXUtils {
         } else {
         	hmc.setTooltip(new Tooltip(input.getTipText()));
         }
-		return hmc;
+        pane.getChildren().add(hmc);
 	}
 	
+	// maps `help me choose` page ID
+	private static java.util.Map<String, String> hmcPages = new HashMap<>();
+
+    public static void processHMCPages(String hmcPages) {
+		if (hmcPages == null) {
+			// nothing to do
+			return;
+		}
+		String [] strs = hmcPages.split(",");
+		for (String str : strs) {
+			if (str.indexOf('=') > -1) {
+				String [] strs2 = str.split("=");
+				String from = strs2[0].trim();
+				String to = strs2[0].trim();
+				FXUtils.hmcPages.put(from, to);
+			} else {
+				String from = str.trim();
+				FXUtils.hmcPages.put(from, from);
+			}
+		}		
+	}
+
 	private static String getHMCBase() {
 		//return "file://" + System.getProperty("user.dir") + "/hmc";
 		return "http://127.0.0.1:4000/hmc/";
 	}
 
+	
 	public static Button createHMCButton(String templateName, String tabName) {
 		String HMC_BASE = getHMCBase();
-		String url = HMC_BASE + "/" + templateName + "/" + tabName + "/index.html";
+		String base = (templateName + "/" + tabName + "/").replaceAll(" ", "_");
+		if (!hmcPages.containsKey(base)) {
+			Button button = createHMCButton(HMC_BASE);
+			button.setDisable(true);
+			return button;
+		}
+
+		String url = HMC_BASE + "/" + hmcPages.get(base) + "index.html";
 		url = url.replaceAll(" ", "_");
 		return createHMCButton(url);
 	}
 	
 	public static Button createHMCButton(final String url) {
+		
 	   Button hmcButton = new Button();
     	hmcButton.setTooltip(new Tooltip("Click to 'help me choose'"));
     	hmcButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "help16.png"));

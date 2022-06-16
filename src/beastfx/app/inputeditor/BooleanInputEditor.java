@@ -53,7 +53,7 @@ public class BooleanInputEditor extends InputEditor.Base {
             });
         pane = FXUtils.newHBox();
         pane.getChildren().add(m_entry);
-        pane.getChildren().add(FXUtils.createHMCButton(m_beastObject, m_input));
+        FXUtils.createHMCButton(pane, m_beastObject, m_input);
         //getChildren().add(new Separator());
         // pane.getChildren().add(new Separator());
         getChildren().add(pane);

@@ -120,7 +120,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
         } else {
             setUpEntry();
             paramBox.getChildren().add(m_entry);
-            paramBox.getChildren().add(FXUtils.createHMCButton(m_beastObject, m_input));
+            FXUtils.createHMCButton(paramBox, m_beastObject, m_input);
             if (doc.allowLinking) {
 	            boolean isLinked = doc.isLinked(m_input);
 				if (isLinked || doc.suggestedLinks((BEASTInterface) m_input.get()).size() > 0) {

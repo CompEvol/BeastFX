@@ -360,7 +360,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
             //int fontsize = m_selectBEASTObjectBox.getFont().getSize();
             //m_selectBEASTObjectBox.setMaxSize(1024, 200 * fontsize / 13);
             box.getChildren().add(m_selectBEASTObjectBox);
-            box.getChildren().add(FXUtils.createHMCButton(m_beastObject, m_input));
+            FXUtils.createHMCButton(box, m_beastObject, m_input);
 
             HBox.setMargin(m_selectBEASTObjectBox, new Insets(0,5,0,5));
         }

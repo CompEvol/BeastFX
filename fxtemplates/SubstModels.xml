@@ -7,7 +7,13 @@
     <mergewith point='substModelTemplates'>
     
         <!-- gamma site model -->
-        <subtemplate id='Gamma Site Model' class='beast.base.evolution.sitemodel.SiteModel' mainid='SiteModel.s:$(n)'>
+        <subtemplate id='Gamma Site Model' class='beast.base.evolution.sitemodel.SiteModel' mainid='SiteModel.s:$(n)'
+            hmc='SiteModel/proportionInvariant/,
+SiteModel/mutationRate/,
+SiteModel/gammaCategoryCount/,
+SiteModel/shape/,
+SiteModel/substModel/
+'>
             <![CDATA[
             <plugin spec='SiteModel' id="SiteModel.s:$(n)" gammaCategoryCount='0'>
                 <!--substModel will be automatically detected /-->
@@ -59,7 +65,8 @@
         </subtemplate>
 
         <!-- HKY substitution model -->
-        <subtemplate id='HKY' class='beast.base.evolution.substitutionmodel.HKY' mainid='hky.s:$(n)'>
+        <subtemplate id='HKY' class='beast.base.evolution.substitutionmodel.HKY' mainid='hky.s:$(n)'
+            hmc='hky/frequencies/,hky/kappa/,KappaPrior/index/'>
             <![CDATA[
         <plugin spec='HKY' id='hky.s:$(n)'>
             <parameter id="kappa.s:$(n)" name='kappa' value="2.0" lower="0.0" estimate='true'/>
@@ -108,7 +115,8 @@
 
 
         <!-- TN93 substitution model -->
-        <subtemplate id='TN93' class='beast.base.evolution.substitutionmodel.TN93' mainid='tn93.s:$(n)'>
+        <subtemplate id='TN93' class='beast.base.evolution.substitutionmodel.TN93' mainid='tn93.s:$(n)'
+            hmc='tn93/kappa1/,tn93/frequencies/,tn93/kappa2/,kappa1Prior/index/,kappa2Prior/index/'>
             <![CDATA[
         <plugin spec='TN93' id='tn93.s:$(n)'>
             <parameter id="kappa1.s:$(n)" name='kappa1' value="2.0" lower="0.0" estimate='true'/>
@@ -178,7 +186,21 @@
 
         <!-- GTR substitution model -->
         <subtemplate id='GTR' class='beast.base.evolution.substitutionmodel.GTR' mainid='gtr.s:$(n)'
-                     suppressInputs='beast.base.evolution.substitutionmodel.GTR.eigenSystem'>
+                     suppressInputs='beast.base.evolution.substitutionmodel.GTR.eigenSystem'
+                     hmc='gtr/rateGT/,
+gtr/frequencies/,
+gtr/rateAT/,
+gtr/rateAC/,
+gtr/rateCG/,
+gtr/rateAG/,
+gtr/rateCT/,
+RateACPrior/index/,
+RateAGPrior/index/,
+RateATPrior/index/,
+RateCGPrior/index/,
+RateCTPrior/index/,
+RateGTPrior/index/
+'>
             <![CDATA[
         <plugin spec='GTR' id='gtr.s:$(n)'>
             <parameter id="rateAC.s:$(n)" name='rateAC' value="1.0" lower="0.0" estimate='true'/>
@@ -339,7 +361,7 @@
 
         <!-- frequency models -->
         <subtemplate id='Estimated' class='beast.base.evolution.substitutionmodel.Frequencies'
-                     mainid='estimatedFreqs.s:$(n)'>
+                     mainid='estimatedFreqs.s:$(n)' hmc='FrequenciesPrior/index/'>
             <![CDATA[
             <frequencies id='estimatedFreqs.s:$(n)' spec='Frequencies'>
                 <frequencies id='freqParameter.s:$(n)' spec='parameter.RealParameter' dimension='4' value='0.25' lower='0' upper='1'/>

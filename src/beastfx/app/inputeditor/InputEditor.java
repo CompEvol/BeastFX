@@ -218,8 +218,7 @@ public abstract class Base extends Pane implements InputEditor {
         setUpEntry();
 
         pane.getChildren().add(m_entry);
-        hmcButton = FXUtils.createHMCButton(m_beastObject, m_input);
-        pane.getChildren().add(hmcButton);
+        FXUtils.createHMCButton(pane, m_beastObject, m_input);
 
         //HBox.setHgrow(new Region(), Priority.ALWAYS);
         //pane.getChildren().add(new Separator());

@@ -100,7 +100,7 @@ public class PriorInputEditor extends InputEditor.Base {
         panel.getChildren().add(comboBox);
         panel.setMaxSize(size.getWidth(), size.getHeight());
         itemBox.getChildren().add(panel);
-        itemBox.getChildren().add(FXUtils.createHMCButton(m_beastObject, m_input));
+        FXUtils.createHMCButton(itemBox, m_beastObject, m_input);
         
         if (prior.m_x.get() instanceof RealParameter) {
             // add range button for real parameters

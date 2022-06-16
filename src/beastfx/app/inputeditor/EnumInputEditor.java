@@ -72,7 +72,7 @@ public class EnumInputEditor extends InputEditor.Base {
                 });
             m_selectPluginBox.setTooltip(new Tooltip(input.getHTMLTipText()));
             pane.getChildren().add(m_selectPluginBox);
-            pane.getChildren().add(FXUtils.createHMCButton(m_beastObject, m_input));
+            FXUtils.createHMCButton(pane, m_beastObject, m_input);
             // add(Box.createGlue());
             // pane.getChildren().add(new Separator());
         }

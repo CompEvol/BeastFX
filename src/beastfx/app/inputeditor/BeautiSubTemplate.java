@@ -39,6 +39,7 @@ import beast.base.inference.Logger;
 import beast.base.parser.PartitionContext;
 import beast.base.parser.XMLParser;
 import beast.pkgmgmt.BEASTClassLoader;
+import beastfx.app.util.FXUtils;
 
 
 @Description("Template that specifies which sub-net needs to be created when " +
@@ -54,6 +55,9 @@ public class BeautiSubTemplate extends BEASTObject {
             "go inline, e.g. beast.evolution.sitemodel.SiteModel.substModel");
     final public Input<String> collapsedInput = new Input<>("collapsedInputs", "comma separated list of inputs that should " +
             "go inline, but are initially collapsed, e.g. beast.core.MCMC.logger");
+    final public Input<String> hmcInput = new Input<>("hmc", "comma delimited list of `help me choose` pages available "
+    		+ "from the https://beast2-dev.github.io/hmc/ site."
+    		+ "Pages can be redirected by adding an alias, e.g. CalibratedYuleModelNarrow/isNarrow/=Narrow/isNarrow/.");
 
     public Class<?> _class = null;
     Object instance;
@@ -73,6 +77,7 @@ public class BeautiSubTemplate extends BEASTObject {
     @Override
     public void initAndValidate() {
     	try {
+    		FXUtils.processHMCPages(hmcInput.get());
         _class = BEASTClassLoader.forName(classInput.get());
         shortClassName = classInput.get().substring(classInput.get().lastIndexOf('.') + 1);
         instance = _class.newInstance();
