@@ -44,7 +44,7 @@
 
         <!-- Exponential -->
         <subtemplate id='Exponential' class='beast.base.inference.distribution.Exponential' mainid='[top]'
-            hmc='ExponentialRelaxedClock/clock.rate/,ExponentialRelaxedClock/normalize/,ExponentialRelaxedClock/numberOfDiscreteRates/'>
+            hmc='Exponential/mean/,Exponential/offset/'>
             <![CDATA[
         <distr offset="0.0" spec="beast.base.inference.distribution.Exponential">
             <parameter name='mean' value="1" estimate='false'/>

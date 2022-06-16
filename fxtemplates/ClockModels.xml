@@ -21,7 +21,9 @@
 					<down idref="Tree.t:$(n)"/>
 				</upDownOperator>
 
-		        <prior id='ClockPrior.c:$(n)' x='@clockRate.c:$(n)'><distr spec="beast.base.inference.distribution.Uniform" upper='Infinity'/></prior>
+		        <prior id='ClockPrior.c:$(n)' x='@clockRate.c:$(n)'>
+                  <Gamma alpha="0.1" beta="100.0" name="distr"/>
+              </prior>
 ]]>
             <connect srcID='clockRate.c:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'/>
@@ -63,7 +65,9 @@
 		</upDownOperator>
 
 		<log id='rateStat.c:$(n)' spec='beast.base.evolution.RateStatistic' tree='@Tree.t:$(n)' branchratemodel='@ExponentialRelaxedClock.c:$(n)'/>
-        <prior id='UCMeanRatePrior.c:$(n)' x='@ucedMean.c:$(n)'><distr spec="beast.base.inference.distribution.Uniform" upper='Infinity'/></prior>
+      <prior id='UCMeanRatePrior.c:$(n)' x='@ucedMean.c:$(n)'>
+         <Gamma alpha="0.1" beta="100.0" name="distr"/>
+      </prior>
 ]]>
             <connect srcID='ucedMean.c:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(ucedMean.c:$(n)) and ucedMean.c:$(n)/estimate=true'/>
@@ -145,7 +149,9 @@
 
 
 		<log id='rate.c:$(n)' spec='beast.base.evolution.RateStatistic' tree='@Tree.t:$(n)' branchratemodel='@RelaxedClock.c:$(n)'/>
-        <prior id='MeanRatePrior.c:$(n)' x='@ucldMean.c:$(n)'><distr spec="beast.base.inference.distribution.Uniform" upper='Infinity'/></prior>
+        <prior id='MeanRatePrior.c:$(n)' x='@ucldMean.c:$(n)'>
+         <Gamma alpha="0.1" beta="100.0" name="distr"/>
+        </prior>
 ]]>
             <connect srcID='ucldMean.c:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(ucldMean.c:$(n)) and ucldMean.c:$(n)/estimate=true'/>
@@ -242,7 +248,9 @@
 			</if>
 		</logger>
 
-        <prior id='MeanRRatePrior.c:s$(n)' x='@meanClockRate.c:$(n)'><distr spec="beast.base.inference.distribution.Uniform" upper='Infinity'/></prior>
+      <prior id='MeanRRatePrior.c:s$(n)' x='@meanClockRate.c:$(n)'>
+         <Gamma alpha="0.1" beta="100.0" name="distr"/>
+      </prior>
 ]]>
             <connect srcID='Indicators.c:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(Indicators.c:$(n))'/>
