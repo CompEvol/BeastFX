@@ -14,6 +14,7 @@ import beastfx.app.inputeditor.SmallButton.ButtonType;
 import beastfx.app.util.FXUtils;
 import javafx.application.Platform;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -237,7 +238,7 @@ public abstract class Base extends Pane implements InputEditor {
         m_entry.setPrefSize(prefDim.getWidth(), prefDim.getHeight());
         // m_entry.setSize(prefDim.getWidth(), prefDim.getHeight());
         initEntry();
-        m_entry.setTooltip(new Tooltip(m_input.getHTMLTipText()));
+        m_entry.setTooltip(new Tooltip(m_input.getTipText()));
         m_entry.setMaxSize(maxDim.getWidth(), maxDim.getHeight());
 
 //        m_entry.getDocument().addDocumentListener(new DocumentListener() {
@@ -306,7 +307,7 @@ public abstract class Base extends Pane implements InputEditor {
     protected void addInputLabel() {
         if (m_bAddButtons) {
             String name = formatName(m_input.getName());
-            addInputLabel(name, m_input.getHTMLTipText());
+            addInputLabel(name, m_input.getTipText());
         }
     }
 
@@ -326,10 +327,12 @@ public abstract class Base extends Pane implements InputEditor {
             m_inputLabel.setTooltip(new Tooltip(tipText));
             m_inputLabel.setTextAlignment(TextAlignment.RIGHT);
             //Dimension size = new Dimension(g_nLabelWidth, 20);
-            m_inputLabel.setMaxSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
-            m_inputLabel.setMinSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
+//            m_inputLabel.setMaxSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
+//            m_inputLabel.setMinSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
             m_inputLabel.setPrefSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
-            m_inputLabel.setStyle("-fx-border-width: 0 5 0 5;");
+            //m_inputLabel.setStyle("-fx-border-width: 0 5 0 5;");
+            
+            m_inputLabel.setPadding(new Insets(5,0,0,0));
             // setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
 //            m_inputLabel.setSize(size);

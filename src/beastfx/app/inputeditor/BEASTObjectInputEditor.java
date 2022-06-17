@@ -10,13 +10,18 @@ import beast.base.core.Input;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 public class BEASTObjectInputEditor extends InputEditor.Base {
     ComboBox<Object> m_selectBEASTObjectBox;
@@ -61,6 +66,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
         } else {
             expandedInit(input, beastObject);
         }
+
         getChildren().add(pane);
     } // init
 
@@ -78,7 +84,11 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 
         if (m_bAddButtons) {
             if (BEASTObjectPanel.countInputs(m_input.get(), doc) > 0 && m_editBEASTObjectButton == null) {
-                pane.getChildren().add(createEditButton(input));
+            	Region region = new Region();
+            	region.setPadding(new Insets(3));
+            	pane.getChildren().add(region);
+            	Button b = createEditButton(input);
+                pane.getChildren().add(b);
             }
         }
         addValidationLabel();
@@ -174,9 +184,10 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
         // box.setBorder(new EtchedBorder());
         //box.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         
-        ((HBox)pane).setHgrow(box, Priority.ALWAYS);
+        HBox.setHgrow(box, Priority.ALWAYS);
         pane.getChildren().add(box);
         m_expansionBox = box;
+        m_expansionBox.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
     } // expandedInit
 
 
@@ -356,7 +367,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                 }
             });
 
-            m_selectBEASTObjectBox.setTooltip(new Tooltip(input.getHTMLTipText()));
+            m_selectBEASTObjectBox.setTooltip(new Tooltip(input.getTipText()));
             //int fontsize = m_selectBEASTObjectBox.getFont().getSize();
             //m_selectBEASTObjectBox.setMaxSize(1024, 200 * fontsize / 13);
             box.getChildren().add(m_selectBEASTObjectBox);

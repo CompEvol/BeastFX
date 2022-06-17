@@ -3,6 +3,7 @@ package beastfx.app.inputeditor;
 
 
 
+
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -15,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -30,8 +32,14 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 import java.text.DateFormat;
 import java.time.format.DateTimeParseException;
@@ -509,13 +517,18 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         HBox buttonBox = FXUtils.newHBox();
 
         Label label = new Label("Dates specified: ");
-        label.setAlignment(Pos.TOP_CENTER);
+        // label.setAlignment(Pos.TOP_CENTER);
         label.setMaxSize(label.getPrefWidth(), label.getPrefHeight());
         buttonBox.getChildren().add(label);
 
-        VBox formatBox = FXUtils.newVBox();
-        HBox formatBoxFirstLine = FXUtils.newHBox();
-        HBox formatBoxSecondLine = FXUtils.newHBox();
+        VBox formatBox = new VBox();
+        formatBox.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+        HBox formatBoxFirstLine = new HBox();
+        formatBoxFirstLine.setSpacing(10);
+        formatBoxFirstLine.setPadding(new Insets(3));
+        HBox formatBoxSecondLine = new HBox();
+        formatBoxSecondLine.setSpacing(10);
+        formatBoxSecondLine.setPadding(new Insets(10,3,3,3));
 
         radioButtonGroup = new ToggleGroup();
         numericRadioButton = new RadioButton("numerically as");
@@ -635,7 +648,8 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         //buttonBox.getChildren().add(new Separator());
 
         Button guessButton = new Button("Auto-configure");
-        guessButton.setAlignment(Pos.TOP_CENTER);
+        //guessButton.setPadding(new Insets(0,10,0,0));
+        // guessButton.setAlignment(Pos.TOP_CENTER);
         guessButton.setTooltip(new Tooltip("Automatically configure dates based on taxon names"));
         guessButton.setId("Guess");
         guessButton.setOnAction(e -> {

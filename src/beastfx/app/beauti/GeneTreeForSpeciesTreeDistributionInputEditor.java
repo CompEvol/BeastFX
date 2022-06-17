@@ -63,7 +63,7 @@ public class GeneTreeForSpeciesTreeDistributionInputEditor extends InputEditor.B
                     e1.printStackTrace();
                 }
             });
-        m_selectBeastObjectBox.setTooltip(new Tooltip(input.getHTMLTipText()));
+        m_selectBeastObjectBox.setTooltip(new Tooltip(input.getTipText()));
         pane.getChildren().add(m_selectBeastObjectBox);
 
         getChildren().add(pane);

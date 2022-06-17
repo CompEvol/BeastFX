@@ -17,7 +17,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -1541,6 +1540,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
 //        	Utils6.endSplashScreen();
             beauti.setId("BeautiTabPane");
+                                  
             return beauti;
         } catch (Exception e) {
             e.printStackTrace();

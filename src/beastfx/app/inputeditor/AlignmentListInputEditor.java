@@ -748,10 +748,14 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		}
 		
         try {
-        	table.setMinSize(doc.beauti.frame.getWidth() - 20, doc.beauti.frame.getHeight()-160);
+        	if (!Double.isNaN(doc.beauti.frame.getWidth())) {
+        		table.setMinSize(doc.beauti.frame.getWidth() - 20, doc.beauti.frame.getHeight()-160);
+        	} else {
+            	table.setMinSize(1024 - 20, 768 - 138);
+        	}
         } catch (NullPointerException e) {
         	// ignore
-        	table.setMinWidth(1020);
+        	table.setMinSize(1024 - 20, 768 - 138);
         }
 
 	}

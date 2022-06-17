@@ -125,6 +125,11 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
         ParameterInputEditor mutationRateEditor = new ParameterInputEditor(doc);
         mutationRateEditor.init(input, sitemodel, -1, ExpandOption.FALSE, true);
         mutationRateEditor.getEntry().setDisable(doc.autoUpdateFixMeanSubstRate);
+        mutationRateEditor.m_isEstimatedBox.setOnAction(e -> {
+        	mutationRateEditor.toggleEstimate();
+        	setUpOperator();
+        });
+        
         return mutationRateEditor;
     }
 	

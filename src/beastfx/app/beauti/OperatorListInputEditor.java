@@ -93,7 +93,7 @@ public class OperatorListInputEditor extends ListInputEditor {
 
         // itemBox.getChildren().add(new Separator());
         TextField weightEntry = new TextField();
-        weightEntry.setTooltip(new Tooltip(operator.m_pWeight.getHTMLTipText()));
+        weightEntry.setTooltip(new Tooltip(operator.m_pWeight.getTipText()));
         weightEntry.setText(operator.m_pWeight.get() + "");
         weightEntry.setOnKeyReleased(e->new OperatorDocumentListener(operator, weightEntry));
         // weightEntry.getDocument().addDocumentListener(new OperatorDocumentListener(operator, weightEntry));

@@ -580,8 +580,10 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
 		for (Region region : resizeList) {
 			double w = region.getMinWidth();
 			w += newVal.doubleValue() - oldVal.doubleValue();
-			region.setMinWidth(w);
-			System.err.println("new width: " + w + " " + region.getId() + " " + region.getClass().getName());
+			if (!Double.isNaN(w)) {
+				region.setMinWidth(w);
+				System.err.println("new width: " + w + " " + region.getId() + " " + region.getClass().getName());
+			}
 		}
 	}
 
@@ -590,8 +592,10 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
 		for (Region region : resizeList) {
 			double w = region.getMinHeight();
 			w += newVal.doubleValue() - oldVal.doubleValue();
-			region.setMinHeight(w);
-			System.err.println("new width: " + w + " " + region.getId() + " " + region.getClass().getName());
+			if (!Double.isNaN(w)) {
+				region.setMinHeight(w);
+				System.err.println("new width: " + w + " " + region.getId() + " " + region.getClass().getName());
+			}
 		}
 	}
 

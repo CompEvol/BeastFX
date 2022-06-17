@@ -190,7 +190,7 @@ public class IntegerListInputEditor extends ListInputEditor {
 //            m_entry.setPrefSize(PREFERRED_SIZE);
 //            m_entry.setSize(PREFERRED_SIZE);
             initEntry();
-            m_entry.setTooltip(new Tooltip(m_input.getHTMLTipText()));
+            m_entry.setTooltip(new Tooltip(m_input.getTipText()));
 //            m_entry.setMaxSize(MAX_SIZE);
 
             m_entry.setOnKeyReleased(e -> {processEntry();});
@@ -240,7 +240,7 @@ public class IntegerListInputEditor extends ListInputEditor {
 		protected void addInputLabel() {
             if (m_bAddButtons) {
                 String name = formatName(m_input.getName());
-                addInputLabel(name, m_input.getHTMLTipText());
+                addInputLabel(name, m_input.getTipText());
             }
         }
 

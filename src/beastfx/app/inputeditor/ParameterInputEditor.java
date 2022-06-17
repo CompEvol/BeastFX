@@ -13,7 +13,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
@@ -177,7 +176,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             if (input.get() != null) {
                 m_isEstimatedBox.setSelected(parameter.isEstimatedInput.get());
             }
-            m_isEstimatedBox.setTooltip(new Tooltip(parameter.isEstimatedInput.getHTMLTipText()));
+            m_isEstimatedBox.setTooltip(new Tooltip(parameter.isEstimatedInput.getTipText()));
 
             boolean isClockRate = false;
             for (Object output : parameter.getOutputs()) {
@@ -187,47 +186,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             }
             m_isEstimatedBox.setDisable(!(!isClockRate || !getDoc().autoSetClockRate));
 
-
-            m_isEstimatedBox.setOnAction(e -> {
-                    try {
-                        Parameter.Base<?> parameter2 = (Parameter.Base<?>) m_input.get();
-                        parameter2.isEstimatedInput.setValue(m_isEstimatedBox.isSelected(), parameter2);
-                        if (isParametricDistributionParameter) {
-                        	String id = parameter2.getID();
-                        	
-
-                        	if (id.startsWith("RealParameter")) {
-                            	ParametricDistribution parent = null; 
-                	            for (Object beastObject2 : parameter2.getOutputs()) {
-                	                if (beastObject2 instanceof ParametricDistribution) {
-                                		parent = (ParametricDistribution) beastObject2; 
-                	                    break;
-                	                }
-                	            }
-                	            Distribution grandparent = null; 
-                	            for (Object beastObject2 : parent.getOutputs()) {
-                	                if (beastObject2 instanceof Distribution) {
-                                		grandparent = (Distribution) beastObject2; 
-                	                    break;
-                	                }
-                	            }
-                        		id = "parameter.hyper" + parent.getClass().getSimpleName() + "-" + 
-                        				m_input.getName() + "-" + grandparent.getID();
-                        		doc.pluginmap.remove(parameter2.getID());
-                        		parameter2.setID(id);
-                        		doc.addPlugin(parameter2);
-                        	}
-                        	
-                        	
-                        	PartitionContext context = new PartitionContext(id.substring("parameter.".length()));
-                        	Log.warning.println(context + " " + id);
-                        	doc.beautiConfig.hyperPriorTemplate.createSubNet(context, true);
-                        }
-                        refreshPanel();
-                    } catch (Exception ex) {
-                        Log.err.println("ParameterInputEditor " + ex.getMessage());
-                    }
-                });
+            m_isEstimatedBox.setOnAction(e -> toggleEstimate());
 
             if (m_bAddButtons) {
                 if (BEASTObjectPanel.countInputs(m_input.get(), doc) > 0) {
@@ -271,6 +230,48 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
         }
     }
 
+    
+    public void toggleEstimate() {
+    	try {
+            Parameter.Base<?> parameter2 = (Parameter.Base<?>) m_input.get();
+            parameter2.isEstimatedInput.setValue(m_isEstimatedBox.isSelected(), parameter2);
+            if (isParametricDistributionParameter) {
+            	String id = parameter2.getID();
+            	
+
+            	if (id.startsWith("RealParameter")) {
+                	ParametricDistribution parent = null; 
+    	            for (Object beastObject2 : parameter2.getOutputs()) {
+    	                if (beastObject2 instanceof ParametricDistribution) {
+                    		parent = (ParametricDistribution) beastObject2; 
+    	                    break;
+    	                }
+    	            }
+    	            Distribution grandparent = null; 
+    	            for (Object beastObject2 : parent.getOutputs()) {
+    	                if (beastObject2 instanceof Distribution) {
+                    		grandparent = (Distribution) beastObject2; 
+    	                    break;
+    	                }
+    	            }
+            		id = "parameter.hyper" + parent.getClass().getSimpleName() + "-" + 
+            				m_input.getName() + "-" + grandparent.getID();
+            		doc.pluginmap.remove(parameter2.getID());
+            		parameter2.setID(id);
+            		doc.addPlugin(parameter2);
+            	}
+            	
+            	
+            	PartitionContext context = new PartitionContext(id.substring("parameter.".length()));
+            	Log.warning.println(context + " " + id);
+            	doc.beautiConfig.hyperPriorTemplate.createSubNet(context, true);
+            }
+            refreshPanel();
+        } catch (Exception ex) {
+            Log.err.println("ParameterInputEditor " + ex.getMessage());
+        }
+    }
+    
     @Override
     protected void addValidationLabel() {
         super.addValidationLabel();

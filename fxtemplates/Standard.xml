@@ -97,7 +97,11 @@
             beast.base.evolution.tree.coalescent.BayesianSkyline.treeIntervals,
             beast.base.evolution.tree.coalescent.BayesianSkyline.groupSizes,
             beast.base.evolution.tree.coalescent.BayesianSkyline.popSizes,
-            beast.base.evolution.speciation.YuleModel.originHeight
+            beast.base.evolution.speciation.YuleModel.originHeight,
+            beast.base.inference.parameter.RealParameter.keys,
+            beast.base.inference.parameter.BooleanParameter.keys,
+            beast.base.inference.parameter.IntegerParameter.keys,
+            beast.base.inference.parameter.CompoundRealParameter.keys
             '
         hmc='BirthDeath/index/,
 gammaShapeScaler/degreesOfFreedom/,

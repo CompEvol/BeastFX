@@ -174,7 +174,7 @@ public class DoubleListInputEditor extends ListInputEditor {
 //            m_entry.setPrefSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
 //            // m_entry.setSize(PREFERRED_SIZE.getWidth(), PREFERRED_SIZE.getHeight());
             initEntry();
-            m_entry.setTooltip(new Tooltip(m_input.getHTMLTipText()));
+            m_entry.setTooltip(new Tooltip(m_input.getTipText()));
 //            m_entry.setMaxSize(1024, 25 * size / 13);
             m_entry.setOnKeyReleased(e-> processEntry());
 
@@ -240,7 +240,7 @@ public class DoubleListInputEditor extends ListInputEditor {
 		protected void addInputLabel() {
             if (m_bAddButtons) {
                 String name = formatName(m_input.getName());
-                addInputLabel(name, m_input.getHTMLTipText());
+                addInputLabel(name, m_input.getTipText());
             }
         }
 

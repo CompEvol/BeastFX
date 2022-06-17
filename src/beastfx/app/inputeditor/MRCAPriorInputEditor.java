@@ -158,7 +158,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         CheckBox isMonophyleticdBox = new CheckBox(doc.beautiConfig.getInputLabel(prior, prior.isMonophyleticInput.getName()));
         isMonophyleticdBox.setId(text+".isMonophyletic");
         isMonophyleticdBox.setSelected(prior.isMonophyleticInput.get());
-        isMonophyleticdBox.setTooltip(new Tooltip(prior.isMonophyleticInput.getHTMLTipText()));
+        isMonophyleticdBox.setTooltip(new Tooltip(prior.isMonophyleticInput.getTipText()));
         isMonophyleticdBox.setOnAction(e->{
             try {
                 prior.isMonophyleticInput.setValue(((CheckBox) e.getSource()).isSelected(), prior);

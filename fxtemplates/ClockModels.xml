@@ -8,7 +8,8 @@
 
         <!-- Strict clock -->
         <subtemplate id='StrictClock' class='beast.base.evolution.branchratemodel.StrictClockModel'
-                     mainid='StrictClock.c:$(n)'>
+                     mainid='StrictClock.c:$(n)'
+                     hmc='ClockPrior/index/'>
             <![CDATA[
                 <branchRateModel spec='StrictClockModel' id='StrictClock.c:$(n)'>
                     <clock.rate id='clockRate.c:$(n)' spec='parameter.RealParameter' value='1.0' estimate='false'/>
@@ -44,7 +45,9 @@
         <!-- Relaxed clock exponential -->
         <subtemplate id='RelaxedClockExponential' class='beast.base.evolution.branchratemodel.UCRelaxedClockModel'
                      mainid='ExponentialRelaxedClock.c:$(n)'
-                     suppressInputs='beast.base.evolution.branchratemodel.UCRelaxedClockModel.distr,beast.base.evolution.branchratemodel.UCRelaxedClockModel.rateQuantiles,beast.base.evolution.branchratemodel.UCRelaxedClockModel.rates'>
+                     suppressInputs='beast.base.evolution.branchratemodel.UCRelaxedClockModel.distr,beast.base.evolution.branchratemodel.UCRelaxedClockModel.rateQuantiles,beast.base.evolution.branchratemodel.UCRelaxedClockModel.rates'
+                     hmc='UCMeanRatePrior/index/=ClockPrior/index/'>
+                     >
             <![CDATA[
         <plugin spec='UCRelaxedClockModel' id="ExponentialRelaxedClock.c:$(n)" tree='@Tree.t:$(n)'>
 			<parameter name='clock.rate' id='ucedMean.c:$(n)' value='1.0' estimate='false'/>
@@ -112,7 +115,9 @@
         <!-- Relaxed clock log normal -->
         <subtemplate id='RelaxedClockLogNormal' class='beast.base.evolution.branchratemodel.UCRelaxedClockModel'
                      mainid='RelaxedClock.c:$(n)'
-                     suppressInputs='beast.base.evolution.branchratemodel.UCRelaxedClockModel.distr,beast.base.evolution.branchratemodel.UCRelaxedClockModel.rateQuantiles,beast.base.evolution.branchratemodel.UCRelaxedClockModel.rates'>
+                     suppressInputs='beast.base.evolution.branchratemodel.UCRelaxedClockModel.distr,beast.base.evolution.branchratemodel.UCRelaxedClockModel.rateQuantiles,beast.base.evolution.branchratemodel.UCRelaxedClockModel.rates'
+                     hmc='MeanRatePrior/index/=ClockPrior/index/'>
+                     >
             <![CDATA[
         <plugin spec='UCRelaxedClockModel' id="RelaxedClock.c:$(n)" tree='@Tree.t:$(n)'>
 			<parameter name='clock.rate' id='ucldMean.c:$(n)' value='1.0'/>
@@ -204,7 +209,8 @@
         <!-- Random local clock -->
         <subtemplate id='RandomLocalClock' class='beast.base.evolution.branchratemodel.RandomLocalClockModel'
                      mainid='RandomLocalClock.c:$(n)'
-                     suppressInputs='beast.base.evolution.branchratemodel.RandomLocalClockModel.rates'>
+                     suppressInputs='beast.base.evolution.branchratemodel.RandomLocalClockModel.rates'
+                     hmc='MeanRRatePrior/index/=ClockPrior/index/'>
             <![CDATA[
         <input spec='RandomLocalClockModel' id="RandomLocalClock.c:$(n)" ratesAreMultipliers="false" tree='@Tree.t:$(n)'>
             <clock.rate id='meanClockRate.c:$(n)' spec='parameter.RealParameter' value='1.0' estimate='false'/>
