@@ -87,7 +87,26 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 		fixMeanRatesValidateLabel.setVisible(false);
 		box.getChildren().add(fixMeanRatesValidateLabel);
 		
-		
+        BeautiPanel.resizeList.clear();
+        BeautiPanel.resizeList.add(pane);
+
+    	int offset = 20;
+        try {
+        	if (doc.beauti.getCurrentPanel().listModel != null
+        			&& doc.beauti.getCurrentPanel().listModel.size() > 1) {
+        		offset += doc.beauti.getCurrentPanel().listOfPartitions.getWidth();
+        	}
+        	if (!Double.isNaN(doc.beauti.frame.getWidth())) {
+        		pane.setMinSize(doc.beauti.frame.getWidth() - offset, doc.beauti.frame.getHeight()-100);
+        	} else {
+        		pane.setMinSize(1024 - offset, 768 - 80);
+        	}
+        } catch (NullPointerException e) {
+        	// ignore
+        	pane.setMinSize(1024 - offset, 768 - 80);
+        }
+
+
     	if (doc.alignments.size() >= 1 && operator != null) {
     		VBox vbox = new VBox();
     		vbox.getChildren().addAll(pane, box);

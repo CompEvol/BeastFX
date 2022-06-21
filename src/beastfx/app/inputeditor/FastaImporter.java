@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javafx.scene.control.ComboBox;
 import beastfx.app.util.Alert;
@@ -118,8 +119,21 @@ public class FastaImporter implements AlignmentImporter {
 
 		        if (mayBeAminoacid) {
 		        	switch (this.datatype) {
-			        	case userdefined:
+			        	case userdefined: 
 			        		// make user choose 
+							TreeMap<String, DataType> allTypes = Alignment.getTypes();
+							String[] dataNames = new String[allTypes.keySet().size() + 2];
+							dataNames[0] = "aminoacid";
+							dataNames[1] = "nucleotide";
+							dataNames[2] = "all are aminoacid";
+							dataNames[3] = "all are nucleotide";
+							int i = 4;
+							for (String key: allTypes.keySet()) {
+								if (!key.equals("nucleotide") && !key.equals("aminoacid")) {
+									dataNames[i] = key;
+									i++;
+								}
+							}
 				        	ComboBox<String> jcb = new ComboBox<>();
 				        	for (String s : new String[]{"aminoacid", "nucleotide", "all are aminoacid", "all are nucleotide"}) {
 				        		jcb.getItems().add(s);
@@ -127,11 +141,17 @@ public class FastaImporter implements AlignmentImporter {
 				        	jcb.setEditable(true);
 				        	jcb.setValue(datatype);
 				        	Alert.showMessageDialog(null, jcb, "Choose the datatype of alignment " + alignment.getID(), Alert.QUESTION_MESSAGE);
-				        	switch ((String) jcb.getValue()) {
+				        	String selectedType = (String) jcb.getValue();
+				        	switch (selectedType) {
 					        	case "aminoacid": datatype = "aminoacid"; totalCount = 20; break;
 					        	case "nucleotide": datatype = "nucleotide"; totalCount = 4; break;
 					        	case "all are aminoacid": datatype = "aminoacid"; this.datatype = dtype.aminoacid; totalCount = 20; break;
 					        	case "all are nucleotide": datatype = "nucleotide"; this.datatype = dtype.nucleotide; totalCount = 4; break;
+								default:
+									// catch all for other data types
+									datatype = selectedType;
+									totalCount = allTypes.get(selectedType).getStateCount();
+									break;
 				        	}
 				        	break;
 			        	case aminoacid:

@@ -114,8 +114,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
     	
     	LineChart<Number,Number> chart;
     	LineChart.Series<Number,Number> series;
-    	Label infoLabel1;
-    	Label infoLabel2;
+    	Label infoLabel1, infoLabel2, infoLabel3;
     	
         // the length in pixels of a tick
         private static final int TICK_LENGTH = 5;
@@ -153,13 +152,16 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 	        
 	    	infoLabel1 = new Label();
 	    	infoLabel1.setStyle("-fx-font-size:6pt;");
-	    	infoLabel1.setPadding(new Insets(0, 100, 0, MARGIN_LEFT_OF_Y_LABELS));
+	    	infoLabel1.setPadding(new Insets(0, 10, 0, MARGIN_LEFT_OF_Y_LABELS));
 	    	infoLabel2 = new Label();
 	    	infoLabel2.setStyle("-fx-font-size:6pt;");
+	    	infoLabel2.setPadding(new Insets(0, 100, 0, MARGIN_LEFT_OF_Y_LABELS));
+	    	infoLabel3 = new Label();
+	    	infoLabel3.setStyle("-fx-font-size:6pt;");
 	    	HBox box = new HBox();
 	    	// box.setSpacing(50);
 	    	box.setAlignment(Pos.CENTER);
-	    	box.getChildren().addAll(infoLabel1, infoLabel2);
+	    	box.getChildren().addAll(infoLabel1, infoLabel2, infoLabel3);
 	    	getChildren().add(box);
         }
         
@@ -249,7 +251,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             //double adjXRange = f;
 
             xRange = xRange + minValue - f2;
-            xRange = adjust(xRange);
+            // xRange = adjust(xRange);
             final int NR_OF_TICKS_X = m_nTicks;
 
             minValue = f2; //xRange = adjXRange;
@@ -369,7 +371,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             //int fontHeight = (int)(font.getSize() * 10 / 12);
             //g.setFont(new Font(font.getName(), fontHeight));
 
-            String info1 = "", info2 = "";
+            String info1 = "", info2 = "", info3 = "";
             String[] strs = new String[]{"2.5% Quantile", "5% Quantile", "Median", "95% Quantile", "97.5% Quantile"};
             Double[] quantiles = new Double[]{0.025, 0.05, 0.5, 0.95, 0.975};
             mayBeUnstable = false;
@@ -377,14 +379,14 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 
                 //int y = TOP_MARGIN + graphHeight + bottomMargin + /* g.getFontMetrics().getMaxAscent() +*/ k * fontHeight;
                 try {
-                    info1 += format(m_distr.inverseCumulativeProbability(quantiles[k]));
+                    info2 += format(m_distr.inverseCumulativeProbability(quantiles[k]));
                     //g.strokeText(format(m_distr.inverseCumulativeProbability(quantiles[k])), graphWidth / 2 + leftMargin, y);
                 } catch (MathException | RuntimeException e) {
-                	info1 += "not available";
+                	info2 += "not available";
                     //g.strokeText("not available", graphWidth / 2 + leftMargin, y);
                 }
-                info1 += strs[k];
-                info1 += "\n";
+                info1 += strs[k] + "\n";
+                info2 += "\n";
                 // g.strokeText(strs[k], graphWidth / 2 - stringWidth(strs[k]) + leftMargin - fontHeight, y);
             }
             if (mayBeUnstable) {
@@ -398,7 +400,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
                 
             }
             try {
-            	info2 += "mean " + format(m_distr.getMean());
+            	info3 += "mean " + format(m_distr.getMean());
                 //g.strokeText("mean " + format(m_distr.getMean()),
                 //       graphWidth * 3/ 4 + leftMargin, TOP_MARGIN + graphHeight + bottomMargin + fontHeight);
             } catch (RuntimeException e) {
@@ -406,6 +408,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             }
             infoLabel1.setText(info1);
             infoLabel2.setText(info2);
+            infoLabel3.setText(info3);
         }
         
         private int stringWidth(String string) {

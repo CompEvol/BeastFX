@@ -1357,7 +1357,7 @@ public class TreeAnnotator extends Console {
                 new Arguments.Option[]{
                         //new Arguments.StringOption("target", new String[] { "maxclade", "maxtree" }, false, "an option of 'maxclade' or 'maxtree'"),
                         new Arguments.StringOption("heights", new String[]{"keep", "median", "mean", "ca"}, false,
-                                "an option of 'keep' (default), 'median', 'mean' or 'ca'"),
+                                "an option of 'ca' (default), 'median', 'mean' or 'keep'"),
                         new Arguments.IntegerOption("burnin", 0, 99, "the percentage of states to be considered as 'burn-in'"),
                         // allow -b as burnin option, just like other apps
                         new Arguments.IntegerOption("b", 0, 99, "the percentage of states to be considered as 'burn-in'"),
@@ -1409,13 +1409,17 @@ public class TreeAnnotator extends Console {
                 heights = HeightsSummary.MEAN_HEIGHTS;
             } else if (value.equalsIgnoreCase("median")) {
                 heights = HeightsSummary.MEDIAN_HEIGHTS;
+            } else if (value.equalsIgnoreCase("keep")) {
+                heights = HeightsSummary.KEEP_HEIGHTS;
             } else if (value.equalsIgnoreCase("ca")) {
                 heights = HeightsSummary.CA_HEIGHTS;
-                Log.info.println("Please cite: Heled and Bouckaert: Looking for trees in the forest:\n" +
-                                        "summary tree from posterior samples. BMC Evolutionary Biology 2013 13:221.");
             }
         }
-
+        if (heights == HeightsSummary.CA_HEIGHTS) {
+            Log.info.println("Please cite: Heled and Bouckaert: Looking for trees in the forest:\n" +
+                    "summary tree from posterior samples. BMC Evolutionary Biology 2013 13:221.");
+        }
+        
         int burnin = -1;
         if (arguments.hasOption("burnin")) {
             burnin = arguments.getIntegerOption("burnin");
@@ -1458,7 +1462,7 @@ public class TreeAnnotator extends Console {
                 inputFileName = args2[0];
                 break;
             default: {
-                Log.err.println("Unknown option: " + args2[2]);
+                Log.err.println("\nCommand not understood: " + args2[2] + "\n");
                 Log.err.println();
                 printUsage(arguments);
                 System.exit(1);
