@@ -1240,6 +1240,7 @@ public class TreeAnnotator extends Console {
 					Dialog<String> dialog = new Dialog<>();
 				    dialog.setTitle("TreeAnnotator " + BEASTVersion.INSTANCE.getVersion());
 				    FXMLLoader fl = new FXMLLoader();
+				    fl.setClassLoader(getClass().getClassLoader());
 				    fl.setLocation(TreeAnnotator.class.getResource("TreeAnnotator.fxml"));
 				    DialogPane root = fl.load();
 				    dialog.setDialogPane(root);
@@ -1342,7 +1343,7 @@ public class TreeAnnotator extends Console {
         Locale.setDefault(Locale.US);
 
         if (args.length == 0) {
-        	launch();
+        	launch(TreeAnnotator.class, args);
         	return;
         }
 

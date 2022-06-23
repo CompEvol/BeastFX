@@ -99,6 +99,7 @@ public class FXUtils {
     }
 
 	public static ImageView getIcon(String string) {
+		string = FXUtils.class.getResource(string).toExternalForm();
 		ImageView img = new ImageView(string);
 		return img;
 	}

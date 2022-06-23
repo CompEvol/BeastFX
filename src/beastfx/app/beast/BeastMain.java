@@ -40,6 +40,7 @@ public class BeastMain extends Console {
         Dialog<String> dialog = new Dialog<>();
 	    dialog.setTitle("BEAST " + BEASTVersion.INSTANCE.getVersion());
 	    FXMLLoader fl = new FXMLLoader();
+	    fl.setClassLoader(getClass().getClassLoader());
 	    fl.setLocation(BeastMain.class.getResource("BeastMain.fxml"));
 	    DialogPane root = null;
 		try {
@@ -119,6 +120,6 @@ public class BeastMain extends Console {
 	
 	
 	public static void main(String[] args) {
-		launch(args);
+		launch(BeastMain.class, args);
 	}
 }

@@ -18,7 +18,7 @@ public class Beauti extends Application {
 	
     public static void main(String[] args) {
     	ProgramStatus.name = "BEAUti";
-    	launch(args);
+    	launch(Beauti.class, args);
 
         // check for new packages in the background
         new Thread() {

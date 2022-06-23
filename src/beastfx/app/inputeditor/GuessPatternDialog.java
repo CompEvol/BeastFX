@@ -559,6 +559,7 @@ public class GuessPatternDialog implements Initializable {
 
     public Status showDialog(String title) {
 	    FXMLLoader fl = new FXMLLoader();
+	    fl.setClassLoader(getClass().getClassLoader());
 	    fl.setLocation(this.getClass().getResource("GuessPatternDialog.fxml"));
 	    try {
 			root = fl.load();
