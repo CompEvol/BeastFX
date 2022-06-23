@@ -6,5 +6,5 @@ import javafx.scene.Scene;
 public class Dark extends ThemeProvider {
 	public Dark() {}
 	public String getThemeName() {return "Dark";}
-	public boolean loadMyStyleSheet(Scene scene) {return ThemeProvider.loadStyleSheet(scene, "/BeastFX/themes/dark.css");}
+	public boolean loadMyStyleSheet(Scene scene) {return ThemeProvider.loadStyleSheet(scene, "/themes/dark.css");}
 }

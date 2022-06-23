@@ -6,5 +6,5 @@ import javafx.scene.Scene;
 public class Bootstrap extends ThemeProvider {
 	public Bootstrap() {}
 	public String getThemeName() {return "Bootstrap";}
-	public boolean loadMyStyleSheet(Scene scene) {return ThemeProvider.loadStyleSheet(scene, "/BeastFX/themes/bootstrap.css");}
+	public boolean loadMyStyleSheet(Scene scene) {return ThemeProvider.loadStyleSheet(scene, "/themes/bootstrap.css");}
 }

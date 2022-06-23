@@ -12,6 +12,6 @@ public class Metro extends ThemeProvider {
 //		JMetro jMetro = new JMetro(Style.LIGHT); 
 //		jMetro.setScene(scene);
 //		return true;
-		return ThemeProvider.loadStyleSheet(scene, "/BeastFX/themes/metro.css");
+		return ThemeProvider.loadStyleSheet(scene, "/themes/metro.css");
 	}
 }

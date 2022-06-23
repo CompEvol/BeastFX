@@ -9,6 +9,6 @@ public class Default extends ThemeProvider {
 	public String getThemeName() {return "Default";}
 	public boolean loadMyStyleSheet(Scene scene) {
 		Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
-		return ThemeProvider.loadStyleSheet(scene, "/BeastFX/themes/default.css");
+		return ThemeProvider.loadStyleSheet(scene, "/themes/default.css");
 	}
 }

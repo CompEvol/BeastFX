@@ -8,10 +8,16 @@
 	</description>
 
 	<!-- set global properties for this build -->
-	<property name="srcFX" location="../BeastFX/src" />
-	<property name="buildFX" location="../BeastFX/build" />
-	<property name="libFX" location="../BeastFX/locallib" />
+	<property name="BeastFX" value="BeastFX" />
+	<property name="srcFX" location="../${BeastFX}/src" />
+	<property name="buildFX" location="../${BeastFX}/build" />
+	<property name="libFX" location="../${BeastFX}/locallib" />
+	<property name="resourcesFX" location="../${BeastFX}/resources" />
+
+<!--
 	<property name="javafx-home" location="../../Downloads/javafx-sdk-17.0.2"/>
+	<property name="javafx-home" location="../../javafx-sdk-18.0.1/"/>
+-->	
 	<property name="release_dir" value="release" />
 	<property name="distFX" location="${buildFX}/dist" />
 	<property name="beast2path" location="../beast2" />
@@ -26,11 +32,11 @@
 	<property name="report" value="${buildFX}/junitreport"/>
 
 	<path id="classpath">
-		<fileset dir="${libFX}/" includes="jam.jar"/>
+		<fileset dir="${libFX}" includes="jam.jar"/>
 		<fileset dir="${libFX}" includes="testfx.jar"/>
 		<fileset dir="${libFX}" includes="aquafx-0.1.jar"/>
-		<fileset dir="themes" includes="FXSkins-1.0.0.jar"/>
-		<fileset dir="themes" includes="jmetro-11.6.15.jar"/>
+		<fileset dir="${libFX}" includes="FXSkins-1.0.0.jar"/>
+		<fileset dir="${libFX}" includes="jmetro-11.6.15.jar"/>
         <path location="${buildFX}"/>
         
 		<fileset dir="${beast2path}/lib" includes="beagle.jar"/>
@@ -43,6 +49,7 @@
         <fileset dir="${libFX}" includes="assertj-core-3.20.2.jar"/>
 	
 		<!-- javafx -->
+		<!--
 		<fileset dir="${javafx-home}/lib" includes="javafx-swt.jar"/>
 		<fileset dir="${javafx-home}/lib" includes="javafx.base.jar"/>
 		<fileset dir="${javafx-home}/lib" includes="javafx.controls.jar"/>
@@ -51,6 +58,7 @@
 		<fileset dir="${javafx-home}/lib" includes="javafx.media.jar"/>
 		<fileset dir="${javafx-home}/lib" includes="javafx.swing.jar"/>
 		<fileset dir="${javafx-home}/lib" includes="javafx.web.jar"/>
+	-->
 
         <path location="${beast2classpath}"/>
 
@@ -111,8 +119,11 @@
 			<!-- compile JUnit test classes -->
 			<include name="test/**" />
 		</javac>
-        <copy todir="${build}">
+        <copy todir="${buildFX}">
             <fileset dir="${srcFX}" includes="**/*.png" />
+        </copy>
+        <copy todir="${buildFX}">
+            <fileset dir="${resourcesFX}" includes="**/*.css" />
         </copy>
 
 		<echo message="Successfully compiled." />
@@ -131,8 +142,8 @@
 			</manifest>
 			<fileset dir="${buildFX}">
 				<include name="**/*.class" />
-				<include name="javascript/**/*" />
-				<include name="beastfx*" />
+				<include name="**/*.png" />
+				<include name="**/*.css" />
 			</fileset>
 			<!--
 			<fileset dir="${beast2classpath}">
@@ -209,8 +220,7 @@
 		<mkdir dir="${Add_on_dir}" />
 		<mkdir dir="${Add_on_dir}/lib" />
 		<mkdir dir="${Add_on_dir}/examples" />
-		<mkdir dir="${Add_on_dir}/templates" />
-		<mkdir dir="${Add_on_dir}/html" />
+		<mkdir dir="${Add_on_dir}/fxtemplates" />
 
 		<copy todir="${Add_on_dir}">
 			<fileset file="version.xml"/>
@@ -220,21 +230,16 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${Add_on_dir}/html">
-			<fileset dir="html" includes="**/*"/>
-		</copy>
-
 		<copy todir="${Add_on_dir}/lib">
 			<fileset  file="${distFX}/BeastFX.addon.jar" />
 		</copy>
 		<copy todir="${Add_on_dir}">
 			<fileset file="${distFX}/BeastFX.src.jar" />
 		</copy>
-<!--
-		<copy todir="${Add_on_dir}/templates">
-			<fileset file="templates/BeastFX.xml" />
+		<copy todir="${Add_on_dir}/fxtemplates">
+			<fileset file="fxtemplates/BeastFX.xml" />
 		</copy>
--->
+
 		<jar jarfile="${distFX}/BeastFX.addon.v${version}.zip">
 			<fileset dir="${Add_on_dir}">
 				<include name="**/*" />

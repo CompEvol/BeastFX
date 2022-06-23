@@ -24,7 +24,6 @@ import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
-import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.Utils6;
 
 @Description("BEAST application that handles argument parsing by introspection "

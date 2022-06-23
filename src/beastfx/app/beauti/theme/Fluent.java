@@ -6,5 +6,5 @@ import javafx.scene.Scene;
 public class Fluent extends ThemeProvider {
 	public Fluent() {}
 	public String getThemeName() {return "Fluent";}
-	public boolean loadMyStyleSheet(Scene scene) {return ThemeProvider.loadStyleSheet(scene, "/BeastFX/themes/fluent.css");}
+	public boolean loadMyStyleSheet(Scene scene) {return ThemeProvider.loadStyleSheet(scene, "/themes/fluent.css");}
 }

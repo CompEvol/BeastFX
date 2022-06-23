@@ -75,24 +75,12 @@ abstract public class ThemeProvider {
 
 
 	static public boolean loadStyleSheet(Scene scene, String themeFile) {
-		String cssFile = themeFile;
-		if (cssFile == null) {
-			return false;
-		}
-		if (!new File(themeFile).exists()) {
-			cssFile = PackageManager.getBeastDirectories().get(0) + "/" +themeFile;
-			if (!new File(cssFile).exists()) {
-				cssFile = System.getProperty("user.dir") + "/../" +themeFile;
-				if (!new File(cssFile).exists()) {
-					Alert.showMessageDialog(null, "Could not find theme file " + themeFile + ". Choose another theme, or remove 'theme' entry from beauti.properties.file");
-					return false;
-				}							
-			}
-		}
 		try {
 			scene.getStylesheets().clear();
-			scene.getStylesheets().add(new URL("file:///" + cssFile).toExternalForm());
-		} catch (MalformedURLException e) {
+			URL url = ThemeProvider.class.getResource(themeFile);
+			String css = url.toExternalForm();
+			scene.getStylesheets().add(css);
+		} catch (Throwable e) {
 			return false;
 		}
 		return true;

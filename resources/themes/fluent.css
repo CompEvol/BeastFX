@@ -626,7 +626,7 @@
 }
 
 .table-view .column-header .label {
-    -fx-alignment: LEFT;
+    -fx-alignment: CENTER_LEFT;
 }
 
 .table-view .column-header {
@@ -1068,7 +1068,7 @@
 /* Command button */
 
 .com-btn{
-    -fx-text-alignment: LEFT !important;
+    -fx-text-alignment: CENTER_LEFT !important;
     -fx-min-width: 0 !important;
     -fx-min-height: 0 !important;
     -fx-background-color: #ffffff;
