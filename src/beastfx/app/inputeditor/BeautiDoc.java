@@ -1377,8 +1377,8 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                         }
                     }
                     BranchRateModel.Base model = treeLikelihood.branchRateModelInput.get();
-                    if (model != null) {
-                        RealParameter clockRate = model.meanRateInput.get();
+                    if (model != null && model.meanRateInput.get() instanceof RealParameter) {
+                        RealParameter clockRate = (RealParameter) model.meanRateInput.get();
                         clockRate.isEstimatedInput.setValue(needsEstimation, clockRate);
                         if (firstClock == null) {
                             firstClock = clockRate;
@@ -2528,7 +2528,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                     taxaset.put(taxa.get(i).getID(), taxa.get(i));
                 }
             }
-            if (distr instanceof Normal && (Double.isInfinite(((Normal)distr).sigmaInput.get().getValue()))) {
+            if (distr instanceof Normal && (Double.isInfinite(((Normal)distr).sigmaInput.get().getArrayValue()))) {
                 // it is a 'fixed' calibration, no need to add a distribution
             } else {
                 prior.pDistributions.setValue(mrcaPrior, prior);
@@ -2537,7 +2537,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         }
         if (t.taxonsetInput.get().size() == 1 && distr != null) {
             // only add operators if it is NOT a 'fixed' calibration
-            if (!(distr instanceof Normal && (Double.isInfinite(((Normal)distr).sigmaInput.get().getValue())))) {
+            if (!(distr instanceof Normal && (Double.isInfinite(((Normal)distr).sigmaInput.get().getArrayValue())))) {
                 TipDatesRandomWalker operator = new TipDatesRandomWalker();
                 t.initAndValidate();
                 operator.initByName("taxonset", t, "weight", 1.0, "tree", tree, "windowSize", 1.0);
