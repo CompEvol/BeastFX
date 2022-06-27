@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Observable;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -29,6 +30,7 @@ import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -36,12 +38,15 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Function;
@@ -386,7 +391,9 @@ public class BeautiBase extends Beauti {
 		String [] titles = new String[pane.getTabs().size()];
 		int i = 0;
 		for (Tab tab : pane.getTabs()) {
-			titles[i++] = tab.getText();
+			ObservableList<Node> nodes = ((Pane) tab.getGraphic()).getChildren(); 
+			Node n = nodes.get(0);
+			titles[i++] = ((Label)n).getText();
 		}
 		return titles;
 	}

@@ -1,8 +1,7 @@
-<!-- Build BEAST FX. It is also used by Hudson BEAST_FX project. JUnit test is available for this build. -->
+<!-- Build BEAST FX. JUnit test is available for this build. -->
 <project basedir="." default="build_jar_all_BeastFX" name="BUILD_BEAST_FX">
 	<description>
 	    Build BEAST FX. 
-            Also used by Hudson BEAST_FX project. 
 	    JUnit test is available for this build.
 	    $Id: build_BEAST_FX.xml $
 	</description>
@@ -11,14 +10,16 @@
 	<property name="srcFX" location="../BeastFX/src" />
 	<property name="buildFX" location="../BeastFX/build" />
 	<property name="libFX" location="../BeastFX/locallib" />
+	<!--
 	<property name="javafx-home" location="/usr/share/java/"/>
+-->
+	<property name="javafx-home" location="/usr/share/java/openjfx/jre/lib/ext/"/>
 	<property name="release_dir" value="release" />
 	<property name="distFX" location="${buildFX}/dist" />
-	<property name="beast2path" location="../beast2.7" />
+	<property name="beast2path" location="../beast2" />
 	<property name="srcBeast2" location="${beast2path}/src" />
 	<property name="beast2classpath" location="${beast2path}/build" />
 	<property name="Add_on_dir" value="${release_dir}/add-on" />
-	<property name="version" value="1.1.2" />
 
     <import file="${beast2path}/build.xml" />
 
@@ -26,20 +27,22 @@
 	<path id="classpath">
 		<fileset dir="${libFX}" includes="testfx.jar"/>
 		<fileset dir="${libFX}" includes="aquafx-0.1.jar"/>
-		<fileset dir="themes" includes="FXSkins-1.0.0.jar"/>
-		<fileset dir="themes" includes="jmetro-11.6.15.jar"/>
+		<fileset dir="resources/themes" includes="FXSkins-1.0.0.jar"/>
+		<fileset dir="resources/themes" includes="jmetro-11.6.15.jar"/>
         <path location="${buildFX}"/>
         
-		<fileset dir="${libFX}/lib" includes="jam.jar"/>
+		<fileset dir="${libFX}" includes="jam.jar"/>
 		<fileset dir="${beast2path}/lib" includes="beagle.jar"/>
-		<fileset dir="${beast2path}/lib" includes="fest.jar"/>
 		<fileset dir="${beast2path}/lib" includes="colt.jar"/>
         <fileset dir="${beast2path}/lib" includes="antlr-runtime-4.10.1.jar"/>
 		<fileset dir="${beast2path}/lib" includes="commons-math3-3.6.1.jar"/>
 
         <fileset dir="${beast2path}/lib/junit" includes="junit-platform-console-standalone-1.8.2.jar"/>
-        <fileset dir="${libFX}/junit" includes="assertj-core-3.20.2.jar"/>
+        <fileset dir="${libFX}" includes="assertj-core-3.20.2.jar"/>
 	
+		<fileset dir="${javafx-home}" includes="jfxrt.jar"/>
+		<fileset dir="${javafx-home}/../" includes="jfswt.jar"/>
+<!--
 		<fileset dir="${javafx-home}" includes="javafx-swt.jar"/>
 		<fileset dir="${javafx-home}" includes="javafx-base.jar"/>
 		<fileset dir="${javafx-home}" includes="javafx-controls.jar"/>
@@ -48,13 +51,23 @@
 		<fileset dir="${javafx-home}" includes="javafx-media.jar"/>
 		<fileset dir="${javafx-home}" includes="javafx-swing.jar"/>
 		<fileset dir="${javafx-home}" includes="javafx-web.jar"/>
-
+-->
         <path location="${beast2classpath}"/>
 	</path>
 
 	<!-- start -->
 	<target name="initBeastFX">
 		<echo message="${ant.project.name}: ${ant.file}" />
+
+		<available file="version.xml" property="versionAvailable"/>
+        <fail unless="versionAvailable">
+              ** Required file version.xml does not exist. **
+        </fail>
+
+        <!-- Read package name and version from xml file -->
+        <xmlproperty file="version.xml" prefix="fromVersionFile" />
+        <property name="version" value="${fromVersionFile.package(version)}" />
+        <echo message="Version: ${version}" />
 	</target>
 
 	<target name="cleanBeastFX">
@@ -78,7 +91,7 @@
 	</target>
 
 	<!-- compile Java source code -->
-	<target name="compile-allBeastFX" depends="initBeastFX,beast.pkgmgmt,beast.app">
+	<target name="compile-allBeastFX" depends="initBeastFX,beast.pkgmgmt,beast.base">
 
 	    <!-- Capture the path as a delimited property using the refid attribute -->
 	    <property name="myclasspath" refid="classpath"/>
@@ -155,23 +168,27 @@
 		<mkdir dir="${report}" />
 		
 		<copy todir="${libFX}">
-			<fileset dir="${javafx-home}" includes="javafx-base.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-controls.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-fxml.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-graphics.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-web.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-media.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-swing.jar"/>
+			<fileset dir="${javafx-home}" includes="jfxrt.jar"/>
+			<fileset dir="${javafx-home}/../" includes="jfswt.jar"/>
+			<!--
+			<fileset dir="${javafx-home}" includes="javafx-base-11.jar"/>
+			<fileset dir="${javafx-home}" includes="javafx-controls-11.jar"/>
+			<fileset dir="${javafx-home}" includes="javafx-fxml-11.jar"/>
+			<fileset dir="${javafx-home}" includes="javafx-graphics-11.jar"/>
+			<fileset dir="${javafx-home}" includes="javafx-web-11.jar"/>
+			<fileset dir="${javafx-home}" includes="javafx-media-11.jar"/>
+			<fileset dir="${javafx-home}" includes="javafx-swing-11.jar"/>
+		-->
 		</copy>
 
 		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
 			<jvmarg line="-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni/"/>
 			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
-			<jvmarg line="--module-path=${libFX}"/>
-			<jvmarg line="--add-modules=javafx.base,javafx.fxml,javafx.graphics,javafx.web,javafx.media,javafx.swing"/>
-<!--
-            <arg line="-p test.beastfx"/>
--->
+			<!--
+				IF UNCOMMENTING, RESTORE DOUBLE - - in next two lines
+			<jvmarg line="- - module-path=${libFX}"/>
+			<jvmarg line="- - add-modules=javafx.base,javafx.fxml,javafx.graphics,javafx.web,javafx.media,javafx.swing"/>
+		-->
             <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>
             
             <arg line="--reports-dir build/junitreport"/>
