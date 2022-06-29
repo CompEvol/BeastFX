@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -75,7 +76,7 @@ public class OperatorListInputEditor extends ListInputEditor {
         Operator operator = (Operator) beastObject;
 
         TextField entry = new TextField(" " + getLabel(operator));
-        entry.setMinSize(200, 16);
+        entry.setMinSize(700, 16);
         //entry.setMaxSize(new Dimension(200, 20));
         m_entries.add(entry);
         entry.setBackground(getBackground());
@@ -104,6 +105,7 @@ public class OperatorListInputEditor extends ListInputEditor {
         //weightEntry.setMaxSize(new Dimension(50 * fontsize/13, 50 * fontsize/13));
         itemBox.getChildren().add(weightEntry);
 
+        FXUtils.createHMCButton(itemBox, operator, m_input);
         return this;
     }
 

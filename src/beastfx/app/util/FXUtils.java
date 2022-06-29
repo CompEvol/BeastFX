@@ -130,10 +130,6 @@ public class FXUtils {
         	return;
         }
         
-        if (input instanceof BeautiPanelConfig.FlexibleInput) {
-        	BeautiPanelConfig.FlexibleInput flexInput = (BeautiPanelConfig.FlexibleInput) input;
-        }
-
         String id = o.getID();
 		if (id.lastIndexOf('.') > 0) {
 			id = id.substring(0, id.lastIndexOf('.'));

@@ -266,6 +266,8 @@ System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
             }
         }
 
+        FXUtils.createHMCButton(itemBox, beastObject, m_input);
+
     } // addSingleItem
 
     private VBox createExpandBox(BEASTInterface beastObject, InputEditor editor, SmallButton editButton) {

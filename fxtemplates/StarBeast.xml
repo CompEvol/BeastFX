@@ -399,7 +399,7 @@ SiteModel/substModel/
 				</populationModel>
 			</tree>
 
-            <plugin id='TreeHeight.t:$(n)' spec='beast.base.evolution.tree.TreeHeightLogger' tree='@Tree.t:$(n)'/>
+            <plugin id='TreeHeight.t:$(n)' spec='beast.base.evolution.tree.TreeStatLogger' tree='@Tree.t:$(n)'/>
 
             <logger id='treelog.t:$(n)' spec='beast.base.inference.Logger' logEvery="5000" fileName="$(tree).trees" mode='tree'>
 	            <log id='TreeWithMetaDataLogger.t:$(n)' spec='beast.base.evolution.TreeWithMetaDataLogger' tree='@Tree.t:$(n)'>
@@ -610,7 +610,7 @@ SiteModel/substModel/
 			<log idref="birthRate.t:Species"/>
 			<log idref="YuleModel.t:Species"/>
 			<log idref="popMean"/>
-            <log id='TreeHeight.Species' spec='beast.base.evolution.tree.TreeHeightLogger' tree='@Tree.t:Species'/>
+            <log id='TreeHeight.Species' spec='beast.base.evolution.tree.TreeStatLogger' tree='@Tree.t:Species'/>
         </logger>
 
 		<logger fileName="species.trees" id="speciesTreeLogger" logEvery="5000" mode="tree">

@@ -194,12 +194,12 @@ gtr/rateAC/,
 gtr/rateCG/,
 gtr/rateAG/,
 gtr/rateCT/,
-RateACPrior/index/,
-RateAGPrior/index/,
-RateATPrior/index/,
-RateCGPrior/index/,
-RateCTPrior/index/,
-RateGTPrior/index/
+RateACPrior/index/=RateGTRPrior/index/,
+RateAGPrior/index/=RateGTRPrior/index/,
+RateATPrior/index/=RateGTRPrior/index/,
+RateCGPrior/index/=RateGTRPrior/index/,
+RateCTPrior/index/=RateGTRPrior/index/,
+RateGTPrior/index/=RateGTRPrior/index/
 '>
             <![CDATA[
         <plugin spec='GTR' id='gtr.s:$(n)'>

@@ -5,15 +5,23 @@
     <mergewith point='misc'>
         <fragment id='TreeOperators' spec="beastfx.app.beauti.Fragment">
             <![CDATA[
-            <operator id='$(m)TreeScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="3" tree="@Tree.t:$(n)"/>
-            <operator id='$(m)TreeRootScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="3" tree="@Tree.t:$(n)" rootOnly='true'/>
-            <operator id='$(m)UniformOperator.t:$(n)' spec='Uniform' weight="30" tree="@Tree.t:$(n)"/>
-            <operator id='$(m)SubtreeSlide.t:$(n)' spec='SubtreeSlide' weight="15" gaussian="true" size="1.0" tree="@Tree.t:$(n)"/>
+<!--            
+			replace tree scale operator with more efficient BICESPS operators.
+			<operator id='$(m)TreeScaler.t:$(n)' spec='BactrianScaleOperator' scaleFactor="0.1" weight="3" tree="@Tree.t:$(n)"/>
+-->                        
+		    <operator id="$(m)BICEPSEpochTop.t:$(n)" spec="beast.base.evolution.operator.EpochFlexOperator" tree="@Tree.t:$(n)" weight="2.0" scaleFactor="0.1"/>
+            <operator id="$(m)BICEPSEpochAll.t:$(n)" spec="beast.base.evolution.operator.EpochFlexOperator" tree="@Tree.t:$(n)" weight="2.0" scaleFactor="0.1" fromOldestTipOnly="false"/>      
+            <operator id="$(m)BICEPSTreeFlex.t:$(n)" spec="beast.base.evolution.operator.TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:$(n)" weight="2.0"/>
+            <operator id='$(m)TreeRootScaler.t:$(n)' spec='beast.base.evolution.operator.kernel.BactrianScaleOperator' scaleFactor="0.1" weight="3" tree="@Tree.t:$(n)" rootOnly='true'/>
+            <operator id='$(m)UniformOperator.t:$(n)' spec='beast.base.evolution.operator.kernel.BactrianNodeOperator' weight="30" tree="@Tree.t:$(n)"/>
+            <operator id='$(m)SubtreeSlide.t:$(n)' spec='beast.base.evolution.operator.kernel.BactrianSubtreeSlide' weight="15" gaussian="true" size="1.0" tree="@Tree.t:$(n)"/>
             <operator id='$(m)Narrow.t:$(n)' spec='Exchange' isNarrow='true' weight="15" tree="@Tree.t:$(n)"/>
             <operator id='$(m)Wide.t:$(n)' spec='Exchange' isNarrow='false' weight="3" tree="@Tree.t:$(n)"/>
             <operator id='$(m)WilsonBalding.t:$(n)' spec='WilsonBalding' weight="3" tree="@Tree.t:$(n)"/>
             ]]>
-            <connect srcID='$(m)TreeScaler.t:$(n)'                targetID='mcmc' inputName='operator' if='inposterior($(m).t:$(n)) and Tree.t:$(n)/estimate=true'>Scales all internal nodes for tree t:$(n)</connect>
+            <connect srcID='$(m)BICEPSEpochTop.t:$(n)'            targetID='mcmc' inputName='operator' if='inposterior($(m).t:$(n)) and Tree.t:$(n)/estimate=true'>Epoch operator that only scale internal nodes above least recent node for tree t:$(n)</connect>
+            <connect srcID='$(m)BICEPSEpochAll.t:$(n)'            targetID='mcmc' inputName='operator' if='inposterior($(m).t:$(n)) and Tree.t:$(n)/estimate=true'>Epoch operator that scales all internal nodes for tree t:$(n)</connect>
+            <connect srcID='$(m)BICEPSTreeFlex.t:$(n)'            targetID='mcmc' inputName='operator' if='inposterior($(m).t:$(n)) and Tree.t:$(n)/estimate=true'>Flex operators for all internal nodes for tree t:$(n)</connect>
             <connect srcID='$(m)TreeRootScaler.t:$(n)'            targetID='mcmc' inputName='operator' if='inposterior($(m).t:$(n)) and Tree.t:$(n)/estimate=true'>Scales root node for tree t:$(n)</connect>
             <connect srcID='$(m)UniformOperator.t:$(n)'           targetID='mcmc' inputName='operator' if='inposterior($(m).t:$(n)) and Tree.t:$(n)/estimate=true'>Draws new internal node heights uniformally for tree t:$(n)</connect>
             <connect srcID='$(m)SubtreeSlide.t:$(n)'              targetID='mcmc' inputName='operator' if='inposterior($(m).t:$(n)) and Tree.t:$(n)/estimate=true'>Performs subtree slide rearrangement of tree t:$(n)</connect>
@@ -22,7 +30,7 @@
             <connect srcID='$(m)WilsonBalding.t:$(n)'             targetID='mcmc' inputName='operator' if='inposterior($(m).t:$(n)) and Tree.t:$(n)/estimate=true'>Performs Wilson-Balding global rearrangement of tree t:$(n)</connect>
         </fragment>
     </mergewith>
-       
+
     <!-- tree priors -->
     <mergewith point='treePriorTemplates'>
         <!-- Yule -->

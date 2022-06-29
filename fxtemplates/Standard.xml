@@ -114,10 +114,6 @@ gammaShapeScaler/optimise/,
 gammaShapeScaler/scaleAll/,
 gammaShapeScaler/weight/,
 gammaShapeScaler/upper/,
-RandomLocalClock/clock.rate/,
-RandomLocalClock/scaling/,
-RandomLocalClock/includeRoot/,
-RandomLocalClock/ratesAreMultipliers/,
 RandomTree/rootHeight/,
 RandomTree/adjustTreeNodeHeights/,
 StrictClock/clock.rate/,
@@ -362,7 +358,7 @@ YuleBirthRatePrior/index/
                 <parameter name='birthDiffRate' id="birthRate.t:$(n)" value='1.0' estimate='true'/>
             </plugin>
 
-            <plugin id='TreeHeight.t:$(n)' spec='beast.base.evolution.tree.TreeHeightLogger' tree='@Tree.t:$(n)'/>
+            <plugin id='TreeHeight.t:$(n)' spec='beast.base.evolution.tree.TreeStatLogger' tree='@Tree.t:$(n)'/>
 
             <logger id='treelog.t:$(n)' spec='beast.base.inference.Logger' logEvery="1000" fileName="$(tree).trees" mode='tree'>
 	            <log id='TreeWithMetaDataLogger.t:$(n)' spec='beast.base.evolution.TreeWithMetaDataLogger' tree='@Tree.t:$(n)'>
@@ -374,7 +370,9 @@ YuleBirthRatePrior/index/
             <operator id='gammaShapeScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@gammaShape.s:$(n)"/>
             <operator id='allTipDatesRandomWalker.t:$(n)' spec='TipDatesRandomWalker' windowSize="1" weight="0" tree="@Tree.t:$(n)"/>
 
-            <operator id='YuleModelTreeScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="3" tree="@Tree.t:$(n)"/>
+ 		    <operator id="YuleModelBICEPSEpochTop.t:$(n)" spec="beast.base.evolution.operator.EpochFlexOperator" tree="@Tree.t:$(n)" weight="2.0" scaleFactor="0.1"/>
+            <operator id="YuleModelBICEPSEpochAll.t:$(n)" spec="beast.base.evolution.operator.EpochFlexOperator" tree="@Tree.t:$(n)" weight="2.0" scaleFactor="0.1" fromOldestTipOnly="false"/>      
+            <operator id="YuleModelBICEPSTreeFlex.t:$(n)" spec="beast.base.evolution.operator.TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:$(n)" weight="2.0"/>
             <operator id='YuleModelTreeRootScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="3" tree="@Tree.t:$(n)" rootOnly='true'/>
             <operator id='YuleModelUniformOperator.t:$(n)' spec='Uniform' weight="30" tree="@Tree.t:$(n)"/>
             <operator id='YuleModelSubtreeSlide.t:$(n)' spec='SubtreeSlide' weight="15" gaussian="true" size="1.0" tree="@Tree.t:$(n)"/>
@@ -427,13 +425,16 @@ YuleBirthRatePrior/index/
 
             <connect srcID='allTipDatesRandomWalker.t:$(n)'   targetID='mcmc' inputName='operator' if='inposterior(Tree.t:$(n)) and Tree.t:$(n)/estimate=true and allTipDatesRandomWalker.t:$(n)/weight!=0.0'>Estimates tip dates for tree t:$(n)</connect>
 
-            <connect if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" inputName="operator" srcID="YuleModelTreeScaler.t:$(n)" targetID="mcmc">Scales all internal nodes for tree t:$(n)</connect>
-            <connect if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" inputName="operator" srcID="YuleModelTreeRootScaler.t:$(n)" targetID="mcmc">Scales root node for tree t:$(n)</connect>
-            <connect if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" inputName="operator" srcID="YuleModelUniformOperator.t:$(n)" targetID="mcmc">Draws new internal node heights uniformally for tree t:$(n)</connect>
-            <connect if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" inputName="operator" srcID="YuleModelSubtreeSlide.t:$(n)" targetID="mcmc">Performs subtree slide rearrangement of tree t:$(n)</connect>
-            <connect if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" inputName="operator" srcID="YuleModelNarrow.t:$(n)" targetID="mcmc">Narrow exchange performs local rearrangement of tree t:$(n)</connect>
-            <connect if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" inputName="operator" srcID="YuleModelWide.t:$(n)" targetID="mcmc">Wide exchange performs global rearrangement of tree t:$(n)</connect>
-            <connect if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" inputName="operator" srcID="YuleModelWilsonBalding.t:$(n)" targetID="mcmc">Performs Wilson-Balding global rearrangement of tree t:$(n)</connect>
+            <connect srcID="YuleModelTreeScaler.t:$(n)"       targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Scales all internal nodes for tree t:$(n)</connect>
+            <connect srcID="YuleModelTreeRootScaler.t:$(n)"   targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Scales root node for tree t:$(n)</connect>
+            <connect srcID="YuleModelUniformOperator.t:$(n)"  targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Draws new internal node heights uniformally for tree t:$(n)</connect>
+            <connect srcID="YuleModelSubtreeSlide.t:$(n)"     targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Performs subtree slide rearrangement of tree t:$(n)</connect>
+            <connect srcID="YuleModelNarrow.t:$(n)"           targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Narrow exchange performs local rearrangement of tree t:$(n)</connect>
+            <connect srcID="YuleModelWide.t:$(n)"             targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Wide exchange performs global rearrangement of tree t:$(n)</connect>
+            <connect srcID="YuleModelWilsonBalding.t:$(n)"    targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Performs Wilson-Balding global rearrangement of tree t:$(n)</connect>
+            <connect srcID='YuleModelBICEPSEpochTop.t:$(n)'   targetID='mcmc' inputName='operator' if='inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true'>Epoch operator that only scale internal nodes above least recent node for tree t:$(n)</connect>
+            <connect srcID='YuleModelBICEPSEpochAll.t:$(n)'   targetID='mcmc' inputName='operator' if='inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true'>Epoch operator that scales all internal nodes for tree t:$(n)</connect>
+            <connect srcID='YuleModelBICEPSTreeFlex.t:$(n)'   targetID='mcmc' inputName='operator' if='inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true'>Flex operators for all internal nodes for tree t:$(n)</connect>
 
             <connect srcID='treeLikelihood.$(n)'              targetID='tracelog' inputName='log' if='inlikelihood(treeLikelihood.$(n))'/>
             <connect srcID='TreeHeight.t:$(n)'                targetID='tracelog' inputName='log' if='inposterior(Tree.t:$(n))  and Tree.t:$(n)/estimate=true'/>
