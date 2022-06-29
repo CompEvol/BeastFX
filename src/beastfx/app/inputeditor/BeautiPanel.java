@@ -1,35 +1,6 @@
 package beastfx.app.inputeditor;
 
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Dimension2D;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
-
-import beastfx.app.util.Alert;
-import beastfx.app.util.FXUtils;
-
-
-import beastfx.app.beauti.ClonePartitionPanel;
-import beastfx.app.inputeditor.BeautiPanelConfig.Partition;
-import beastfx.app.inputeditor.InputEditor.ExpandOption;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Taxon;
@@ -41,11 +12,25 @@ import beast.base.evolution.tree.TreeInterface;
 import beast.base.inference.CompoundDistribution;
 import beast.base.inference.MCMC;
 import beast.base.parser.PartitionContext;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import beastfx.app.beauti.ClonePartitionPanel;
+import beastfx.app.inputeditor.BeautiPanelConfig.Partition;
+import beastfx.app.inputeditor.InputEditor.ExpandOption;
+import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Dimension2D;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * panel making up each of the tabs in Beauti *
@@ -178,7 +163,7 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         // box.getChildren().add(new Separator(Orientation.VERTICAL));
         try {
         	box.getChildren().add(getIcon(panelIndex, config));
-        } catch (IllegalArgumentException e) {        	
+        } catch (IllegalArgumentException|java.lang.NullPointerException e) {
         	// something went wrong with loading the panel icon. Ignore
         }
 
