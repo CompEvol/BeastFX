@@ -9,15 +9,17 @@
         <!-- Strict clock -->
         <subtemplate id='StrictClock' class='beast.base.evolution.branchratemodel.StrictClockModel'
                      mainid='StrictClock.c:$(n)'
-                     hmc='ClockPrior/index/'>
+                     hmc='ClockPrior/index/,
+                        StrictClockRateScaler/index/=Operators/BactrianRateScaler/index/,
+                        strictClockUpDownOperator/index/=Operators/BactrianUpDown/index/'>
             <![CDATA[
                 <branchRateModel spec='StrictClockModel' id='StrictClock.c:$(n)'>
                     <clock.rate id='clockRate.c:$(n)' spec='parameter.RealParameter' value='1.0' estimate='false'/>
                 </branchRateModel>
 
-				<operator id='StrictClockRateScaler.c:$(n)' spec='ScaleOperator' scaleFactor="0.75" weight="3" parameter='@clockRate.c:$(n)'/>
+				<operator id='StrictClockRateScaler.c:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.1" weight="3" parameter='@clockRate.c:$(n)'/>
 
-				<upDownOperator id='strictClockUpDownOperator.c:$(n)' spec='UpDownOperator' scaleFactor="0.75" weight="3">
+				<upDownOperator id='strictClockUpDownOperator.c:$(n)' spec='kernel.BactrianUpDownOperator' scaleFactor="0.1" weight="3">
 					<up idref="clockRate.c:$(n)"/>
 					<down idref="Tree.t:$(n)"/>
 				</upDownOperator>
@@ -223,7 +225,12 @@
 					 RandomLocalClock/ratesAreMultipliers/,
                      RRatesPrior/index/=RandomLocalClock/RatesPrior/,
                      RRateChangesPrior/index/=RandomLocalClock/RRateChangesPrior/,
-                     MeanRRatePrior/index/=ClockPrior/index/'>
+                     MeanRRatePrior/index/=ClockPrior/index/,
+                     ClockRateScaler/index/=Operators/BactrianRateScaler/index/,
+                     randomClockScaler/index/=Operators/BactrianRateScaler/index/,
+                     randomClockUpDownOperator/index/=Operators/BactrianUpDown/index/,
+                     BitFlipOperator/index/=Operators/BitFlipper/index/
+                     '>
             <![CDATA[
         <input spec='RandomLocalClockModel' id="RandomLocalClock.c:$(n)" ratesAreMultipliers="false" tree='@Tree.t:$(n)'>
             <clock.rate id='meanClockRate.c:$(n)' spec='parameter.RealParameter' value='1.0' estimate='false'/>
@@ -233,10 +240,10 @@
 
         <operator id="IndicatorsBitFlip.c:$(n)" spec="BitFlipOperator" weight="15" parameter="@Indicators.c:$(n)"/>
 <!-- this should probably be a DeltaExchange instead of scale operator to keep mean rate to 1 -->
-        <operator id='ClockRateScaler.c:$(n)' spec='ScaleOperator' scaleAll='false' scaleFactor="0.5" weight="15" parameter="@clockrates.c:$(n)"/>
+        <operator id='ClockRateScaler.c:$(n)' spec='kernel.BactrianScaleOperator' scaleAll='false' scaleFactor="0.1" weight="15" parameter="@clockrates.c:$(n)"/>
 
-        <operator id='randomClockScaler.c:$(n)' spec='ScaleOperator' scaleAll='false' scaleFactor="0.5" weight="1" parameter="@meanClockRate.c:$(n)"/>
-		<upDownOperator id='randomClockUpDownOperator.c:$(n)' spec='UpDownOperator' scaleFactor="0.75" weight="3">
+        <operator id='randomClockScaler.c:$(n)' spec='kernel.BactrianScaleOperator' scaleAll='false' scaleFactor="0.1" weight="1" parameter="@meanClockRate.c:$(n)"/>
+		<upDownOperator id='randomClockUpDownOperator.c:$(n)' spec='kernel.BactrianUpDownOperator' scaleFactor="0.1" weight="3">
 			<up idref="meanClockRate.c:$(n)"/>
 			<down idref="Tree.t:$(n)"/>
 		</upDownOperator>

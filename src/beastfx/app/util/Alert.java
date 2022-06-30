@@ -132,9 +132,11 @@ public class Alert {
 			message.append("\n");
 		}
 		AnchorPane pane = new AnchorPane();
-		TextArea text = new TextArea(message.toString());		
-		ImageView img = new ImageView(jswingIconToImage(icon));
-		pane.getChildren().add(img);
+		TextArea text = new TextArea(message.toString());
+		if (icon != null) {
+			ImageView img = new ImageView(jswingIconToImage(icon));
+			pane.getChildren().add(img);
+		}
 		pane.getChildren().add(text);
 		showMessageDialog(parent, pane, header, informationMessage);
 	}
@@ -166,6 +168,9 @@ public class Alert {
 			alert.setY(node.getY() + node.getHeight()/2);
 		}
 		alert.getDialogPane().getButtonTypes().addAll(CLOSED_OPTION, OK_OPTION);
+		pane.setPrefHeight(400);
+		pane.setPrefWidth(400);
+		alert.setResizable(true);
 		alert.showAndWait();
 	}
 

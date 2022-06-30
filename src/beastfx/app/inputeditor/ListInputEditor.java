@@ -30,14 +30,13 @@ import beast.pkgmgmt.BEASTClassLoader;
 
 public class ListInputEditor extends InputEditor.Base {
 
-    public final static String ICONPATH = "/beastfx/app/inputeditor/icon/";
     static Image DOWN_ICON;
     static Image RIGHT_ICON;
 
     {
         try {
-        	DOWN_ICON = FXUtils.getIcon(ICONPATH + "down.png").getImage();
-        	RIGHT_ICON = FXUtils.getIcon(ICONPATH + "right.png").getImage();
+        	DOWN_ICON = FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "down.png").getImage();
+        	RIGHT_ICON = FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "right.png").getImage();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -266,7 +265,7 @@ System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
             }
         }
 
-        FXUtils.createHMCButton(itemBox, beastObject, m_input);
+        // FXUtils.createHMCButton(itemBox, beastObject, m_input);
 
     } // addSingleItem
 

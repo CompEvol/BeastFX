@@ -138,16 +138,18 @@ public class FXUtils {
 		if (!hmcPages.containsKey(id + "/" + input.getName() + "/")) {
 			return;
 		}
+		System.out.print(id + "/" + input.getName() + "/ => ");
 		id = hmcPages.get(id + "/" + input.getName() + "/");		
+		System.out.println(id);
 		
 		String HMC_BASE = getHMCBase();
 		String url = HMC_BASE + "/" + id + "/";//.html";
 		Button hmc = createHMCButton(url);
         if (input instanceof BeautiPanelConfig.FlexibleInput) {
         	BeautiPanelConfig.FlexibleInput flexInput = (BeautiPanelConfig.FlexibleInput) input;
-        	hmc.setTooltip(new Tooltip(o.getDescription() + "\n" + o.getID()));
+        	hmc.setTooltip(new Tooltip(o.getDescription() + "\n" + o.getID() + "\n" + url));
         } else {
-        	hmc.setTooltip(new Tooltip(input.getTipText() + "\n" + o.getID()));
+        	hmc.setTooltip(new Tooltip(input.getTipText() + "\n" + o.getID() + "\n" + url));
         }
         pane.getChildren().add(hmc);
 	}
@@ -165,7 +167,7 @@ public class FXUtils {
 			if (str.indexOf('=') > -1) {
 				String [] strs2 = str.split("=");
 				String from = strs2[0].trim();
-				String to = strs2[0].trim();
+				String to = strs2[1].trim();
 				FXUtils.hmcPages.put(from, to);
 			} else {
 				String from = str.trim();

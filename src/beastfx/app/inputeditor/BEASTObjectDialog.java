@@ -71,7 +71,7 @@ public class BEASTObjectDialog extends Dialog {
 		Stage stage = (Stage) pane.getScene().getWindow();
 		//stage.getIcons().add(image);
 		pane.setGraphic(new ImageView(image));
-		pane.setPrefSize(InputEditor.Base.PREFERRED_SIZE.getWidth() * 4, 
+		pane.setPrefSize(InputEditor.Base.PREFERRED_SIZE.getWidth() * 9, 
 				InputEditor.Base.PREFERRED_SIZE.getHeight() * 15);
 		
 		dlg.setResizable(true);

@@ -320,7 +320,7 @@ public class Utils {
 	    try {
 	        URL url = Utils.class.getClassLoader().getResource(iconLocation);
 	        if (url == null) {
-//	            System.err.println("Cannot find icon " + iconLocation);
+	            System.err.println("Cannot find icon " + iconLocation);
 	            return null;
 	        }
 	        ImageIcon icon = new ImageIcon(url);

@@ -12,7 +12,10 @@
 SiteModel/mutationRate/,
 SiteModel/gammaCategoryCount/,
 SiteModel/shape/,
-SiteModel/substModel/
+SiteModel/substModel/,
+gammaShapeScaler/index/=Operators/BactrianRateScaler/index/,
+proportionInvariantScaler/index/=Operators/BactrianRateScaler/index/,
+mutationRateScaler/index/=Operators/BactrianRateScaler/index/
 '>
             <![CDATA[
             <plugin spec='SiteModel' id="SiteModel.s:$(n)" gammaCategoryCount='0'>
@@ -26,9 +29,9 @@ SiteModel/substModel/
             <prior id='GammaShapePrior.s:$(n)' x='@gammaShape.s:$(n)'><distr spec="beast.base.inference.distribution.Exponential" mean='1'/></prior>
             <prior id='PropInvariantPrior.s:$(n)' x='@proportionInvariant.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
 
-            <operator id='proportionInvariantScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@proportionInvariant.s:$(n)"/>
-            <operator id='mutationRateScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@mutationRate.s:$(n)"/>
-            <operator id='gammaShapeScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@gammaShape.s:$(n)"/>
+            <operator id='proportionInvariantScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@proportionInvariant.s:$(n)"/>
+            <operator id='mutationRateScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@mutationRate.s:$(n)"/>
+            <operator id='gammaShapeScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@gammaShape.s:$(n)"/>
             ]]>
 
                         <connect method="beastfx.app.inputeditor.SiteModelInputEditor.customConnector"/>
@@ -66,7 +69,8 @@ SiteModel/substModel/
 
         <!-- HKY substitution model -->
         <subtemplate id='HKY' class='beast.base.evolution.substitutionmodel.HKY' mainid='hky.s:$(n)'
-            hmc='hky/frequencies/,hky/kappa/,KappaPrior/index/'>
+            hmc='hky/frequencies/,hky/kappa/,KappaPrior/index/,
+            KappaScaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
         <plugin spec='HKY' id='hky.s:$(n)'>
             <parameter id="kappa.s:$(n)" name='kappa' value="2.0" lower="0.0" estimate='true'/>
@@ -75,8 +79,8 @@ SiteModel/substModel/
             </frequencies>
         </plugin>
 
-        <plugin id='KappaScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa.s:$(n)"/>
-        <plugin id='FrequenciesExchanger.s:$(n)' spec='DeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        <plugin id='KappaScaler.s:$(n)' spec='kerel.BactrianScaleOperator' scaleFactor="0.1" weight="0.1" parameter="@kappa.s:$(n)"/>
+        <plugin id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
 
         <prior id='KappaPrior.s:$(n)' x='@kappa.s:$(n)'>
             <distr spec="LogNormalDistributionModel" meanInRealSpace='false'>
@@ -116,7 +120,9 @@ SiteModel/substModel/
 
         <!-- TN93 substitution model -->
         <subtemplate id='TN93' class='beast.base.evolution.substitutionmodel.TN93' mainid='tn93.s:$(n)'
-            hmc='tn93/kappa1/,tn93/frequencies/,tn93/kappa2/,kappa1Prior/index/,kappa2Prior/index/'>
+            hmc='tn93/kappa1/,tn93/frequencies/,tn93/kappa2/,kappa1Prior/index/,kappa2Prior/index/,
+            kappa1Scaler/index/=Operators/BactrianRateScaler/index/,
+            kappa2Scaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
         <plugin spec='TN93' id='tn93.s:$(n)'>
             <parameter id="kappa1.s:$(n)" name='kappa1' value="2.0" lower="0.0" estimate='true'/>
@@ -126,9 +132,9 @@ SiteModel/substModel/
             </frequencies>
         </plugin>
 
-        <plugin id='kappa1Scaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa1.s:$(n)"/>
-        <plugin id='kappa2Scaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa2.s:$(n)"/>
-        <plugin id='FrequenciesExchanger.s:$(n)' spec='DeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        <plugin id='kappa1Scaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa1.s:$(n)"/>
+        <plugin id='kappa2Scaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa2.s:$(n)"/>
+        <plugin id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
 
         <prior id='kappa1Prior.s:$(n)' x='@kappa1.s:$(n)'>
             <distr spec="LogNormalDistributionModel" meanInRealSpace='false'>
@@ -199,8 +205,13 @@ RateAGPrior/index/=RateGTRPrior/index/,
 RateATPrior/index/=RateGTRPrior/index/,
 RateCGPrior/index/=RateGTRPrior/index/,
 RateCTPrior/index/=RateGTRPrior/index/,
-RateGTPrior/index/=RateGTRPrior/index/
-'>
+RateGTPrior/index/=RateGTRPrior/index/,
+            RateACScaler/index/=Operators/BactrianRateScaler/index/,
+            RateAGScaler/index/=Operators/BactrianRateScaler/index/,
+            RateATScaler/index/=Operators/BactrianRateScaler/index/,
+            RateCGScaler/index/=Operators/BactrianRateScaler/index/,
+            RateCTScaler/index/=Operators/BactrianRateScaler/index/,
+            RateGTScaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
         <plugin spec='GTR' id='gtr.s:$(n)'>
             <parameter id="rateAC.s:$(n)" name='rateAC' value="1.0" lower="0.0" estimate='true'/>
@@ -214,13 +225,13 @@ RateGTPrior/index/=RateGTRPrior/index/
             </frequencies>
         </plugin>
 
-        <operator id='RateACScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAC.s:$(n)"/>
-        <operator id='RateAGScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAG.s:$(n)"/>
-        <operator id='RateATScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAT.s:$(n)"/>
-        <operator id='RateCGScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateCG.s:$(n)"/>
-        <operator id='RateCTScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateCT.s:$(n)"/>
-        <operator id='RateGTScaler.s:$(n)' spec='ScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateGT.s:$(n)"/>
-        <operator id='FrequenciesExchanger.s:$(n)' spec='DeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        <operator id='RateACScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAC.s:$(n)"/>
+        <operator id='RateAGScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAG.s:$(n)"/>
+        <operator id='RateATScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAT.s:$(n)"/>
+        <operator id='RateCGScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateCG.s:$(n)"/>
+        <operator id='RateCTScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateCT.s:$(n)"/>
+        <operator id='RateGTScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateGT.s:$(n)"/>
+        <operator id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
 
         <prior id='RateACPrior.s:$(n)' x='@rateAC.s:$(n)'><distr spec="beast.base.inference.distribution.Gamma"><parameter name="alpha" value='0.05' estimate='false'/><parameter name="beta" value='10.0' estimate='false'/></distr></prior>
         <prior id='RateAGPrior.s:$(n)' x='@rateAG.s:$(n)'><distr spec="beast.base.inference.distribution.Gamma"><parameter name="alpha" value='0.05' estimate="false"/><parameter name="beta" value='20.0' estimate="false"/></distr></prior>
@@ -361,13 +372,14 @@ RateGTPrior/index/=RateGTRPrior/index/
 
         <!-- frequency models -->
         <subtemplate id='Estimated' class='beast.base.evolution.substitutionmodel.Frequencies'
-                     mainid='estimatedFreqs.s:$(n)' hmc='FrequenciesPrior/index/'>
+                     mainid='estimatedFreqs.s:$(n)' hmc='FrequenciesPrior/index/,
+                     FrequenciesExchanger/index/=Operators/BactrianDeltaExchange/index/'>
             <![CDATA[
             <frequencies id='estimatedFreqs.s:$(n)' spec='Frequencies'>
                 <frequencies id='freqParameter.s:$(n)' spec='parameter.RealParameter' dimension='4' value='0.25' lower='0' upper='1'/>
             </frequencies>
 
-	        <plugin id='FrequenciesExchanger.s:$(n)' spec='DeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+	        <plugin id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
  ]]>
             <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
                      if='inposterior(estimatedFreqs.s:$(n)) and inposterior(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>

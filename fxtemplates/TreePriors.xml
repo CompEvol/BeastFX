@@ -14,7 +14,7 @@
             <operator id="$(m)BICEPSTreeFlex.t:$(n)" spec="beast.base.evolution.operator.TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:$(n)" weight="2.0"/>
             <operator id='$(m)TreeRootScaler.t:$(n)' spec='beast.base.evolution.operator.kernel.BactrianScaleOperator' scaleFactor="0.1" weight="3" tree="@Tree.t:$(n)" rootOnly='true'/>
             <operator id='$(m)UniformOperator.t:$(n)' spec='beast.base.evolution.operator.kernel.BactrianNodeOperator' weight="30" tree="@Tree.t:$(n)"/>
-            <operator id='$(m)SubtreeSlide.t:$(n)' spec='beast.base.evolution.operator.kernel.BactrianSubtreeSlide' weight="15" gaussian="true" size="1.0" tree="@Tree.t:$(n)"/>
+            <operator id='$(m)SubtreeSlide.t:$(n)' spec='beast.base.evolution.operator.kernel.BactrianSubtreeSlide' weight="15" size="1.0" tree="@Tree.t:$(n)"/>
             <operator id='$(m)Narrow.t:$(n)' spec='Exchange' isNarrow='true' weight="15" tree="@Tree.t:$(n)"/>
             <operator id='$(m)Wide.t:$(n)' spec='Exchange' isNarrow='false' weight="3" tree="@Tree.t:$(n)"/>
             <operator id='$(m)WilsonBalding.t:$(n)' spec='WilsonBalding' weight="3" tree="@Tree.t:$(n)"/>
@@ -34,7 +34,17 @@
     <!-- tree priors -->
     <mergewith point='treePriorTemplates'>
         <!-- Yule -->
-        <subtemplate id='YuleModel' class='beast.base.evolution.speciation.YuleModel' mainid='YuleModel.t:$(n)'>
+        <subtemplate id='YuleModel' class='beast.base.evolution.speciation.YuleModel' mainid='YuleModel.t:$(n)' hmc='
+YuleModelUniformOperator/index/=Operators/BactrianNodeOperator/index/,
+YuleModelSubtreeSlide/index/=Operators/SubtreeSlide/index/,
+YuleModelNarrow/index/=Operators/Exchange/index/,
+YuleModelWide/index/=Operators/Exchange/index/,
+YuleModelWilsonBalding/index/=Operators/WilsonBalding/index/,
+YuleModelBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
+YuleModelBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
+YuleModelBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
+YuleModelTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+YuleBirthRateScaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
             <plugin spec='YuleModel' id="YuleModel.t:$(n)" tree='@Tree.t:$(n)'>
                 <parameter name='birthDiffRate' id="birthRate.t:$(n)" value='1.0'/>
@@ -42,7 +52,7 @@
 
             <prior id='YuleBirthRatePrior.t:$(n)' x='@birthRate.t:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1000'/></prior>
 
-  		    <scale id='YuleBirthRateScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.75" weight="3" parameter="@birthRate.t:$(n)"/>
+  		    <scale id='YuleBirthRateScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@birthRate.t:$(n)"/>
 ]]>
 			<plate fragment="TreeOperators" var="m" range="YuleModel"/>
 
@@ -73,7 +83,19 @@
         <!-- Calibrated Yule -->
         <subtemplate id='CalibratedYuleModel' class='beast.base.evolution.speciation.CalibratedYuleModel'
                      mainid='CalibratedYuleModel.t:$(n)'
-                     suppressInputs='beast.base.evolution.speciation.CalibratedYuleModel.logMarginal,beast.base.evolution.speciation.CalibratedYuleModel.tree,beast.base.evolution.speciation.CalibratedYuleModel.treeIntervals,beast.base.evolution.speciation.CalibratedYuleModel.calibrations'>
+                     suppressInputs='beast.base.evolution.speciation.CalibratedYuleModel.logMarginal,beast.base.evolution.speciation.CalibratedYuleModel.tree,beast.base.evolution.speciation.CalibratedYuleModel.treeIntervals,beast.base.evolution.speciation.CalibratedYuleModel.calibrations'
+                     hmc="
+CalibratedYuleModelUniformOperator/index/=Operators/BactrianNodeOperator/index,
+CalibratedYuleModelSubtreeSlide/index/=Operators/SubtreeSlide/index/,
+CalibratedYuleModelNarrow/index/=Operators/Exchange/index/,
+CalibratedYuleModelWide/index/=Operators/Exchange/index/,
+CalibratedYuleModelWilsonBalding/index/=Operators/WilsonBalding/index/,
+CalibratedYuleModelBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
+CalibratedYuleModelBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
+CalibratedYuleModelBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
+CalibratedYuleModelTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+CalibratedYuleBirthRateScaler/index/=Operators/BactrianRateScaler/index/
+">
             <![CDATA[
             <plugin spec='CalibratedYuleModel' id="CalibratedYuleModel.t:$(n)" tree='@Tree.t:$(n)'>
                 <parameter name='birthRate' id="birthRateY.t:$(n)" value='1.0'/>
@@ -81,7 +103,7 @@
 
             <prior id='CalibratedYuleBirthRatePrior.t:$(n)' x='@birthRateY.t:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1000'/></prior>
 
-  		    <scale id='CalibratedYuleBirthRateScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.75" weight="3" parameter="@birthRateY.t:$(n)"/>
+  		    <scale id='CalibratedYuleBirthRateScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@birthRateY.t:$(n)"/>
 ]]>
 			<plate fragment="TreeOperators" var="m" range="CalibratedYuleModel"/>
 
@@ -112,7 +134,19 @@
 
         <!-- Birth Death model according to Gernhard'08 -->
         <subtemplate id='BirthDeathModel' class='beast.base.evolution.speciation.BirthDeathGernhard08Model'
-                     mainid='BirthDeath.t:$(n)'>
+                     mainid='BirthDeath.t:$(n)'
+hmc='
+BirthDeathUniformOperator/index/=Operators/BactrianNodeOperator/index,
+BirthDeathSubtreeSlide/index/=Operators/SubtreeSlide/index/,
+BirthDeathNarrow/index/=Operators/Exchange/index/,
+BirthDeathWide/index/=Operators/Exchange/index/,
+BirthDeathWilsonBalding/index/=Operators/WilsonBalding/index/,
+BirthDeathBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
+BirthDeathBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
+BirthDeathBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
+BirthDeathTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+BirthRateScaler/index/=Operators/BactrianRateScaler/index/,
+DeathRateScaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
             <distribution id="BirthDeath.t:$(n)" spec="BirthDeathGernhard08Model" tree='@Tree.t:$(n)'>
                 <birthDiffRate spec='parameter.RealParameter' id="BDBirthRate.t:$(n)" value='1' lower='0' upper='10000' />
@@ -122,8 +156,8 @@
             <prior id='BirthRatePrior.t:$(n)' x='@BDBirthRate.t:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1000'/></prior>
             <prior id='DeathRatePrior.t:$(n)' x='@BDDeathRate.t:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
 
-  		    <scale id='BirthRateScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.75" weight="3" parameter="@BDBirthRate.t:$(n)"/>
-  		    <scale id='DeathRateScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.75" weight="3" parameter="@BDDeathRate.t:$(n)"/>
+  		    <scale id='BirthRateScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@BDBirthRate.t:$(n)"/>
+  		    <scale id='DeathRateScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@BDDeathRate.t:$(n)"/>
 ]]>
 			<plate fragment="TreeOperators" var="m" range="BirthDeath"/>
 
@@ -167,7 +201,17 @@
 
         <!-- Coalescent for Constant population -->
         <subtemplate id='CoalescentConstantPopulation' class='beast.base.evolution.tree.coalescent.Coalescent'
-                     mainid='CoalescentConstant.t:$(n)'>
+                     mainid='CoalescentConstant.t:$(n)' hmc='
+CoalescentConstantPopulationUniformOperator/index/=Operators/BactrianNodeOperator/index,
+CoalescentConstantPopulationSubtreeSlide/index/=Operators/SubtreeSlide/index/,
+CoalescentConstantPopulationNarrow/index/=Operators/Exchange/index/,
+CoalescentConstantPopulationWide/index/=Operators/Exchange/index/,
+CoalescentConstantPopulationWilsonBalding/index/=Operators/WilsonBalding/index/,
+CoalescentConstantPopulationBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
+CoalescentConstantPopulationBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
+CoalescentConstantPopulationBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
+CoalescentConstantPopulationTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+PopSizeScaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
             <distribution id="CoalescentConstant.t:$(n)" spec="Coalescent">
                 <treeIntervals spec='beast.base.evolution.tree.TreeIntervals' id='TreeIntervals.t:$(n)' tree='@Tree.t:$(n)'/>
@@ -176,7 +220,7 @@
                  </populationModel>
             </distribution>
 
-  		    <operator id='PopSizeScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.75" weight="3" parameter="@popSize.t:$(n)"/>
+  		    <operator id='PopSizeScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@popSize.t:$(n)"/>
 	        <prior id='PopSizePrior.t:$(n)' x='@popSize.t:$(n)'><distr spec="OneOnX"/></prior>
 ]]>
 			<plate fragment="TreeOperators" var="m" range="CoalescentConstant"/>
@@ -207,7 +251,18 @@
 
         <!-- Coalescent for Exponential population -->
         <subtemplate id='CoalescentExponentialPopulation' class='beast.base.evolution.tree.coalescent.Coalescent'
-                     mainid='CoalescentExponential.t:$(n)'>
+                     mainid='CoalescentExponential.t:$(n)' hmc='
+CoalescentExponentialPopulationUniformOperator/index/=Operators/BactrianNodeOperator/index,
+CoalescentExponentialPopulationSubtreeSlide/index/=Operators/SubtreeSlide/index/,
+CoalescentExponentialPopulationNarrow/index/=Operators/Exchange/index/,
+CoalescentExponentialPopulationWide/index/=Operators/Exchange/index/,
+CoalescentExponentialPopulationWilsonBalding/index/=Operators/WilsonBalding/index/,
+CoalescentExponentialPopulationBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
+CoalescentExponentialPopulationBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
+CoalescentExponentialPopulationBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
+CoalescentExponentialPopulationTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+ePopSizeScaler/index/=Operators/BactrianRateScaler/index/,
+GrowthRateRandomWalk/index/=Operators/BactrianRandomWalk'>
             <![CDATA[
             <distribution id="CoalescentExponential.t:$(n)" spec="Coalescent">
                 <treeIntervals spec='beast.base.evolution.tree.TreeIntervals' id='TreeIntervals.t:$(n)' tree='@Tree.t:$(n)'/>
@@ -217,8 +272,8 @@
                 </populationModel>
             </distribution>
 
-  		    <operator id='ePopSizeScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.75" weight="3" parameter="@ePopSize.t:$(n)"/>
-	        <operator id="GrowthRateRandomWalk.t:$(n)" spec="RealRandomWalkOperator" windowSize='1' weight="3" parameter="@growthRate.t:$(n)"/>
+  		    <operator id='ePopSizeScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@ePopSize.t:$(n)"/>
+	        <operator id="GrowthRateRandomWalk.t:$(n)" spec="kernel.BactrianRandomWalkOperator" scaleFactor='0.1' weight="3" parameter="@growthRate.t:$(n)"/>
 
 	        <prior id='ePopSizePrior.t:$(n)' x='@ePopSize.t:$(n)'><distr spec="OneOnX"/></prior>
 	        <prior id='GrowthRatePrior.t:$(n)' x='@growthRate.t:$(n)'><distr spec="LaplaceDistribution"><parameter name="mu" value='0.001' estimate="false"/><parameter name="scale" value='30.701135' estimate="false"/></distr></prior>
@@ -266,7 +321,18 @@
         <subtemplate id='CoalescentBayesianSkyline' class='beast.base.evolution.tree.coalescent.Coalescent'
                      mainid='BayesianSkyline.t:$(n)'
                      suppressInputs='beast.base.inference.distribution.MarkovChainDistribution.parameter,
-                     beast.base.inference.distribution.MarkovChainDistribution.initialMean'>
+                     beast.base.inference.distribution.MarkovChainDistribution.initialMean' hmc='
+BayesianSkylineUniformOperator/index/=Operators/BactrianNodeOperator/index,
+BayesianSkylineSubtreeSlide/index/=Operators/SubtreeSlide/index/,
+BayesianSkylineNarrow/index/=Operators/Exchange/index/,
+BayesianSkylineWide/index/=Operators/Exchange/index/,
+BayesianSkylineWilsonBalding/index/=Operators/WilsonBalding/index/,
+BayesianSkylineBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
+BayesianSkylineBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
+BayesianSkylineBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
+BayesianSkylineTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+popSizesScaler/index/=Operators/BactrianRateScaler/index/,
+groupSizesDelta/index/=Operators/BactrianDeltaExchange/index/'>
             <![CDATA[
             <distribution spec="BayesianSkyline" id='BayesianSkyline.t:$(n)'>
                 <parameter name='popSizes' id='bPopSizes.t:$(n)' dimension="5" value="380.0" lower="0.0" estimate='true'/>
@@ -278,8 +344,8 @@
 				jeffreys="true"
 				parameter="@bPopSizes.t:$(n)"/>
 
-		    <operator id='popSizesScaler.t:$(n)' spec='ScaleOperator' scaleFactor="0.75" weight="15" parameter="@bPopSizes.t:$(n)"/>
-		    <operator id='groupSizesDelta.t:$(n)' spec='DeltaExchangeOperator' delta="1" weight="6" integer="true"
+		    <operator id='popSizesScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="15" parameter="@bPopSizes.t:$(n)"/>
+		    <operator id='groupSizesDelta.t:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="1" weight="6" integer="true"
 		              intparameter="@bGroupSizes.t:$(n)"/>
 
 ]]>
@@ -317,7 +383,21 @@
 
         <!-- Coalescent for Extended Bayesian skyline -->
         <subtemplate id='CoalescentExtendedBayesianSkyline' class='beast.base.evolution.tree.coalescent.Coalescent'
-                     mainid='ExtendedBayesianSkyline.t:$(n)'>
+                     mainid='ExtendedBayesianSkyline.t:$(n)' hmc='
+ExtendedBayesianSkylineUniformOperator/index/=Operators/BactrianNodeOperator/index,
+ExtendedBayesianSkylineSubtreeSlide/index/=Operators/SubtreeSlide/index/,
+ExtendedBayesianSkylineNarrow/index/=Operators/Exchange/index/,
+ExtendedBayesianSkylineWide/index/=Operators/Exchange/index/,
+ExtendedBayesianSkylineWilsonBalding/index/=Operators/WilsonBalding/index/,
+ExtendedBayesianSkylineBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
+ExtendedBayesianSkylineBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
+ExtendedBayesianSkylineBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
+ExtendedBayesianSkylineTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+bitflip.alltrees/index/=Operators/BitFlipper/index/,
+indicatorSampler.alltrees/index/=Operators/BactrianDeltaExchange/index/
+indicatorScaler.alltrees/index/=Operators/BactrianDeltaExchange/index/
+EBSPupDownOperator.alltrees/index/=Operators/BactrianUpDown/index/
+'>
             <![CDATA[
 	        <stateNode id="indicators.alltrees" spec="parameter.BooleanParameter" value="false"/>
             <stateNode id="populationMean.alltrees" spec="parameter.RealParameter" value="1"/>
@@ -353,8 +433,8 @@
 
 			<operator id="bitflip.alltrees" parameter="@indicators.alltrees" spec="BitFlipOperator" uniform="true" weight="30.0"/>
 			<operator id="indicatorSampler.alltrees" dist="@popPriorDist.EBSP" indicators="@indicators.alltrees" spec="beast.base.evolution.tree.coalescent.SampleOffValues" values="@popSizes.alltrees" weight="15.0"/>
-			<operator id="indicatorScaler.alltrees" degreesOfFreedom="1" indicator="@indicators.alltrees" parameter="@popSizes.alltrees" scaleAll="false" scaleAllIndependently="false" scaleFactor="0.5" spec="ScaleOperator" weight="15.0"/>
-			<operator id="EBSPupDownOperator.alltrees" scaleFactor="0.7" spec="UpDownOperator" weight="5.0">
+			<operator id="indicatorScaler.alltrees" degreesOfFreedom="1" indicator="@indicators.alltrees" parameter="@popSizes.alltrees" scaleAll="false" scaleAllIndependently="false" scaleFactor="0.5" spec="kernel.BactrianScaleOperator" weight="15.0"/>
+			<operator id="EBSPupDownOperator.alltrees" scaleFactor="0.7" spec="kernel.BactrianUpDownOperator" weight="5.0">
 				<up idref="popSizes.alltrees"/>
 				<up idref="populationMean.alltrees"/>
 			</operator>

@@ -124,7 +124,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 	            boolean isLinked = doc.isLinked(m_input);
 				if (isLinked || doc.suggestedLinks((BEASTInterface) m_input.get()).size() > 0) {
 		            Button linkbutton = new Button();
-		            linkbutton.setGraphic(new ImageView(ListInputEditor.ICONPATH + 
+		            linkbutton.setGraphic(new ImageView(BEASTObjectDialog.ICONPATH + 
 		            		(isLinked ? "link.png" : "unlink.png")));
 		            // linkbutton.setBorder(BorderFactory.createEmptyBorder());
 		            linkbutton.setTooltip(new Tooltip("link/unlink this parameter with another compatible parameter"));

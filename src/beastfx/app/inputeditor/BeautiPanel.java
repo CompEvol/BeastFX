@@ -160,12 +160,6 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         } else {
             return;
         }
-        // box.getChildren().add(new Separator(Orientation.VERTICAL));
-        try {
-        	box.getChildren().add(getIcon(panelIndex, config));
-        } catch (IllegalArgumentException|java.lang.NullPointerException e) {
-        	// something went wrong with loading the panel icon. Ignore
-        }
 
         addPane(box, 0);
         // splitPane.getItems().add(box);
@@ -175,15 +169,6 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         splitPane.setDividerPositions(0.2,0.8);
     }
     
-	private ImageView getIcon(int panelIndex, BeautiPanelConfig config) {
-		String iconLocation = BEASTObjectDialog.ICONPATH + panelIndex + ".png";
-		if (config != null) {
-			iconLocation = BEASTObjectDialog.ICONPATH + config.getIcon();
-		}
-		return FXUtils.getIcon(iconLocation);
-	}
-
-
     /**
      * Create a list of partitions and return as a JComponent;
      * @return

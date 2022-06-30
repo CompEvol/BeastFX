@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
+import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.inputeditor.BEASTObjectPanel;
 import beastfx.app.inputeditor.BeautiAlignmentProvider;
 import beastfx.app.inputeditor.BeautiConfig;
@@ -78,7 +78,7 @@ import java.util.List;
 
 
 public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane implements BeautiDocListener {
-    static final String BEAUTI_ICON = "/beastfx/app/inputeditor/icon/beauti.png";
+    static final String BEAUTI_ICON = BEASTObjectDialog.ICONPATH + "/beauti.png";
 
     /**
      * File extension for Beast specifications
