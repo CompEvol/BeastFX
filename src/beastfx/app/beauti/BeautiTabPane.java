@@ -254,16 +254,6 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         File file = FXUtils.getSaveFile("Save Model As", new File(
                 defaultFile), null, FILE_EXT, FILE_EXT2);
         if (file != null) {
-            if (file.exists() && !Utils.isMac()) {
-                if (Alert.showConfirmDialog(null,
-                        "File " + file.getName()
-                                + " already exists. Do you want to overwrite?",
-                        "Overwrite file?", Alert.YES_NO_CANCEL_OPTION) != Alert.YES_OPTION) {
-                    return false;
-                }
-            }
-            // System.out.println("Saving to file \""+
-            // f.getAbsoluteFile().toString()+"\"");
             doc.setFileName(file.getAbsolutePath());// fc.getSelectedFile().toString();
             if (doc.getFileName().lastIndexOf(File.separator) > 0) {
             	ProgramStatus.setCurrentDir(doc.getFileName().substring(0,

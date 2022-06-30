@@ -138,9 +138,9 @@ public class FXUtils {
 		if (!hmcPages.containsKey(id + "/" + input.getName() + "/")) {
 			return;
 		}
-		System.out.print(id + "/" + input.getName() + "/ => ");
+		//System.out.print(id + "/" + input.getName() + "/ => ");
 		id = hmcPages.get(id + "/" + input.getName() + "/");		
-		System.out.println(id);
+		//System.out.println(id);
 		
 		String HMC_BASE = getHMCBase();
 		String url = HMC_BASE + "/" + id + "/";//.html";

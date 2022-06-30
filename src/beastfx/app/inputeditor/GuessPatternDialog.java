@@ -585,6 +585,13 @@ public class GuessPatternDialog implements Initializable {
 	    Status status = dlg.process();
 	    pattern = dlg.getPattern();
 	    traitMap = dlg.getTraitMap();
+	    
+	    chckbxAddFixedValue = dlg.chckbxAddFixedValue;
+	    textAddValue = dlg.textAddValue;
+	    chckbxUnlessLessThan = dlg.chckbxUnlessLessThan;
+	    textUnlessLessThan = dlg.textUnlessLessThan;
+	    textThenAdd = dlg.textThenAdd;
+
 	    return status;
     }
         

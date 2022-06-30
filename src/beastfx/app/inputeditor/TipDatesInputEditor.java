@@ -224,6 +224,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
         		box.getChildren().remove(box.getChildren().size()-1);
         	}
         }
+        convertTraitToTableData();
     } 
     
     private Node createListBox() {

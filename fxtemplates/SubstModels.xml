@@ -79,7 +79,7 @@ mutationRateScaler/index/=Operators/BactrianRateScaler/index/
             </frequencies>
         </plugin>
 
-        <plugin id='KappaScaler.s:$(n)' spec='kerel.BactrianScaleOperator' scaleFactor="0.1" weight="0.1" parameter="@kappa.s:$(n)"/>
+        <plugin id='KappaScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.1" weight="0.1" parameter="@kappa.s:$(n)"/>
         <plugin id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
 
         <prior id='KappaPrior.s:$(n)' x='@kappa.s:$(n)'>
