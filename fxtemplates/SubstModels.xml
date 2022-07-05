@@ -15,7 +15,10 @@ SiteModel/shape/,
 SiteModel/substModel/,
 gammaShapeScaler/index/=Operators/BactrianRateScaler/index/,
 proportionInvariantScaler/index/=Operators/BactrianRateScaler/index/,
-mutationRateScaler/index/=Operators/BactrianRateScaler/index/
+mutationRateScaler/index/=Operators/BactrianRateScaler/index/,
+GammaShapePrior/index/=Priors/GammaShapePrior/,
+PropInvariantPrior/index/=Priors/PropInvariantPrior/,
+MutationRatePrior/index/=Priors/MutationRatePrior/
 '>
             <![CDATA[
             <plugin spec='SiteModel' id="SiteModel.s:$(n)" gammaCategoryCount='0'>
@@ -69,7 +72,7 @@ mutationRateScaler/index/=Operators/BactrianRateScaler/index/
 
         <!-- HKY substitution model -->
         <subtemplate id='HKY' class='beast.base.evolution.substitutionmodel.HKY' mainid='hky.s:$(n)'
-            hmc='hky/frequencies/,hky/kappa/,KappaPrior/index/,
+            hmc='hky/frequencies/,hky/kappa/,KappaPrior/index/=Priors/KappaPrior/,
             KappaScaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
         <plugin spec='HKY' id='hky.s:$(n)'>
@@ -200,12 +203,12 @@ gtr/rateAC/,
 gtr/rateCG/,
 gtr/rateAG/,
 gtr/rateCT/,
-RateACPrior/index/=RateGTRPrior/index/,
-RateAGPrior/index/=RateGTRPrior/index/,
-RateATPrior/index/=RateGTRPrior/index/,
-RateCGPrior/index/=RateGTRPrior/index/,
-RateCTPrior/index/=RateGTRPrior/index/,
-RateGTPrior/index/=RateGTRPrior/index/,
+RateACPrior/index/=Priors/RateGTRPrior/,
+RateAGPrior/index/=Priors/RateGTRPrior/,
+RateATPrior/index/=Priors/RateGTRPrior/,
+RateCGPrior/index/=Priors/RateGTRPrior/,
+RateCTPrior/index/=Priors/RateGTRPrior/,
+RateGTPrior/index/=Priors/RateGTRPrior/,
             RateACScaler/index/=Operators/BactrianRateScaler/index/,
             RateAGScaler/index/=Operators/BactrianRateScaler/index/,
             RateATScaler/index/=Operators/BactrianRateScaler/index/,
@@ -372,7 +375,7 @@ RateGTPrior/index/=RateGTRPrior/index/,
 
         <!-- frequency models -->
         <subtemplate id='Estimated' class='beast.base.evolution.substitutionmodel.Frequencies'
-                     mainid='estimatedFreqs.s:$(n)' hmc='FrequenciesPrior/index/,
+                     mainid='estimatedFreqs.s:$(n)' hmc='FrequenciesPrior/index/=Priors/FrequenciesPrior/,
                      FrequenciesExchanger/index/=Operators/BactrianDeltaExchange/index/'>
             <![CDATA[
             <frequencies id='estimatedFreqs.s:$(n)' spec='Frequencies'>

@@ -9,7 +9,7 @@
         <!-- Strict clock -->
         <subtemplate id='StrictClock' class='beast.base.evolution.branchratemodel.StrictClockModel'
                      mainid='StrictClock.c:$(n)'
-                     hmc='ClockPrior/index/,
+                     hmc='ClockPrior/index/=Priors/ClockPrior/,
                         StrictClockRateScaler/index/=Operators/BactrianRateScaler/index/,
                         strictClockUpDownOperator/index/=Operators/BactrianUpDown/index/'>
             <![CDATA[
@@ -51,7 +51,7 @@
                      hmc='ExponentialRelaxedClock/clock.rate/=StrictClock/clock.rate/,
                      ExponentialRelaxedClock/normalize/=/RelaxedClock/normalize/,
                      ExponentialRelaxedClock/numberOfDiscreteRates/=/RelaxedClock/numberOfDiscreteRates/,
-                     UCMeanRatePrior/index/=ClockPrior/index/'>
+                     UCMeanRatePrior/index/=Priors/ClockPrior/'>
                      >
             <![CDATA[
         <plugin spec='UCRelaxedClockModel' id="ExponentialRelaxedClock.c:$(n)" tree='@Tree.t:$(n)'>
@@ -124,7 +124,7 @@
                      hmc='RelaxedClock/clock.rate/=StrictClock/clock.rate/,
                      RelaxedClock/normalize/,
                      RelaxedClock/numberOfDiscreteRates/,
-                     MeanRatePrior/index/=ClockPrior/index/'>
+                     MeanRatePrior/index/=Priors/ClockPrior/'>
                      >
             <![CDATA[
         <plugin spec='UCRelaxedClockModel' id="RelaxedClock.c:$(n)" tree='@Tree.t:$(n)'>
@@ -225,7 +225,7 @@
 					 RandomLocalClock/ratesAreMultipliers/,
                      RRatesPrior/index/=RandomLocalClock/RatesPrior/,
                      RRateChangesPrior/index/=RandomLocalClock/RRateChangesPrior/,
-                     MeanRRatePrior/index/=ClockPrior/index/,
+                     MeanRRatePrior/index/=Priors/ClockPrior/,
                      ClockRateScaler/index/=Operators/BactrianRateScaler/index/,
                      randomClockScaler/index/=Operators/BactrianRateScaler/index/,
                      randomClockUpDownOperator/index/=Operators/BactrianUpDown/index/,

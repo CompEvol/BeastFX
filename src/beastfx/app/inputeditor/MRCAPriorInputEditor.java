@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -57,7 +58,9 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         this.itemNr= listItemNr;
 		
         pane = FXUtils.newVBox();
+        pane.setPadding(new Insets(0, 5, 5, 0));
         HBox itemBox = FXUtils.newHBox();
+        itemBox.setPadding(new Insets(0, 5, 5, 5));
 
         MRCAPrior prior = (MRCAPrior) beastObject;
         String text = prior.getID();

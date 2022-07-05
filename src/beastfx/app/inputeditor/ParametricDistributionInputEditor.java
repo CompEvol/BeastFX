@@ -29,7 +29,6 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 
@@ -116,17 +115,8 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
     	LineChart.Series<Number,Number> series;
     	Label infoLabel1, infoLabel2, infoLabel3;
     	
-        // the length in pixels of a tick
-        private static final int TICK_LENGTH = 5;
-
-        // the right margin
-        private static final int RIGHT_MARGIN = 20;
-
         // the margin to the left of y-labels
         private static final int MARGIN_LEFT_OF_Y_LABELS = 5;
-
-        // the top margin
-        private static final int TOP_MARGIN = 10;
 
         private static final int POINTS = 1000;
 
@@ -167,26 +157,15 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         
         // @Override
         synchronized private void paintComponent() {
-        	
-        	//GraphicsContext g = getGraphicsContext2D();
-            // g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            // Record current font, since drawError can take over part-way
-            // through the call to drawGraph, which alters the graphics font size.
-            // Font originalFont = g.getFont();
-
             ParametricDistribution m_distr = (ParametricDistribution)m_input.get();
             if (m_distr == null) {
                 drawError();
             } else {
                 try {
                     m_distr.initAndValidate();
-                    //int fsize = UIManager.getFont("Label.font").getSize();
-                    drawGraph(m_distr);//, fsize * 9/2);
+                    drawGraph(m_distr);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
-                    // ex.printStackTrace();
-                    //g.setFont(originalFont);
                     drawError();
                 }
             }
@@ -210,15 +189,20 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
         }
 
 		private void drawGraph(ParametricDistribution m_distr) {//, int labelOffset) {
-            final int width = (int)getWidth();
-            final int height = (int)getHeight();
+            RealParameter param = getRealParameter();
 
             double minValue = 0.1;
             double maxValue = 1;
             try {
                 minValue = m_distr.inverseCumulativeProbability(0.01);
                 maxValue = m_distr.inverseCumulativeProbability(0.99);
-            } catch (Exception e) {
+                if (minValue < param.getLower()) {
+                	minValue = minValue + 0.99999 * (param.getLower() - minValue);
+                }
+                if (maxValue > param.getUpper()) {
+                	maxValue = param.getUpper() + 0.001 * (maxValue - param.getUpper());
+                }
+            } catch (Throwable e) {
                 // use defaults
             }
             double xRange = maxValue - minValue;
@@ -239,7 +223,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             }
             f = Math.ceil(f);
             f2 = Math.floor(f2);
-//			final int NR_OF_TICKS_X = NR_OF_TICKS[(int) f];
+
             for (int i = 0; i < k; i++) {
                 f *= 10;
                 f2 *= 10;
@@ -248,13 +232,10 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
                 f /= 10;
                 f2 /= 10;
             }
-            //double adjXRange = f;
 
             xRange = xRange + minValue - f2;
-            // xRange = adjust(xRange);
-            final int NR_OF_TICKS_X = m_nTicks;
 
-            minValue = f2; //xRange = adjXRange;
+            minValue = f2;
 
             int points;
             if (!m_distr.isIntegerDistribution()) {
@@ -263,13 +244,10 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
                 points = (int) (xRange);
             }
             double[] xPoints = new double[points];
-            double[] yPoints = new double[points];
             double[] fyPoints = new double[points];
             double yMax = 0;
             
-            RealParameter param = getRealParameter();
             for (int i = 0; i < points; i++) {
-                //try {
             	xPoints[i] = minValue + (xRange * i) / points;
             	double y0 = minValue + (xRange * i) / points;
             	if (param != null && (y0 < param.getLower() || y0 > param.getUpper())) {
@@ -277,58 +255,16 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             	} else {
             		fyPoints[i] = getDensityForPlot(m_distr, y0);
             	}
-                //}
                 if (Double.isInfinite(fyPoints[i]) || Double.isNaN(fyPoints[i])) {
                     fyPoints[i] = 0;
                 }
-                //fyPoints[i] = Math.exp(m_distr.logDensity(minValue + (xRange * i)/points));
                 yMax = Math.max(yMax, fyPoints[i]);
             }
 
             yMax = adjust(yMax);
-            final int NR_OF_TICKS_Y = m_nTicks;
-            
-            
-//            // draw ticks on edge
-//            Font font = g.getFont();
-//            Font smallFont = new Font(font.getName(), font.getSize() * 2/3);
-//            g.setFont(smallFont);
-//
-//            // collect the ylabels and the maximum label width in small font
-//            String[] ylabels = new String[NR_OF_TICKS_Y+1];
-//            int maxLabelWidth = 0;
-//            //FontMetrics sfm = getFontMetrics(smallFont);
-//            for (int i = 0; i <= NR_OF_TICKS_Y; i++) {
-//                ylabels[i] = format(yMax * i / NR_OF_TICKS_Y);
-//                double stringWidth = stringWidth(ylabels[i]);
-//                if (stringWidth > maxLabelWidth) maxLabelWidth = (int) stringWidth;
-//            }
-//
-//            // collect the xlabels
-//            String[] xlabels = new String[NR_OF_TICKS_X+1];
-//            for (int i = 0; i <= NR_OF_TICKS_X; i++) {
-//                xlabels[i] = format(minValue + xRange * i / NR_OF_TICKS_X);
-//            }
-//            int maxLabelHeight = stringHeight("Hfg");//sfm.getMaxAscent()+sfm.getMaxDescent();
-//
-//            int leftMargin = maxLabelWidth + TICK_LENGTH + 1 + MARGIN_LEFT_OF_Y_LABELS;
-//            int bottomMargin = maxLabelHeight + TICK_LENGTH + 1;
-//
-//            int graphWidth = width - leftMargin - RIGHT_MARGIN;
-//            int graphHeight = height - TOP_MARGIN - bottomMargin - labelOffset;
-//
-//            // DRAW GRAPH PAPER
-//            g.setFill(Color.web("0xf0f0f0"));
-//            g.fillRect(0, 0, getWidth(), getHeight());
-//            g.setFill(Color.WHITE);
-//            g.fillRect(leftMargin, TOP_MARGIN, graphWidth, graphHeight);
-//            g.setStroke(Color.BLACK);
-//            g.rect(leftMargin, TOP_MARGIN, graphWidth, graphHeight);
 
 
             for (int i = 0; i < points; i++) {
-//                xPoints[i] = leftMargin + graphWidth * i / points;
-//                yPoints[i] = 1 + (int) (TOP_MARGIN + graphHeight - graphHeight * fyPoints[i] / yMax);
             	Data<Number, Number> p = series.getData().get(i);
             	p.setXValue(xPoints[i]);
             	p.setYValue(fyPoints[i]);
@@ -343,66 +279,26 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
                 }
 			}
 
-//            if (!m_distr.isIntegerDistribution()) {
-//                g.strokePolyline(xPoints, yPoints, points);
-//            } else {
-//                int y0 = 1 + TOP_MARGIN + graphHeight;
-//                int dotDiameter = graphHeight/20;
-//                for (int i=0; i<points; i++) {
-//                    g.strokeLine(xPoints[i], y0, xPoints[i], yPoints[i]);
-//                    g.fillOval(xPoints[i]-dotDiameter/2, yPoints[i]-dotDiameter/2, dotDiameter, dotDiameter);
-//                }
-//            }
-//
-//            for (int i = 0; i <= NR_OF_TICKS_X; i++) {
-//                int x = leftMargin + i * graphWidth / NR_OF_TICKS_X;
-//                g.strokeLine(x, TOP_MARGIN + graphHeight, x, TOP_MARGIN + graphHeight + TICK_LENGTH);
-//                g.strokeText(xlabels[i], x-stringWidth(xlabels[i])/2, TOP_MARGIN + graphHeight + TICK_LENGTH + 1 /* + sfm.getMaxAscent()*/);
-//            }
-//
-//            // draw the y labels and ticks
-//            for (int i = 0; i <= NR_OF_TICKS_Y; i++) {
-//                int y = TOP_MARGIN + graphHeight - i * graphHeight / NR_OF_TICKS_Y;
-//                g.strokeLine(leftMargin - TICK_LENGTH, y, leftMargin, y);
-//                g.strokeText(ylabels[i], leftMargin - TICK_LENGTH - 1 - stringWidth(ylabels[i]), y + 3);
-//            }
-
-            
-            //int fontHeight = (int)(font.getSize() * 10 / 12);
-            //g.setFont(new Font(font.getName(), fontHeight));
-
             String info1 = "", info2 = "", info3 = "";
             String[] strs = new String[]{"2.5% Quantile", "5% Quantile", "Median", "95% Quantile", "97.5% Quantile"};
             Double[] quantiles = new Double[]{0.025, 0.05, 0.5, 0.95, 0.975};
             mayBeUnstable = false;
             for (k = 0; k < 5; k++) {
-
-                //int y = TOP_MARGIN + graphHeight + bottomMargin + /* g.getFontMetrics().getMaxAscent() +*/ k * fontHeight;
                 try {
                     info2 += format(m_distr.inverseCumulativeProbability(quantiles[k]));
-                    //g.strokeText(format(m_distr.inverseCumulativeProbability(quantiles[k])), graphWidth / 2 + leftMargin, y);
                 } catch (MathException | RuntimeException e) {
                 	info2 += "not available";
-                    //g.strokeText("not available", graphWidth / 2 + leftMargin, y);
                 }
                 info1 += strs[k] + "\n";
                 info2 += "\n";
-                // g.strokeText(strs[k], graphWidth / 2 - stringWidth(strs[k]) + leftMargin - fontHeight, y);
             }
             if (mayBeUnstable) {
-                //int x = graphWidth * 3/ 4 + leftMargin; int y =TOP_MARGIN + graphHeight + bottomMargin + fontHeight;
                 info1 += "* numbers\n";
                 info1 += "may not be\n";
                 info1 += "accurate\n";
-                //g.strokeText("* numbers", x, y + 2*fontHeight);
-                //g.strokeText("may not be", x, y + 3*fontHeight);
-                //g.strokeText("accurate", x, y + 4*fontHeight);
-                
             }
             try {
             	info3 += "mean " + format(m_distr.getMean());
-                //g.strokeText("mean " + format(m_distr.getMean()),
-                //       graphWidth * 3/ 4 + leftMargin, TOP_MARGIN + graphHeight + bottomMargin + fontHeight);
             } catch (RuntimeException e) {
                 // catch in case it is not implemented.
             }
@@ -410,20 +306,6 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             infoLabel2.setText(info2);
             infoLabel3.setText(info3);
         }
-        
-        private int stringWidth(String string) {
-			Text text = new Text(string);
-			text.applyCss();
-			double width = text.getLayoutBounds().getWidth();
-			return (int) width;
-		}
-
-        private int stringHeight(String string) {
-			Text text = new Text(string);
-			text.applyCss();
-			double height = text.getLayoutBounds().getHeight();
-			return (int) height;
-		}
 
 		private String format(double value) {
             StringWriter writer = new StringWriter();

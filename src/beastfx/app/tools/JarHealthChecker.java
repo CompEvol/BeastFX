@@ -30,14 +30,16 @@ public class JarHealthChecker extends Runnable {
 	final public Input<String> packageInput = new Input<>("package", "only classes inside this package will be listed", "beast"); 
 
 	
-	final static String [] knowServices = {"beast.app.inputeditor.InputEditor",
+	final static String [] knowServices = {
 			"beast.base.core.BEASTInterface",
 			"beast.base.evolution.datatype.DataType",
 			"beast.base.inference.ModelLogger",
 			"beast.pkgmgmt.NameSpaceInfo",
-			"beast.app.inputeditor.AlignmentImporter",
-			"beast.app.beauti.BeautiHelpAction",		
-			"beast.app.beauti.PriorProvider"};
+			"beastfx.app.inputeditor.InputEditor",
+			"beastfx.app.inputeditor.AlignmentImporter",
+			"beastfx.app.beauti.BeautiHelpAction",		
+			"beastfx.app.beauti.PriorProvider"
+	};
 	
 	private PrintStream out = System.out;
 //	private Set<String> classesInJar;

@@ -1,5 +1,6 @@
 package beastfx.app.inputeditor;
 
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,21 +11,16 @@ import javax.swing.event.ListSelectionListener;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
-import beastfx.app.inputeditor.SmallButton.ButtonType;
 import beastfx.app.util.FXUtils;
 import javafx.application.Platform;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
 
 /**

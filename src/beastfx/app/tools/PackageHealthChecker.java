@@ -79,6 +79,7 @@ public class PackageHealthChecker extends Runnable {
 		new File(packageDir).mkdir();
 		PackageManager.doUnzip(packageInput.get().getPath(), packageDir);
 		
+		collectClasses();
 		
 		// do checks
 		String versionFileName = checkVersionFile();
@@ -103,18 +104,20 @@ public class PackageHealthChecker extends Runnable {
 		
 		String separator = Utils.isWindows() ? "\\\\" : File.separator;
 		List<String> failedFiles = new ArrayList<>(); 
-		for (String fileName : new File(packageDir + separator + "examples").list()) {
-            Log.warning("Processing " + fileName);
-            XMLParser parser = new XMLParser();
-            try {
-                parser.parseFile(new File(packageDir + separator + "examples" + separator + fileName));
-            } catch (Exception e) {
-            	e.printStackTrace()
-            	;
-                out.println("Example Xml parsing failed for " + fileName
-                        + ": " + e.getMessage());
-                failedFiles.add(fileName);
-            }
+		if (new File(packageDir + separator + "examples").exists()) {
+			for (String fileName : new File(packageDir + separator + "examples").list()) {
+	            Log.warning("Processing " + fileName);
+	            XMLParser parser = new XMLParser();
+	            try {
+	                parser.parseFile(new File(packageDir + separator + "examples" + separator + fileName));
+	            } catch (Exception e) {
+	            	e.printStackTrace()
+	            	;
+	                out.println("Example Xml parsing failed for " + fileName
+	                        + ": " + e.getMessage());
+	                failedFiles.add(fileName);
+	            }
+			}
 		}		
 	}
 
@@ -232,9 +235,9 @@ public class PackageHealthChecker extends Runnable {
 					}
 				}
 			}
-			if (fileName.toLowerCase().equals("templates")) {
+			if (fileName.toLowerCase().equals("fxtemplates")) {
 				hasTemplates = true;
-				for (String example : new File(packageDir+"/templates").list()) {
+				for (String example : new File(packageDir+"/fxtemplates").list()) {
 					if (example.toLowerCase().endsWith("xml")) {
 						templateCount++;
 					}

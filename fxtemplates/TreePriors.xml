@@ -1,6 +1,12 @@
 <beast version='2.0'
        namespace='beastfx.app.beauti:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.branchratemodel:beast.base.evolution.speciation:beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood:beast.evolution:beast.base.inference.distribution'>
 
+
+
+
+
+
+
        
     <mergewith point='misc'>
         <fragment id='TreeOperators' spec="beastfx.app.beauti.Fragment">
@@ -44,7 +50,9 @@ YuleModelBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
 YuleModelBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
 YuleModelBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
 YuleModelTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
-YuleBirthRateScaler/index/=Operators/BactrianRateScaler/index/'>
+YuleBirthRateScaler/index/=Operators/BactrianRateScaler/index/,
+YuleBirthRatePrior/index/=Priors/YuleBirthRatePrior/
+'>
             <![CDATA[
             <plugin spec='YuleModel' id="YuleModel.t:$(n)" tree='@Tree.t:$(n)'>
                 <parameter name='birthDiffRate' id="birthRate.t:$(n)" value='1.0'/>
@@ -94,7 +102,8 @@ CalibratedYuleModelBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
 CalibratedYuleModelBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
 CalibratedYuleModelBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
 CalibratedYuleModelTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
-CalibratedYuleBirthRateScaler/index/=Operators/BactrianRateScaler/index/
+CalibratedYuleBirthRateScaler/index/=Operators/BactrianRateScaler/index/,
+CalibratedYuleBirthRatePrior/index/=Priors/CalibratedYuleBirthRatePrior/
 ">
             <![CDATA[
             <plugin spec='CalibratedYuleModel' id="CalibratedYuleModel.t:$(n)" tree='@Tree.t:$(n)'>
@@ -146,7 +155,9 @@ BirthDeathBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
 BirthDeathBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
 BirthDeathTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
 BirthRateScaler/index/=Operators/BactrianRateScaler/index/,
-DeathRateScaler/index/=Operators/BactrianRateScaler/index/'>
+DeathRateScaler/index/=Operators/BactrianRateScaler/index/,
+BirthRatePrior/index/=Priors/BirthRatePrior/,
+DeathRatePrior/index/=Priors/DeathRatePrior/'>
             <![CDATA[
             <distribution id="BirthDeath.t:$(n)" spec="BirthDeathGernhard08Model" tree='@Tree.t:$(n)'>
                 <birthDiffRate spec='parameter.RealParameter' id="BDBirthRate.t:$(n)" value='1' lower='0' upper='10000' />
@@ -211,6 +222,7 @@ CoalescentConstantPopulationBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
 CoalescentConstantPopulationBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
 CoalescentConstantPopulationBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
 CoalescentConstantPopulationTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+PopSizePrior/index/=Priors/PopSizePrior/,
 PopSizeScaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
             <distribution id="CoalescentConstant.t:$(n)" spec="Coalescent">
@@ -261,6 +273,8 @@ CoalescentExponentialPopulationBICEPSEpochTop/index/=Operators/EpochFlexer/index
 CoalescentExponentialPopulationBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
 CoalescentExponentialPopulationBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
 CoalescentExponentialPopulationTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+GrowthRatePrior/index/=Priors/GrowthRatePrior/,
+ePopSizePrior/index/=Priors/ePopSizePrior/,
 ePopSizeScaler/index/=Operators/BactrianRateScaler/index/,
 GrowthRateRandomWalk/index/=Operators/BactrianRandomWalk'>
             <![CDATA[
@@ -396,6 +410,10 @@ ExtendedBayesianSkylineTreeRootScaler/index/=Operators/BactrianTreeScaler/index/
 bitflip.alltrees/index/=Operators/BitFlipper/index/,
 indicatorSampler.alltrees/index/=Operators/BactrianDeltaExchange/index/
 indicatorScaler.alltrees/index/=Operators/BactrianDeltaExchange/index/
+populationMeanPrior/index/=Priors/populationMeanPrior/,
+indicatorsPrior/index/=Priors/indicatorsPrior/,
+popPriorDist/mean/,
+popPriorDist/offset/,
 EBSPupDownOperator.alltrees/index/=Operators/BactrianUpDown/index/
 '>
             <![CDATA[

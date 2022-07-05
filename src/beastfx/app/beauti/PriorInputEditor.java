@@ -115,6 +115,7 @@ public class PriorInputEditor extends InputEditor.Base {
                 BEASTObjectDialog dlg = new BEASTObjectDialog(p1, RealParameter.class, doc);
                 if (dlg.showDialog()) {
                     dlg.accept(p1, doc);
+                    p1.initAndValidate();
                     rangeButton1.setText(paramToString(p1));
                     refreshPanel();
                 }
@@ -135,6 +136,7 @@ public class PriorInputEditor extends InputEditor.Base {
                 BEASTObjectDialog dlg = new BEASTObjectDialog(p1, IntegerParameter.class, doc);
                 if (dlg.showDialog()) {
                     dlg.accept(p1, doc);
+                    p1.initAndValidate();
                     rangeButton1.setText(paramToString(p1));
                     refreshPanel();
                 }

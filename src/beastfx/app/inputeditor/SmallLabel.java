@@ -13,6 +13,7 @@ public class SmallLabel extends Label {
 
     public SmallLabel(String label, String circleColor) {
         super(label);
+        setText("");
         String style = 
                 "-fx-background-radius: 20em; " +
                 "-fx-min-width: 15px; " +

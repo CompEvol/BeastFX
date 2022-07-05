@@ -15,6 +15,10 @@ public class Beauti extends Application {
         primaryStage.show();
 	}
 
+    static public boolean isInBeauti() {
+    	return ProgramStatus.name.equals("BEAUti");
+    }
+
 	
     public static void main(String[] args) {
     	ProgramStatus.name = "BEAUti";
