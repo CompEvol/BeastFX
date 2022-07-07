@@ -33,12 +33,22 @@ public class SmallButton extends Button {
 
 	private void setIcon(String label) {
         if (label.equals("e")) {
-        	setText("");
-            Image image = new Image(getClass().getResource("icon/edit.png").toString());
-            ImageView icon = new ImageView(image);
-        	setGraphic(icon);
+            String style = 
+                    "-fx-background-radius: 2; " +
+                    "-fx-min-width: 20pt; " +
+                    "-fx-min-height: 20pt; " +
+                    "-fx-max-width: 20pt; " +
+                    "-fx-max-height: 20pt; " +
+                    "-fx-font-size: 5pt;" +
+                    "-fx-border:5 5 5 5 ";
+        	setStyle(style);
+            // getTooltip().setStyle("-fx-font-size: 8pt");
+
+            //Image image = new Image(getClass().getResource("icon/edit.png").toString());
+            //ImageView icon = new ImageView(image);
+        	//setGraphic(icon);
             //setBorder(BorderFactory.createEmptyBorder());
-            setStyle("-fx-border:0 0 0 0 ");
+            //setStyle("-fx-border:0 0 0 0 ");
         }
 	}
 

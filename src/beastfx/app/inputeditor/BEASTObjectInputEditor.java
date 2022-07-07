@@ -95,23 +95,33 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
     } // init
 
     protected Button createEditButton(Input<?> input) {
-        m_editBEASTObjectButton = new Button();
-        m_editBEASTObjectButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "edit16.png"));
-        m_editBEASTObjectButton.setStyle(
-    	        "-fx-background-radius: 5em; " +
-    	                "-fx-min-width: 10px; " +
-    	                "-fx-min-height: 3px; " +
-    	                "-fx-max-width: 10px; " +
-    	                "-fx-max-height: 3px; " +
-    	                "-fx-background-color: -fx-body-color;" +
-    	                "-fx-background-insets: 5px; " +
-    	                "-fx-spacing: 5px;" +
-    	                "-fx-padding: 5px;"
-    	        );
+        m_editBEASTObjectButton = new Button("e");        
+        String style = 
+                "-fx-background-radius: 10; " +
+                "-fx-min-width: 15px; " +
+                "-fx-min-height: 15px; " +
+                "-fx-max-width: 15px; " +
+                "-fx-max-height: 15px; " +
+                "-fx-font-size: 5pt";
+        m_editBEASTObjectButton.setStyle(style);
+
+//        m_editBEASTObjectButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "edit16.png"));
+//        m_editBEASTObjectButton.setStyle(
+//    	        "-fx-background-radius: 5em; " +
+//    	                "-fx-min-width: 10px; " +
+//    	                "-fx-min-height: 3px; " +
+//    	                "-fx-max-width: 10px; " +
+//    	                "-fx-max-height: 3px; " +
+//    	                "-fx-background-color: -fx-body-color;" +
+//    	                "-fx-background-insets: 5px; " +
+//    	                "-fx-spacing: 5px;" +
+//    	                "-fx-padding: 5px;"
+//    	        );
         if (input.get() == null) {
             m_editBEASTObjectButton.setDisable(true);
         }
         m_editBEASTObjectButton.setTooltip(new Tooltip("Edit " + m_inputLabel.getText()));
+        m_editBEASTObjectButton.getTooltip().setStyle("-fx-font-size: 8pt");
 
         m_editBEASTObjectButton.setOnAction(e -> {
             BEASTObjectDialog dlg = new BEASTObjectDialog((BEASTInterface) m_input.get(), m_input.getType(), doc);

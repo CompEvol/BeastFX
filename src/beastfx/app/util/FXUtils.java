@@ -151,6 +151,7 @@ public class FXUtils {
         } else {
         	hmc.setTooltip(new Tooltip(input.getTipText() + "\n" + o.getID() + "\n" + url));
         }
+        hmc.getTooltip().setStyle("-fx-font-size: 8pt");
         pane.getChildren().add(hmc);
 	}
 	
@@ -199,20 +200,18 @@ public class FXUtils {
 	
 	public static Button createHMCButton(final String url) {
 		
-	   Button hmcButton = new Button();
+	   Button hmcButton = new Button("?");
     	hmcButton.setTooltip(new Tooltip("Click to 'help me choose'"));
-    	hmcButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "help16.png"));
+    	//hmcButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "help16.png"));
     	hmcButton.setOnAction(e->openInBrowser(url, hmcButton));
-    	hmcButton.setStyle(
-    	        "-fx-background-radius: 5em; " +
-				"-fx-min-width: 10px; " +
-				"-fx-min-height: 3px; " +
-				"-fx-max-width: 10px; " +
-				"-fx-max-height: 3px; " +
-                "-fx-background-color: -fx-body-color;" +
-                "-fx-background-insets: 2px; " +
-                "-fx-padding: 2px;"
-    	        );
+        String style = 
+                "-fx-background-radius: 10; " +
+                "-fx-min-width: 15px; " +
+                "-fx-min-height: 15px; " +
+                "-fx-max-width: 15px; " +
+                "-fx-max-height: 15px; " +
+                "-fx-font-size: 5pt";
+        hmcButton.setStyle(style);
     	return hmcButton;
     }
 	   
