@@ -134,7 +134,17 @@
 ]]>
         </subtemplate>
 
-
+        <!-- Dirichlet -->
+        <subtemplate id='Dirichlet' class='beast.base.inference.distribution.Dirichlet' mainid='[top]'
+            hmc='
+            Dirichlet/alpha/=ParametricDistributions/Dirichlet/mean/,
+            Dirichlet/offset/=ParametricDistributions/Dirichlet/offset/'>
+            <![CDATA[
+			<distr spec="beast.base.inference.distribution.Dirichlet" offset="0.0">
+                <parameter spec="parameter.RealParameter" estimate="false" name="alpha">1.0</parameter>
+            </distr> 
+]]>
+        </subtemplate>
     </mergewith>
 
 

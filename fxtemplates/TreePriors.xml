@@ -233,7 +233,9 @@ PopSizeScaler/index/=Operators/BactrianRateScaler/index/'>
             </distribution>
 
   		    <operator id='PopSizeScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@popSize.t:$(n)"/>
-	        <prior id='PopSizePrior.t:$(n)' x='@popSize.t:$(n)'><distr spec="OneOnX"/></prior>
+	        <prior id='PopSizePrior.t:$(n)' x='@popSize.t:$(n)'>
+	        	<distr spec="OneOnX"/>
+	        </prior>
 ]]>
 			<plate fragment="TreeOperators" var="m" range="CoalescentConstant"/>
 
@@ -289,8 +291,15 @@ GrowthRateRandomWalk/index/=Operators/BactrianRandomWalk'>
   		    <operator id='ePopSizeScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@ePopSize.t:$(n)"/>
 	        <operator id="GrowthRateRandomWalk.t:$(n)" spec="kernel.BactrianRandomWalkOperator" scaleFactor='0.1' weight="3" parameter="@growthRate.t:$(n)"/>
 
-	        <prior id='ePopSizePrior.t:$(n)' x='@ePopSize.t:$(n)'><distr spec="OneOnX"/></prior>
-	        <prior id='GrowthRatePrior.t:$(n)' x='@growthRate.t:$(n)'><distr spec="LaplaceDistribution"><parameter name="mu" value='0.001' estimate="false"/><parameter name="scale" value='30.701135' estimate="false"/></distr></prior>
+	        <prior id='ePopSizePrior.t:$(n)' x='@ePopSize.t:$(n)'>
+	        	<distr spec="OneOnX"/>
+	        </prior>
+	        <prior id='GrowthRatePrior.t:$(n)' x='@growthRate.t:$(n)'>
+	        	<distr spec="LaplaceDistribution">
+	        		<parameter name="mu" value='0.001' estimate="false"/>
+	        		<parameter name="scale" value='0.5' estimate="false"/>
+	        	</distr>
+	        </prior>
 
 ]]>
 			<plate fragment="TreeOperators" var="m" range="CoalescentExponential"/>
@@ -412,9 +421,12 @@ indicatorSampler.alltrees/index/=Operators/BactrianDeltaExchange/index/
 indicatorScaler.alltrees/index/=Operators/BactrianDeltaExchange/index/
 populationMeanPrior/index/=Priors/populationMeanPrior/,
 indicatorsPrior/index/=Priors/indicatorsPrior/,
-popPriorDist/mean/,
-popPriorDist/offset/,
-EBSPupDownOperator.alltrees/index/=Operators/BactrianUpDown/index/
+EBSPupDownOperator.alltrees/index/=Operators/BactrianUpDown/index/,
+EBSPLogger/fileName/,
+EBSPLogger/sort/,
+EBSPLogger/sanitiseHeaders/,
+EBSPLogger/logEvery/,
+EBSPLogger/mode/
 '>
             <![CDATA[
 	        <stateNode id="indicators.alltrees" spec="parameter.BooleanParameter" value="false"/>
@@ -431,7 +443,10 @@ EBSPupDownOperator.alltrees/index/=Operators/BactrianUpDown/index/
 			</population>
 
             <prior id="populationMeanPrior.alltrees" x="@populationMean.alltrees">
-                <distr spec="OneOnX" id='OneOnX.EBSP'/>
+                <Gamma name="distr">
+                  	<alpha spec="parameter.RealParameter" value="0.01" estimate="false"/> 
+                  	<beta  spec="parameter.RealParameter" value="100.0" estimate="false"/>
+                </Gamma>
             </prior>
             <prior id="indicatorsPrior.alltrees">
                 <x arg="@indicators.alltrees" id="indsSun.alltrees" spec="beast.base.evolution.Sum"/>

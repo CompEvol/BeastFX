@@ -28,7 +28,7 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                 <shape               spec='parameter.RealParameter' id='gammaShape.s:$(n)' value='1.0' lower="0.1" estimate='false'/>
             </plugin>
 
-                <prior id='MutationRatePrior.s:$(n)' x='@mutationRate.s:$(n)'><distr spec="OneOnX"/></prior>
+            <prior id='MutationRatePrior.s:$(n)' x='@mutationRate.s:$(n)'><distr spec="OneOnX"/></prior>
             <prior id='GammaShapePrior.s:$(n)' x='@gammaShape.s:$(n)'><distr spec="beast.base.inference.distribution.Exponential" mean='1'/></prior>
             <prior id='PropInvariantPrior.s:$(n)' x='@proportionInvariant.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
 
@@ -91,7 +91,11 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                 <parameter name='S' value="1.25" estimate='false'/>
             </distr>
 		</prior>
-        <prior id='FrequenciesPrior.s:$(n)' x='@freqParameter.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
+        <prior id='FrequenciesPrior.s:$(n)' x='@freqParameter.s:$(n)'>
+			<distr spec="beast.base.inference.distribution.Dirichlet">
+                <parameter spec="parameter.RealParameter" dimension="4" estimate="false" name="alpha">4.0 4.0 4.0 4.0</parameter>
+            </distr> 
+        </prior>
 
 ]]>
 
@@ -151,7 +155,11 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                 <parameter name='S' value="1.25" estimate='false'/>
             </distr>
 	</prior>
-    <prior id='FrequenciesPrior.s:$(n)' x='@freqParameter.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
+    <prior id='FrequenciesPrior.s:$(n)' x='@freqParameter.s:$(n)'>
+			<distr spec="beast.base.inference.distribution.Dirichlet">
+                <parameter spec="parameter.RealParameter" dimension="4" estimate="false" name="alpha">4.0 4.0 4.0 4.0</parameter>
+            </distr> 
+	</prior>
 
 ]]>
 
@@ -243,7 +251,11 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
         <prior id='RateCTPrior.s:$(n)' x='@rateCT.s:$(n)'><distr spec="beast.base.inference.distribution.Gamma"><parameter name="alpha" value='0.05' estimate="false"/><parameter name="beta" value='20.0' estimate="false"/></distr></prior>
         <prior id='RateGTPrior.s:$(n)' x='@rateGT.s:$(n)'><distr spec="beast.base.inference.distribution.Gamma"><parameter name="alpha" value='0.05' estimate="false"/><parameter name="beta" value='10.0' estimate="false"/></distr></prior>
 
-        <prior id='FrequenciesPrior.s:$(n)' x='@freqParameter.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
+        <prior id='FrequenciesPrior.s:$(n)' x='@freqParameter.s:$(n)'>
+			<distr spec="beast.base.inference.distribution.Dirichlet">
+                <parameter spec="parameter.RealParameter" dimension="4" estimate="false" name="alpha">4.0 4.0 4.0 4.0</parameter>
+            </distr> 
+		</prior>
 ]]>
 
             <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
