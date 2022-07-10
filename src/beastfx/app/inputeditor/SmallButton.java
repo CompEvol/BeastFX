@@ -7,6 +7,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import beastfx.app.util.Alert;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,15 +34,16 @@ public class SmallButton extends Button {
 
 	private void setIcon(String label) {
         if (label.equals("e")) {
-            String style = 
-                    "-fx-background-radius: 2; " +
-                    "-fx-min-width: 20pt; " +
-                    "-fx-min-height: 20pt; " +
-                    "-fx-max-width: 20pt; " +
-                    "-fx-max-height: 20pt; " +
-                    "-fx-font-size: 5pt;" +
-                    "-fx-border:5 5 5 5 ";
-        	setStyle(style);
+        	setText("");
+//            String style = 
+//                    "-fx-background-radius: 2; " +
+//                    "-fx-min-width: 20pt; " +
+//                    "-fx-min-height: 20pt; " +
+//                    "-fx-max-width: 20pt; " +
+//                    "-fx-max-height: 20pt; " +
+//                    "-fx-font-size: 5pt;";
+//        	setStyle(style);
+//        	setPadding(new Insets(10, 0, 0, 5));
             // getTooltip().setStyle("-fx-font-size: 8pt");
 
             //Image image = new Image(getClass().getResource("icon/edit.png").toString());

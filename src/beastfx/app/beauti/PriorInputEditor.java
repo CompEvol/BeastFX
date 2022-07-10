@@ -7,6 +7,8 @@ package beastfx.app.beauti;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.naming.directory.DirContext;
+
 import javafx.geometry.Dimension2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -23,7 +25,9 @@ import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.util.FXUtils;
 import beastfx.app.inputeditor.ListInputEditor;
 import beast.base.core.BEASTInterface;
+import beast.base.core.Function;
 import beast.base.core.Input;
+import beast.base.inference.distribution.Dirichlet;
 import beast.base.inference.distribution.Prior;
 import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
@@ -64,6 +68,14 @@ public class PriorInputEditor extends InputEditor.Base {
         itemBox.getChildren().add(label);
 
         List<BeautiSubTemplate> availableBEASTObjects = doc.getInputEditorFactory().getAvailableTemplates(prior.distInput, prior, null, doc);
+        if (prior.m_x.get().getDimension() == 1) {
+        	// remove Dirichlet entry
+        	for (int i = availableBEASTObjects.size() - 1; i >=0 ; i--) {
+        		if (availableBEASTObjects.get(i).getID().equals("Dirichlet")) {
+        			availableBEASTObjects.remove(i);
+        		}
+        	}
+        }
         ComboBox<BeautiSubTemplate> comboBox = new ComboBox<BeautiSubTemplate>();
         comboBox.getItems().addAll(availableBEASTObjects.toArray(new BeautiSubTemplate[]{}));
         comboBox.setId(text+".distr");
@@ -93,6 +105,15 @@ public class PriorInputEditor extends InputEditor.Base {
                 e1.printStackTrace();
             }
 
+            if (prior1.distInput.get() instanceof Dirichlet) {
+            	Input<Function> alphaInput = ((Dirichlet)prior1.distInput.get()).alphaInput;
+            	Function f = alphaInput.get();
+            	if (f instanceof RealParameter) {
+            		((RealParameter)f).setDimension(prior1.m_x.get().getDimension());
+            	}
+            }
+
+            
             sync();
             refreshPanel();
         });

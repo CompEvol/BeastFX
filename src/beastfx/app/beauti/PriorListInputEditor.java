@@ -162,6 +162,7 @@ public class PriorListInputEditor extends ListInputEditor {
 	    	int listItemNr = ((List<?>) m_input.get()).indexOf(beastObject);
 	    	InputEditor editor = doc.getInputEditorFactory().createInputEditor(m_input, listItemNr, beastObject, false, ExpandOption.FALSE, ButtonStatus.NONE, null, doc);
 	    	itemBox.getChildren().add((Pane) editor);
+	    	((Pane)editor).setPadding(new Insets(0));
 	    	return editor;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

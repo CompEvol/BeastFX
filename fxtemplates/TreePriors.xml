@@ -41,16 +41,16 @@
     <mergewith point='treePriorTemplates'>
         <!-- Yule -->
         <subtemplate id='YuleModel' class='beast.base.evolution.speciation.YuleModel' mainid='YuleModel.t:$(n)' hmc='
-YuleModelUniformOperator/index/=Operators/BactrianNodeOperator/index/,
-YuleModelSubtreeSlide/index/=Operators/SubtreeSlide/index/,
-YuleModelNarrow/index/=Operators/Exchange/index/,
-YuleModelWide/index/=Operators/Exchange/index/,
-YuleModelWilsonBalding/index/=Operators/WilsonBalding/index/,
-YuleModelBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
-YuleModelBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
-YuleModelBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
-YuleModelTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
-YuleBirthRateScaler/index/=Operators/BactrianRateScaler/index/,
+YuleModelUniformOperator/index/=Operators/BactrianNodeOperator/,
+YuleModelSubtreeSlide/index/=Operators/SubtreeSlide/,
+YuleModelNarrow/index/=Operators/Exchange/,
+YuleModelWide/index/=Operators/Exchange/,
+YuleModelWilsonBalding/index/=Operators/WilsonBalding/,
+YuleModelBICEPSEpochTop/index/=Operators/EpochFlexer/,
+YuleModelBICEPSEpochAll/index/=Operators/EpochFlexer/,
+YuleModelBICEPSTreeFlex/index/=Operators/TreeStretcher/,
+YuleModelTreeRootScaler/index/=Operators/BactrianTreeScaler/,
+YuleBirthRateScaler/index/=Operators/BactrianRateScaler/,
 YuleBirthRatePrior/index/=Priors/YuleBirthRatePrior/
 '>
             <![CDATA[
@@ -94,15 +94,15 @@ YuleBirthRatePrior/index/=Priors/YuleBirthRatePrior/
                      suppressInputs='beast.base.evolution.speciation.CalibratedYuleModel.logMarginal,beast.base.evolution.speciation.CalibratedYuleModel.tree,beast.base.evolution.speciation.CalibratedYuleModel.treeIntervals,beast.base.evolution.speciation.CalibratedYuleModel.calibrations'
                      hmc="
 CalibratedYuleModelUniformOperator/index/=Operators/BactrianNodeOperator/index,
-CalibratedYuleModelSubtreeSlide/index/=Operators/SubtreeSlide/index/,
-CalibratedYuleModelNarrow/index/=Operators/Exchange/index/,
-CalibratedYuleModelWide/index/=Operators/Exchange/index/,
-CalibratedYuleModelWilsonBalding/index/=Operators/WilsonBalding/index/,
-CalibratedYuleModelBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
-CalibratedYuleModelBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
-CalibratedYuleModelBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
-CalibratedYuleModelTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
-CalibratedYuleBirthRateScaler/index/=Operators/BactrianRateScaler/index/,
+CalibratedYuleModelSubtreeSlide/index/=Operators/SubtreeSlide/,
+CalibratedYuleModelNarrow/index/=Operators/Exchange/,
+CalibratedYuleModelWide/index/=Operators/Exchange/,
+CalibratedYuleModelWilsonBalding/index/=Operators/WilsonBalding/,
+CalibratedYuleModelBICEPSEpochTop/index/=Operators/EpochFlexer/,
+CalibratedYuleModelBICEPSEpochAll/index/=Operators/EpochFlexer/,
+CalibratedYuleModelBICEPSTreeFlex/index/=Operators/TreeStretcher/,
+CalibratedYuleModelTreeRootScaler/index/=Operators/BactrianTreeScaler/,
+CalibratedYuleBirthRateScaler/index/=Operators/BactrianRateScaler/,
 CalibratedYuleBirthRatePrior/index/=Priors/CalibratedYuleBirthRatePrior/
 ">
             <![CDATA[
@@ -146,16 +146,16 @@ CalibratedYuleBirthRatePrior/index/=Priors/CalibratedYuleBirthRatePrior/
                      mainid='BirthDeath.t:$(n)'
 hmc='
 BirthDeathUniformOperator/index/=Operators/BactrianNodeOperator/index,
-BirthDeathSubtreeSlide/index/=Operators/SubtreeSlide/index/,
-BirthDeathNarrow/index/=Operators/Exchange/index/,
-BirthDeathWide/index/=Operators/Exchange/index/,
-BirthDeathWilsonBalding/index/=Operators/WilsonBalding/index/,
-BirthDeathBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
-BirthDeathBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
-BirthDeathBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
-BirthDeathTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
-BirthRateScaler/index/=Operators/BactrianRateScaler/index/,
-DeathRateScaler/index/=Operators/BactrianRateScaler/index/,
+BirthDeathSubtreeSlide/index/=Operators/SubtreeSlide/,
+BirthDeathNarrow/index/=Operators/Exchange/,
+BirthDeathWide/index/=Operators/Exchange/,
+BirthDeathWilsonBalding/index/=Operators/WilsonBalding/,
+BirthDeathBICEPSEpochTop/index/=Operators/EpochFlexer/,
+BirthDeathBICEPSEpochAll/index/=Operators/EpochFlexer/,
+BirthDeathBICEPSTreeFlex/index/=Operators/TreeStretcher/,
+BirthDeathTreeRootScaler/index/=Operators/BactrianTreeScaler/,
+BirthRateScaler/index/=Operators/BactrianRateScaler/,
+DeathRateScaler/index/=Operators/BactrianRateScaler/,
 BirthRatePrior/index/=Priors/BirthRatePrior/,
 DeathRatePrior/index/=Priors/DeathRatePrior/'>
             <![CDATA[
@@ -214,14 +214,14 @@ DeathRatePrior/index/=Priors/DeathRatePrior/'>
         <subtemplate id='CoalescentConstantPopulation' class='beast.base.evolution.tree.coalescent.Coalescent'
                      mainid='CoalescentConstant.t:$(n)' hmc='
 CoalescentConstantPopulationUniformOperator/index/=Operators/BactrianNodeOperator/index,
-CoalescentConstantPopulationSubtreeSlide/index/=Operators/SubtreeSlide/index/,
-CoalescentConstantPopulationNarrow/index/=Operators/Exchange/index/,
-CoalescentConstantPopulationWide/index/=Operators/Exchange/index/,
-CoalescentConstantPopulationWilsonBalding/index/=Operators/WilsonBalding/index/,
-CoalescentConstantPopulationBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
-CoalescentConstantPopulationBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
-CoalescentConstantPopulationBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
-CoalescentConstantPopulationTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+CoalescentConstantPopulationSubtreeSlide/index/=Operators/SubtreeSlide/,
+CoalescentConstantPopulationNarrow/index/=Operators/Exchange/,
+CoalescentConstantPopulationWide/index/=Operators/Exchange/,
+CoalescentConstantPopulationWilsonBalding/index/=Operators/WilsonBalding/,
+CoalescentConstantPopulationBICEPSEpochTop/index/=Operators/EpochFlexer/,
+CoalescentConstantPopulationBICEPSEpochAll/index/=Operators/EpochFlexer/,
+CoalescentConstantPopulationBICEPSTreeFlex/index/=Operators/TreeStretcher/,
+CoalescentConstantPopulationTreeRootScaler/index/=Operators/BactrianTreeScaler/,
 PopSizePrior/index/=Priors/PopSizePrior/,
 PopSizeScaler/index/=Operators/BactrianRateScaler/index/'>
             <![CDATA[
@@ -267,17 +267,17 @@ PopSizeScaler/index/=Operators/BactrianRateScaler/index/'>
         <subtemplate id='CoalescentExponentialPopulation' class='beast.base.evolution.tree.coalescent.Coalescent'
                      mainid='CoalescentExponential.t:$(n)' hmc='
 CoalescentExponentialPopulationUniformOperator/index/=Operators/BactrianNodeOperator/index,
-CoalescentExponentialPopulationSubtreeSlide/index/=Operators/SubtreeSlide/index/,
-CoalescentExponentialPopulationNarrow/index/=Operators/Exchange/index/,
-CoalescentExponentialPopulationWide/index/=Operators/Exchange/index/,
-CoalescentExponentialPopulationWilsonBalding/index/=Operators/WilsonBalding/index/,
-CoalescentExponentialPopulationBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
-CoalescentExponentialPopulationBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
-CoalescentExponentialPopulationBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
-CoalescentExponentialPopulationTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
+CoalescentExponentialPopulationSubtreeSlide/index/=Operators/SubtreeSlide/,
+CoalescentExponentialPopulationNarrow/index/=Operators/Exchange/,
+CoalescentExponentialPopulationWide/index/=Operators/Exchange/,
+CoalescentExponentialPopulationWilsonBalding/index/=Operators/WilsonBalding/,
+CoalescentExponentialPopulationBICEPSEpochTop/index/=Operators/EpochFlexer/,
+CoalescentExponentialPopulationBICEPSEpochAll/index/=Operators/EpochFlexer/,
+CoalescentExponentialPopulationBICEPSTreeFlex/index/=Operators/TreeStretcher/,
+CoalescentExponentialPopulationTreeRootScaler/index/=Operators/BactrianTreeScaler/,
 GrowthRatePrior/index/=Priors/GrowthRatePrior/,
 ePopSizePrior/index/=Priors/ePopSizePrior/,
-ePopSizeScaler/index/=Operators/BactrianRateScaler/index/,
+ePopSizeScaler/index/=Operators/BactrianRateScaler/,
 GrowthRateRandomWalk/index/=Operators/BactrianRandomWalk'>
             <![CDATA[
             <distribution id="CoalescentExponential.t:$(n)" spec="Coalescent">
@@ -346,15 +346,15 @@ GrowthRateRandomWalk/index/=Operators/BactrianRandomWalk'>
                      suppressInputs='beast.base.inference.distribution.MarkovChainDistribution.parameter,
                      beast.base.inference.distribution.MarkovChainDistribution.initialMean' hmc='
 BayesianSkylineUniformOperator/index/=Operators/BactrianNodeOperator/index,
-BayesianSkylineSubtreeSlide/index/=Operators/SubtreeSlide/index/,
-BayesianSkylineNarrow/index/=Operators/Exchange/index/,
-BayesianSkylineWide/index/=Operators/Exchange/index/,
-BayesianSkylineWilsonBalding/index/=Operators/WilsonBalding/index/,
-BayesianSkylineBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
-BayesianSkylineBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
-BayesianSkylineBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
-BayesianSkylineTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
-popSizesScaler/index/=Operators/BactrianRateScaler/index/,
+BayesianSkylineSubtreeSlide/index/=Operators/SubtreeSlide/,
+BayesianSkylineNarrow/index/=Operators/Exchange/,
+BayesianSkylineWide/index/=Operators/Exchange/,
+BayesianSkylineWilsonBalding/index/=Operators/WilsonBalding/,
+BayesianSkylineBICEPSEpochTop/index/=Operators/EpochFlexer/,
+BayesianSkylineBICEPSEpochAll/index/=Operators/EpochFlexer/,
+BayesianSkylineBICEPSTreeFlex/index/=Operators/TreeStretcher/,
+BayesianSkylineTreeRootScaler/index/=Operators/BactrianTreeScaler/,
+popSizesScaler/index/=Operators/BactrianRateScaler/,
 groupSizesDelta/index/=Operators/BactrianDeltaExchange/index/'>
             <![CDATA[
             <distribution spec="BayesianSkyline" id='BayesianSkyline.t:$(n)'>
@@ -408,20 +408,20 @@ groupSizesDelta/index/=Operators/BactrianDeltaExchange/index/'>
         <subtemplate id='CoalescentExtendedBayesianSkyline' class='beast.base.evolution.tree.coalescent.Coalescent'
                      mainid='ExtendedBayesianSkyline.t:$(n)' hmc='
 ExtendedBayesianSkylineUniformOperator/index/=Operators/BactrianNodeOperator/index,
-ExtendedBayesianSkylineSubtreeSlide/index/=Operators/SubtreeSlide/index/,
-ExtendedBayesianSkylineNarrow/index/=Operators/Exchange/index/,
-ExtendedBayesianSkylineWide/index/=Operators/Exchange/index/,
-ExtendedBayesianSkylineWilsonBalding/index/=Operators/WilsonBalding/index/,
-ExtendedBayesianSkylineBICEPSEpochTop/index/=Operators/EpochFlexer/index/,
-ExtendedBayesianSkylineBICEPSEpochAll/index/=Operators/EpochFlexer/index/,
-ExtendedBayesianSkylineBICEPSTreeFlex/index/=Operators/TreeStretcher/index/,
-ExtendedBayesianSkylineTreeRootScaler/index/=Operators/BactrianTreeScaler/index/,
-bitflip.alltrees/index/=Operators/BitFlipper/index/,
-indicatorSampler.alltrees/index/=Operators/BactrianDeltaExchange/index/
-indicatorScaler.alltrees/index/=Operators/BactrianDeltaExchange/index/
+ExtendedBayesianSkylineSubtreeSlide/index/=Operators/SubtreeSlide/,
+ExtendedBayesianSkylineNarrow/index/=Operators/Exchange/,
+ExtendedBayesianSkylineWide/index/=Operators/Exchange/,
+ExtendedBayesianSkylineWilsonBalding/index/=Operators/WilsonBalding/,
+ExtendedBayesianSkylineBICEPSEpochTop/index/=Operators/EpochFlexer/,
+ExtendedBayesianSkylineBICEPSEpochAll/index/=Operators/EpochFlexer/,
+ExtendedBayesianSkylineBICEPSTreeFlex/index/=Operators/TreeStretcher/,
+ExtendedBayesianSkylineTreeRootScaler/index/=Operators/BactrianTreeScaler/,
+bitflip.alltrees/index/=Operators/BitFlipper/,
+indicatorSampler.alltrees/index/=Operators/BactrianDeltaExchange/,
+indicatorScaler.alltrees/index/=Operators/BactrianDeltaExchange/,
 populationMeanPrior/index/=Priors/populationMeanPrior/,
 indicatorsPrior/index/=Priors/indicatorsPrior/,
-EBSPupDownOperator.alltrees/index/=Operators/BactrianUpDown/index/,
+EBSPupDownOperator.alltrees/index/=Operators/BactrianUpDown/,
 EBSPLogger/fileName/,
 EBSPLogger/sort/,
 EBSPLogger/sanitiseHeaders/,
