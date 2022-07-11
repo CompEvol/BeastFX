@@ -5,22 +5,34 @@ package test.beastfx.app.beauti;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Observable;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 
 import javax.imageio.ImageIO;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.service.query.NodeQuery;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import beastfx.app.beauti.Beauti;
 import beastfx.app.beauti.BeautiTabPane;
@@ -46,7 +58,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Function;
@@ -60,6 +71,7 @@ import beast.base.inference.StateNode;
 import beast.base.inference.distribution.Prior;
 import beast.base.inference.parameter.Parameter;
 import beast.base.parser.XMLParser;
+import beast.pkgmgmt.PackageManager;
 
 
 
@@ -74,24 +86,139 @@ public class BeautiBase extends Beauti {
 
 	// If skipAssertions = true, the BEAUti status will not be checked
 	// Can be handy for debugging TestFX unit tests
-	final static private boolean skipAssertions = true;
+	final static private boolean skipAssertions = false;
 
-//	protected FrameFixture beautiFrame;
-//	protected Beauti beauti;
 	protected BeautiDoc doc;
 
-//    @Start
-//    public void start(Stage stage) {
-//    	try {
-//    		BeautiTabPane tabPane = BeautiTabPane.main2(new String[] {}, stage);
-//    		this.doc = tabPane.doc;
-//            stage.show();
-//			super.start(stage);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//    }
+	public BeautiBase() {
+		// make sure BEAST.base and BEAST.app are installed
+		try {
+			Set<String> packages = listInstalledPackages();
+			if (!packages.contains("BEAST.base")) {
+				// install minimal BEAST.base package
+				installBEASTBase();
+			}
+			if (!packages.contains("BEAST.app")) {
+				// install minimal BEAST.base package
+				installBEASTApp();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+        	System.err.println(e.getClass().getSimpleName() + ": " + e.getMessage());
+        	return;
+        }
+	}
 
+	private Set<String> listInstalledPackages() {
+		String userDir = PackageManager.getPackageUserDir();
+		File dirFile = new File(userDir);
+		Set<String> packages = new HashSet<>();
+		if (dirFile.exists() && dirFile.isDirectory()) {
+			for (String dir : dirFile.list()) {
+				File versionXML = new File(userDir + "/" + dir + "/version.xml");
+				if (!versionXML.exists())
+					continue;
+
+				try {
+	                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	                Document doc = factory.newDocumentBuilder().parse(versionXML);
+	                doc.normalize();
+	                // get name and version of package
+	                Element packageElement = doc.getDocumentElement();
+	                String packageName = packageElement.getAttribute("name");
+	                packages.add(packageName);
+				} catch (Exception e) {
+					e.printStackTrace();
+                }
+			}
+		}
+
+		return packages;
+	}
+
+	private void installBEASTBase() throws IOException {
+		String dir = PackageManager.getPackageUserDir();
+		dir += "/BEAST.base";
+		new File(dir).mkdirs();
+		Files.copy(Paths.get("../beast2/version.xml"), 
+				Paths.get(dir+"/version.xml"),
+				StandardCopyOption.REPLACE_EXISTING);
+		dir += "/lib";
+		new File(dir).mkdirs();
+		if (!new File("../beast2/build/dist/BEAST.base.jar").exists()) {
+			new File("../beast2/build/dist/").mkdirs();
+			createJar("../beast2/build/", dir + "/BEAST.base.jar", "../beast2/build/".length());
+		} else {
+			Files.copy(Paths.get("../beast2/build/dist/BEAST.base.jar"), 
+				Paths.get(dir+"/BEAST.base.jar"),
+				StandardCopyOption.REPLACE_EXISTING);
+		}
+	}
+
+	private void installBEASTApp() throws IOException {
+		String dir = PackageManager.getPackageUserDir();
+		dir += "/BEAST.app";
+		new File(dir).mkdirs();
+		Files.copy(Paths.get("../BeastFX/version.xml"), 
+				Paths.get(dir+"/version.xml"),
+				StandardCopyOption.REPLACE_EXISTING);
+		dir += "/lib";
+		new File(dir).mkdirs();
+		if (!new File("../BeastFX/build/dist/BEAST.app.jar").exists()) {
+			new File("../BeastFX/build/dist/").mkdirs();
+			createJar("../BeastFX/build/", dir + "/BEAST.app.jar", "../BeastFX/build/".length());
+		} else {
+			Files.copy(Paths.get("../BeastFX/build/dist/BEAST.app.jar"),
+				Paths.get(dir+"/BEAST.app.jar"),	
+				StandardCopyOption.REPLACE_EXISTING);
+		}
+	}
+
+	public void createJar(String inputDirectory, String outputFile, int root) throws IOException {
+	    Manifest manifest = new Manifest();
+	    manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+	    JarOutputStream target = new JarOutputStream(new FileOutputStream(outputFile), manifest);
+	    add(new File(inputDirectory), target, root);
+	    target.close();
+	}
+
+	private void add(File source, JarOutputStream target, int root) throws IOException {
+	    String name = source.getPath();
+	    if (name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".zip")) {
+	    	return;
+	    }
+	    if (source.isDirectory()) {
+	        if (!name.endsWith("/")) {
+	            name += "/";
+	        }
+	        String entryName = name.substring(root);
+	        JarEntry entry = new JarEntry(entryName);
+	        entry.setTime(source.lastModified());
+	        target.putNextEntry(entry);
+	        target.closeEntry();
+	        for (File nestedFile : source.listFiles()) {
+	            add(nestedFile, target, root);
+	        }
+	    } else {
+	        String entryName = name.substring(root);
+	        JarEntry entry = new JarEntry(entryName);
+	        entry.setTime(source.lastModified());
+	        target.putNextEntry(entry);
+	        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(source))) {
+	            byte[] buffer = new byte[1024];
+	            while (true) {
+	                int count = in.read(buffer);
+	                if (count == -1)
+	                    break;
+	                target.write(buffer, 0, count);
+	            }
+	            target.closeEntry();
+	        }
+	    }
+	}
+	
+	
+	
 	String priorsAsString() {
 		CompoundDistribution prior = (CompoundDistribution) doc.pluginmap.get("prior");
 		List<Distribution> priors = prior.pDistributions.get();
@@ -367,6 +494,7 @@ public class BeautiBase extends Beauti {
 //			// close down any popup message
 //			robot().pressKey(KeyEvent.VK_ESCAPE);
 //		} else {
+System.err.println("Trying to load " + dir + " " + files[0]);
 			String _dir;
 			_dir = dir;
 			for (File file : files) {

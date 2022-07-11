@@ -13,7 +13,7 @@
 	<!--
 	<property name="javafx-home" location="/usr/share/java/"/>
 -->
-	<property name="javafx-home" location="/usr/share/java/openjfx/jre/lib/ext/"/>
+	<property name="javafx-home" location="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/"/>
 	<property name="release_dir" value="release" />
 	<property name="distFX" location="${buildFX}/dist" />
 	<property name="beast2path" location="../beast2" />
@@ -182,7 +182,8 @@
 		</copy>
 
 		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
-			<jvmarg line="-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni/"/>
+			<!--jvmarg line="-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni/"/-->
+			<jvmarg line="-Djava.library.path=/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64"/>
 			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
 			<!--
 				IF UNCOMMENTING, RESTORE DOUBLE - - in next two lines
