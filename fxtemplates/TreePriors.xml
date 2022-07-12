@@ -55,7 +55,7 @@ YuleBirthRatePrior/index/=Priors/YuleBirthRatePrior/
 '>
             <![CDATA[
             <plugin spec='YuleModel' id="YuleModel.t:$(n)" tree='@Tree.t:$(n)'>
-                <parameter name='birthDiffRate' id="birthRate.t:$(n)" value='1.0'/>
+                <parameter name='birthDiffRate' id="birthRate.t:$(n)" lower="0.0" value='1.0'/>
             </plugin>
 
             <prior id='YuleBirthRatePrior.t:$(n)' x='@birthRate.t:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1000'/></prior>
@@ -107,7 +107,7 @@ CalibratedYuleBirthRatePrior/index/=Priors/CalibratedYuleBirthRatePrior/
 ">
             <![CDATA[
             <plugin spec='CalibratedYuleModel' id="CalibratedYuleModel.t:$(n)" tree='@Tree.t:$(n)'>
-                <parameter name='birthRate' id="birthRateY.t:$(n)" value='1.0'/>
+                <parameter name='birthRate' id="birthRateY.t:$(n)" lower="0.0" value='1.0'/>
             </plugin>
 
             <prior id='CalibratedYuleBirthRatePrior.t:$(n)' x='@birthRateY.t:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1000'/></prior>
@@ -228,7 +228,7 @@ PopSizeScaler/index/=Operators/BactrianRateScaler/index/'>
             <distribution id="CoalescentConstant.t:$(n)" spec="Coalescent">
                 <treeIntervals spec='beast.base.evolution.tree.TreeIntervals' id='TreeIntervals.t:$(n)' tree='@Tree.t:$(n)'/>
                 <populationModel spec="ConstantPopulation" id='ConstantPopulation.t:$(n)'>
-                     <parameter name="popSize" id="popSize.t:$(n)" value='0.3' estimate='true'/>
+                     <parameter name="popSize" id="popSize.t:$(n)" value='0.3' lower="0.0" estimate='true'/>
                  </populationModel>
             </distribution>
 
@@ -283,7 +283,7 @@ GrowthRateRandomWalk/index/=Operators/BactrianRandomWalk'>
             <distribution id="CoalescentExponential.t:$(n)" spec="Coalescent">
                 <treeIntervals spec='beast.base.evolution.tree.TreeIntervals' id='TreeIntervals.t:$(n)' tree='@Tree.t:$(n)'/>
                 <populationModel spec="ExponentialGrowth" id="ExponentialGrowth.t:$(n)">
-                    <parameter name="popSize" id="ePopSize.t:$(n)" value='0.3' estimate='true'/>
+                    <parameter name="popSize" id="ePopSize.t:$(n)" value='0.3' lower="0.0" estimate='true'/>
                     <parameter name="growthRate" id="growthRate.t:$(n)" value='3e-4' estimate='true'/>
                 </populationModel>
             </distribution>
@@ -430,8 +430,8 @@ EBSPLogger/mode/
 '>
             <![CDATA[
 	        <stateNode id="indicators.alltrees" spec="parameter.BooleanParameter" value="false"/>
-            <stateNode id="populationMean.alltrees" spec="parameter.RealParameter" value="1"/>
-	        <stateNode id="popSizes.alltrees" spec="parameter.RealParameter" value="1"/>
+            <stateNode id="populationMean.alltrees" spec="parameter.RealParameter" lower="0.0" value="1"/>
+	        <stateNode id="popSizes.alltrees" spec="parameter.RealParameter" lower="0.0" value="1"/>
 
             <distribution id="ExtendedBayesianSkyline.t:$(n)" spec="Coalescent">
                  <treeIntervals id="treeIntervals.t:$(n)" spec='beast.base.evolution.tree.TreeIntervals' tree="@Tree.t:$(n)"/>

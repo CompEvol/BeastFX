@@ -177,7 +177,7 @@ public class FXUtils {
 		}		
 	}
 
-	private static String getHMCBase() {
+	public static String getHMCBase() {
 		//return "file://" + System.getProperty("user.dir") + "/hmc";
 		//return "http://127.0.0.1:4000/hmc/";
 		return "https://beast2-dev.github.io/hmc/hmc/";
@@ -201,7 +201,8 @@ public class FXUtils {
 	public static Button createHMCButton(final String url) {
 		
 	   Button hmcButton = new Button("?");
-    	hmcButton.setTooltip(new Tooltip("Click to 'help me choose'"));
+    	hmcButton.setTooltip(new Tooltip("Click to 'help me choose'\n" + url));
+    	hmcButton.getTooltip().setStyle("-fx-font-size: 8pt");
     	//hmcButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "help16.png"));
     	hmcButton.setOnAction(e->openInBrowser(url, hmcButton));
         String style = 

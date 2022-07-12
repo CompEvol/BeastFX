@@ -14,7 +14,7 @@
                         strictClockUpDownOperator/index/=Operators/BactrianUpDown/index/'>
             <![CDATA[
                 <branchRateModel spec='StrictClockModel' id='StrictClock.c:$(n)'>
-                    <clock.rate id='clockRate.c:$(n)' spec='parameter.RealParameter' value='1.0' estimate='false'/>
+                    <clock.rate id='clockRate.c:$(n)' spec='parameter.RealParameter' value='1.0' lower="0.0" estimate='false'/>
                 </branchRateModel>
 
 				<operator id='StrictClockRateScaler.c:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.1" weight="3" parameter='@clockRate.c:$(n)'/>
@@ -58,7 +58,7 @@
                      >
             <![CDATA[
         <plugin spec='UCRelaxedClockModel' id="ExponentialRelaxedClock.c:$(n)" tree='@Tree.t:$(n)'>
-			<parameter name='clock.rate' id='ucedMean.c:$(n)' value='1.0' estimate='false'/>
+			<parameter name='clock.rate' id='ucedMean.c:$(n)' value='1.0' lower="0.0" estimate='false'/>
             <distr id='Exponential.c:$(n)' name='distr' spec="beast.base.inference.distribution.Exponential">
 				<parameter id='UCExpLambda.c:$(n)' name='mean' value='1.0'/>
 			</distr>
@@ -134,7 +134,7 @@
                      >
             <![CDATA[
         <plugin spec='UCRelaxedClockModel' id="RelaxedClock.c:$(n)" tree='@Tree.t:$(n)'>
-			<parameter name='clock.rate' id='ucldMean.c:$(n)' value='1.0'/>
+			<parameter name='clock.rate' id='ucldMean.c:$(n)' lower="0.0" value='1.0'/>
             <distr id='LogNormalDistributionModel.c:$(n)' name='distr' spec="beast.base.inference.distribution.LogNormalDistributionModel" meanInRealSpace='true'>
                 <parameter name='M' value="1.0" estimate='false' lower='0' upper='1'/>
                 <parameter name='S' id='ucldStdev.c:$(n)' value="0.1" lower="0" estimate='true'/>
@@ -242,7 +242,7 @@
                      '>
             <![CDATA[
         <input spec='RandomLocalClockModel' id="RandomLocalClock.c:$(n)" ratesAreMultipliers="false" tree='@Tree.t:$(n)'>
-            <clock.rate id='meanClockRate.c:$(n)' spec='parameter.RealParameter' value='1.0' estimate='false'/>
+            <clock.rate id='meanClockRate.c:$(n)' spec='parameter.RealParameter' value='1.0' lower="0.0" estimate='false'/>
             <parameter spec='parameter.BooleanParameter' name='indicators' id='Indicators.c:$(n)' value="0"/>
             <parameter name='rates' id='clockrates.c:$(n)' value="1" lower="1e-9"/>
         </input>

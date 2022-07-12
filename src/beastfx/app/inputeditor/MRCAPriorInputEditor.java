@@ -66,8 +66,8 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         String text = prior.getID();
 
         Button taxonButton = new Button(text);
-//        taxonButton.setMinSize(Base.PREFERRED_SIZE);
-//        taxonButton.setPrefSize(Base.PREFERRED_SIZE);
+        taxonButton.setMinSize(Base.PREFERRED_SIZE.getWidth(), Base.PREFERRED_SIZE.getHeight());
+        taxonButton.setPrefSize(Base.PREFERRED_SIZE.getWidth(), Base.PREFERRED_SIZE.getHeight());
         itemBox.getChildren().add(taxonButton);
         taxonButton.setOnAction(e -> {
                 List<?> list = (List<?>) m_input.get();
@@ -157,6 +157,8 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
                 scrubPrior();
         });
         itemBox.getChildren().add(comboBox);
+        
+        itemBox.getChildren().add(FXUtils.createHMCButton(FXUtils.getHMCBase() + "Priors/MRCAPrior/"));
 
         CheckBox isMonophyleticdBox = new CheckBox(doc.beautiConfig.getInputLabel(prior, prior.isMonophyleticInput.getName()));
         isMonophyleticdBox.setId(text+".isMonophyletic");
