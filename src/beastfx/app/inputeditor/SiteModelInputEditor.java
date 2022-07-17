@@ -1,8 +1,6 @@
 package beastfx.app.inputeditor;
 
 
-//import javax.swing.event.DocumentEvent;
-//import javax.swing.event.DocumentListener;
 
 
 import beast.base.core.BEASTInterface;
@@ -12,7 +10,7 @@ import beast.base.evolution.likelihood.GenericTreeLikelihood;
 import beast.base.evolution.sitemodel.SiteModel;
 import beast.base.evolution.sitemodel.SiteModelInterface;
 import beast.base.inference.*;
-import beast.base.inference.operator.DeltaExchangeOperator;
+import beast.base.inference.operator.kernel.BactrianDeltaExchangeOperator;
 import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
 import beastfx.app.util.FXUtils;
@@ -36,7 +34,7 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 
     // vars for dealing with mean-rate delta exchange operator
     CheckBox fixMeanRatesCheckBox;
-    DeltaExchangeOperator operator;
+    BactrianDeltaExchangeOperator operator;
     protected SmallLabel fixMeanRatesValidateLabel;
 
 	public SiteModelInputEditor() {
@@ -67,9 +65,9 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 					// set up relative weights
 					setUpOperator();
 			});
-    	operator = (DeltaExchangeOperator) doc.pluginmap.get("FixMeanMutationRatesOperator");
+    	operator = (BactrianDeltaExchangeOperator) doc.pluginmap.get("FixMeanMutationRatesOperator");
     	if (operator == null) {
-    		operator = new DeltaExchangeOperator();
+    		operator = new BactrianDeltaExchangeOperator();
     		try {
     			operator.setID("FixMeanMutationRatesOperator");
 				operator.initByName("weight", 2.0, "delta", 0.75);
@@ -259,7 +257,7 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 
     public static boolean customConnector(BeautiDoc doc) {
  		try {
- 	        DeltaExchangeOperator operator = (DeltaExchangeOperator) doc.pluginmap.get("FixMeanMutationRatesOperator");
+ 			BactrianDeltaExchangeOperator operator = (BactrianDeltaExchangeOperator) doc.pluginmap.get("FixMeanMutationRatesOperator");
  	        if (operator == null) {
  	        	return false;
  	        }

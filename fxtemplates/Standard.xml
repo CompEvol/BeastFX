@@ -429,10 +429,6 @@ ClusterTree/clusterType/,
 	<mergepoint id='misc'/>
 
     
-<!--
-<operator spec='DeltaExchangeOperator' id='FixMeanRatesOperator' weight='2' delta='0.75'/>
--->
-
 <!-- framework for main model -->
 
     <run spec="MCMC" id="mcmc" chainLength="10000000">
