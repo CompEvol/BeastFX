@@ -8,6 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -99,9 +100,14 @@ public class FXUtils {
     }
 
 	public static ImageView getIcon(String string) {
-		string = FXUtils.class.getResource(string).toExternalForm();
-		ImageView img = new ImageView(string);
-		return img;
+		try {
+			string = FXUtils.class.getResource(string).toExternalForm();
+			ImageView img = new ImageView(string);
+			return img;
+		} catch (NullPointerException e) {
+			ImageView img = new ImageView(new WritableImage(16, 16));
+			return img;
+		}
 	}
 
 	

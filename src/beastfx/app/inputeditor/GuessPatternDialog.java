@@ -213,7 +213,7 @@ public class GuessPatternDialog implements Initializable {
 
         createDelimiterBox(useEverything);
         createSplitBox(isSplitOnChar);
-        createRegExtpBox(useRegexp);
+        createRegExpBox(useRegexp);
 
 //        textRegExp = new TextField();
         textRegExp.setText(pattern);
@@ -451,6 +451,9 @@ public class GuessPatternDialog implements Initializable {
 //        gbc.gridy = 1;
 //        guessPanel.add(b, gbc);
 
+    	textSplitChar.setText("_");
+        textSplitChar.setId("SplitChar");
+
         combo.getItems().addAll("after first", "after last", "before first", "before last");
         combo.getSelectionModel().selectFirst();
         combo.setId("delimiterCombo");
@@ -472,89 +475,25 @@ public class GuessPatternDialog implements Initializable {
 
     private void createSplitBox(RadioButton b) {
 
-        //textSplitChar = new TextField("_");
-    	textSplitChar.setText("_");
-        textSplitChar.setId("SplitChar");
-//        GridBagConstraints gbc_textField = new GridBagConstraints();
-//        gbc_textField.anchor = GridBagConstraints.WEST;
-//        gbc_textField.insets = new Insets(0, 0, 5, 5);
-//        gbc_textField.gridx = 3;
-//        gbc_textField.gridy = 1;
-//        guessPanel.add(textSplitChar, gbc_textField);
-//        textSplitChar.setPrefColumnCount(2);
-//
-//        separator_2 = new Separator();
-//        separator_2.setPrefSize(5,1);
-//        GridBagConstraints gbc_separator_2 = new GridBagConstraints();
-//        gbc_separator_2.gridwidth = 5;
-//        gbc_separator_2.insets = new Insets(5, 0, 15, 5);
-//        gbc_separator_2.gridx = 0;
-//        gbc_separator_2.gridy = 2;
-//        gbc_separator_2.fill = GridBagConstraints.HORIZONTAL;
-//        guessPanel.add(separator_2, gbc_separator_2);
-//
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.insets = new Insets(0, 0, 5, 5);
-//        gbc.anchor = GridBagConstraints.WEST;
-//        gbc.gridx = 0;
-//        gbc.gridy = 4;
-//        guessPanel.add(b, gbc);
-    }
-
-    public void createRegExtpBox(RadioButton b) {
-
-        //textSplitChar2 = new TextField("_");
     	textSplitChar2.setText("_");
         textSplitChar2.setId("SplitChar2");
-//        GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-//        gbc_textField_1.anchor = GridBagConstraints.WEST;
-//        gbc_textField_1.insets = new Insets(0, 0, 5, 5);
-//        gbc_textField_1.gridx = 1;
-//        gbc_textField_1.gridy = 4;
-//        guessPanel.add(textSplitChar2, gbc_textField_1);
-//        textSplitChar2.setPrefColumnCount(2);
-
-//        lblAndTakeGroups = new Label("and take group(s):");
-//        GridBagConstraints gbc_lblAndTakeGroups = new GridBagConstraints();
-//        gbc_lblAndTakeGroups.gridwidth = 2;
-//        gbc_lblAndTakeGroups.insets = new Insets(0, 0, 5, 5);
-//        gbc_lblAndTakeGroups.gridx = 2;
-//        gbc_lblAndTakeGroups.gridy = 4;
-//        guessPanel.add(lblAndTakeGroups, gbc_lblAndTakeGroups);
-
+        
         combo_1.getItems().addAll("1", "2", "3", "4", "1-2", "2-3", "3-4", "1-3", "2-4");
         combo_1.getSelectionModel().selectFirst();
         combo_1.setId("splitCombo");
-//        GridBagConstraints gbc_combo_1 = new GridBagConstraints();
-//        gbc_combo_1.anchor = GridBagConstraints.WEST;
-//        gbc_combo_1.insets = new Insets(0, 0, 5, 5);
-//        gbc_combo_1.gridx = 4;
-//        gbc_combo_1.gridy = 4;
-//        guessPanel.add(combo_1, gbc_combo_1);
+
         combo_1.setOnAction(e -> {
                 @SuppressWarnings("unchecked")
 				ComboBox<String> combo = (ComboBox<String>) e.getSource();
                 m_splitlocation = combo.getSelectionModel().getSelectedIndex();
                 isSplitOnChar.setSelected(true);
                 updateFields();
-            });
+            });        
+    }
 
-//        separator_3 = new Separator();
-//        separator_3.setPrefSize(5,1);
-//        GridBagConstraints gbc_separator_3 = new GridBagConstraints();
-//        gbc_separator_3.gridwidth = 5;
-//        gbc_separator_3.insets = new Insets(5, 0, 15, 5);
-//        gbc_separator_3.gridx = 0;
-//        gbc_separator_3.gridy = 5;
-//        gbc_separator_3.fill = GridBagConstraints.HORIZONTAL;
-//        guessPanel.add(separator_3, gbc_separator_3);
-
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.insets = new Insets(0, 0, 5, 5);
-//        gbc.anchor = GridBagConstraints.WEST;
-//        gbc.gridx = 0;
-//        gbc.gridy = 7;
-//        guessPanel.add(b, gbc);
+    public void createRegExpBox(RadioButton b) {
+    	textRegExp.setText(".*(\\d\\d\\d\\d).*");
+    	textRegExp.setId("textRegExp");
     }
 
     public Status showDialog(String title) {

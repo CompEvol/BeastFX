@@ -50,7 +50,7 @@
                </GridPane.margin></TextField>
       <ComboBox fx:id="combo_1" prefWidth="60.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
       <TextField fx:id="textSplitChar2" maxWidth="50.0" prefColumnCount="3" prefWidth="50.0" text="_" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField fx:id="textRegExp" prefHeight="25.0" prefWidth="355.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+      <TextField fx:id="textRegExp" prefHeight="25.0" prefWidth="355.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" text=".*(\d\d\d\d).*"/>
       <Label fx:id="lblAndTakeGroups" text="and take group(s):" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
          <padding>
             <Insets right="5.0" />
