@@ -1,4 +1,4 @@
-<package name='BEAST.app' version='0.0.1'>
+<package name='BEAST.app' version='2.7.0'>
 	<depends on='BEAST.base' atleast='2.7.0' atmost="2.7.9"/>
 
 			<service type="beastfx.app.beauti.ThemeProvider">
@@ -89,8 +89,12 @@
 				<provider classname="beastfx.app.beauti.MRCAPriorProvider"/>
 			</service>
 
+			<service type="has.main.method">
+				<provider classname="beastfx.app.methodsection.XML2HTMLPaneFX"/>
+			</service>
+
 	    <packageapp description="Interactive Methods Section Generator"
-              class="methods.XML2HTMLPaneFX"
+              class="beastfx.app.methodsection.XML2HTMLPaneFX"
               args=""
             />
 

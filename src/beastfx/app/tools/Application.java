@@ -19,6 +19,7 @@ import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.util.Console;
 import beastfx.app.util.Utils;
+import javafx.scene.control.ButtonType;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;
 import beast.base.core.Input;
@@ -32,6 +33,9 @@ public class Application extends Console {
 
 	BEASTObject myBeastObject;
 
+	public Application() {
+	}
+	
 	public Application(BEASTObject myBeastObject) {
 		this.myBeastObject = myBeastObject;
 	}
@@ -39,7 +43,9 @@ public class Application extends Console {
 	@Override
 	protected void createDialog() {
 		Utils6.startSplashScreen();
-		Utils.loadUIManager();
+		if (Utils.isMac()) {
+			Utils.loadUIManager();
+		}
 		// create BeautiDoc and beauti configuration
 		BeautiDoc doc = new BeautiDoc();
 		doc.beautiConfig = new BeautiConfig();
@@ -52,9 +58,13 @@ public class Application extends Console {
 		BEASTObjectDialog dialog = new BEASTObjectDialog(panel, null);
 
 		Utils6.endSplashScreen();
+		dialog.setResizable(true);
+		dialog.getDialogPane().setPrefSize(1024, 768);
+		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		// show the dialog
-		Optional<?> option = dialog.showAndWait();
-		if (option.get().toString().equals("OK")) {
+		Optional<ButtonType> option = dialog.showAndWait();
+		long start = System.currentTimeMillis();
+		if (option.get().equals(ButtonType.OK)) {
 			dialog.accept(analyser, doc);
 //			// create a console to show standard error and standard output
 //			ConsoleApp app = new ConsoleApp(title, 
@@ -68,11 +78,13 @@ public class Application extends Console {
 				e.printStackTrace();
 			}
 		}
+		long end = System.currentTimeMillis();
+		Log.warning(title + " done in " + (end-start)/1000 + " seconds. Close window to finish application.");
 		return;
 	}
 	
-	beast.base.inference.Runnable analyser;
-	String title;
+	static beast.base.inference.Runnable analyser;
+	static String title;
 	
 	public Application(beast.base.inference.Runnable analyser, String title, String[] args) throws Exception {
 		this.analyser =  analyser;
@@ -80,7 +92,7 @@ public class Application extends Console {
 		analyser.setID(title);
 
 		if (args.length == 0) {
-			launch();
+			launch(Application.class, args);
 			return;
 			
 			

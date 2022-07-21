@@ -22,11 +22,15 @@ public class Beauti extends Application {
 	
     public static void main(String[] args) {
     	ProgramStatus.name = "BEAUti";
-    	launch(Beauti.class, args);
 
         // check for new packages in the background
         new Thread() {
         	public void run() {
+        		try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
         		String statuString = Utils.getBeautiProperty("package.update.status");
         		if (statuString == null) {
         			statuString = PackageManager.UpdateStatus.AUTO_CHECK_AND_ASK.toString(); 
@@ -35,6 +39,8 @@ public class Beauti extends Application {
         		PackageManager.updatePackages(updateStatus, true);
         	};
         }.start();
+        
+    	launch(Beauti.class, args);
     }
 
 }

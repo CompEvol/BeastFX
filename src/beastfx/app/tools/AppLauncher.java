@@ -346,7 +346,7 @@ public class AppLauncher {
   				}
   			}
   		
-  			Class<?> mainClass = BEASTClassLoader.forName(packageApp.className);
+  			Class<?> mainClass = BEASTClassLoader.forName(packageApp.className, "has.main.method");
   			Method mainMethod = mainClass.getMethod("main", String [].class);
 System.err.println("About to invoke " + packageApp.className + " " + mainMethod);
 			if (additionalArgs == null) {
@@ -410,7 +410,7 @@ System.err.println("Done invoking " + packageApp.className);
         AppLauncher appStore = new AppLauncher();
 
         if (args.length == 0) {
-        	Utils.loadUIManager();
+        	// Utils.loadUIManager();
             SwingUtilities.invokeLater(() -> appStore.launchGUI().setVisible(true));
         } else {
 

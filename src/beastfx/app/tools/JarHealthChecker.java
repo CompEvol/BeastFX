@@ -1,5 +1,7 @@
 package beastfx.app.tools;
 
+
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,16 +11,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import beastfx.app.util.OutFile;
-import beastfx.app.util.Utils;
 import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.inference.Runnable;
-import beast.base.util.FileUtils;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 
@@ -30,15 +31,15 @@ public class JarHealthChecker extends Runnable {
 	final public Input<String> packageInput = new Input<>("package", "only classes inside this package will be listed", "beast"); 
 
 	
-	final static String [] knowServices = {
+	final static String [] knownServices = {
 			"beast.base.core.BEASTInterface",
 			"beast.base.evolution.datatype.DataType",
 			"beast.base.inference.ModelLogger",
-			"beast.pkgmgmt.NameSpaceInfo",
 			"beastfx.app.inputeditor.InputEditor",
 			"beastfx.app.inputeditor.AlignmentImporter",
 			"beastfx.app.beauti.BeautiHelpAction",		
-			"beastfx.app.beauti.PriorProvider"
+			"beastfx.app.beauti.PriorProvider",
+			"has.main.method"
 	};
 	
 	private PrintStream out = System.out;
@@ -56,13 +57,14 @@ public class JarHealthChecker extends Runnable {
 
 	@Override
 	public void run() throws Exception {
+		out = System.out;
 		if (OutFile.isSpecified(outputInput.get())) {
 			out = new PrintStream(outputInput.get());
 		}
 		File jarFile = jarFileInput.get();	
-		Set<String> classesInJar = collectClasses(jarFile);  
-		Map<String, Set<String>> declaredServices = getDeclaredServices(jarFile);
-		checkServices(classesInJar, out, declaredServices);
+		//BEASTClassLoader.newInstance(null);
+		Set<String> classesInJar = collectClasses(jarFile);
+		checkServices(classesInJar, out, new HashMap<>());
 		
 		if (OutFile.isSpecified(outputInput.get())) {
 			out = new PrintStream(outputInput.get());
@@ -82,6 +84,7 @@ public class JarHealthChecker extends Runnable {
 			// ignore
 		}
 		try {
+			JarFile jar = new JarFile(file);
 			ZipInputStream zip = new ZipInputStream(new FileInputStream(file));
 			while(true) {
 				ZipEntry e = zip.getNextEntry();
@@ -94,46 +97,29 @@ public class JarHealthChecker extends Runnable {
 					}
 					name = name.substring(0, name.length() - 6).replaceAll("/", ".");
 					classesInJar.add(name);
+					
+					// check java version of the class 
+					java.io.InputStream is = jar.getInputStream(e);
+					DataInputStream input = new DataInputStream(is);
+					input.skipBytes(4);
+					int minorVersion = input.readUnsignedShort();
+					int majorVersion = input.readUnsignedShort();
+					if (majorVersion > 61) {
+						input.close();
+						zip.close();
+						jar.close();
+						throw new Error("Fatal error: Class " + name + " is compiled with java version > java 17. "
+								+ "BEAST only handles java classes up to java 17");
+					}
 				}
 			}
 			zip.close();
+			jar.close();
 		} catch (IOException e) {
 			report(e.getMessage());
 		}	
 		return classesInJar;
 	}
-	
-	private Map<String, Set<String>> getDeclaredServices(File file) {
-		Map<String, Set<String>> declaredServices = new HashMap<>();
-		String destDir = Utils.isWindows() ? "\\temp\\" :"/tmp/" + file.getName() + "_extracted";
-		new File(destDir).mkdir();
-		try {
-			PackageManager.doUnzip(file.getAbsolutePath(), destDir);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		File serviceDir = new File(destDir +"/META-INF/services");
-		if (!serviceDir.exists()) {
-			report("No services found in jar " + file);
-		} else {
-			for (String metaInfFile : serviceDir.list()) {
-				if (!metaInfFile.endsWith("MANIFEST.MF") && !(metaInfFile.charAt(0)=='.')) {
-					if (!declaredServices.containsKey(metaInfFile)) {
-						declaredServices.put(metaInfFile, new HashSet<String>());
-					}
-					try {
-						for (String className : FileUtils.load(serviceDir + "/" + metaInfFile).split("\n")) {
-							declaredServices.get(metaInfFile).add(className);
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		return declaredServices;				
-	}
-	
 	
 	public void checkServices(Set<String> classesInJar, PrintStream out, Map<String, Set<String>> declaredServices) {
 		this.out = out;
@@ -143,7 +129,7 @@ public class JarHealthChecker extends Runnable {
 		if (declaredServices.size() == 0) {
 			StringBuilder b = new StringBuilder();
 			b.append("No declared services found. If there are any classes that are one of these:\n");
-			for (String service : knowServices)  {
+			for (String service : knownServices)  {
 				b.append("o " + service +"\n");
 			}
 			report(b.toString());
@@ -160,7 +146,7 @@ public class JarHealthChecker extends Runnable {
 			}
 		}
 		
-		for (String service : knowServices) {
+		for (String service : knownServices) {
 			if (checkService(service, classesInJar, declaredServices)) {
 				serviceDeclarationMissing = true;	
 			}

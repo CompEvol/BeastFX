@@ -47,9 +47,12 @@
 
         <fileset dir="${beast2path}/lib/junit" includes="junit-platform-console-standalone-1.8.2.jar"/>
         <fileset dir="${libFX}" includes="assertj-core-3.20.2.jar"/>
+
 	
 		<!-- javafx -->
 		<!--
+		<fileset dir="/opt/java/jre/lib/ext/" includes="jfxrt.jar"/>
+		
 		<fileset dir="${javafx-home}/lib" includes="javafx-swt.jar"/>
 		<fileset dir="${javafx-home}/lib" includes="javafx.base.jar"/>
 		<fileset dir="${javafx-home}/lib" includes="javafx.controls.jar"/>

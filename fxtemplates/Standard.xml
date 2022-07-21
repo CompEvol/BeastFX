@@ -301,9 +301,9 @@ ClusterTree/clusterType/,
  		    <operator id="YuleModelBICEPSEpochTop.t:$(n)" spec="beast.base.evolution.operator.EpochFlexOperator" tree="@Tree.t:$(n)" weight="2.0" scaleFactor="0.1"/>
             <operator id="YuleModelBICEPSEpochAll.t:$(n)" spec="beast.base.evolution.operator.EpochFlexOperator" tree="@Tree.t:$(n)" weight="2.0" scaleFactor="0.1" fromOldestTipOnly="false"/>      
             <operator id="YuleModelBICEPSTreeFlex.t:$(n)" spec="beast.base.evolution.operator.TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:$(n)" weight="2.0"/>
-            <operator id='YuleModelTreeRootScaler.t:$(n)' spec='kernel.BactriaScaleOperator' scaleFactor="0.5" weight="3" tree="@Tree.t:$(n)" rootOnly='true'/>
-            <operator id='YuleModelUniformOperator.t:$(n)' spec='kernel.BactriaNodeOperator' weight="30" tree="@Tree.t:$(n)"/>
-            <operator id='YuleModelSubtreeSlide.t:$(n)' spec='kernel.BactriaSubtreeSlide' weight="15" gaussian="true" size="1.0" tree="@Tree.t:$(n)"/>
+            <operator id='YuleModelTreeRootScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="3" tree="@Tree.t:$(n)" rootOnly='true'/>
+            <operator id='YuleModelUniformOperator.t:$(n)' spec='kernel.BactrianNodeOperator' weight="30" tree="@Tree.t:$(n)"/>
+            <operator id='YuleModelSubtreeSlide.t:$(n)' spec='kernel.BactrianSubtreeSlide' weight="15" size="1.0" tree="@Tree.t:$(n)"/>
             <operator id='YuleModelNarrow.t:$(n)' spec='Exchange' isNarrow='true' weight="15" tree="@Tree.t:$(n)"/>
             <operator id='YuleModelWide.t:$(n)' spec='Exchange' isNarrow='false' weight="3" tree="@Tree.t:$(n)"/>
             <operator id='YuleModelWilsonBalding.t:$(n)' spec='WilsonBalding' weight="3" tree="@Tree.t:$(n)"/>
