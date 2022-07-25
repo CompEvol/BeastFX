@@ -5,16 +5,16 @@ package beastfx.app.beauti;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-
-import javax.swing.SwingUtilities;
 
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiSubTemplate;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.ListInputEditor;
+import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.tree.Tree;
@@ -76,30 +76,31 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 				}
 			}
 			comboBox.setId("Initialiser");
+	        FXUtils.createHMCButton(itemBox, beastObject, initialInput);
 
 			comboBox.setOnAction(e->{
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							ComboBox<?> currentComboBox = (ComboBox<?>) e.getSource();
-							BeautiSubTemplate template = (BeautiSubTemplate) currentComboBox.getValue();
-							PartitionContext partitionContext;
-							partitionContext = doc.getContextFor(beastObject);
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						ComboBox<?> currentComboBox = (ComboBox<?>) e.getSource();
+						BeautiSubTemplate template = (BeautiSubTemplate) currentComboBox.getValue();
+						PartitionContext partitionContext;
+						partitionContext = doc.getContextFor(beastObject);
 
-							try {
-								Object o = template.createSubNet(partitionContext, true);
-								StateNodeInitialiser newInitialiser = (StateNodeInitialiser) o;
-								List<StateNodeInitialiser> inits = (List<StateNodeInitialiser>) m_input.get();
-								int i = inits.indexOf(currentInitialiser);
-								inits.set(i, newInitialiser);
-								System.out.println(inits.size());
-							} catch (Exception ex) {
-								ex.printStackTrace();
-							}
-							sync();
-							refreshPanel();
+						try {
+							Object o = template.createSubNet(partitionContext, true);
+							StateNodeInitialiser newInitialiser = (StateNodeInitialiser) o;
+							List<StateNodeInitialiser> inits = (List<StateNodeInitialiser>) m_input.get();
+							int i = inits.indexOf(currentInitialiser);
+							inits.set(i, newInitialiser);
+							System.out.println(inits.size());
+						} catch (Exception ex) {
+							ex.printStackTrace();
 						}
-					});
+						hardSync();
+						refreshPanel();
+					}
+				});
 			});
 
 		}

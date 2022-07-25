@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
+import beast.base.core.BEASTInterface;
 import beastfx.app.inputeditor.BeautiAlignmentProvider;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -176,8 +177,13 @@ public class Alert {
 
     public static Object showInputDialog(Parent parent,
             Object message, String title, AlertType messageType, Icon icon,
-            Object[] selectionValues, Object initialSelectionValue) {    	
-    	ChoiceDialog<?> dlg = new ChoiceDialog<>(initialSelectionValue, selectionValues);
+            Object[] selectionValues, Object initialSelectionValue) {
+    	String [] values = new String[selectionValues.length];
+    	for (int i = 0; i < values.length; i++) {
+    		values[i] = valueOf(selectionValues[i]);
+    	}
+    	ChoiceDialog<?> dlg = new ChoiceDialog<>(valueOf(initialSelectionValue), 
+    			values);
     	dlg.setHeaderText(title);
     	Optional<?> option = dlg.showAndWait();
 		if (parent != null) {
@@ -185,10 +191,22 @@ public class Alert {
 			dlg.setX(node.getX() + node.getWidth()/2);
 			dlg.setY(node.getY() + node.getHeight()/2);
 		}
-		return option.get();
+		String value = (String) option.get();
+    	for (int i = 0; i < values.length; i++) {
+    		if (value.equals(values[i])) {
+    			return  selectionValues[i];
+    		}
+    	}
+    	return null;
     }
 
-    public static Object showInputDialog(Parent parent,
+    private static String valueOf(Object o) {
+		return o instanceof BEASTInterface ?
+				((BEASTInterface) o).getID() :
+				o.toString();
+	}
+
+	public static Object showInputDialog(Parent parent,
             Object message, String title, AlertType messageType, String initialSelectionValue) {    	
     	TextInputDialog dlg = new TextInputDialog(initialSelectionValue);
     	dlg.setHeaderText(title);

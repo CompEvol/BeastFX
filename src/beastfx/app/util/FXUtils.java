@@ -224,15 +224,41 @@ public class FXUtils {
 	   
 	public static void openInBrowser(String url, Button hmc)  {
 		
+		try {
+			if (Utils.isWindows()) {
+				Runtime rt = Runtime.getRuntime();
+				rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+			} else if (Utils.isMac()) {
+				Runtime rt = Runtime.getRuntime();
+				rt.exec("open " + url);
+			} else if (Utils.isLinux()) {
+				Runtime rt = Runtime.getRuntime();
+				String[] browsers = { "google-chrome", "firefox", "mozilla", "epiphany", "konqueror",
+				                                 "netscape", "opera", "links", "lynx" };
+				 
+				StringBuffer cmd = new StringBuffer();
+				for (int i = 0; i < browsers.length; i++)
+				    if(i == 0)
+				        cmd.append(String.format(    "%s \"%s\"", browsers[i], url));
+				    else
+				        cmd.append(String.format(" || %s \"%s\"", browsers[i], url)); 
+				    // If the first didn't work, try the next browser and so on
 		
-		WebView webView = new WebView();
-		webView.getEngine().load(url);
-		Dialog dlg = new Dialog();
-		dlg.getDialogPane().setContent(webView);
-		dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-		dlg.setResizable(true);
-		dlg.showAndWait();
-
+				rt.exec(new String[] { "sh", "-c", cmd.toString() });
+			} else {
+				WebView webView = new WebView();
+				webView.getEngine().load(url);
+				Dialog dlg = new Dialog();
+				dlg.getDialogPane().setContent(webView);
+				dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+				dlg.setResizable(true);
+				dlg.showAndWait();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 //        //Platform.runLater(() -> {
 //			Desktop desktop;
 //	        if (Desktop.isDesktopSupported()) {
