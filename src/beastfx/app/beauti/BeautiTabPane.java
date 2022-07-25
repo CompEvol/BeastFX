@@ -399,7 +399,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         	ThemeProvider.loadStyleSheet(dlg.getDialogPane().getScene());
         	dlg.showAndWait();
             // refresh template menu item
-            templateMenu.getItems().removeAll();
+            templateMenu.getItems().removeAll(templateMenu.getItems());
             List<MyAction> templateActions = getTemplateActions();
             for (MenuItem a : templateActions) {
                 templateMenu.getItems().add(a);

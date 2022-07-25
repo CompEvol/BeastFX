@@ -21,6 +21,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
@@ -34,7 +35,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
@@ -106,16 +110,7 @@ public class JPackageDialog extends DialogPane {
     boolean useLatestVersion = true;
 
     TreeMap<String, Package> packageMap = new TreeMap<>((s1,s2)->{
-    	if (s1.equals(PackageManager.BEAST_PACKAGE_NAME)) {
-    		if (s2.equals(PackageManager.BEAST_PACKAGE_NAME)) {
-    			return 0;
-    		}
-    		return -1;
-    	}
-    	if (s2.equals(PackageManager.BEAST_PACKAGE_NAME)) {
-    		return 1;
-    	}
-    	return s1.compareToIgnoreCase(s2);
+    	return comparePackageNames(s1, s2);
     });
 
 
@@ -341,7 +336,10 @@ public class JPackageDialog extends DialogPane {
         Button installButton = new Button("Install/Upgrade");
         installButton.setOnAction(e -> {
             // first get rid of existing packages
-            List<Integer> selectedRows = dataTable.getSelectionModel().getSelectedIndices();
+        	List<Integer> selectedRows = new ArrayList<>();
+        	for (int i : dataTable.getSelectionModel().getSelectedIndices()) {
+        		selectedRows.add(i);
+        	}
             String installedPackageNames = "";
 
             setCursor(Cursor.WAIT);
@@ -396,7 +394,8 @@ public class JPackageDialog extends DialogPane {
             }
 
             resetPackages();
-            dataTable.getSelectionModel().select(selectedRows.get(0));
+            if (selectedRows.size() > 0)
+            	dataTable.getSelectionModel().select(selectedRows.get(0));
 
             if (installedPackageNames.length()>0)
                 Alert.showMessageDialog(null, "Package(s) "
@@ -411,7 +410,10 @@ public class JPackageDialog extends DialogPane {
         Button uninstallButton = new Button("Uninstall");
         uninstallButton.setOnAction(e -> {
             StringBuilder removedPackageNames = new StringBuilder();
-            List<Integer> selectedRows = dataTable.getSelectionModel().getSelectedIndices();
+            List<Integer> selectedRows = new ArrayList<>();
+            for (int i : dataTable.getSelectionModel().getSelectedIndices()) {
+            	selectedRows.add(i);
+            }
 
             for (int selRow : selectedRows) {
                 Package selPackage = getSelectedPackage(selRow);
@@ -444,7 +446,8 @@ public class JPackageDialog extends DialogPane {
                         }
 
                         resetPackages();
-                        dataTable.getSelectionModel().select(selectedRows.get(0));
+                        if (selectedRows.size() > 0)
+                        	dataTable.getSelectionModel().select(selectedRows.get(0));
                     } catch (IOException | DependencyResolutionException ex) {
                         Alert.showMessageDialog(null, "Uninstall failed because: " + ex.getMessage());
                         setCursor(Cursor.DEFAULT);
@@ -494,19 +497,43 @@ public class JPackageDialog extends DialogPane {
         Button button = new Button("?");
         button.setTooltip(new Tooltip(getPackageUserDir() + " " + getPackageSystemDir()));
         button.setOnAction(e -> {
-                Alert.showMessageDialog(dataTable, "<html>By default, packages are installed in <br><br><em>" + getPackageUserDir() +
-                        "</em><br><br>and are available only to you.<br>" +
-                        "<br>Packages can also be moved manually to <br><br><em>" + getPackageSystemDir() +
-                        "</em><br><br>which makes them available to all users<br>"
-                        + "on your system.</html>", "Repository directory", null);
+//                Alert.showMessageDialog(dataTable, "<html>By default, packages are installed in <br><br><em>" + getPackageUserDir() +
+//                        "</em><br><br>and are available only to you.<br>" +
+//                        "<br>Packages can also be moved manually to <br><br><em>" + getPackageSystemDir() +
+//                        "</em><br><br>which makes them available to all users<br>"
+//                        + "on your system.</html>", "Repository directory", null);
+                Alert.showMessageDialog(dataTable, "By default, packages are installed in \n\n" + getPackageUserDir() +
+                        "\n\nand are available only to you.\n" +
+                        "\nPackages can also be moved manually to \n\n" + getPackageSystemDir() +
+                        "\n\nwhich makes them available to all users\n"
+                        + "on your system.", "Repository directory", null);
             });
         box.getChildren().add(button);
+        
+        closeButton = new Button("Close");
+        closeButton.setOnAction(e -> {
+        	// set a result (any object but 'null' will do) to be able to close the dialog
+        	dlg.setResult((Package)packageMap.values().toArray()[0]);
+        	dlg.close();
+        });
+        closeButton.setOnKeyReleased(e-> {
+        	if (e.getCode().equals(KeyCode.ESCAPE)) {
+        		dlg.setResult((Package)packageMap.values().toArray()[0]);
+        		dlg.close();
+        	}
+        });
+        Region spacer = new Region();
+        spacer.setMinWidth(50);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        box.getChildren().add(spacer);
+        box.getChildren().add(closeButton);
+        
         for (Node n : box.getChildren()) {
         	if (n instanceof Control) {
-        		((Control)n).setMinWidth(150);
+        		((Control)n).setMinWidth(140);
         		((Control)n).setPadding(new Insets(5));
         	}
-        }
+        }        
         return box;
     }
 
@@ -578,11 +605,15 @@ public class JPackageDialog extends DialogPane {
 //
 
 
+	private static Dialog<Package> dlg;
+    private static Button closeButton;
+    
 	public static Dialog<Package> asDialog(Parent pane) {
-		Dialog<Package> dlg = new Dialog<>();
+		dlg = new Dialog<>();
 		dlg.setDialogPane(new JPackageDialog());
+		//dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 		dlg.setTitle("BEAST 2 Package Manager");
-		dlg.getDialogPane().getButtonTypes().add(Alert.CLOSED_OPTION);
+		dlg.setResizable(true);
 		
 		Window stage = null;
 		
@@ -600,6 +631,8 @@ public class JPackageDialog extends DialogPane {
         if (pane != null) {
         	pane.setCursor(Cursor.DEFAULT);
         }
+
+        closeButton.requestFocus();
         return dlg;
 	}
 
