@@ -84,6 +84,9 @@ public class PackageHealthChecker extends Runnable {
 		checkServices(versionFileName);
 		
 		nextCheck();
+		checkNamespace();
+
+		nextCheck();
 		checkFolders();
 
 		nextCheck();
@@ -103,6 +106,60 @@ public class PackageHealthChecker extends Runnable {
 		System.exit(0);
 	}
 	
+	private void checkNamespace() {
+		report("Checking name space");
+		if (classesInJar == null) {
+			collectClasses();
+		}
+		
+		Set<String> classOutsideNamespace = new HashSet<>();
+		Set<String> beastClasses = new HashSet<>();
+		String namespace = namespaceInput.get();
+		boolean found = false;
+		for (String className : classesInJar) {
+			if (!className.startsWith(namespace)) {
+				if (className.startsWith("beast.")) {
+					beastClasses.add(className);
+				} else {
+					classOutsideNamespace.add(className);
+				}
+			} else {
+				found = true;
+			}
+		}
+		
+		if (beastClasses.size() > 0) {
+			report("Classes found in jar file that are in the 'beast' package:");
+			report(beastClasses);
+			report("The 'beast' namespace is reserved for the BEAST.base and BEAST.app packages.");
+		}
+		
+		if (classOutsideNamespace.size() > 0) {
+			report("Classes found in jar file that are not in the suggested namespace:");
+			report(classOutsideNamespace);
+		} else if (!found) {
+			report("No class in jar found that is in namespace " + namespace);
+		} else {
+			report("OK");
+		}
+	}
+
+	private void report(Set<String> classes) {
+		StringBuilder b = new StringBuilder();
+		Object [] array = classes.toArray();
+		for (int i = 0; i < 20 && i < array.length; i++) {
+			b.append(array[i].toString());
+			b.append(", ");
+		}
+		if (array.length > 20) {
+			b.append("...");
+		} else {
+			b.deleteCharAt(b.length()-2);
+			b.append('.');
+		}
+		report(b.toString());
+	}
+
 	private String determinePackageDir(String packageName) {
         for (String jarDirName : PackageManager.getBeastDirectories()) {
         	File versionFile = new File(jarDirName + "/version.xml");
@@ -374,6 +431,7 @@ public class PackageHealthChecker extends Runnable {
 				}
 			}
 		}
+		report("Done checking source code");
 	}
 
 	private String checkVersionFile() {
@@ -554,17 +612,18 @@ public class PackageHealthChecker extends Runnable {
     }
 	
 	private void checkMapElementsInVersionXML(String versionFileName) {
+		int i = -1;
 		try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             Document doc = factory.newDocumentBuilder().parse(new File(versionFileName));
             doc.normalize();
             NodeList nodes = doc.getElementsByTagName("map");
-            for (int i = 0; i < nodes.getLength(); i++) {
+            for (i = 0; i < nodes.getLength(); i++) {
                 Element map = (Element) nodes.item(i);
                 
                 NamedNodeMap atts = map.getAttributes();
                 for (int j = 0; j < atts.getLength(); j++) {
-                	String name = atts.item(i).getNodeName();
+                	String name = atts.item(j).getNodeName();
                 	if (!(name.equals("from") || name.equals("to"))) {
                 		report("Unrecognised attributes " + name + " found: must be \"from\" or \"to\"");
                 	}
@@ -582,6 +641,8 @@ public class PackageHealthChecker extends Runnable {
                 	report("class " + toClass +" specified in map element of version.xml could not be found in lib/" + packageName + ".jar");
             	}
             }
+        } catch (NullPointerException e) {
+        	report("something is wrong in the map element number " +  (i+1));
         } catch (ParserConfigurationException|SAXException|IOException e) {
             e.printStackTrace();
         }        		
