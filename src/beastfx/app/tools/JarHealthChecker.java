@@ -129,7 +129,7 @@ public class JarHealthChecker extends Runnable {
 			report("\nSuggested xml fragment for the version.xml file to declare package applications (because these classes have a main() method):\n");
 			report(b.toString());
 		} else {
-			report("No classes with main() method found.");
+			report("Looks OK: No classes with main() method found" + (packageApps.size() > 0?" that were not already declared" : "") + ".");
 		}
 		return packageAppDeclarationMissing;	}
 	
@@ -211,7 +211,7 @@ public class JarHealthChecker extends Runnable {
 
 
 		if (serviceDeclarationMissing) {
-			showServiceInfo();
+			// showServiceInfo();
 		} else {
 			report("Services look OK");
 		}
@@ -232,7 +232,7 @@ public class JarHealthChecker extends Runnable {
 			}
 		}
 		if (serviceDeclarationMissing) {
-			report("Suggested xml fragment for the version.xml file:");
+			report("\nSuggested xml fragment for the version.xml file:\n");
 			StringBuilder b = new StringBuilder();
 			b.append("    <service type=\"" + service + "\">\n");
 			for (String clazz : list) {

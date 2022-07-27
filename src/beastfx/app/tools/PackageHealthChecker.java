@@ -45,9 +45,10 @@ import beast.pkgmgmt.PackageManager;
 		+ "o make sure version.xml is present\n"
 		+ "and more...")
 public class PackageHealthChecker extends Runnable {
-	final public Input<File> packageInput = new Input<>("package", "zip-file containing BEAST package", new File(OutFile.NO_FILE)); 
+	final public Input<String> packageNameInput = new Input<>("package", "name of the  BEAST package", Validate.REQUIRED); 
 	final public Input<OutFile> outputInput = new Input<>("output", "output-file where report is stored. Use stdout if not specified.", new OutFile(OutFile.NO_FILE)); 
 	final public Input<String> namespaceInput = new Input<>("namespace", "only classes inside this package name will be listed", Validate.REQUIRED); 
+	final public Input<Boolean> verboseInput = new Input<>("verbose", "show info and error messages when parsing XML", false); 
 
 	private String packageName;
 	private String packageFileName;
@@ -65,23 +66,14 @@ public class PackageHealthChecker extends Runnable {
 			out = new PrintStream(outputInput.get());
 		}
 		PackageManager.loadExternalJars();
-		File packageName = packageInput.get();
+		String packageName = packageNameInput.get();
 
-		if (!packageName.exists()) {
+		packageDir = determinePackageDir(packageName);
+		if (packageDir == null) {
 			throw new IllegalArgumentException("package (" + packageName + ") does not exist or is not installed yet.\n"
 					+ "Perhaps it is installed, but the package path was not reset yet?");
 		}
-		
-		
-		// unzip the package file
-		packageFileName = packageInput.get().getName();
-		if (packageFileName.contains(".")) {
-			packageFileName = packageFileName.substring(0, packageFileName.lastIndexOf('.'));
-		}
-		packageDir = (Utils.isWindows() ? "c:\\temp\\" : "/tmp/") + packageFileName;
-		new File(packageDir).mkdir();
-		PackageManager.doUnzip(packageInput.get().getPath(), packageDir);
-		
+				
 		collectClasses();
 		
 		// do checks
@@ -103,26 +95,58 @@ public class PackageHealthChecker extends Runnable {
 		//nextCheck();
 		//checkBEAUTITemplates();
 		
-		// clean up package directory
-		deleteRecursively(new File(packageDir));
+		// clean up
 		if (OutFile.isSpecified(outputInput.get())) {
 			out.close();
 		}
-		Log.warning("Done");
+		System.err.println("Done");
 		System.exit(0);
 	}
 	
+	private String determinePackageDir(String packageName) {
+        for (String jarDirName : PackageManager.getBeastDirectories()) {
+        	File versionFile = new File(jarDirName + "/version.xml");
+	        if (versionFile.exists()) {
+	            try {
+	                // print name and version of package
+	                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	                Document doc = factory.newDocumentBuilder().parse(versionFile);
+	                Element packageElement = doc.getDocumentElement();
+	                String packagaName2 = packageElement.getAttribute("name");
+	                if (packageName.equals(packagaName2)) {
+	                	return jarDirName;
+	                };
+	            } catch (Exception e) {
+	            	// ignore
+	            }
+	        }
+        }
+		return null;
+	}
+
 	private void nextCheck() {
 		report("\n\n============================================================");		
 	}
 
 	private void checkXMLExample() throws IOException {
 		report("Checking example XML files");
-		PackageManager.loadExternalJars();
 		Logger.FILE_MODE = Logger.LogFileMode.overwrite;
 		
 		String separator = Utils.isWindows() ? "\\\\" : File.separator;
-		List<String> failedFiles = new ArrayList<>(); 
+		List<String> failedFiles = new ArrayList<>();
+		
+		PrintStream stdout = System.out;
+		PrintStream stderr = System.err;
+		PrintStream error = Log.err;
+		PrintStream info = Log.info;
+		if (!verboseInput.get()) {
+			System.setOut(Log.nullStream);
+			System.setErr(Log.nullStream);
+			Log.err = Log.nullStream;
+			Log.info = Log.nullStream;
+			
+			Log.setLevel(Log.Level.none);
+		}
 		if (new File(packageDir + separator + "examples").exists()) {
 			for (String fileName : new File(packageDir + separator + "examples").list()) {
 	            Log.warning("Processing " + fileName);
@@ -130,14 +154,25 @@ public class PackageHealthChecker extends Runnable {
 	            try {
 	                parser.parseFile(new File(packageDir + separator + "examples" + separator + fileName));
 	            } catch (Throwable e) {
-	            	e.printStackTrace()
-	            	;
-	                report("Example Xml parsing failed for " + fileName
-	                        + ": " + e.getMessage());
-	                failedFiles.add(fileName);
+	            	e.printStackTrace();
+	                failedFiles.add(fileName);// + ": " + e.getMessage());
 	            }
 			}
 		}		
+		if (!verboseInput.get()) {
+			System.setOut(stdout);
+			System.setErr(stderr);
+			Log.err = error;
+			Log.info = info;
+		}
+		if (failedFiles.size() > 0) {
+            report("Example XML parsing failed for folloding files:");
+            for (String fileName : failedFiles) {
+            	report(fileName);
+            }
+		} else {
+			report("All example XML files parse");
+		}
 	}
 
 	private void checkBEAUTITemplates() {
@@ -219,18 +254,6 @@ public class PackageHealthChecker extends Runnable {
 //		}
 		return declaredServices;
 	}
-
-	private void deleteRecursively(File file) {
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            for (File f : files) {
-                deleteRecursively(f);
-            }
-        }
-        file.delete();            
-    }
-
-
 
 
 	private void checkFolders() {
@@ -357,25 +380,7 @@ public class PackageHealthChecker extends Runnable {
 		report("Checking version.xml");
 		String versionFileName = packageDir + "/version.xml";
 		if (!new File(versionFileName).exists()) {
-			report("Expected file version.xml at top level in the zip file");
-			// perhaps it is somewhere else in the zip file?
-			try {
-				ZipInputStream zip = new ZipInputStream(new FileInputStream(packageInput.get()));
-				while(true) {
-				    ZipEntry e = zip.getNextEntry();
-				    if (e == null)
-				      break;
-				    String name = e.getName();
-				    if (name.endsWith("version.xml")) {
-				    	report("but found it here: " + name);
-				    }
-				}
-			} catch (IOException e) {
-				report(e.getMessage());
-			}
-			report("Could not find file version.xml where I expected it: " + versionFileName);
-			report("Cannot determine package name, so assume it is " + packageFileName);
-			packageName = packageFileName;
+			report("Expected file version.xml at top level in package directory + " + packageDir);
 			return versionFileName;
 		}
 		
