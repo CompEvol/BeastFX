@@ -1,6 +1,7 @@
 package beastfx.app.tools;
 
 
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -20,7 +21,6 @@ import java.util.TreeSet;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -252,70 +252,46 @@ public class AppLauncher {
         for (String jarDirName : dirs) {
             File versionFile = new File(jarDirName + "/version.xml");
             if (versionFile.exists() && versionFile.isFile()) {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                Document doc;
-                try {
-                    doc = factory.newDocumentBuilder().parse(versionFile);
-                    doc.normalize();
-                    // get package-app info from version.xml
-                    Element packageElement = doc.getDocumentElement();
-                    NodeList nodes = doc.getElementsByTagName("packageapp");
-                    if (nodes.getLength() == 0) {
-                    	nodes = doc.getElementsByTagName("addonapp");
-                    }
-                    for (int j = 0; j < nodes.getLength(); j++) {
-                        Element packageAppElement = (Element) nodes.item(j);
-                        PackageApp packageApp = new PackageApp();
-                        packageApp.packageName = packageElement.getAttribute("name");
-                        packageApp.jarDir = jarDirName;
-                        packageApp.className = packageAppElement.getAttribute("class");
-                        packageApp.description = packageAppElement.getAttribute("description");
-                        packageApp.argumentsString = packageAppElement.getAttribute("args");
-
-                        String iconLocation = packageAppElement.getAttribute("icon");
-                        packageApp.icon = Utils.getIcon(iconLocation);
-                        if (packageApp.icon == null || iconLocation.trim().isEmpty())
-                            packageApp.icon = Utils.getIcon(DEFAULT_ICON);
-
-                        packageApps.add(packageApp);
-                    }
-                } catch (Exception e) {
-                    // ignore
-                    System.err.println(e.getMessage());
-                }
+            	getPackageApps(versionFile, packageApps, jarDirName);
             }
         }
         return packageApps;
     }
 
-    /**
-     * package application information required for launching the app and
-     * displaying in list box
-     **/
-    class PackageApp {
-        String packageName;
-        String jarDir;
-        String description;
-        String className;
-        String argumentsString;
-        ImageIcon icon;
-
-        public String[] getArgs() {
-            if (argumentsString == null || argumentsString.trim().isEmpty()) {
-                return new String[]{};
-            } else {
-                String[] args = argumentsString.split(" ", -1);
-//                System.out.println("package = " + packageName + ", class = " + className + ", args = " + Arrays.toString(args));
-                return args;
+    public static void getPackageApps(File versionFile, List<PackageApp> packageApps, String jarDirName) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        Document doc;
+        try {
+            doc = factory.newDocumentBuilder().parse(versionFile);
+            doc.normalize();
+            // get package-app info from version.xml
+            Element packageElement = doc.getDocumentElement();
+            NodeList nodes = doc.getElementsByTagName("packageapp");
+            if (nodes.getLength() == 0) {
+            	nodes = doc.getElementsByTagName("addonapp");
             }
-        }
+            for (int j = 0; j < nodes.getLength(); j++) {
+                Element packageAppElement = (Element) nodes.item(j);
+                PackageApp packageApp = new PackageApp();
+                packageApp.packageName = packageElement.getAttribute("name");
+                packageApp.jarDir = jarDirName;
+                packageApp.className = packageAppElement.getAttribute("class");
+                packageApp.description = packageAppElement.getAttribute("description");
+                packageApp.argumentsString = packageAppElement.getAttribute("args");
 
-        @Override
-        public String toString() {
-            return description;
-        }
-    }
+                String iconLocation = packageAppElement.getAttribute("icon");
+                packageApp.icon = Utils.getIcon(iconLocation);
+                if (packageApp.icon == null || iconLocation.trim().isEmpty())
+                    packageApp.icon = Utils.getIcon(DEFAULT_ICON);
 
+                packageApps.add(packageApp);
+            }
+        } catch (Exception e) {
+            // ignore
+            System.err.println(e.getMessage());
+        }
+	}
+    
     /** thread for launching add on application **/
     class PackageAppThread extends Thread {
         PackageApp packageApp;

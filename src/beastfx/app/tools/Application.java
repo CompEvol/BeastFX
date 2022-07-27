@@ -1,6 +1,7 @@
 package beastfx.app.tools;
 
 
+
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,6 @@ import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
-import beast.pkgmgmt.Utils6;
 
 @Description("BEAST application that handles argument parsing by introspection "
 		+ "using Inputs declared in the class.")
@@ -42,7 +42,7 @@ public class Application extends Console {
 	
 	@Override
 	protected void createDialog() {
-		Utils6.startSplashScreen();
+		// Utils6.startSplashScreen();
 		if (Utils.isMac()) {
 			Utils.loadUIManager();
 		}
@@ -57,7 +57,8 @@ public class Application extends Console {
 		// wrap panel in a dialog
 		BEASTObjectDialog dialog = new BEASTObjectDialog(panel, null);
 
-		Utils6.endSplashScreen();
+		// Utils6.endSplashScreen();
+		
 		dialog.setResizable(true);
 		dialog.getDialogPane().setPrefSize(1024, 768);
 		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);

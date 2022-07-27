@@ -28,6 +28,7 @@ import beastfx.app.util.OutFile;
 import beastfx.app.util.Utils;
 import beast.base.core.Description;
 import beast.base.core.Input;
+import beast.base.core.Input.Validate;
 import beast.base.core.Log;
 import beast.base.inference.Logger;
 import beast.base.inference.Runnable;
@@ -46,7 +47,8 @@ import beast.pkgmgmt.PackageManager;
 public class PackageHealthChecker extends Runnable {
 	final public Input<File> packageInput = new Input<>("package", "zip-file containing BEAST package", new File(OutFile.NO_FILE)); 
 	final public Input<OutFile> outputInput = new Input<>("output", "output-file where report is stored. Use stdout if not specified.", new OutFile(OutFile.NO_FILE)); 
-	
+	final public Input<String> namespaceInput = new Input<>("namespace", "only classes inside this package name will be listed", Validate.REQUIRED); 
+
 	private String packageName;
 	private String packageFileName;
 	private String packageDir;
@@ -62,11 +64,12 @@ public class PackageHealthChecker extends Runnable {
 		if (OutFile.isSpecified(outputInput.get())) {
 			out = new PrintStream(outputInput.get());
 		}
-		if (packageInput.get() == null || packageInput.get().getName().equals("[[none]]")) {
-			throw new IllegalArgumentException("package zip file must be specified");
-		}
-		if (!packageInput.get().exists()) {
-			throw new IllegalArgumentException("package zip file (" + packageInput.get().getPath() + ") does not exist");
+		PackageManager.loadExternalJars();
+		File packageName = packageInput.get();
+
+		if (!packageName.exists()) {
+			throw new IllegalArgumentException("package (" + packageName + ") does not exist or is not installed yet.\n"
+					+ "Perhaps it is installed, but the package path was not reset yet?");
 		}
 		
 		
@@ -82,12 +85,23 @@ public class PackageHealthChecker extends Runnable {
 		collectClasses();
 		
 		// do checks
+		nextCheck();
 		String versionFileName = checkVersionFile();
+		
+		nextCheck();
 		checkServices(versionFileName);
+		
+		nextCheck();
 		checkFolders();
+
+		nextCheck();
 		checkSourceCode();
+		
+		nextCheck();
 		checkXMLExample();
-		// checkBEAUTITemplates();
+
+		//nextCheck();
+		//checkBEAUTITemplates();
 		
 		// clean up package directory
 		deleteRecursively(new File(packageDir));
@@ -98,7 +112,12 @@ public class PackageHealthChecker extends Runnable {
 		System.exit(0);
 	}
 	
+	private void nextCheck() {
+		report("\n\n============================================================");		
+	}
+
 	private void checkXMLExample() throws IOException {
+		report("Checking example XML files");
 		PackageManager.loadExternalJars();
 		Logger.FILE_MODE = Logger.LogFileMode.overwrite;
 		
@@ -110,10 +129,10 @@ public class PackageHealthChecker extends Runnable {
 	            XMLParser parser = new XMLParser();
 	            try {
 	                parser.parseFile(new File(packageDir + separator + "examples" + separator + fileName));
-	            } catch (Exception e) {
+	            } catch (Throwable e) {
 	            	e.printStackTrace()
 	            	;
-	                out.println("Example Xml parsing failed for " + fileName
+	                report("Example Xml parsing failed for " + fileName
 	                        + ": " + e.getMessage());
 	                failedFiles.add(fileName);
 	            }
@@ -139,17 +158,23 @@ public class PackageHealthChecker extends Runnable {
             }
 		}			}
 
+	
 	private void checkServices(String versionFileName) {
 		Map<String, Set<String>> declaredSerices = collectDecladedServices(versionFileName);
+        List<PackageApp> packageApps = new ArrayList<>();
+        AppLauncher.getPackageApps(new File(versionFileName), packageApps, null);
 		for (String file : new File(packageDir + "/lib").list()) {
 			if (file.toLowerCase().endsWith(".jar")) {
-				JarHealthChecker jarCheck = new JarHealthChecker(new File(file));
+				JarHealthChecker jarCheck = new JarHealthChecker(new File(file), namespaceInput.get());
 				jarCheck.checkServices(classesInJar, out, declaredSerices);
+				
+				nextCheck();
+				jarCheck.checkApps(classesInJar, out, packageApps);
 			}
 		}
 	}
 	
-	
+
 	private Map<String, Set<String>> collectDecladedServices(String versionFileName) {
 		Map<String,Set<String>> declaredServices = new HashMap<>();
         try {
@@ -243,28 +268,38 @@ public class PackageHealthChecker extends Runnable {
 					}
 				}
 			}
-		}		
+		}
+		boolean allOK = true;
 		if (!hasExamples) {
 			report("No examples directory found. It is recommended to have at least one XML example file "
 					+ "showing the features of the package in the examples directory at the top level of the package");
+			allOK = false;
 		}
 		if (hasExamples && exampleCount == 0) {
 			report("No examples in examples directory found. It is recommended to have at least one XML example "
 					+ "file showing the features of the package");
+			allOK = false;
 		}
 		if (!hasLib) {
 			report("No lib directory found. It is recommended to have at least one jar file containing java classes "
 					+ "in the lib directory at the top level of the package");
+			allOK = false;
 		}
 		if (hasLib && libCount == 0) {
 			report("No jar library found in lib directory.");
+			allOK = false;
 		}
 		if (!hasTemplates) {
-			report("No templates directory found. For BEAUti support of the package, the BEAUti templates are "
-					+ "expected to be in the templates directory at the top level of the package");
+			report("No fxtemplates directory found. For BEAUti support of the package, the BEAUti templates are "
+					+ "expected to be in the fxtemplates directory at the top level of the package");
+			allOK = false;
 		}
 		if (hasTemplates && templateCount == 0) {
 			report("No BEAUti template found in templates directory, so BEAUti will have no support for this package.");
+			allOK = false;
+		}
+		if (allOK) {
+			report ("Folder structure OK");
 		}
 	}
 
