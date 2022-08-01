@@ -98,5 +98,14 @@
               args=""
             />
 
+	    <packageapp description="Log File Analyser"
+              class="beastfx.app.tools.LogAnalyser"
+              args=""
+            />
+
+	    <packageapp description="Package healt checker"
+              class="beastfx.app.tools.PackageHealthChecker"
+              args=""
+            />
             	
 </package>

@@ -27,7 +27,6 @@ package beastfx.app.beast;
 
 
 import beastfx.app.util.ExtensionFileFilter;
-import jam.util.IconUtils;
 import beast.base.core.BEASTVersion2;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
@@ -205,7 +204,7 @@ public class BeastMCMC {
             Version version = new BEASTVersion2();
             String titleString = "<html><center><p>Bayesian Evolutionary Analysis Sampling Trees<br>" +
                     "Version " + version.getVersionString() + ", " + version.getDateString() + "</p></center></html>";
-            javax.swing.Icon icon = IconUtils.getIcon(BeastMain.class, "images/beast.png");
+            //javax.swing.Icon icon = IconUtils.getIcon(BeastMain.class, "images/beast.png");
             String nameString = "BEAST " + version.getVersionString();
 
 //            BeastDialog dialog = new BeastDialog(new JFrame(), titleString, icon);
@@ -241,7 +240,8 @@ public class BeastMCMC {
 //                    beagleFlags |= BeagleFlag.PROCESSOR_CPU.getMask();
 //                }
 //                if (dialog.preferBeagleSSE()) {
-//                    beagleFlags |= BeagleFlag.VECTOR_SSE.getMask();
+//                    beagleFlags |= BeagleFlag.VECTOR_SSE.getMask();import jam.util.IconUtils;
+
 //                }
 //                if (dialog.preferBeagleGPU()) {
 //                    beagleFlags |= BeagleFlag.PROCESSOR_GPU.getMask();

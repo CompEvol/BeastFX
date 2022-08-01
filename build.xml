@@ -17,8 +17,8 @@
 <!--
 	<property name="javafx-home" location="../../Downloads/javafx-sdk-17.0.2"/>
 	<property name="javafx-home" location="../../javafx-sdk-18.0.1/"/>
--->	
 	<property name="release_dir" value="release" />
+-->	
 	<property name="distFX" location="${buildFX}/dist" />
 	<property name="beast2path" location="../beast2" />
 	<property name="srcBeast2" location="${beast2path}/src" />
@@ -48,23 +48,7 @@
         <fileset dir="${beast2path}/lib/junit" includes="junit-platform-console-standalone-1.8.2.jar"/>
         <fileset dir="${libFX}" includes="assertj-core-3.20.2.jar"/>
 
-	
-		<!-- javafx -->
-		<!--
-		<fileset dir="/opt/java/jre/lib/ext/" includes="jfxrt.jar"/>
-		
-		<fileset dir="${javafx-home}/lib" includes="javafx-swt.jar"/>
-		<fileset dir="${javafx-home}/lib" includes="javafx.base.jar"/>
-		<fileset dir="${javafx-home}/lib" includes="javafx.controls.jar"/>
-		<fileset dir="${javafx-home}/lib" includes="javafx.fxml.jar"/>
-		<fileset dir="${javafx-home}/lib" includes="javafx.graphics.jar"/>
-		<fileset dir="${javafx-home}/lib" includes="javafx.media.jar"/>
-		<fileset dir="${javafx-home}/lib" includes="javafx.swing.jar"/>
-		<fileset dir="${javafx-home}/lib" includes="javafx.web.jar"/>
-	-->
-
         <path location="${beast2classpath}"/>
-
 	</path>
 
 	<!-- start -->
@@ -137,21 +121,6 @@
 		<!-- Create the distribution directory -->
 		<mkdir dir="${distFX}" />
 
-		<!-- Put everything in ${buildFX} into the beast.jar file -->
-		<jar jarfile="${distFX}/BeastFX.jar">
-			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Main-Class" value="${main_class_BEASTFX}" />
-			</manifest>
-			<fileset dir="${buildFX}">
-				<include name="**/*.class" />
-				<include name="**/*.png" />
-				<include name="**/*.css" />
-				<include name="**/*.fxml" />
-			</fileset>
-			<zipgroupfileset dir="${libFX}" includes="jam.jar" />
-		</jar>
-
 		<jar jarfile="${distFX}/BeastFX.src.jar">
 			<fileset dir="${srcFX}">
 				<include name="**/*" />
@@ -162,7 +131,10 @@
 				<attribute name="Built-By" value="${user.name}" />
 			</manifest>
 			<fileset dir="${buildFX}">
-				<include name="**/*"/>
+				<include name="**/*.class"/>
+				<include name="**/*.png" />
+				<include name="**/*.css" />
+				<include name="**/*.fxml" />
 			</fileset>
 		</jar>
 	</target>
@@ -241,5 +213,359 @@
         </jar>
 		<echo message="Add-on version release is finished." />
 	</target>
+
+
+
+    <target name="linuxjre" depends="compile-all,compile-allBeastFX,dist_all_BEAST,dist_all_BeastFX" 
+            description="release Linux/Unix version of BEAST, BEAUTI, TreeAnnotator, LogCombiner">
+        
+        <delete dir="${Linux_package_dir}" />
+        <!-- Create the release directory -->
+        <mkdir dir="${Linux_package_dir}" />
+
+        <copy todir="${Linux_package_dir}/bin">
+            <fileset dir="${Linux_dir}/jrebin" />
+        </copy>
+        <chmod dir="${Linux_package_dir}/bin" perm="755" includes="**/**" />
+        <exec executable="cp">
+	        <!--
+             <arg line="-R /opt/java/jre ${Linux_package_dir}/jre"/>
+             -->
+             <arg line="-R /opt/zulu17.34.19-ca-fx-jre17.0.3-linux_x64/ ${Linux_package_dir}/jre"/>
+        </exec>
+
+        <copy todir="${Linux_package_dir}/examples/">
+            <fileset dir="${beast2}/examples/">
+                <include name="*.xml" />
+                <include name="nexus/**" />
+                <exclude name="benchmark/**" />
+            </fileset>
+        </copy>
+
+        <copy file="${beast2}/version.xml" tofile="${Linux_package_dir}/BEAST.base.version.xml" />
+        <copy file="${beast2app}/version.xml" tofile="${Linux_package_dir}/BEAST.app.version.xml" />
+
+        <copy file="${common_dir}/icons/beast.png" todir="${Linux_package_dir}/images" />
+        <copy file="${common_dir}/icons/beauti.png" todir="${Linux_package_dir}/images" />
+
+        <copy file="${dist}/launcher.jar" todir="${Linux_package_dir}/lib" />
+        <copy file="${dist}/launcher.src.jar" todir="${Linux_package_dir}/lib" />
+        <copy file="${dist}/BEAST.base.jar" todir="${Linux_package_dir}/lib" />
+        <copy file="${dist}/BEAST.base.src.jar" todir="${Linux_package_dir}/lib" />
+        <copy file="${distapp}/${BEASTappName}.jar" tofile="${Linux_package_dir}/lib/BEAST.app.jar" />
+        <copy file="${distapp}/${BEASTappName}.src.jar" tofile="${Linux_package_dir}/lib/BEAST.app.src.jar" />
+
+        <copy file="${tools_dir}/DensiTree.jar" todir="${Linux_package_dir}/lib" />
+        <copy file="${tools_dir}/DensiTree.png" todir="${Linux_package_dir}/images" />
+
+        <copy todir="${Linux_package_dir}/${templates}/">
+            <fileset dir="${beast2app}/${templates}/" />
+        </copy>
+        <copy file="${common_dir}/VERSION HISTORY.txt" todir="${Linux_package_dir}" />
+        <copy file="${common_dir}/README.txt" todir="${Linux_package_dir}" />
+        <copy file="${common_dir}/LICENSE.txt" todir="${Linux_package_dir}" />
+
+        <exec executable="tar" dir="release/Linux">
+		    <arg line="fcz BEAST.${version}.tgz beast"/>
+	    </exec>
+
+        <echo message="Linux/Unix version release is finished as release/Linux/BEAST.v${version}.tgz." />
+
+    </target>
+
+
+    <!-- Need to either install Launch4j under {BEAST workspace}/${release}
+                 or install it in the default directory and change the location of launch4j.dir -->
+    <!--depends="build_jar_all_BEAST_NoJUnitTest"-->
+    <target name="windowsjre" depends="init" 
+            description="release Windows version of BEAST, BEAUTI, TreeAnnotator, LogCombiner">
+
+        <delete dir="${Windows_package_dir}" />
+        <!-- Create the release directory -->
+        <mkdir dir="${Windows_package_dir}" />
+
+        <property name="launch4j.dir" location="../launch4j" />
+        <taskdef name="launch4j"
+                 classname="net.sf.launch4j.ant.Launch4jTask"
+                 classpath="${launch4j.dir}/launch4j.jar :${launch4j.dir}/lib/xstream.jar" />
+
+
+        <copy todir="${Windows_package_dir}/examples/">
+            <fileset dir="${beast2}/examples/">
+                <include name="*.xml" />
+                <include name="nexus/**" />
+                <exclude name="benchmark/**" />
+            </fileset>
+        </copy>
+
+        <copy file="${beast2}/version.xml" tofile="${Windows_package_dir}/BEAST.base.version.xml" />
+        <copy file="${beast2app}/version.xml" tofile="${Windows_package_dir}/BEAST.app.version.xml" />
+
+        <copy file="${common_dir}/icons/beast.png" todir="${Windows_package_dir}/images" />
+        <copy file="${common_dir}/icons/beauti.png" todir="${Windows_package_dir}/images" />
+
+        <copy file="${dist}/launcher.jar" todir="${Windows_package_dir}/lib" />
+        <copy file="${dist}/launcher.src.jar" todir="${Windows_package_dir}/lib" />
+        <copy file="${dist}/BEAST.base.jar" todir="${Windows_package_dir}/lib" />
+        <copy file="${dist}/BEAST.base.src.jar" todir="${Windows_package_dir}/lib" />
+        <copy file="${distapp}/${BEASTappName}.jar" tofile="${Windows_package_dir}/lib/BEAST.app.jar" />
+        <copy file="${distapp}/${BEASTappName}.src.jar" tofile="${Windows_package_dir}/lib/BEAST.app.src.jar" />
+
+        <copy file="${tools_dir}/DensiTree.jar" todir="${Windows_package_dir}/lib" />
+        <copy file="${tools_dir}/DensiTree.png" todir="${Windows_package_dir}/images" />
+
+        <copy todir="${Windows_package_dir}/${templates}/">
+            <fileset dir="${beast2app}/${templates}/" />
+        </copy>
+        <copy file="${common_dir}/VERSION HISTORY.txt" todir="${Windows_package_dir}" />
+        <copy file="${common_dir}/README.txt" todir="${Windows_package_dir}" />
+        <copy file="${common_dir}/LICENSE.txt" todir="${Windows_package_dir}" />
+
+
+        <copy todir="${Windows_package_dir}/examples/">
+            <fileset dir="${beast2}/examples/">
+                <include name="*.xml" />
+                <include name="nexus/**" />
+                <exclude name="benchmark/**" />
+            </fileset>
+        </copy>
+        <copy todir="${Windows_package_dir}/jre">
+        	<!--
+            <fileset dir="../jdk8u212-b04-jre" />
+            -->
+            <fileset dir="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-win_x64/"/>
+        </copy>
+
+        <mkdir dir="${Windows_package_dir}/bat" />
+        <copy todir="${Windows_package_dir}/bat/">
+            <fileset dir="${Windows_dir}/bat">
+                <include name="*.bat" />
+            </fileset>
+        </copy>
+        <copy file="${common_dir}/VERSION HISTORY.txt" todir="${Windows_package_dir}" />
+        <copy file="${common_dir}/README.txt" todir="${Windows_package_dir}" />
+        <copy file="${common_dir}/LICENSE.txt" todir="${Windows_package_dir}" />
+
+
+        <!-- BEAUTi v?.?.?.exe -->
+        <launch4j configFile="${Windows_dir}/BEAUti_launch4j_jre.xml"
+                  jar="${dist}/launcher.jar"
+                  outfile="${Windows_package_dir}/${BEAUti_name}.exe"
+                  fileVersion="${version}.0"
+                  txtFileVersion="${version}"
+                  productVersion="${version}.0"
+                  txtProductVersion="${version}" >
+                  <!-- to bunle a JRE, copy the desired JRE to folder ../jre 
+                       (so java.exe is in ../jre/bin/) and uncomment following fragment
+                       TODO: needs testing
+                  <jre>
+                      <path>../jre</path>
+    			  </jre>
+    			  -->
+         </launch4j>
+
+        <!-- BEAST v?.?.?.exe -->
+        <launch4j configFile="${Windows_dir}/BEAST_launch4j_jre.xml"
+                  jar="${dist}/launcher.jar"
+                  outfile="${Windows_package_dir}/${BEAST_name}.exe"
+                  fileVersion="${version}.0"
+                  txtFileVersion="${version}"
+                  productVersion="${version}.0"
+                  txtProductVersion="${version}" />
+
+        <!--<launch4j configFile="${Windows_dir}/TreeStat_launch4j.xml"
+                              jar="${dist}/beast.jar"
+                              outfile="${Windows_package_dir}/${TreeStat_name}.exe"
+                              fileVersion="${version}.0"
+                              txtFileVersion="${version}"
+                              productVersion="${version}.0"
+                              txtProductVersion="${version}"/>-->
+
+        <!-- LogAnalyser v?.?.?.exe
+            <launch4j configFile="${Windows_dir}/LogAnalyser_launch4j_jre.xml"
+                              jar="${dist}/beast.jar"
+                              outfile="${Windows_package_dir}/${LogAnalyser_name}v${version}.exe"
+                              fileVersion="${version}.0"
+                              txtFileVersion="${version}"
+                              productVersion="${version}.0"
+                              txtProductVersion="${version}"/>      -->
+
+        <launch4j configFile="${Windows_dir}/LogCombiner_launch4j_jre.xml"
+                  jar="${dist}/launcher.jar"
+                  outfile="${Windows_package_dir}/${LogCombiner_name}.exe"
+                  fileVersion="${version}.0"
+                  txtFileVersion="${version}"
+                  productVersion="${version}.0"
+                  txtProductVersion="${version}"/>
+
+        <launch4j configFile="${Windows_dir}/TreeAnnotator_launch4j_jre.xml"
+                  jar="${dist}/launcher.jar"
+                  outfile="${Windows_package_dir}/TreeAnnotator.exe"
+                  fileVersion="${version}.0"
+                  txtFileVersion="${version}"
+                  productVersion="${version}.0"
+                  txtProductVersion="${version}"/>
+
+
+        <launch4j configFile="${tools_dir}/DensiTree_launch4j_jre.xml"
+                  jar="${tools_dir}/DensiTree.jar"
+                  outfile="${Windows_package_dir}/DensiTree.exe"
+                  fileVersion="2.0.0.0"
+                  txtFileVersion="2.0.0.0"
+                  productVersion="2.0.0.0"
+                  txtProductVersion="2.0.0.0" />
+
+
+        <launch4j configFile="${Windows_dir}/AppLauncher_launch4j_jre.xml"
+                  jar="${dist}/launcher.jar"
+                  outfile="${Windows_package_dir}/AppLauncher.exe"
+                  fileVersion="${version}.0"
+                  txtFileVersion="${version}"
+                  productVersion="${version}.0"
+                  txtProductVersion="${version}"/>
+
+        <copy todir="${Windows_package_dir}/fxtemplates/">
+            <fileset dir="${beast2app}/fxtemplates/" />
+        </copy>
+        
+        <!-- same as UoA password -->
+<!--
+	<input message="Keystore password : " addproperty="storepass"></input>
+	<jsign file="${Windows_package_dir}/${BEAUti_name}.exe"
+        	name="BEAUti"
+	        url="http://beast2.org"
+	        keystore="keystore.pfx"
+	        alias="http://beast2.org"
+	        storepass="${storepass}"
+	        tsaurl="http://timestamp.comodoca.com/authenticode"/>
+	<jsign file="${Windows_package_dir}/${BEAST_name}.exe"
+        	name="BEAST"
+	        url="http://beast2.org"
+	        keystore="keystore.pfx"
+	        alias="http://beast2.org"
+	        storepass="${storepass}"
+	        tsaurl="http://timestamp.comodoca.com/authenticode"/>
+	<jsign file="${Windows_package_dir}/${LogCombiner_name}.exe"
+        	name="LogCombiner"
+	        url="http://beast2.org"
+	        keystore="keystore.pfx"
+	        alias="http://beast2.org"
+	        storepass="${storepass}"
+	        tsaurl="http://timestamp.comodoca.com/authenticode"/>
+	<jsign file="${Windows_package_dir}/TreeAnnotator.exe"
+        	name="TreeAnnotator"
+	        url="http://beast2.org"
+	        keystore="keystore.pfx"
+	        alias="http://beast2.org"
+	        storepass="${storepass}"
+	        tsaurl="http://timestamp.comodoca.com/authenticode"/>
+	<jsign file="${Windows_package_dir}/DensiTree.exe"
+        	name="DensiTree"
+	        url="http://beast2.org"
+	        keystore="keystore.pfx"
+	        alias="http://beast2.org"
+	        storepass="${storepass}"
+	        tsaurl="http://timestamp.comodoca.com/authenticode"/>
+	<jsign file="${Windows_package_dir}/AppLauncher.exe"
+        	name="AppLauncher"
+	        url="http://beast2.org"
+	        keystore="keystore.pfx"
+	        alias="http://beast2.org"
+	        storepass="${storepass}"
+	        tsaurl="http://timestamp.comodoca.com/authenticode"/>
+-->
+
+        <zip destfile="${Windows_dir}/${BEAST_name}_with_JRE.v${version}.zip">
+            <zipfileset dir="${Windows_package_dir}" prefix="${BEAST_name}" />
+        </zip>
+       <copy file="${Windows_dir}/${BEAST_name}_with_JRE.v${version}.zip" todir="../../tmp/" />
+
+        <echo message="Windows version release is finished." />
+    </target>
+
+	<target name="beast.app">
+    	<available file="${distapp}/${BEASTappName}.jar" property="beast.app.present"/>
+        <fail unless="beast.app.present">
+			run `ant addon` in ${BEASTappName} before building this release.
+        </fail>
+	</target>
+
+
+    <!-- Create the app bundle -->
+    <target name="macjre">
+        <delete dir="${Mac_package_dir}" />
+        <!--<delete file="${Mac_dir}/pack.temp.dmg"/>-->
+        <delete file="${Mac_dir}/${beast.dmg}"/>
+        <!-- Create the release directory -->
+        <mkdir dir="${Mac_package_dir}" />
+
+        <copy todir="${Mac_package_dir}/bin">
+            <fileset dir="${Linux_dir}/jrebin" />
+        </copy>
+        <chmod dir="${Mac_package_dir}/bin" perm="755" includes="**/**" />
+
+        <copy todir="${Mac_package_dir}/examples/">
+            <fileset dir="${beast2}/examples/">
+                <include name="*.xml" />
+                <include name="nexus/**" />
+                <exclude name="benchmark/**" />
+            </fileset>
+        </copy>
+        <property name="openjre" value="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/jre"/>
+        <exec executable="cp">
+		    <arg line="-R ${openjre} ${Mac_package_dir}/jre1.8.0_262"/>
+		</exec>
+        <!-- Deprecated JavaAppLauncher -->
+<!--        <exec executable="gcc">-->
+<!--		    <arg line="release/Mac/launch.c -o JavaAppLauncher"/>-->
+<!--		</exec>-->
+<!--        <chmod dir="./" perm="755" includes="JavaAppLauncher"/>-->
+		<!--copy todir="${Mac_package_dir}/doc">
+            <fileset dir="${common_dir}/doc" />
+        </copy>
+		-->
+
+        <antcall target="bundle">
+             <param name="stubfile" value="${Mac_dir}/universalJavaApplicationJREStub"/>
+        </antcall>
+
+<!--        <delete file="${Mac_package_dir}/BEAST.app/Contents/MacOS/JavaAppLauncher"/>-->
+<!--        <copy file="JavaAppLauncher" todir="${Mac_package_dir}/BEAST.app/Contents/MacOS/"/>-->
+<!--        <chmod dir="${Mac_package_dir}/BEAST.app/Contents/MacOS/" perm="755" includes="JavaAppLauncher"/>-->
+<!--        <delete file="${Mac_package_dir}/BEAUti.app/Contents/MacOS/JavaAppLauncher"/>-->
+<!--        <copy file="JavaAppLauncher" todir="${Mac_package_dir}/BEAUti.app/Contents/MacOS/"/>-->
+<!--        <chmod dir="${Mac_package_dir}/BEAUti.app/Contents/MacOS/" perm="755" includes="JavaAppLauncher"/>-->
+<!--        <delete file="${Mac_package_dir}/LogCombiner.app/Contents/MacOS/JavaAppLauncher"/>-->
+<!--        <copy file="JavaAppLauncher" todir="${Mac_package_dir}/LogCombiner.app/Contents/MacOS/"/>-->
+<!--        <chmod dir="${Mac_package_dir}/LogCombiner.app/Contents/MacOS/" perm="755" includes="JavaAppLauncher"/>-->
+<!--        <delete file="${Mac_package_dir}/TreeAnnotator.app/Contents/MacOS/JavaAppLauncher"/>-->
+<!--        <copy file="JavaAppLauncher" todir="${Mac_package_dir}/TreeAnnotator.app/Contents/MacOS/"/>-->
+<!--        <chmod dir="${Mac_package_dir}/TreeAnnotator.app/Contents/MacOS/" perm="755" includes="JavaAppLauncher"/>-->
+<!--        <delete file="${Mac_package_dir}/AppLauncher.app/Contents/MacOS/JavaAppLauncher"/>-->
+<!--        <copy file="JavaAppLauncher" todir="${Mac_package_dir}/AppLauncher.app/Contents/MacOS/"/>-->
+<!--        <chmod dir="${Mac_package_dir}/AppLauncher.app/Contents/MacOS/" perm="755" includes="JavaAppLauncher"/>-->
+<!--        <delete file="${Mac_package_dir}/DensiTree.app/Contents/MacOS/JavaAppLauncher"/>-->
+<!--        <copy file="JavaAppLauncher" todir="${Mac_package_dir}/DensiTree.app/Contents/MacOS/"/>-->
+<!--        <chmod dir="${Mac_package_dir}/DensiTree.app/Contents/MacOS/" perm="755" includes="JavaAppLauncher"/>-->
+
+        <antcall target="codesign"/>
+
+        <antcall target="dmg"/>
+
+        <property environment="env"/>
+        <property name="dmg.path" value="../../tmp/${BEAST_name}_with_JRE.v${version}.dmg" />
+
+        <copy file="${Mac_dir}/${beast.dmg}" tofile="${dmg.path}" />
+
+        <echo message="Mac with JRE version release is finished." />
+
+        <echo message="Go to ~/tmp to make notarization" />
+
+        <antcall target="notarization">
+            <param name="dmg.path" value="${dmg.path}"/>
+        </antcall>
+
+    </target>
+
 
 </project>
