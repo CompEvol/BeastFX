@@ -32,9 +32,41 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
             <prior id='GammaShapePrior.s:$(n)' x='@gammaShape.s:$(n)'><distr spec="beast.base.inference.distribution.Exponential" mean='1'/></prior>
             <prior id='PropInvariantPrior.s:$(n)' x='@proportionInvariant.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
 
-            <operator id='proportionInvariantScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@proportionInvariant.s:$(n)"/>
-            <operator id='mutationRateScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@mutationRate.s:$(n)"/>
-            <operator id='gammaShapeScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@gammaShape.s:$(n)"/>
+			<operator id="AVNMOperator.$(n)" spec="beast.base.evolution.operator.kernel.AdaptableVarianceMultivariateNormalOperator" weight="0.1" 
+                coefficient="1.0"
+                scaleFactor="1"
+                beta="0.05"
+                initial="800"
+                burnin="400"
+                every="1" allowNonsense="true">
+            	<transformations id="AVNMSumTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogConstrainedSumTransform" sum="1.0">
+            		<!-- frequencies -->
+            	</transformations>
+            	<transformations id="AVNMLogTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogTransform">
+             		<!-- site and substitution model parameters -->
+            	</transformations>
+            	<transformations id="AVNMNoTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$NoTransform">
+             		<!-- tree -->
+            	</transformations>
+            </operator>
+
+        	<operator id="proportionInvariantScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+                <parameter idref="proportionInvariant.s:$(n)"/>
+            	<operator idref="AVNMOperator.$(n)"/>
+            	<operator id='proportionInvariantScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@proportionInvariant.s:$(n)"/>
+        	</operator>
+
+        	<operator id="mutationRateScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+                <parameter idref="mutationRate.s:$(n)"/>
+            	<operator idref="AVNMOperator.$(n)"/>
+	            <operator id='mutationRateScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@mutationRate.s:$(n)"/>
+        	</operator>
+
+        	<operator id="gammaShapeScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+                <parameter idref="gammaShape.s:$(n)"/>
+            	<operator idref="AVNMOperator.$(n)"/>
+	            <operator id='gammaShapeScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@gammaShape.s:$(n)"/>
+        	</operator>
             ]]>
 
                         <connect method="beastfx.app.inputeditor.SiteModelInputEditor.customConnector"/>
@@ -82,8 +114,17 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
             </frequencies>
         </plugin>
 
-        <plugin id='KappaScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.1" weight="0.1" parameter="@kappa.s:$(n)"/>
-        <plugin id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        <operator id="KappaScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="kappa.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+		    <operator id='KappaScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.1" weight="0.1" parameter="@kappa.s:$(n)"/>
+        </operator>
+
+        <operator id="FrequenciesExchanger.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="freqParameter.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='FrequenciesExchangerX.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        </operator>
 
         <prior id='KappaPrior.s:$(n)' x='@kappa.s:$(n)'>
             <distr spec="LogNormalDistributionModel" meanInRealSpace='false'>
@@ -103,6 +144,9 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                      if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'/>
             <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(hky.$(n)) and inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
+
+            <connect srcID='kappa.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'/>
 
             <connect srcID='KappaScaler.s:$(n)' targetID='mcmc' inputName='operator'
                      if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'>Scale HKY transition-transversion
@@ -139,9 +183,23 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
             </frequencies>
         </plugin>
 
-        <plugin id='kappa1Scaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa1.s:$(n)"/>
-        <plugin id='kappa2Scaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa2.s:$(n)"/>
-        <plugin id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        <operator id="kappa1Scaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="kappa1.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='kappa1ScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa1.s:$(n)"/>
+        </operator>
+
+        <operator id="kappa2Scaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="kappa2.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='kappa2ScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@kappa2.s:$(n)"/>
+        </operator>
+
+        <operator id="FrequenciesExchanger.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="freqParameter.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='FrequenciesExchangerX.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        </operator>
 
         <prior id='kappa1Prior.s:$(n)' x='@kappa1.s:$(n)'>
             <distr spec="LogNormalDistributionModel" meanInRealSpace='false'>
@@ -167,8 +225,11 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                      if='inlikelihood(kappa1.s:$(n)) and kappa1.s:$(n)/estimate=true'/>
             <connect srcID='kappa2.s:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(kappa2.s:$(n)) and kappa2.s:$(n)/estimate=true'/>
-            <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
-                     if='inlikelihood(hky.$(n)) and inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
+
+            <connect srcID='kappa1.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(kappa1.s:$(n)) and kappa1.s:$(n)/estimate=true'/>
+            <connect srcID='kappa2.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(kappa2.s:$(n)) and kappa2.s:$(n)/estimate=true'/>
 
             <connect srcID='kappa1Scaler.s:$(n)' targetID='mcmc' inputName='operator'
                      if='inlikelihood(kappa1.s:$(n)) and kappa1.s:$(n)/estimate=true'>Scale TN93 kappa1 (rateAG)
@@ -236,13 +297,47 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
             </frequencies>
         </plugin>
 
-        <operator id='RateACScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAC.s:$(n)"/>
-        <operator id='RateAGScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAG.s:$(n)"/>
-        <operator id='RateATScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAT.s:$(n)"/>
-        <operator id='RateCGScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateCG.s:$(n)"/>
-        <operator id='RateCTScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateCT.s:$(n)"/>
-        <operator id='RateGTScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateGT.s:$(n)"/>
-        <operator id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        <operator id="RateACScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="rateAC.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='RateACScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAC.s:$(n)"/>
+        </operator>
+
+        <operator id="RateAGScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="rateAG.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='RateAGScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAG.s:$(n)"/>
+        </operator>
+
+        <operator id="RateATScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="rateAT.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='RateATScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateAT.s:$(n)"/>
+        </operator>
+
+        <operator id="RateCGScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="rateCG.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='RateCGScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateCG.s:$(n)"/>
+        </operator>
+
+        <operator id="RateCTScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="rateCT.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='RateCTScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateCT.s:$(n)"/>
+        </operator>
+
+        <operator id="RateGTScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="rateGT.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='RateGTScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@rateGT.s:$(n)"/>
+        </operator>
+
+        <operator id="FrequenciesExchanger.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="freqParameter.s:$(n)"/>
+        	<operator idref="AVNMOperator.$(n)"/>
+	        <operator id='FrequenciesExchangerX.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+        </operator>
 
         <prior id='RateACPrior.s:$(n)' x='@rateAC.s:$(n)'><distr spec="beast.base.inference.distribution.Gamma"><parameter name="alpha" value='0.05' estimate='false'/><parameter name="beta" value='10.0' estimate='false'/></distr></prior>
         <prior id='RateAGPrior.s:$(n)' x='@rateAG.s:$(n)'><distr spec="beast.base.inference.distribution.Gamma"><parameter name="alpha" value='0.05' estimate="false"/><parameter name="beta" value='20.0' estimate="false"/></distr></prior>
@@ -272,6 +367,20 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
                      if='inlikelihood(rateCT.s:$(n)) and rateCT.s:$(n)/estimate=true'/>
             <connect srcID='rateGT.s:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(rateGT.s:$(n)) and rateGT.s:$(n)/estimate=true'/>
+
+            <connect srcID='rateAC.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(rateAC.s:$(n)) and rateAC.s:$(n)/estimate=true'/>
+            <connect srcID='rateAG.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(rateAG.s:$(n)) and rateAG.s:$(n)/estimate=true'/>
+            <connect srcID='rateAT.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(rateAT.s:$(n)) and rateAT.s:$(n)/estimate=true'/>
+            <connect srcID='rateCG.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(rateCG.s:$(n)) and rateCG.s:$(n)/estimate=true'/>
+            <connect srcID='rateCT.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(rateCT.s:$(n)) and rateCT.s:$(n)/estimate=true'/>
+            <connect srcID='rateGT.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+                     if='inlikelihood(rateGT.s:$(n)) and rateGT.s:$(n)/estimate=true'/>
+
 
             <connect srcID='FrequenciesExchanger.s:$(n)' targetID='mcmc' inputName='operator'
                      if='inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'>Exchange values of
@@ -394,10 +503,18 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
                 <frequencies id='freqParameter.s:$(n)' spec='parameter.RealParameter' dimension='4' value='0.25' lower='0' upper='1'/>
             </frequencies>
 
-	        <plugin id='FrequenciesExchanger.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+	        <operator id="FrequenciesExchanger.c:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+                <parameter idref="freqParameter.s:$(n)"/>
+    	        <operator idref="AVNMOperator.$(n)"/>
+		        <operator id='FrequenciesExchangerX.s:$(n)' spec='kernel.BactrianDeltaExchangeOperator' delta="0.01" weight="0.1" parameter="@freqParameter.s:$(n)"/>
+	        </operator>
+
  ]]>
             <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
                      if='inposterior(estimatedFreqs.s:$(n)) and inposterior(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
+            <connect srcID='freqParameter.s:$(n)' targetID='AVNMSumTransform.$(n)' inputName='f'
+                     if='inposterior(estimatedFreqs.s:$(n)) and inposterior(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
+
             <connect srcID='FrequenciesExchanger.s:$(n)' targetID='mcmc' inputName='operator'
                      if='inposterior(estimatedFreqs.s:$(n)) and inposterior(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'>
                 Exchange values of frequencies of partition s:$(n)

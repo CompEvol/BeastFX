@@ -216,7 +216,7 @@
 
 
 
-    <target name="linuxjre" depends="compile-all,compile-allBeastFX,dist_all_BEAST,dist_all_BeastFX" 
+    <target name="linux" depends="compile-all,compile-allBeastFX,dist_all_BEAST,dist_all_BeastFX" 
             description="release Linux/Unix version of BEAST, BEAUTI, TreeAnnotator, LogCombiner">
         
         <delete dir="${Linux_package_dir}" />
@@ -277,7 +277,7 @@
     <!-- Need to either install Launch4j under {BEAST workspace}/${release}
                  or install it in the default directory and change the location of launch4j.dir -->
     <!--depends="build_jar_all_BEAST_NoJUnitTest"-->
-    <target name="windowsjre" depends="init" 
+    <target name="windows" depends="init" 
             description="release Windows version of BEAST, BEAUTI, TreeAnnotator, LogCombiner">
 
         <delete dir="${Windows_package_dir}" />
@@ -492,7 +492,7 @@
 
 
     <!-- Create the app bundle -->
-    <target name="macjre">
+    <target name="mac">
         <delete dir="${Mac_package_dir}" />
         <!--<delete file="${Mac_dir}/pack.temp.dmg"/>-->
         <delete file="${Mac_dir}/${beast.dmg}"/>
@@ -511,9 +511,12 @@
                 <exclude name="benchmark/**" />
             </fileset>
         </copy>
+        <!--
         <property name="openjre" value="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/jre"/>
+        -->
+        <property name="openjre" value="../..//Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64"/>
         <exec executable="cp">
-		    <arg line="-R ${openjre} ${Mac_package_dir}/jre1.8.0_262"/>
+		    <arg line="-R ${openjre} ${Mac_package_dir}/jre"/>
 		</exec>
         <!-- Deprecated JavaAppLauncher -->
 <!--        <exec executable="gcc">-->

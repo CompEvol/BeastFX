@@ -293,9 +293,6 @@ ClusterTree/clusterType/,
 	            </log>
             </logger>
 
-            <operator id='proportionInvariantScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@proportionInvariant.s:$(n)"/>
-            <operator id='mutationRateScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@mutationRate.s:$(n)"/>
-            <operator id='gammaShapeScaler.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@gammaShape.s:$(n)"/>
             <operator id='allTipDatesRandomWalker.t:$(n)' spec='TipDatesRandomWalker' windowSize="1" weight="0" tree="@Tree.t:$(n)"/>
 
  		    <operator id="YuleModelBICEPSEpochTop.t:$(n)" spec="beast.base.evolution.operator.EpochFlexOperator" tree="@Tree.t:$(n)" weight="2.0" scaleFactor="0.1"/>
@@ -313,17 +310,70 @@ ClusterTree/clusterType/,
             <prior id='GammaShapePrior.s:$(n)' x='@gammaShape.s:$(n)'><distr spec="beast.base.inference.distribution.Exponential"><mean spec="parameter.RealParameter" estimate="false" value="1.0"/></distr></prior>
             <prior id='PropInvariantPrior.s:$(n)' x='@proportionInvariant.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
   		    <operator id='YuleBirthRateScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@birthRate.t:$(n)"/>
-			<operator id='StrictClockRateScaler.c:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter='@clockRate.c:$(n)'/>
-			<!-- need updown operator for clockRate?!? Also in SubstModel.xml -->
-			<upDownOperator id='strictClockUpDownOperator.c:$(n)' spec='kernel.BactrianUpDownOperator' scaleFactor="0.75" weight="3">
-				<up idref="clockRate.c:$(n)"/>
-				<down idref="Tree.t:$(n)"/>
-			</upDownOperator>
+
+
+
+			<operator id="AVNMOperator.$(n)" spec="beast.base.evolution.operator.kernel.AdaptableVarianceMultivariateNormalOperator" weight="0.1" 
+                coefficient="1.0"
+                scaleFactor="1"
+                beta="0.05"
+                initial="800"
+                burnin="400"
+                every="1" allowNonsense="true">
+            	<transformations id="AVNMSumTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogConstrainedSumTransform" sum="1.0">
+            		<!-- frequencies -->
+            	</transformations>
+            	<transformations id="AVNMLogTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogTransform">
+             		<!-- site and substitution model parameters -->
+            	</transformations>
+            	<transformations id="AVNMNoTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$NoTransform">
+             		<!-- tree -->
+            	</transformations>
+            </operator>
+
+	        <operator id="StrictClockRateScaler.c:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="1.5">
+                <parameter idref="clockRate.c:$(n)"/>
+    	        <operator idref="AVNMOperator.$(n)"/>
+        	    <operator id='StrictClockRateScalerX.c:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter='@clockRate.c:$(n)'/>
+	        </operator>
+
+        	<operator id="strictClockUpDownOperator.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="1.5">
+                <parameter idref="clockRate.c:$(n)"/>
+                <tree idref="Tree.t:$(n)"/>
+	            <operator idref="AVNMOperator.$(n)"/>
+				<operator id='strictClockUpDownOperatorX.c:$(n)' spec='kernel.BactrianUpDownOperator' scaleFactor="0.75" weight="3">
+					<up idref="clockRate.c:$(n)"/>
+					<down idref="Tree.t:$(n)"/>
+				</operator>
+    	    </operator>
+
+        	<operator id="proportionInvariantScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+                <parameter idref="proportionInvariant.s:$(n)"/>
+            	<operator idref="AVNMOperator.$(n)"/>
+            	<operator id='proportionInvariantScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@proportionInvariant.s:$(n)"/>
+        	</operator>
+
+        	<operator id="mutationRateScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+                <parameter idref="mutationRate.s:$(n)"/>
+            	<operator idref="AVNMOperator.$(n)"/>
+	            <operator id='mutationRateScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@mutationRate.s:$(n)"/>
+        	</operator>
+
+        	<operator id="gammaShapeScaler.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="0.05">
+                <parameter idref="gammaShape.s:$(n)"/>
+            	<operator idref="AVNMOperator.$(n)"/>
+	            <operator id='gammaShapeScalerX.s:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.5" weight="0.1" parameter="@gammaShape.s:$(n)"/>
+        	</operator>
+
+
 
 ]]>
             <connect srcID='treeLikelihood.$(n)'            targetID='likelihood' inputName='distribution' if="isInitializing"/>
             <connect srcID='YuleModel.t:$(n)'               targetID='prior' inputName='distribution' if="isInitializing"/>
 			<connect method="beastfx.app.inputeditor.SiteModelInputEditor.customConnector"/>
+			
+			<!-- for deciding whether to connect the mean clock rate to the AVMN operator -->
+			<connect method="beastfx.app.inputeditor.AVMNConnector.customConnector"/>
 
             <connect srcID='treelog.t:$(n)'                 targetID='mcmc' inputName='logger' if='inposterior(Tree.t:$(n)) and Tree.t:$(n)/estimate=true'/>
             <connect srcID='RandomTree.t:$(n)'                targetID='mcmc' inputName='init'   if='isInitializing'/>
@@ -339,6 +389,12 @@ ClusterTree/clusterType/,
             <connect srcID='gammaShape.s:$(n)'                targetID='state' inputName='stateNode' if='inlikelihood(gammaShape.s:$(n)) and gammaShape.s:$(n)/estimate=true'/>
             <connect srcID='clockRate.c:$(n)'                 targetID='state' inputName='stateNode' if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'/>
             <connect srcID='birthRate.t:$(n)'                 targetID='state' inputName='stateNode' if='inposterior(YuleModel.t:$(n)) and inposterior(Tree.t:$(n)) and birthRate.t:$(n)/estimate=true'/>
+
+            <connect srcID='Tree.t:$(n)'                      targetID='AVNMNoTransform.$(n)' inputName='f' if='inposterior(Tree.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+            <connect srcID='proportionInvariant.s:$(n)'       targetID='AVNMLogTransform.$(n)' inputName='f' if='inlikelihood(proportionInvariant.s:$(n)) and proportionInvariant.s:$(n)/estimate=true'/>
+            <connect srcID='mutationRate.s:$(n)'              targetID='AVNMLogTransform.$(n)' inputName='f' if='inlikelihood(mutationRate.s:$(n)) and mutationRate.s:$(n)/estimate=true'/>
+            <connect srcID='gammaShape.s:$(n)'                targetID='AVNMLogTransform.$(n)' inputName='f' if='inlikelihood(gammaShape.s:$(n)) and gammaShape.s:$(n)/estimate=true'/>
+            <connect srcID='clockRate.c:$(n)'                 targetID='AVNMLogTransform.$(n)' inputName='f' if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'/>
 
 
             <connect srcID='proportionInvariantScaler.s:$(n)' targetID='mcmc' inputName='operator' if='inlikelihood(proportionInvariant.s:$(n)) and proportionInvariant.s:$(n)/estimate=true'>Scales proportion of invariant sites parameter of partition $(n)</connect>
