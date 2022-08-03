@@ -118,6 +118,8 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
     CheckMenuItem allowLinking;
     CheckMenuItem autoUpdateFixMeanSubstRate;
 
+    
+
     /**
      * flag indicating beauti is in the process of being set up and panels
      * should not sync with current model *
@@ -1538,6 +1540,19 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         return null;
     } // main2
 
+    
+    public CheckMenuItem get_autoSetClockRate() {
+    	return autoSetClockRate;
+    }
+    
+    public CheckMenuItem get_allowLinking() {
+    	return allowLinking;
+    }
+    
+    public CheckMenuItem get_autoUpdateFixMeanSubstRate() {
+    	return autoUpdateFixMeanSubstRate;
+    }
+    
 
 	@Override
 	public void autoSetClockRate(boolean flag) {
