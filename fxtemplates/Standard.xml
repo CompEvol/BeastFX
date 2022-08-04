@@ -320,13 +320,13 @@ ClusterTree/clusterType/,
                 initial="800"
                 burnin="400"
                 every="1" allowNonsense="true">
-            	<transformations id="AVNMSumTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogConstrainedSumTransform" sum="1.0">
+            	<transformations id="AVMNSumTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogConstrainedSumTransform" sum="1.0">
             		<!-- frequencies -->
             	</transformations>
-            	<transformations id="AVNMLogTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogTransform">
+            	<transformations id="AVMNLogTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogTransform">
              		<!-- site and substitution model parameters -->
             	</transformations>
-            	<transformations id="AVNMNoTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$NoTransform">
+            	<transformations id="AVMNNoTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$NoTransform">
              		<!-- tree -->
             	</transformations>
             </operator>
@@ -390,11 +390,10 @@ ClusterTree/clusterType/,
             <connect srcID='clockRate.c:$(n)'                 targetID='state' inputName='stateNode' if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'/>
             <connect srcID='birthRate.t:$(n)'                 targetID='state' inputName='stateNode' if='inposterior(YuleModel.t:$(n)) and inposterior(Tree.t:$(n)) and birthRate.t:$(n)/estimate=true'/>
 
-            <connect srcID='Tree.t:$(n)'                      targetID='AVNMNoTransform.$(n)' inputName='f' if='inposterior(Tree.t:$(n)) and Tree.t:$(n)/estimate=true'/>
-            <connect srcID='proportionInvariant.s:$(n)'       targetID='AVNMLogTransform.$(n)' inputName='f' if='inlikelihood(proportionInvariant.s:$(n)) and proportionInvariant.s:$(n)/estimate=true'/>
-            <connect srcID='mutationRate.s:$(n)'              targetID='AVNMLogTransform.$(n)' inputName='f' if='inlikelihood(mutationRate.s:$(n)) and mutationRate.s:$(n)/estimate=true'/>
-            <connect srcID='gammaShape.s:$(n)'                targetID='AVNMLogTransform.$(n)' inputName='f' if='inlikelihood(gammaShape.s:$(n)) and gammaShape.s:$(n)/estimate=true'/>
-            <connect srcID='clockRate.c:$(n)'                 targetID='AVNMLogTransform.$(n)' inputName='f' if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'/>
+            <connect srcID='Tree.t:$(n)'                      targetID='AVMNNoTransform.$(n)' inputName='f' if='inposterior(Tree.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+            <connect srcID='proportionInvariant.s:$(n)'       targetID='AVMNLogTransform.$(n)' inputName='f' if='inlikelihood(proportionInvariant.s:$(n)) and proportionInvariant.s:$(n)/estimate=true'/>
+            <connect srcID='mutationRate.s:$(n)'              targetID='AVMNLogTransform.$(n)' inputName='f' if='inlikelihood(mutationRate.s:$(n)) and mutationRate.s:$(n)/estimate=true'/>
+            <connect srcID='gammaShape.s:$(n)'                targetID='AVMNLogTransform.$(n)' inputName='f' if='inlikelihood(gammaShape.s:$(n)) and gammaShape.s:$(n)/estimate=true'/>
 
 
             <connect srcID='proportionInvariantScaler.s:$(n)' targetID='mcmc' inputName='operator' if='inlikelihood(proportionInvariant.s:$(n)) and proportionInvariant.s:$(n)/estimate=true'>Scales proportion of invariant sites parameter of partition $(n)</connect>

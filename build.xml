@@ -121,12 +121,12 @@
 		<!-- Create the distribution directory -->
 		<mkdir dir="${distFX}" />
 
-		<jar jarfile="${distFX}/BeastFX.src.jar">
+		<jar jarfile="${distFX}/BEAST.app.src.jar">
 			<fileset dir="${srcFX}">
 				<include name="**/*" />
 			</fileset>
 		</jar>
-		<jar jarfile="${distFX}/BeastFX.addon.jar">
+		<jar jarfile="${distFX}/BEAST.app.jar">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 			</manifest>
@@ -252,8 +252,8 @@
         <copy file="${dist}/launcher.src.jar" todir="${Linux_package_dir}/lib" />
         <copy file="${dist}/BEAST.base.jar" todir="${Linux_package_dir}/lib" />
         <copy file="${dist}/BEAST.base.src.jar" todir="${Linux_package_dir}/lib" />
-        <copy file="${distapp}/${BEASTappName}.jar" tofile="${Linux_package_dir}/lib/BEAST.app.jar" />
-        <copy file="${distapp}/${BEASTappName}.src.jar" tofile="${Linux_package_dir}/lib/BEAST.app.src.jar" />
+        <copy file="${distapp}/BEAST.app.jar" tofile="${Linux_package_dir}/lib/BEAST.app.jar" />
+        <copy file="${distapp}/BEAST.app.src.jar" tofile="${Linux_package_dir}/lib/BEAST.app.src.jar" />
 
         <copy file="${tools_dir}/DensiTree.jar" todir="${Linux_package_dir}/lib" />
         <copy file="${tools_dir}/DensiTree.png" todir="${Linux_package_dir}/images" />
@@ -265,11 +265,11 @@
         <copy file="${common_dir}/README.txt" todir="${Linux_package_dir}" />
         <copy file="${common_dir}/LICENSE.txt" todir="${Linux_package_dir}" />
 
-        <exec executable="tar" dir="release/Linux">
+        <exec executable="tar" dir="${beast2}/release/Linux">
 		    <arg line="fcz BEAST.${version}.tgz beast"/>
 	    </exec>
 
-        <echo message="Linux/Unix version release is finished as release/Linux/BEAST.v${version}.tgz." />
+        <echo message="Linux/Unix version release is finished as ${beast2}/release/Linux/BEAST.v${version}.tgz." />
 
     </target>
 
@@ -308,8 +308,8 @@
         <copy file="${dist}/launcher.src.jar" todir="${Windows_package_dir}/lib" />
         <copy file="${dist}/BEAST.base.jar" todir="${Windows_package_dir}/lib" />
         <copy file="${dist}/BEAST.base.src.jar" todir="${Windows_package_dir}/lib" />
-        <copy file="${distapp}/${BEASTappName}.jar" tofile="${Windows_package_dir}/lib/BEAST.app.jar" />
-        <copy file="${distapp}/${BEASTappName}.src.jar" tofile="${Windows_package_dir}/lib/BEAST.app.src.jar" />
+        <copy file="${distapp}/BEAST.app.jar" tofile="${Windows_package_dir}/lib/BEAST.app.jar" />
+        <copy file="${distapp}/BEAST.app.src.jar" tofile="${Windows_package_dir}/lib/BEAST.app.src.jar" />
 
         <copy file="${tools_dir}/DensiTree.jar" todir="${Windows_package_dir}/lib" />
         <copy file="${tools_dir}/DensiTree.png" todir="${Windows_package_dir}/images" />
@@ -482,13 +482,6 @@
 
         <echo message="Windows version release is finished." />
     </target>
-
-	<target name="beast.app">
-    	<available file="${distapp}/${BEASTappName}.jar" property="beast.app.present"/>
-        <fail unless="beast.app.present">
-			run `ant addon` in ${BEASTappName} before building this release.
-        </fail>
-	</target>
 
 
     <!-- Create the app bundle -->

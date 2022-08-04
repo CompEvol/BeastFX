@@ -39,13 +39,13 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                 initial="800"
                 burnin="400"
                 every="1" allowNonsense="true">
-            	<transformations id="AVNMSumTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogConstrainedSumTransform" sum="1.0">
+            	<transformations id="AVMNSumTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogConstrainedSumTransform" sum="1.0">
             		<!-- frequencies -->
             	</transformations>
-            	<transformations id="AVNMLogTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogTransform">
+            	<transformations id="AVMNLogTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$LogTransform">
              		<!-- site and substitution model parameters -->
             	</transformations>
-            	<transformations id="AVNMNoTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$NoTransform">
+            	<transformations id="AVMNNoTransform.$(n)" spec="beast.base.inference.operator.kernel.Transform$NoTransform">
              		<!-- tree -->
             	</transformations>
             </operator>
@@ -145,7 +145,7 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
             <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(hky.$(n)) and inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
 
-            <connect srcID='kappa.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='kappa.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'/>
 
             <connect srcID='KappaScaler.s:$(n)' targetID='mcmc' inputName='operator'
@@ -226,9 +226,9 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
             <connect srcID='kappa2.s:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(kappa2.s:$(n)) and kappa2.s:$(n)/estimate=true'/>
 
-            <connect srcID='kappa1.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='kappa1.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(kappa1.s:$(n)) and kappa1.s:$(n)/estimate=true'/>
-            <connect srcID='kappa2.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='kappa2.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(kappa2.s:$(n)) and kappa2.s:$(n)/estimate=true'/>
 
             <connect srcID='kappa1Scaler.s:$(n)' targetID='mcmc' inputName='operator'
@@ -368,17 +368,17 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
             <connect srcID='rateGT.s:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(rateGT.s:$(n)) and rateGT.s:$(n)/estimate=true'/>
 
-            <connect srcID='rateAC.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='rateAC.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(rateAC.s:$(n)) and rateAC.s:$(n)/estimate=true'/>
-            <connect srcID='rateAG.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='rateAG.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(rateAG.s:$(n)) and rateAG.s:$(n)/estimate=true'/>
-            <connect srcID='rateAT.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='rateAT.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(rateAT.s:$(n)) and rateAT.s:$(n)/estimate=true'/>
-            <connect srcID='rateCG.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='rateCG.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(rateCG.s:$(n)) and rateCG.s:$(n)/estimate=true'/>
-            <connect srcID='rateCT.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='rateCT.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(rateCT.s:$(n)) and rateCT.s:$(n)/estimate=true'/>
-            <connect srcID='rateGT.s:$(n)' targetID='AVNMLogTransform.$(n)' inputName='f'
+            <connect srcID='rateGT.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(rateGT.s:$(n)) and rateGT.s:$(n)/estimate=true'/>
 
 
@@ -512,7 +512,7 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
  ]]>
             <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
                      if='inposterior(estimatedFreqs.s:$(n)) and inposterior(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
-            <connect srcID='freqParameter.s:$(n)' targetID='AVNMSumTransform.$(n)' inputName='f'
+            <connect srcID='freqParameter.s:$(n)' targetID='AVMNSumTransform.$(n)' inputName='f'
                      if='inposterior(estimatedFreqs.s:$(n)) and inposterior(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
 
             <connect srcID='FrequenciesExchanger.s:$(n)' targetID='mcmc' inputName='operator'
