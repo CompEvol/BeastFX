@@ -3,6 +3,7 @@ package beastfx.app.inputeditor;
 
 
 
+
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Alignment;
@@ -315,6 +316,12 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 		}
 		return false;
     }
+    
+    public static boolean avmnConnector(BeautiDoc doc) {
+    	System.err.println("SiteModelInputEditor::avmnConnector() called");
+    	return AVMNConnector.customConnector(doc);
+    }
+
     
     /** set up relative weights and parameter input **/
     public void setUpOperator() {

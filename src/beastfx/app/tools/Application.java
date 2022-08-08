@@ -51,6 +51,13 @@ public class Application extends Console {
 		doc.beautiConfig = new BeautiConfig();
 		doc.beautiConfig.initAndValidate();
 
+		// suppress a few inputs that we don't want to expose to the user
+		if (suppressedInputs != null) {
+			for (String suppressedInput : suppressedInputs) {
+				doc.beautiConfig.suppressBEASTObjects.add(suppressedInput);
+			}
+		}
+		
 		// create panel with entries for the application
 		BEASTObjectPanel panel = new BEASTObjectPanel(analyser, analyser.getClass(), doc);
 		
@@ -86,29 +93,34 @@ public class Application extends Console {
 	
 	static beast.base.inference.Runnable analyser;
 	static String title;
+	static String[] suppressedInputs;
 	
 	public Application(beast.base.inference.Runnable analyser, String title, String[] args) throws Exception {
+		this(analyser, null, title, args);
+//		this.analyser =  analyser;
+//		this.title = title;
+//		analyser.setID(title);
+//
+//		if (args.length == 0) {
+//			launch(Application.class, args);
+//			return;
+//		}
+//
+//		Application main = new Application(analyser);
+//		main.parseArgs(args, false);
+//		analyser.initAndValidate();
+//		analyser.run();
+	}
+
+	public Application(beast.base.inference.Runnable analyser, String[] suppressedInputs, String title, String[] args) throws Exception {
 		this.analyser =  analyser;
 		this.title = title;
+		this.suppressedInputs = suppressedInputs;
 		analyser.setID(title);
 
 		if (args.length == 0) {
 			launch(Application.class, args);
 			return;
-			
-			
-//			// show the dialog
-//			if (dialog.showDialog()) {
-//				dialog.accept(analyser, doc);
-//				// create a console to show standard error and standard output
-//				ConsoleApp app = new ConsoleApp(title, 
-//						title,
-//						null
-//						);
-//				analyser.initAndValidate();
-//				analyser.run();
-//			}
-//			return;
 		}
 
 		Application main = new Application(analyser);
@@ -116,7 +128,6 @@ public class Application extends Console {
 		analyser.initAndValidate();
 		analyser.run();
 	}
-
 
 
 	/** default input used for argument parsing **/

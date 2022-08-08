@@ -59,9 +59,9 @@ RUN apt-get install -y libswt-gtk-3-java
 RUN cd /root && git clone --depth=1 https://github.com/CompEvol/beast2.git && mv beast2 /beast2
 
 # Install BEAGLE
-#RUN apt-get update && apt-get install -y build-essential autoconf automake libtool pkg-config
-# use latest release v3.0.1, issue #786
-#RUN cd /root && git clone --branch v3.0.1 --depth=1 https://github.com/beagle-dev/beagle-lib.git
+#RUN apt-               get update && apt-get install -y build-essential autoconf automake libtool pkg-config
+# use latest release v3.2.1, issue #786
+#RUN cd /root && git clone --branch v3.2.1 --depth=1 https://github.com/beagle-dev/beagle-lib.git
 #RUN cd /root/beagle-lib && ./autogen.sh && ./configure --prefix=/usr/local && make install
 #RUN ldconfig
 

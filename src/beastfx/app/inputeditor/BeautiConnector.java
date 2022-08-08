@@ -18,12 +18,12 @@ import beast.pkgmgmt.BEASTClassLoader;
 
 @Description("Specifies which part of the template get connected to the main network")
 public class BeautiConnector extends BEASTObject {
-    final public Input<String> methodnput = new Input<>("method", "name of static method that should be called with BeautiDoc as " +
+    final public Input<String> methodInput = new Input<>("method", "name of static method that should be called with BeautiDoc as " +
     		"argument. For example beastfx.app.beauti.SiteModelInputEditor.custmoConnector");
 
-    final public Input<String> sourceIDInput = new Input<>("srcID", "ID of the beastObject to be connected", Validate.XOR, methodnput);
-    final public Input<String> targetIDInput = new Input<>("targetID", "ID of beastObject to connect to", Validate.XOR, methodnput);
-    final public Input<String> inputNameInput = new Input<>("inputName", "name of the input of the beastObject to connect to", Validate.XOR, methodnput);
+    final public Input<String> sourceIDInput = new Input<>("srcID", "ID of the beastObject to be connected", Validate.XOR, methodInput);
+    final public Input<String> targetIDInput = new Input<>("targetID", "ID of beastObject to connect to", Validate.XOR, methodInput);
+    final public Input<String> inputNameInput = new Input<>("inputName", "name of the input of the beastObject to connect to", Validate.XOR, methodInput);
     final public Input<String> tipText = new Input<>("value", "associate some tip text with the srcID beastObject, useful for displaying prior and operator specific information");
 
     final public Input<String> conditionInput = new Input<>("if", "condition under which this connector should be executed." +
@@ -117,14 +117,17 @@ public class BeautiConnector extends BEASTObject {
             conditionOperations = new Operation[0];
             conditionValues = new String[0];
         }
-        if (methodnput.get() != null) {
-        	String fullMethod = methodnput.get();
+        if (methodInput.get() != null) {
+        	String fullMethod = methodInput.get();
         	String className = fullMethod.substring(0, fullMethod.lastIndexOf('.'));
         	String methodName = fullMethod.substring(fullMethod.lastIndexOf('.') + 1);
         	Class<?> class_;
+        	// System.err.println("Attempting to find " + className + " with method " + methodName);
 			try {
 				class_ = BEASTClassLoader.forName(className);
+	        	System.err.println("Class found!");
 	        	method = class_.getMethod(methodName, BeautiDoc.class);
+	        	System.err.println("method found!");
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
 				throw new IllegalArgumentException(e.getMessage());
 			}
@@ -150,10 +153,10 @@ public class BeautiConnector extends BEASTObject {
         if (atInitialisationOnly()) {
             return false;
         }
-        if (methodnput.get() != null) {
+        if (methodInput.get() != null) {
 //        if (method != null) {
 	    	try {
-            	String fullMethod = methodnput.get();
+            	String fullMethod = methodInput.get();
             	String className = fullMethod.substring(0, fullMethod.lastIndexOf('.'));
             	String methodName = fullMethod.substring(fullMethod.lastIndexOf('.') + 1);
             	Class<?> class_ = BEASTClassLoader.forName(className);
@@ -244,15 +247,15 @@ public class BeautiConnector extends BEASTObject {
 
     @Override
 	public String toString() {
-    	if (methodnput.get() != null) {
-    		return "call " + methodnput.get();
+    	if (methodInput.get() != null) {
+    		return "call " + methodInput.get();
     	}
         return "@" + sourceID + " -> @" + targetID + "/" + targetInput;
     }
 
 
     public String toString(PartitionContext context) {
-    	if (methodnput.get() != null) {
+    	if (methodInput.get() != null) {
     		return toString();
     	}
         return "@" + BeautiDoc.translatePartitionNames(sourceID, context) + " -> @" + targetID + "/" + BeautiDoc.translatePartitionNames(targetInput, context);

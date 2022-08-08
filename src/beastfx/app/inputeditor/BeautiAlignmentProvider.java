@@ -54,10 +54,6 @@ import beast.pkgmgmt.Utils6;
 public class BeautiAlignmentProvider extends BEASTObject {
 	/** map extension to importer class names **/
 	static List<AlignmentImporter> importers = null;
-    /**
-     * directory to pick up importers from *
-     */
-    final static String[] IMPLEMENTATION_DIR = {"beast.app"};
 
 	private void initImporters() {
 		importers = new ArrayList<>();		
@@ -75,13 +71,6 @@ public class BeautiAlignmentProvider extends BEASTObject {
 				e.printStackTrace();
 			}
         }
-        
-//		if (Utils6.isJUnitTest() || importers.size() == 0) {
-//	        // add standard importers
-//				 importers.add(new NexusImporter());
-//				 importers.add(new XMLImporter());
-//		       	 importers.add(new FastaImporter());
-//		}
 	}
 
 	final public Input<BeautiSubTemplate> template = new Input<>("template", "template to be used after creating a new alignment. ", Validate.REQUIRED);

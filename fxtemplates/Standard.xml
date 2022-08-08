@@ -373,7 +373,7 @@ ClusterTree/clusterType/,
 			<connect method="beastfx.app.inputeditor.SiteModelInputEditor.customConnector"/>
 			
 			<!-- for deciding whether to connect the mean clock rate to the AVMN operator -->
-			<connect method="beastfx.app.inputeditor.AVMNConnector.customConnector"/>
+			<connect method="beastfx.app.inputeditor.SiteModelInputEditor.avmnConnector"/>
 
             <connect srcID='treelog.t:$(n)'                 targetID='mcmc' inputName='logger' if='inposterior(Tree.t:$(n)) and Tree.t:$(n)/estimate=true'/>
             <connect srcID='RandomTree.t:$(n)'                targetID='mcmc' inputName='init'   if='isInitializing'/>
@@ -392,7 +392,7 @@ ClusterTree/clusterType/,
 
             <connect srcID='Tree.t:$(n)'                      targetID='AVMNNoTransform.$(n)' inputName='f' if='inposterior(Tree.t:$(n)) and Tree.t:$(n)/estimate=true'/>
             <connect srcID='proportionInvariant.s:$(n)'       targetID='AVMNLogTransform.$(n)' inputName='f' if='inlikelihood(proportionInvariant.s:$(n)) and proportionInvariant.s:$(n)/estimate=true'/>
-            <connect srcID='mutationRate.s:$(n)'              targetID='AVMNLogTransform.$(n)' inputName='f' if='inlikelihood(mutationRate.s:$(n)) and mutationRate.s:$(n)/estimate=true'/>
+            <connect srcID='mutationRate.s:$(n)'              targetID='AVMNLogTransform.$(n)' inputName='f' if='nooperator(FixMeanMutationRatesOperator) and inlikelihood(mutationRate.s:$(n)) and mutationRate.s:$(n)/estimate=true'/>
             <connect srcID='gammaShape.s:$(n)'                targetID='AVMNLogTransform.$(n)' inputName='f' if='inlikelihood(gammaShape.s:$(n)) and gammaShape.s:$(n)/estimate=true'/>
 
 
