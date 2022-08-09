@@ -124,6 +124,7 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
 
         PDPanel() {
     		NumberAxis xAxis = new NumberAxis();
+    		xAxis.setForceZeroInRange(false);
             //xAxis.setLabel("x");                
             NumberAxis yAxis = new NumberAxis();        
             yAxis.setLabel("p(x)");
@@ -195,47 +196,59 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             double maxValue = 1;
             try {
                 minValue = m_distr.inverseCumulativeProbability(0.01);
-                maxValue = m_distr.inverseCumulativeProbability(0.99);
-                if (minValue < param.getLower()) {
-                	minValue = minValue + 0.99999 * (param.getLower() - minValue);
-                }
-                if (maxValue > param.getUpper()) {
-                	maxValue = param.getUpper() + 0.001 * (maxValue - param.getUpper());
-                }
             } catch (Throwable e) {
-                // use defaults
+                // use default
+            }
+            try {
+                maxValue = m_distr.inverseCumulativeProbability(0.99);
+            } catch (Throwable e) {
+            	// use default
+            }
+            if (minValue < param.getLower()) {
+            	minValue = minValue + 0.99999 * (param.getLower() - minValue);
+            }
+            if (maxValue > param.getUpper()) {
+            	maxValue = param.getUpper() + 0.001 * (maxValue - param.getUpper());
             }
             double xRange = maxValue - minValue;
             // adjust yMax so that the ticks come out right
             double x0 = minValue;
+            if (minValue > 0 && minValue - xRange < 0) {
+            	minValue = 0 + 1e-5;
+            }
+            if (maxValue < 1 && maxValue + xRange > 0) {
+            	maxValue = 1 - 1e-5;
+            }
+            xRange = maxValue - minValue;
             int k = 0;
-            double f = xRange;
-            double f2 = x0;
-            while (f > 10) {
-                f /= 10;
-                f2 /= 10;
-                k++;
-            }
-            while (f < 1 && f > 0) {
-                f *= 10;
-                f2 *= 10;
-                k--;
-            }
-            f = Math.ceil(f);
-            f2 = Math.floor(f2);
-
-            for (int i = 0; i < k; i++) {
-                f *= 10;
-                f2 *= 10;
-            }
-            for (int i = k; i < 0; i++) {
-                f /= 10;
-                f2 /= 10;
-            }
-
-            xRange = xRange + minValue - f2;
-
-            minValue = f2;
+//            double f = maxValue;
+//            double f2 = x0;
+//            while (f > 10) {
+//                f /= 10;
+//                f2 /= 10;
+//                k++;
+//            }
+//            while (f < 1 && f > 0) {
+//                f *= 10;
+//                f2 *= 10;
+//                k--;
+//            }
+//            f = Math.ceil(f);
+//            f2 = Math.floor(f2);
+//
+//            for (int i = 0; i < k; i++) {
+//                f *= 10;
+//                f2 *= 10;
+//            }
+//            for (int i = k; i < 0; i++) {
+//                f /= 10;
+//                f2 /= 10;
+//            }
+//
+//            xRange = xRange + minValue - f2 + f - maxValue;
+//
+//            minValue = f2;
+//            maxValue = f;
 
             int points;
             if (!m_distr.isIntegerDistribution()) {
@@ -260,7 +273,6 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
                 }
                 yMax = Math.max(yMax, fyPoints[i]);
             }
-
             yMax = adjust(yMax);
 
 
