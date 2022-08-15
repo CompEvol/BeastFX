@@ -77,7 +77,7 @@ public class JarHealthChecker extends Runnable {
 		//BEASTClassLoader.newInstance(null);
 		Set<String> classesInJar = collectClasses(jarFile);
 		checkServices(classesInJar, out, new HashMap<>());
-		checkApps(classesInJar, out, new ArrayList<>());
+		checkApps(jarFile.getName(), classesInJar, out, new ArrayList<>());
 		
 		if (OutFile.isSpecified(outputInput.get())) {
 			out = new PrintStream(outputInput.get());
@@ -89,14 +89,19 @@ public class JarHealthChecker extends Runnable {
 		Log.warning("Done");
 	}
 	
-	public boolean checkApps(Set<String> classesInJar, PrintStream out, List<PackageApp> packageApps) {
-		report("Checking package apps...");
+	public boolean checkApps(String jarfile, Set<String> classesInJar, PrintStream out, List<PackageApp> packageApps) {
+		report("Checking package apps in " + jarfile + " ...");
+		
+		if (classesInJar.size() == 0) {
+			report("No classes found in jar file! Check whether the build file includes classes.");
+			return false;
+		}
 		boolean packageAppDeclarationMissing = false;
 		StringBuilder b = new StringBuilder();
 		for (String class_ : classesInJar) {
 			if (!class_.startsWith("test."))
 			try {
-				Method mainMethod = Class.forName(class_).getMethod("main", new String [] {}.getClass());
+				Method mainMethod = BEASTClassLoader.forName(class_).getMethod("main", new String [] {}.getClass());
 				if (mainMethod != null) {
 					boolean found = false;
 					for (PackageApp p : packageApps) {
@@ -106,17 +111,18 @@ public class JarHealthChecker extends Runnable {
 						}
 					}
 					if (!found) {
+						b.append("<!-- " + class_ + " -->\n");
 						if (!packageAppDeclarationMissing) {
 							packageAppDeclarationMissing = true;
 						}
-						Object o = Class.forName(class_).getDeclaredConstructors()[0].newInstance();
+						Object o = BEASTClassLoader.forName(class_).getDeclaredConstructors()[0].newInstance();
 						String description = class_; 
 						if (o instanceof BEASTInterface) {
 							description = ((BEASTInterface)o).getDescription();
 						}
 						b.append("    <packageapp description=\"" + description + "\"\n");
-						b.append("    class=\"" + class_ + "\"\n");
-						b.append("    args=\"\"/>\n\n");
+						b.append("        class=\"" + class_ + "\"\n");
+						b.append("        args=\"\"/>\n\n");
 						packageAppDeclarationMissing = true;
 					}
 				}
@@ -130,7 +136,8 @@ public class JarHealthChecker extends Runnable {
 		} else {
 			report("Looks OK: No classes with main() method found" + (packageApps.size() > 0?" that were not already declared" : "") + ".");
 		}
-		return packageAppDeclarationMissing;	}
+		return packageAppDeclarationMissing;	
+	}
 	
 	private Set<String> collectClasses(File file) {
 		Set<String> classesInJar = new HashSet<>();				

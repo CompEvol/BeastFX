@@ -49,6 +49,7 @@ public class PackageHealthChecker extends Runnable {
 	final public Input<OutFile> outputInput = new Input<>("output", "output-file where report is stored. Use stdout if not specified.", new OutFile(OutFile.NO_FILE)); 
 	final public Input<String> namespaceInput = new Input<>("namespace", "only classes inside this package name will be listed", Validate.REQUIRED); 
 	final public Input<Boolean> verboseInput = new Input<>("verbose", "show info and error messages when parsing XML", false); 
+	final public Input<Boolean> xmlOnlyInput = new Input<>("xmlOnly", "only perform XML parsing check, not any of the others", false); 
 
 	private String packageName;
 	private String packageFileName;
@@ -77,21 +78,22 @@ public class PackageHealthChecker extends Runnable {
 		collectClasses();
 		
 		// do checks
-		nextCheck();
-		String versionFileName = checkVersionFile();
-		
-		nextCheck();
-		checkServices(versionFileName);
-		
-		nextCheck();
-		checkNamespace();
+		if (!xmlOnlyInput.get()) {
+			nextCheck();
+			String versionFileName = checkVersionFile();
+			
+			checkServices(versionFileName);
+			
+			nextCheck();
+			checkNamespace();
+	
+			nextCheck();
+			checkFolders();
+	
+			nextCheck();
+			checkSourceCode();
+		}
 
-		nextCheck();
-		checkFolders();
-
-		nextCheck();
-		checkSourceCode();
-		
 		nextCheck();
 		checkXMLExample();
 
@@ -191,6 +193,7 @@ public class PackageHealthChecker extends Runnable {
 		
 		String separator = Utils.isWindows() ? "\\\\" : File.separator;
 		List<String> failedFiles = new ArrayList<>();
+		List<String> successFiles = new ArrayList<>();
 		
 		PrintStream stdout = System.out;
 		PrintStream stderr = System.err;
@@ -206,14 +209,17 @@ public class PackageHealthChecker extends Runnable {
 		}
 		if (new File(packageDir + separator + "examples").exists()) {
 			for (String fileName : new File(packageDir + separator + "examples").list()) {
-	            Log.warning("Processing " + fileName);
-	            XMLParser parser = new XMLParser();
-	            try {
-	                parser.parseFile(new File(packageDir + separator + "examples" + separator + fileName));
-	            } catch (Throwable e) {
-	            	e.printStackTrace();
-	                failedFiles.add(fileName);// + ": " + e.getMessage());
-	            }
+				if (!new File(fileName).isDirectory() && fileName.toLowerCase().endsWith("xml")) {
+		            Log.warning("Processing " + fileName);
+		            XMLParser parser = new XMLParser();
+		            try {
+		                parser.parseFile(new File(packageDir + separator + "examples" + separator + fileName));
+		                successFiles.add(fileName);
+		            } catch (Throwable e) {
+		            	e.printStackTrace();
+		                failedFiles.add(fileName);// + ": " + e.getMessage());
+		            }
+				}
 			}
 		}		
 		if (!verboseInput.get()) {
@@ -228,7 +234,7 @@ public class PackageHealthChecker extends Runnable {
             	report(fileName);
             }
 		} else {
-			report("All example XML files parse");
+			report("All " + successFiles.size() + " example XML files parse");
 		}
 	}
 
@@ -257,11 +263,13 @@ public class PackageHealthChecker extends Runnable {
         AppLauncher.getPackageApps(new File(versionFileName), packageApps, null);
 		for (String file : new File(packageDir + "/lib").list()) {
 			if (file.toLowerCase().endsWith(".jar")) {
+				nextCheck();
+				report("Checking services in " +file + "...");
 				JarHealthChecker jarCheck = new JarHealthChecker(new File(file), namespaceInput.get());
 				jarCheck.checkServices(classesInJar, out, declaredSerices);
 				
 				nextCheck();
-				jarCheck.checkApps(classesInJar, out, packageApps);
+				jarCheck.checkApps(file, classesInJar, out, packageApps);
 			}
 		}
 	}

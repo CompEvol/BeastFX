@@ -266,7 +266,7 @@
         <copy file="${common_dir}/LICENSE.txt" todir="${Linux_package_dir}" />
 
         <exec executable="tar" dir="${beast2}/release/Linux">
-		    <arg line="fcz BEAST.${version}.tgz beast"/>
+		    <arg line="fcz BEAST.v${version}.tgz beast"/>
 	    </exec>
 
         <echo message="Linux/Unix version release is finished as ${beast2}/release/Linux/BEAST.v${version}.tgz." />
@@ -475,17 +475,17 @@
 	        tsaurl="http://timestamp.comodoca.com/authenticode"/>
 -->
 
-        <zip destfile="${Windows_dir}/${BEAST_name}_with_JRE.v${version}.zip">
+        <zip destfile="${Windows_dir}/${BEAST_name}.v${version}.zip">
             <zipfileset dir="${Windows_package_dir}" prefix="${BEAST_name}" />
         </zip>
-       <copy file="${Windows_dir}/${BEAST_name}_with_JRE.v${version}.zip" todir="../../tmp/" />
+       <copy file="${Windows_dir}/${BEAST_name}.v${version}.zip" todir="../../tmp/" />
 
         <echo message="Windows version release is finished." />
     </target>
 
 
     <!-- Create the app bundle -->
-    <target name="mac">
+    <target name="mac" depends="init">
         <delete dir="${Mac_package_dir}" />
         <!--<delete file="${Mac_dir}/pack.temp.dmg"/>-->
         <delete file="${Mac_dir}/${beast.dmg}"/>
@@ -549,7 +549,7 @@
         <antcall target="dmg"/>
 
         <property environment="env"/>
-        <property name="dmg.path" value="../../tmp/${BEAST_name}_with_JRE.v${version}.dmg" />
+        <property name="dmg.path" value="../../tmp/${BEAST_name}.v${version}.dmg" />
 
         <copy file="${Mac_dir}/${beast.dmg}" tofile="${dmg.path}" />
 
