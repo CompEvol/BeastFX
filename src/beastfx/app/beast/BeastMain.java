@@ -49,9 +49,9 @@ public class BeastMain extends Console {
 //		// Utils.loadUIManager();
 //		System.setErr(err);
 		
-        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("apple.awt.showGrowBox", "true");
+//        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
+//        System.setProperty("apple.laf.useScreenMenuBar", "true");
+//        System.setProperty("apple.awt.showGrowBox", "true");
 
 
         Dialog<String> dialog = new Dialog<>();
@@ -326,7 +326,7 @@ public class BeastMain extends Console {
         final String nameString = "BEAST " + version.getVersionString();
 
         if (window || options) {
-        	launch(args);
+        	launch(BeastMain.class, args);
         	return;
         } 
 

@@ -772,7 +772,7 @@ public class XML2HTMLPaneFX extends Application {
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XML2HTMLPandFX");
 		
-		launch(args);
+		launch(XML2HTMLPaneFX.class, args);
 	}
 
 	public static void launchForDoc(BeautiDoc doc) {
@@ -780,7 +780,7 @@ public class XML2HTMLPaneFX extends Application {
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "XML2HTMLPandFX");
 
-		launch(new String[]{});		
+		launch(XML2HTMLPaneFX.class, new String[]{});		
 	}
 
 }
