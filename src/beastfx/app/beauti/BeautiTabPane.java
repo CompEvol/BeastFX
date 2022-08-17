@@ -621,7 +621,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             Alert.showMessageDialog(null, version.getCredits(),
                     "About Beauti " + version.getVersionString() + 
                     " Java version " + System.getProperty("java.version"), Alert.PLAIN_MESSAGE,
-                    Utils.getIcon(BEAUTI_ICON));
+                    Utils.getIcon("BEAST.app", BEAUTI_ICON));
         }
     } // class ActionAbout
 

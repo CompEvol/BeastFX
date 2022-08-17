@@ -316,9 +316,10 @@ public class Utils {
      * @param iconLocation location of icon
      * @return icon or null if no icon found
      */
-	public static ImageIcon getIcon(String iconLocation) {
+	public static ImageIcon getIcon(String packageName, String iconLocation) {
 	    try {
-	        URL url = Utils.class.getClassLoader().getResource(iconLocation);
+	    	URL url = BEASTClassLoader.getResource(packageName, iconLocation);
+	    	
 	        if (url == null) {
 	            System.err.println("Cannot find icon " + iconLocation);
 	            return null;

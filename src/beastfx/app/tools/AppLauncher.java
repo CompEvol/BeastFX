@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import beastfx.app.inputeditor.StringInputEditor;
 import beastfx.app.util.Utils;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
@@ -52,7 +54,7 @@ import beast.pkgmgmt.launcher.BeastLauncher;
  * @author  Walter Xie
  */
 public class AppLauncher {
-    public static final String DEFAULT_ICON = "beast/app/tools/images/utility.png";
+    public static final String DEFAULT_ICON = "beastfx/app/tools/images/utility.png";
 
     private final String ALL = "-all-";
     JComboBox<String> packageComboBox;
@@ -259,6 +261,7 @@ public class AppLauncher {
     }
 
     public static void getPackageApps(File versionFile, List<PackageApp> packageApps, String jarDirName) {
+    	
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document doc;
         try {
@@ -280,9 +283,9 @@ public class AppLauncher {
                 packageApp.argumentsString = packageAppElement.getAttribute("args");
 
                 String iconLocation = packageAppElement.getAttribute("icon");
-                packageApp.icon = Utils.getIcon(iconLocation);
+                packageApp.icon = Utils.getIcon(packageApp.packageName, iconLocation);
                 if (packageApp.icon == null || iconLocation.trim().isEmpty())
-                    packageApp.icon = Utils.getIcon(DEFAULT_ICON);
+                    packageApp.icon = Utils.getIcon("BEAST.app", DEFAULT_ICON);
 
                 packageApps.add(packageApp);
             }
@@ -387,6 +390,12 @@ System.err.println("Done invoking " + packageApp.className);
 
         if (args.length == 0) {
         	// Utils.loadUIManager();
+            try {
+				PackageManager.loadExternalJars();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             SwingUtilities.invokeLater(() -> appStore.launchGUI().setVisible(true));
         } else {
 
