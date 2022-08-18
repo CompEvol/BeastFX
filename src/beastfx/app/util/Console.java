@@ -26,23 +26,53 @@ public class Console extends javafx.application.Application {
 			
 			@Override
 			public synchronized void write(byte[] b, int off, int len) {
-				for (int i = off; i < off + len; i++) {					
-					textView.appendText((char) b[i] + "");
-				}
+			    if (Platform.isFxApplicationThread()) {
+					for (int i = off; i < off + len; i++) {					
+						textView.appendText((char) b[i] + "");
+					}
+			    } else {
+			    	StringBuilder buffer = new StringBuilder();
+					for (int i = off; i < off + len; i++) {					
+						buffer.append((char) b[i] + "");
+					}
+			        Platform.runLater(() -> {
+			        	synchronized(this) {
+			        		textView.appendText(buffer.toString());
+			        	}
+			        });
+			    }
 				log.write(b, off, len);
 			};
 
 			@Override
 			public synchronized void write(int b) {
 				log.write(b);
-				textView.appendText((char) b + "");					
+			    if (Platform.isFxApplicationThread()) {
+			    	textView.appendText((char) b + "");
+			    } else {
+			        Platform.runLater(() -> {
+				    	textView.appendText((char) b + "");
+			        });			    	
+			    }
 			};
 
 			@Override
 			public void write(byte[] b) throws java.io.IOException {
-				for (int i = 0; i < b.length; i++) {					
-					textView.appendText((char) b[i] + "");
-				}
+			    if (Platform.isFxApplicationThread()) {
+					for (int i = 0; i < b.length; i++) {					
+						textView.appendText((char) b[i] + "");
+					}
+			    } else {
+			    	StringBuilder buffer = new StringBuilder();
+					for (int i = 0; i < b.length; i++) {					
+						buffer.append((char) b[i] + "");
+					}
+			        Platform.runLater(() -> {
+			        	synchronized(this) {
+			        		textView.appendText(buffer.toString());
+			        	}
+			        });
+			    }
 				log.write(b);
 			};
 
@@ -76,7 +106,7 @@ public class Console extends javafx.application.Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 	    textView = new TextArea("   ");
-	    textView.setPrefColumnCount(80);
+	    textView.setPrefColumnCount(120);
 	    textView.setPrefRowCount(80);
 	    
 	    				    
@@ -89,7 +119,8 @@ public class Console extends javafx.application.Application {
                 "-fx-border-width: 2;" +
                 "-fx-border-insets: 5;" +
                 "-fx-border-radius: 5;" +
-                "-fx-border-color: blue;");				    
+                "-fx-border-color: blue;" +
+                "-fx-font: 11pt Menlo;");				    
 
         
 		Scene scene = new Scene(root);
@@ -111,6 +142,7 @@ public class Console extends javafx.application.Application {
 	        	createDialog();
 	        }
 		});
+	    	
 	}       
 	
 }

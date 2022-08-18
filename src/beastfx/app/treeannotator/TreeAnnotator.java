@@ -50,8 +50,7 @@ import beast.pkgmgmt.Arguments;
 import beast.pkgmgmt.BEASTVersion;
 
 import beastfx.app.util.Console;
-
-
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -1193,9 +1192,9 @@ public class TreeAnnotator extends Console {
 //		Utils.loadUIManager();
 		System.setErr(err);
 		
-        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("apple.awt.showGrowBox", "true");
+//        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
+//        System.setProperty("apple.laf.useScreenMenuBar", "true");
+//        System.setProperty("apple.awt.showGrowBox", "true");
 
         java.net.URL url = TreeAnnotator.class.getClassLoader().getResource("../tools/images/utility.png");
         javax.swing.Icon icon = null;
@@ -1234,8 +1233,6 @@ public class TreeAnnotator extends Console {
         // next line initialises JavaFX toolkit
 //        new JFXPanel();
         
-//		Platform.runLater(new Runnable() {
-//	        public void run() {
 	        	try {
 					Dialog<String> dialog = new Dialog<>();
 				    dialog.setTitle("TreeAnnotator " + BEASTVersion.INSTANCE.getVersion());
@@ -1266,9 +1263,8 @@ public class TreeAnnotator extends Console {
 			    		return;
 			        }
 
-//				    new Thread() {
-//			@Override
-//			public void run() {
+					new Thread() {
+			public void run() {
 		        int burninPercentage = controller.getBurninPercentage();
 		        if (burninPercentage < 0) {
 		        	Log.warning.println("burnin percentage is " + burninPercentage + " but should be non-negative. Setting it to zero");
@@ -1318,6 +1314,8 @@ public class TreeAnnotator extends Console {
 		        }
 
 		        progressStream.println("Finished - Quit program to exit.");
+			}
+		}.start();
 
 //		        while (true) {
 //		            try {
@@ -1326,8 +1324,6 @@ public class TreeAnnotator extends Console {
 //		                e.printStackTrace();
 //		            }
 //		        }
-//			}
-//		}.start();
 
 		        } catch (IOException e) {
 		        	e.printStackTrace();
