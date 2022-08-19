@@ -12,7 +12,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 public class Console extends javafx.application.Application {
-	static TextArea textView;
+	protected static TextArea textView;
 
 	// to be implemented by sub-classes
 	protected void createDialog() {				
@@ -110,11 +110,11 @@ public class Console extends javafx.application.Application {
 	    textView.setPrefRowCount(80);
 	    
 	    				    
-		ScrollPane root = new ScrollPane();
-        root.setContent(textView);
+		//ScrollPane root = new ScrollPane();
+        //root.setContent(textView);
  
         // Set the Style-properties of the VBox
-        root.setStyle("-fx-padding: 10;" +
+	    textView.setStyle(
                 "-fx-border-style: solid inside;" +
                 "-fx-border-width: 2;" +
                 "-fx-border-insets: 5;" +
@@ -123,7 +123,7 @@ public class Console extends javafx.application.Application {
                 "-fx-font: 11pt Menlo;");				    
 
         
-		Scene scene = new Scene(root);
+		Scene scene = new Scene(textView);
 		// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.show();

@@ -33,6 +33,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ButtonBar.ButtonData;
 
 public class BeastMain extends Console {
@@ -66,29 +67,37 @@ public class BeastMain extends Console {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		dialog.getDialogPane();
 	    dialog.setDialogPane(root);
 	    ThemeProvider.loadStyleSheet(root.getScene());        
 
-	    ButtonType run = new ButtonType("Run", ButtonData.OK_DONE);
-	    dialog.getDialogPane().getButtonTypes().add(run);
-	    ButtonType cancel = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
-	    dialog.getDialogPane().getButtonTypes().add(cancel);
+	    Object o = fl.getController();
+	    if (o != null) {
+	    	((Controller)o).dialog = dialog;
+	    	((Controller)o).textView = textView;
+	    }
+	    
+//	    ButtonType run = new ButtonType("Run", ButtonData.OK_DONE);
+//	    dialog.getDialogPane().getButtonTypes().add(run);
+//	    ButtonType cancel = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
+//	    dialog.getDialogPane().getButtonTypes().add(cancel);
 	    
 		//Showing the dialog on clicking the button
-        Optional<String> result = dialog.showAndWait();
-        dialog.close();
-        
-        Object o = result.get();
-        String str = o.toString();
-        
-	    if (str.equals(run.toString())) {
-		    Controller controller = fl.getController();
-        	controller.run();
-        } else {
-        	Log.warning("Quiting BEAST");
-        	System.exit(0);
-    		return;
-        }
+	    dialog.show();
+//        Optional<String> result = dialog.showAndWait();
+//        dialog.close();
+//        
+//        Object o = result.get();
+//        String str = o.toString();
+//        
+//	    if (str.equals("RUN")) {
+//		    Controller controller = fl.getController();
+//        	controller.run();
+//        } else {
+//        	Log.warning("Quiting BEAST");
+//        	System.exit(0);
+//    		return;
+//        }
 
  	}
 	

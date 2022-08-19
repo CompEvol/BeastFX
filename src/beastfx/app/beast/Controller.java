@@ -16,12 +16,17 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Controller implements Initializable {
+	Dialog<String> dialog = null;
+	TextArea textView;
 
 	@FXML
 	private TextField inputFile;
@@ -32,6 +37,8 @@ public class Controller implements Initializable {
 
 	@FXML
 	private Button runButton;
+	@FXML
+	private Button beagleInfoButton;
 	
 	@FXML
 	private ChoiceBox<Integer> threads;
@@ -51,9 +58,9 @@ public class Controller implements Initializable {
 
 	private final String[] logFileModes = new String[] { "default: only write new log files", "overwrite: overwrite log files",
 			"resume: appends log to existing files (if any)" };
-	private final String[] precisions = new String[] {"Single", "Double"};
+	private final String[] precisions = new String[] {"Double", "Single"};
 	private final String[] scalings = new String[] {"Default", "None", "Dynamic", "Always"};
-	private final String[] beagles = new String[] {"java", "CPU", "SSE", "GPU"};
+	private final String[] beagles = new String[] {"Automatic", "java", "CPU", "SSE", "GPU"};
 
 	private Stage stage;
 
@@ -106,12 +113,26 @@ public class Controller implements Initializable {
 		instances.setItems(FXCollections.observableArrayList(set));
 		instances.setValue(1);
 		
+		beagle.setOnAction(e->{
+			String beagle = this.beagle.getSelectionModel().getSelectedItem();
+			if (beagle.equals(beagles[0]) || beagle.equals(beagles[1])) {
+				precision.setDisable(true);
+				scaling.setDisable(true);
+			} else {
+				precision.setDisable(false);
+				scaling.setDisable(false);
+			}
+		});
+		precision.setDisable(true);
+		scaling.setDisable(true);
+		
+		
 		new Thread() {
 			public void run() {
 				try {
 					sleep(2000);
 					// clear backlog if any
-					logToView(null, null);
+					logToView("ready", "red");
 				} catch (InterruptedException e) {
 				}
 			};
@@ -119,13 +140,21 @@ public class Controller implements Initializable {
 	}
 
 	@FXML
+	void quit() {
+		Log.warning("Quiting BEAST");
+		System.exit(0);
+	}
+	
+	@FXML
 	void run() {
 		if (runButton.getText().equals("Quit")) {
 			System.exit(0);
 		}
 		
+		beagleInfoButton.setText("Close dialog");
+		
 		if (beastThread == null) {
-			logToView("trying to run " + inputFile.getText(), "color:green");
+			logToView("Running file " + inputFile.getText(), "green");
 
 			final List<String> MCMCargs = getMCMCargs();
 			final BeastMCMC beastMCMC = new BeastMCMC();
@@ -140,10 +169,11 @@ public class Controller implements Initializable {
 						e.printStackTrace();
 					}
 					Platform.runLater(new Runnable() {
-						public void run() { /* your code here */
-
+						public void run() { 
 							beastThread = null;
-							runButton.setText("Quit");
+							closeDialog();
+							textView.setScrollTop(Double.MAX_VALUE);
+							//runButton.setText("Quit");
 						}
 					});
 				};
@@ -153,7 +183,8 @@ public class Controller implements Initializable {
 		} else {
 			beastThread.stop();
 			beastThread = null;
-			runButton.setText("Quit");
+			closeDialog();
+			// runButton.setText("Quit");
 		}
 	}
 
@@ -166,44 +197,47 @@ public class Controller implements Initializable {
         System.setProperty("beast.instance.count", instances.getSelectionModel().getSelectedItem() +"");
 
 		String beagle = this.beagle.getSelectionModel().getSelectedItem();
-		if (beagle.equals(beagles[0])) {
-            System.setProperty("java.only", "true");
-		} else {
-			long beagleFlags = 0;
+		if (!beagle.equals(beagles[0])) {
 			if (beagle.equals(beagles[1])) {
-	            beagleFlags |= BeagleFlag.PROCESSOR_CPU.getMask();
-			} else if (beagle.equals(beagles[2])) {
-	            beagleFlags |= BeagleFlag.VECTOR_SSE.getMask();
+	            System.setProperty("java.only", "true");
 			} else {
-	            beagleFlags |= BeagleFlag.PROCESSOR_GPU.getMask();
-				if (precision.getSelectionModel().getSelectedItem().equals(precisions[0])) {
-		            beagleFlags |= BeagleFlag.PRECISION_SINGLE.getMask();
+				long beagleFlags = 0;
+				if (beagle.equals(beagles[2])) {
+		            beagleFlags |= BeagleFlag.PROCESSOR_CPU.getMask();
+				} else if (beagle.equals(beagles[3])) {
+		            beagleFlags |= BeagleFlag.VECTOR_SSE.getMask();
 				} else {
-		            beagleFlags |= BeagleFlag.PRECISION_DOUBLE.getMask();
+		            beagleFlags |= BeagleFlag.PROCESSOR_GPU.getMask();
+					if (precision.getSelectionModel().getSelectedItem().equals(precisions[1])) {
+			            beagleFlags |= BeagleFlag.PRECISION_SINGLE.getMask();
+					} else {
+			            beagleFlags |= BeagleFlag.PRECISION_DOUBLE.getMask();
+					}
 				}
-			}
-			
-			
-			switch (scaling.getSelectionModel().getSelectedItem()) {
-			case "Default":
-	            beagleFlags |= BeagleFlag.SCALING_AUTO.getMask();
-				break;
-			case "None":
-	            beagleFlags |= BeagleFlag.SCALING_MANUAL.getMask();
-				break;
-			case "Dynamic":
-	            beagleFlags |= BeagleFlag.SCALING_DYNAMIC.getMask();
-				break;
-			case "Always":
-	            beagleFlags |= BeagleFlag.SCALING_ALWAYS.getMask();
-				break;
-			}
-            System.setProperty("beagle.preferred.flags", Long.toString(beagleFlags));
-        }
+				
+				
+				switch (scaling.getSelectionModel().getSelectedItem()) {
+				case "Default":
+		            beagleFlags |= BeagleFlag.SCALING_AUTO.getMask();
+					break;
+				case "None":
+		            beagleFlags |= BeagleFlag.SCALING_MANUAL.getMask();
+					break;
+				case "Dynamic":
+		            beagleFlags |= BeagleFlag.SCALING_DYNAMIC.getMask();
+					break;
+				case "Always":
+		            beagleFlags |= BeagleFlag.SCALING_ALWAYS.getMask();
+					break;
+				}
+	            System.setProperty("beagle.preferred.flags", Long.toString(beagleFlags));
+	        }
+		}
 
 		
 		switch (this.logFileMode.getSelectionModel().getSelectedIndex()) {
 		case 0:
+			MCMCArgs.add("-batch");
 			break;
 		case 1:
 			MCMCArgs.add("-overwrite");
@@ -231,15 +265,27 @@ public class Controller implements Initializable {
 	List<Message> backLog = new ArrayList<>();
 	
 	void logToView(String _data, String _style) {
+		//textView.setStyle("-fx-fill:" + _style + ";");
 		Log.info(_data);
-		System.out.println(_data);
+		//textView.setStyle("-fx-fill:black;");
 	}
 
 	
 	@FXML
 	void showBeagleInfo() {
-		BeagleInfo.printResourceList();
-		runButton.setText("Quit");
+		if (beagleInfoButton.getText().equals("Beagle Info")) {
+			BeagleInfo.printResourceList();
+		}
+		closeDialog();
+		// runButton.setDisable(true);
+	}
+
+	private void closeDialog() {
+		if (dialog.getDialogPane().getButtonTypes().size() == 0) {
+			// need a button to be able to close the dialog
+			dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+		}
+		dialog.close();
 	}
 
 }
