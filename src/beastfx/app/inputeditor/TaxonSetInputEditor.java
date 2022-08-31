@@ -28,6 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -179,6 +180,7 @@ public class TaxonSetInputEditor extends InputEditor.Base {
         col2.setCellValueFactory(
         	    new PropertyValueFactory<TaxonMap,String>("Taxon2")
         	);
+        col2.setCellFactory(TextFieldTableCell.forTableColumn());
 //        col2.getSortNode().setOnMouseClicked(e -> {
 //                    // The index of the column whose header was clicked
 //        			int vColIndex = 1;
@@ -200,8 +202,8 @@ public class TaxonSetInputEditor extends InputEditor.Base {
 					@Override
 					public void handle(CellEditEvent<TaxonMap, String> event) {
 						String newValue = event.getNewValue();
-						TaxonMap tipDate = event.getRowValue();
-						tipDate.setTaxon2(newValue);
+						TaxonMap taxonMap = event.getRowValue();
+						taxonMap.setTaxon2(newValue);
 						modelToTaxonset();
 					}
 				}                

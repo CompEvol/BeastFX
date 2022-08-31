@@ -1,6 +1,7 @@
 package beastfx.app.inputeditor;
 
 
+
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.alignment.Taxon;
@@ -25,7 +26,6 @@ import javafx.geometry.Dimension2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -112,7 +112,9 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     private Button hmcButton;
     
     public void setHMCVisible(boolean isVisible) {
-    	hmcButton.setVisible(isVisible);
+    	if (hmcButton != null) {
+    		hmcButton.setVisible(isVisible);
+    	}
     }
     
     
@@ -145,10 +147,12 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
         //box.setPadding(new Insets(0));
         box.setSpacing(4);
         
-        hmcButton= FXUtils.createHMCButton(doc.getTemplateName(), config.nameInput.get());
-    	hmcButton.setTooltip(new Tooltip("Click to help me choose"));
-    	hmcButton.setVisible(false);
-        box.getChildren().add(hmcButton);
+        hmcButton = FXUtils.createHMCButton(doc.getTemplateName(), config.nameInput.get());
+        if (hmcButton != null) {
+        	hmcButton.setTooltip(new Tooltip("Click to help me choose"));
+        	hmcButton.setVisible(false);
+        	box.getChildren().add(hmcButton);
+        }
         setGraphic(box);
         
     } // c'tor
@@ -413,7 +417,8 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
 				siteModel = (SiteModel.Base) BeautiDoc.deepCopyPlugin((BEASTInterface) siteModelSource,
 					likelihood, (MCMC) doc.mcmc.get(), oldContext, newContext, doc, null);
 			} catch (RuntimeException e) {
-				Alert.showMessageDialog(((Pane)this.getContent()), "Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
+				Alert.showMessageDialog(this.getContent() instanceof Pane ? ((Pane)this.getContent()) : null, 
+						"Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
 				return;
 			}
 			likelihood.siteModelInput.setValue(siteModel, likelihood);
@@ -425,7 +430,8 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
 				clockModel = (BranchRateModel) BeautiDoc.deepCopyPlugin((BEASTInterface) clockModelSource,
 						likelihood, (MCMC) doc.mcmc.get(), oldContext, newContext, doc, null);
 			} catch (Exception e) {
-				Alert.showMessageDialog(((Pane)this.getContent()), "Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
+				Alert.showMessageDialog(this.getContent() instanceof Pane ? ((Pane)this.getContent()) : null, 
+						"Could not clone " + sourceID + " to " + targetID + " " + e.getMessage());
 				return;
 			}
 			// make sure that *if* the clock model has a tree as input, it is

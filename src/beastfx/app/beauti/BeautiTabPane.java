@@ -1438,7 +1438,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             }
 
             MenuBar menuBar = beauti.createMenuBar();
-            if (Utils.isMac() && System.getProperty("beast.is.junit.testing") == null) {
+            if (Utils.isMac() && !(System.getProperty("beast.is.junit.testing") != null)) {
             	menuBar.useSystemMenuBarProperty().set(true);
             }
 

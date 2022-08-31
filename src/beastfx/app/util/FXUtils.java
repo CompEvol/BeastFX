@@ -194,9 +194,7 @@ public class FXUtils {
 		String HMC_BASE = getHMCBase();
 		String base = (templateName + "/" + tabName + "/").replaceAll(" ", "_");
 		if (!hmcPages.containsKey(base)) {
-			Button button = createHMCButton(HMC_BASE);
-			button.setDisable(true);
-			return button;
+			return null;
 		}
 
 		String url = HMC_BASE + "/" + hmcPages.get(base) + "index.html";
