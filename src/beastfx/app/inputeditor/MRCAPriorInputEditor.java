@@ -18,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
-import beastfx.app.inputeditor.ListInputEditor;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;

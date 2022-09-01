@@ -429,7 +429,6 @@
         </copy>
         
         <!-- same as UoA password -->
-<!--
 	<input message="Keystore password : " addproperty="storepass"></input>
 	<jsign file="${Windows_package_dir}/${BEAUti_name}.exe"
         	name="BEAUti"
@@ -473,7 +472,6 @@
 	        alias="http://beast2.org"
 	        storepass="${storepass}"
 	        tsaurl="http://timestamp.comodoca.com/authenticode"/>
--->
 
         <zip destfile="${Windows_dir}/${BEAST_name}.v${version}.zip">
             <zipfileset dir="${Windows_package_dir}" prefix="${BEAST_name}" />

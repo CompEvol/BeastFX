@@ -204,10 +204,10 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             } catch (Throwable e) {
             	// use default
             }
-            if (minValue < param.getLower()) {
+            if (param != null && minValue < param.getLower()) {
             	minValue = minValue + 0.99999 * (param.getLower() - minValue);
             }
-            if (maxValue > param.getUpper()) {
+            if (param != null && maxValue > param.getUpper()) {
             	maxValue = param.getUpper() + 0.001 * (maxValue - param.getUpper());
             }
             double xRange = maxValue - minValue;
