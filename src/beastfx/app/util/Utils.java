@@ -321,6 +321,9 @@ public class Utils {
 	    	URL url = BEASTClassLoader.getResource(packageName, iconLocation);
 	    	
 	        if (url == null) {
+	        	if (iconLocation != null && iconLocation.length() > 1 && iconLocation.startsWith("/")) {
+	        		return getIcon(packageName, iconLocation.substring(1));
+	        	}
 	            System.err.println("Cannot find icon " + iconLocation);
 	            return null;
 	        }

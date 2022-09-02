@@ -246,7 +246,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
 
 	}
 	
-	Set<Taxon> getTaxonCandidates(MRCAPrior prior) {
+	protected Set<Taxon> getTaxonCandidates(MRCAPrior prior) {
         Set<Taxon> candidates = new HashSet<>();
         Tree tree = prior.treeInput.get();
         String [] taxa = null;

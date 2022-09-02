@@ -9,6 +9,7 @@ import beast.base.core.BEASTObject;
 import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Input.Validate;
+import beast.base.core.Log;
 import beast.base.inference.MCMC;
 import beast.base.inference.Operator;
 import beast.base.parser.PartitionContext;
@@ -125,9 +126,9 @@ public class BeautiConnector extends BEASTObject {
         	// System.err.println("Attempting to find " + className + " with method " + methodName);
 			try {
 				class_ = BEASTClassLoader.forName(className);
-	        	System.err.println("Class found!");
+	        	Log.debug.println("Class found!");
 	        	method = class_.getMethod(methodName, BeautiDoc.class);
-	        	System.err.println("method found!");
+	        	Log.debug.println("method found!");
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
 				throw new IllegalArgumentException(e.getMessage());
 			}

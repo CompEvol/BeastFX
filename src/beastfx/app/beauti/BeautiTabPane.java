@@ -635,11 +635,12 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         @Override
 		public void actionPerformed(ActionEvent ae) {
             setCursor(Cursor.WAIT);
-            HelpBrowser b = new HelpBrowser(currentTab.config.getType());
-            int size = UIManager.getFont("Label.font").getSize();
-            b.setSize(800 * size / 13, 800 * size / 13);
-            b.setVisible(true);
-            b.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            FXUtils.openInBrowser(FXUtils.getHMCBase());
+            //HelpBrowser b = new HelpBrowser(currentTab.config.getType());
+            //int size = UIManager.getFont("Label.font").getSize();
+            //b.setSize(800 * size / 13, 800 * size / 13);
+            //b.setVisible(true);
+            //b.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             setCursor(Cursor.DEFAULT);
         }
     } // class ActionHelp
@@ -653,18 +654,20 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
         @Override
 		public void actionPerformed(ActionEvent ae) {
+        	String msgs = null;
         	if (BeautiDoc.baos == null) {
-        		Alert.showMessageDialog(frame.getScene().getRoot(), "<html>Error and warning messages are printed to Stdout and Stderr<br>" +
-        				"To show them here, start BEAUti with the -capture argument.</html>");
+        		msgs = 
+        				"Error and warning messages are printed to Stdout and Stderr\n" +
+        				"To show them here, start BEAUti with the -capture argument.";
+        		
         	} else {
-	        	String msgs = BeautiDoc.baos.toString();
-	        	javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(msgs);
-	        	textArea.setPrefRowCount(40);
-	        	textArea.setPrefColumnCount(50);
-	        	textArea.setEditable(true);
-	        	javafx.scene.control.ScrollPane scroller = new javafx.scene.control.ScrollPane(textArea);
-	        	Alert.showMessageDialog(frame.getScene().getRoot(), scroller, "Messages", Alert.WARNING_MESSAGE);
+	        	msgs = BeautiDoc.baos.toString();
         	}
+	    	javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(msgs);
+	    	textArea.setPrefRowCount(40);
+	    	textArea.setPrefColumnCount(50);
+	    	textArea.setEditable(true);
+	    	Alert.showMessageDialog(frame.getScene().getRoot(), textArea, "Messages", Alert.WARNING_MESSAGE);
         }
     }
 
@@ -689,10 +692,14 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Alert.showMessageDialog(null, citations
-                    + "\nCitations copied to clipboard",
-                    "Citation(s) applicable to this model:",
-                    Alert.INFORMATION_MESSAGE);
+	    	javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(
+	    			citations +
+                    "\nCitations copied to clipboard");
+	    	textArea.setPrefRowCount(30);
+	    	textArea.setPrefColumnCount(70);
+	    	textArea.setEditable(true);
+            
+            Alert.showMessageDialog(frame.getScene().getRoot(), textArea, "Messages", Alert.INFORMATION_MESSAGE);
 
         } // getCitations
 

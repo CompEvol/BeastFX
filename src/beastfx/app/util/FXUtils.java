@@ -2,6 +2,7 @@ package beastfx.app.util;
 
 
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -15,13 +16,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 
+import java.awt.Desktop;
+import java.awt.Desktop.Action;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
+import beastfx.app.beauti.Beauti;
 import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.inputeditor.BeautiPanelConfig;
 
@@ -202,13 +208,12 @@ public class FXUtils {
 		return createHMCButton(url);
 	}
 	
-	public static Button createHMCButton(final String url) {
-		
-	   Button hmcButton = new Button("?");
+	public static Button createHMCButton(final String url) {		
+	    Button hmcButton = new Button("?");
     	hmcButton.setTooltip(new Tooltip("Click to 'help me choose'\n" + url));
     	hmcButton.getTooltip().setStyle("-fx-font-size: 8pt");
     	//hmcButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "help16.png"));
-    	hmcButton.setOnAction(e->openInBrowser(url, hmcButton));
+    	hmcButton.setOnAction(e->openInBrowser(url));
         String style = 
                 "-fx-background-radius: 10; " +
                 "-fx-min-width: 15px; " +
@@ -220,68 +225,54 @@ public class FXUtils {
     	return hmcButton;
     }
 	   
-	public static void openInBrowser(String url, Button hmc)  {
+	public static void openInBrowser(String url)  {
 		
-		try {
-			if (Utils.isWindows()) {
-				Runtime rt = Runtime.getRuntime();
-				rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
-			} else if (Utils.isMac()) {
-				Runtime rt = Runtime.getRuntime();
-				rt.exec("open " + url);
-			} else if (Utils.isLinux()) {
-				Runtime rt = Runtime.getRuntime();
-				String[] browsers = { "google-chrome", "firefox", "mozilla", "epiphany", "konqueror",
-				                                 "netscape", "opera", "links", "lynx" };
-				 
-				StringBuffer cmd = new StringBuffer();
-				for (int i = 0; i < browsers.length; i++)
-				    if(i == 0)
-				        cmd.append(String.format(    "%s \"%s\"", browsers[i], url));
-				    else
-				        cmd.append(String.format(" || %s \"%s\"", browsers[i], url)); 
-				    // If the first didn't work, try the next browser and so on
-		
-				rt.exec(new String[] { "sh", "-c", cmd.toString() });
-			} else {
-				WebView webView = new WebView();
-				webView.getEngine().load(url);
-				Dialog dlg = new Dialog();
-				dlg.getDialogPane().setContent(webView);
-				dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-				dlg.setResizable(true);
-				dlg.showAndWait();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-//        //Platform.runLater(() -> {
-//			Desktop desktop;
-//	        if (Desktop.isDesktopSupported()) {
-//	            desktop = Desktop.getDesktop();
-//	            // Now enable buttons for actions that are supported.
-//	            if (desktop.isSupported(Desktop.Action.BROWSE)) {
-//                    
-////                  String s = "/Users/remco/workspace/hmc/_pages" + url.substring(("file://" + System.getProperty("user.dir")).length());
-////                	creatDirs(s);
-////            		PrintStream out = new PrintStream(new File(s));
-////            		out.println(hmc.getTooltip().getText());
-////            		out.close();
-//                    
-//                    try {
-//                        URI uri = new URI(url);
-//                        desktop.browse(uri);                    		
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    	//Alert.showMessageDialog(null, "Could not find help: " + e.getMessage());
-//                    } catch (URISyntaxException e) {
-//                        e.printStackTrace();
-//                    }
-//	            }
-//	        }
-//        //});
+		Platform.runLater(() -> {
+			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Action.BROWSE)) {
+				try {
+			        Desktop desktop = Desktop.getDesktop();
+					desktop.browse(new URI(url));
+	            } catch (IOException | URISyntaxException e) {
+	                e.printStackTrace();
+	            }
+	        } else {
+				try {
+					if (Utils.isWindows()) {
+				        	Runtime rt = Runtime.getRuntime();
+				        	rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+					} else if (Utils.isMac()) {
+						System.err.println("Opening browser " + url);
+						Runtime rt = Runtime.getRuntime();
+						rt.exec("open " + url);
+					} else if (Utils.isLinux()) {
+						Runtime rt = Runtime.getRuntime();
+						String[] browsers = { "google-chrome", "firefox", "mozilla", "epiphany", "konqueror",
+						                                 "netscape", "opera", "links", "lynx" };
+						 
+						StringBuffer cmd = new StringBuffer();
+						for (int i = 0; i < browsers.length; i++)
+						    if(i == 0)
+						        cmd.append(String.format(    "%s \"%s\"", browsers[i], url));
+						    else
+						        cmd.append(String.format(" || %s \"%s\"", browsers[i], url)); 
+						    // If the first didn't work, try the next browser and so on
+				
+						rt.exec(new String[] { "sh", "-c", cmd.toString() });
+					} else {
+						System.err.println("Opening webview");
+						WebView webView = new WebView();
+						webView.getEngine().load(url);
+						Dialog dlg = new Dialog();
+						dlg.getDialogPane().setContent(webView);
+						dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+						dlg.setResizable(true);
+						dlg.showAndWait();
+					}
+				} catch (Throwable e) {
+					e.printStackTrace();
+				}
+		    }
+		});
 	}
 
 	private static void creatDirs(String file) {

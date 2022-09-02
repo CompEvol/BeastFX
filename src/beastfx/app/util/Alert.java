@@ -1,25 +1,19 @@
 
 package beastfx.app.util;
 
-import java.awt.Component;
+
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 
 import beast.base.core.BEASTInterface;
-import beastfx.app.inputeditor.BeautiAlignmentProvider;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextArea;
@@ -29,8 +23,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 // javafx replacement of joptionpane
 public class Alert {
@@ -132,12 +126,15 @@ public class Alert {
 			message.append(s);
 			message.append("\n");
 		}
-		AnchorPane pane = new AnchorPane();
+		VBox pane = new VBox();
 		TextArea text = new TextArea(message.toString());
+		text.setPrefColumnCount(55);
+		text.setPrefRowCount(40);
 		if (icon != null) {
 			ImageView img = new ImageView(jswingIconToImage(icon));
 			pane.getChildren().add(img);
 		}
+		text.setPadding(new Insets(5));
 		pane.getChildren().add(text);
 		showMessageDialog(parent, pane, header, informationMessage);
 	}
@@ -160,7 +157,7 @@ public class Alert {
 	public static void showMessageDialog(Parent parent, Node message, String header, AlertType informationMessage) {
 		Dialog<Node> alert = new javafx.scene.control.Dialog<>();
 		DialogPane pane = new DialogPane();
-		pane.getChildren().add(message);
+		pane.setContent(message);
 		alert.setDialogPane(pane);
 		alert.setHeaderText(header);
 		if (parent != null) {
@@ -169,8 +166,8 @@ public class Alert {
 			alert.setY(node.getY() + node.getHeight()/2);
 		}
 		alert.getDialogPane().getButtonTypes().addAll(CLOSED_OPTION, OK_OPTION);
-		pane.setPrefHeight(400);
-		pane.setPrefWidth(400);
+		pane.setPrefHeight(600);
+		pane.setPrefWidth(600);
 		alert.setResizable(true);
 		alert.showAndWait();
 	}

@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import beast.base.core.Log;
+import beastfx.app.beauti.ThemeProvider;
 import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Console extends javafx.application.Application {
@@ -124,6 +126,7 @@ public class Console extends javafx.application.Application {
 
         
 		Scene scene = new Scene(textView);
+		ThemeProvider.loadStyleSheet(scene);
 		// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -135,6 +138,11 @@ public class Console extends javafx.application.Application {
 		    System.exit(0);
 		});
 		
+		// prevent textView to exceed display size
+	    Rectangle2D screen = Screen.getPrimary().getBounds();
+	    double d = scene.getWindow().getHeight() - scene.getHeight();
+	    textView.setMaxSize(screen.getHeight() - d, screen.getWidth());
+
 		initStreams();
 		
 		Platform.runLater(new Runnable() {

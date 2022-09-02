@@ -87,7 +87,7 @@ public class Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		this.seed.setText(Randomizer.nextLong() + "");
 		//this.useBeagle.setSelected(true);
-		this.inputFile.setText("/tmp/x.xml");
+		this.inputFile.setText("");
 		this.logFileMode.setItems(FXCollections.observableArrayList(logFileModes));
 		logFileMode.setValue(logFileModes[0]);
 
@@ -132,7 +132,7 @@ public class Controller implements Initializable {
 				try {
 					sleep(2000);
 					// clear backlog if any
-					logToView("ready", "red");
+					logToView("    ", "red");
 				} catch (InterruptedException e) {
 				}
 			};

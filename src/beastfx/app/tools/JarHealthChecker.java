@@ -43,7 +43,8 @@ public class JarHealthChecker extends Runnable {
 			"beastfx.app.inputeditor.InputEditor",
 			"beastfx.app.inputeditor.AlignmentImporter",
 			"beastfx.app.beauti.BeautiHelpAction",		
-			"beastfx.app.beauti.PriorProvider"
+			"beastfx.app.beauti.PriorProvider",
+			"beastfx.app.beauti.ThemeProvider"
 	};
 	
 	private PrintStream out = System.out;

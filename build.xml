@@ -14,11 +14,6 @@
 	<property name="libFX" location="../${BeastFX}/locallib" />
 	<property name="resourcesFX" location="../${BeastFX}/resources" />
 
-<!--
-	<property name="javafx-home" location="../../Downloads/javafx-sdk-17.0.2"/>
-	<property name="javafx-home" location="../../javafx-sdk-18.0.1/"/>
-	<property name="release_dir" value="release" />
--->	
 	<property name="distFX" location="${buildFX}/dist" />
 	<property name="beast2path" location="../beast2" />
 	<property name="srcBeast2" location="${beast2path}/src" />
@@ -30,6 +25,10 @@
 
 	<property name="main_class_BEASTFX" value="beastfx.app.beastfx.BeastFX" />
 	<property name="report" value="${buildFX}/junitreport"/>
+
+    <property name="openjreMac" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64"/>
+    <property name="openjreWin" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-win_x64/"/>
+    <property name="openjreWin" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-linux_x64/"/>
 
 	<path id="classpath">
 		<fileset dir="${libFX}" includes="jam.jar"/>
@@ -136,6 +135,10 @@
 				<include name="**/*.css" />
 				<include name="**/*.fxml" />
 			</fileset>
+			<zipgroupfileset dir="${libFX}" includes="jam.jar"/>
+			<zipgroupfileset dir="${libFX}" includes="aquafx-0.1.jar"/>
+			<zipgroupfileset dir="${libFX}" includes="FXSkins-1.0.0.jar"/>
+			<zipgroupfileset dir="${libFX}" includes="jmetro-11.6.15.jar"/>
 		</jar>
 	</target>
 
@@ -228,10 +231,7 @@
         </copy>
         <chmod dir="${Linux_package_dir}/bin" perm="755" includes="**/**" />
         <exec executable="cp">
-	        <!--
-             <arg line="-R /opt/java/jre ${Linux_package_dir}/jre"/>
-             -->
-             <arg line="-R /opt/zulu17.34.19-ca-fx-jre17.0.3-linux_x64/ ${Linux_package_dir}/jre"/>
+             <arg line="-R ${openjreLnx} ${Linux_package_dir}/jre"/>
         </exec>
 
         <copy todir="${Linux_package_dir}/examples/">
@@ -242,8 +242,8 @@
             </fileset>
         </copy>
 
-        <copy file="${beast2}/version.xml" tofile="${Linux_package_dir}/BEAST.base.version.xml" />
-        <copy file="${beast2app}/version.xml" tofile="${Linux_package_dir}/BEAST.app.version.xml" />
+        <copy file="${beast2}/version.xml" tofile="${Linux_package_dir}/lib/BEAST.base.version.xml" />
+        <copy file="${beast2app}/version.xml" tofile="${Linux_package_dir}/lib/BEAST.app.version.xml" />
 
         <copy file="${common_dir}/icons/beast.png" todir="${Linux_package_dir}/images" />
         <copy file="${common_dir}/icons/beauti.png" todir="${Linux_package_dir}/images" />
@@ -298,8 +298,8 @@
             </fileset>
         </copy>
 
-        <copy file="${beast2}/version.xml" tofile="${Windows_package_dir}/BEAST.base.version.xml" />
-        <copy file="${beast2app}/version.xml" tofile="${Windows_package_dir}/BEAST.app.version.xml" />
+        <copy file="${beast2}/version.xml" tofile="${Windows_package_dir}/lib/BEAST.base.version.xml" />
+        <copy file="${beast2app}/version.xml" tofile="${Windows_package_dir}/lib/BEAST.app.version.xml" />
 
         <copy file="${common_dir}/icons/beast.png" todir="${Windows_package_dir}/images" />
         <copy file="${common_dir}/icons/beauti.png" todir="${Windows_package_dir}/images" />
@@ -330,10 +330,7 @@
             </fileset>
         </copy>
         <copy todir="${Windows_package_dir}/jre">
-        	<!--
-            <fileset dir="../jdk8u212-b04-jre" />
-            -->
-            <fileset dir="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-win_x64/"/>
+            <fileset dir="${openjreWin}"/>
         </copy>
 
         <mkdir dir="${Windows_package_dir}/bat" />
@@ -502,12 +499,8 @@
                 <exclude name="benchmark/**" />
             </fileset>
         </copy>
-        <!--
-        <property name="openjre" value="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/jre"/>
-        -->
-        <property name="openjre" value="../..//Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64"/>
         <exec executable="cp">
-		    <arg line="-R ${openjre} ${Mac_package_dir}/jre"/>
+		    <arg line="-R ${openjreMac} ${Mac_package_dir}/jre"/>
 		</exec>
         <!-- Deprecated JavaAppLauncher -->
 <!--        <exec executable="gcc">-->

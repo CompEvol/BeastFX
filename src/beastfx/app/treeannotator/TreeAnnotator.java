@@ -29,7 +29,7 @@ package beastfx.app.treeannotator;
 import java.io.*;
 import java.util.*;
 
-
+import beastfx.app.beauti.ThemeProvider;
 import beastfx.app.treeannotator.CladeSystem;
 import beastfx.app.treeannotator.ContourMaker;
 import beastfx.app.treeannotator.ContourPath;
@@ -1246,6 +1246,8 @@ public class TreeAnnotator extends Console {
 				    dialog.getDialogPane().getButtonTypes().add(run);
 				    ButtonType cancel = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
 				    dialog.getDialogPane().getButtonTypes().add(cancel);
+				    ThemeProvider.loadStyleSheet(dialog.getDialogPane().getScene());
+				    
 				    
 					//Showing the dialog on clicking the button
 			        Optional<String> result = dialog.showAndWait();
