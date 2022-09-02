@@ -135,6 +135,7 @@ public class BeastMain extends Console {
 
 	private static void printVersion() {
     	Log.info("BEAST " + (new BEASTVersion2()).getVersionString());
+        Log.info("---");
         for (String jarDirName : PackageManager.getBeastDirectories()) {
             File versionFile = new File(jarDirName + "/version.xml");
             if (versionFile.exists()) {
@@ -143,12 +144,15 @@ public class BeastMain extends Console {
 	                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	                Document doc = factory.newDocumentBuilder().parse(versionFile);
 	                Element packageElement = doc.getDocumentElement();
-	                Log.info(packageElement.getAttribute("name") + " v" + packageElement.getAttribute("version") + " " + jarDirName);
+	                Log.info.print(packageElement.getAttribute("name") + " v" + packageElement.getAttribute("version"));
+	                Log.debug.print(" " + jarDirName);
+	                Log.info.print("\n");
             	} catch (IOException| SAXException| ParserConfigurationException e) {
             		Log.err(e.getMessage());
             	}
             }
         }
+        Log.info("---");
     	Log.info("Java version " + System.getProperty("java.version"));
 	}
 	
@@ -205,6 +209,27 @@ public class BeastMain extends Console {
         	Log.info.println();
             printUsage(arguments);
             System.exit(1);
+        }
+        
+        if (arguments.hasOption("loglevel")) {
+            String l = arguments.getStringOption("loglevel");
+            switch (l) {
+                case "error":
+                    Log.setLevel(Log.Level.error);
+                    break;
+                case "warning":
+                    Log.setLevel(Log.Level.warning);
+                    break;
+                case "info":
+                    Log.setLevel(Log.Level.info);
+                    break;
+	            case "debug":
+	                Log.setLevel(Log.Level.debug);
+	                break;
+	            case "trace":
+	                Log.setLevel(Log.Level.trace);
+	                break;
+            }
         }
 
         if (arguments.hasOption("version")) {
@@ -426,27 +451,6 @@ public class BeastMain extends Console {
 
         if (useJava) {
             System.setProperty("java.only", "true");
-        }
-
-        if (arguments.hasOption("loglevel")) {
-            String l = arguments.getStringOption("loglevel");
-            switch (l) {
-                case "error":
-                    Log.setLevel(Log.Level.error);
-                    break;
-                case "warning":
-                    Log.setLevel(Log.Level.warning);
-                    break;
-                case "info":
-                    Log.setLevel(Log.Level.info);
-                    break;
-	            case "debug":
-	                Log.setLevel(Log.Level.debug);
-	                break;
-	            case "trace":
-	                Log.setLevel(Log.Level.trace);
-	                break;
-            }
         }
 
         if (fileNamePrefix != null && fileNamePrefix.trim().length() > 0) {
