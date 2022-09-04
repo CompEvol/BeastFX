@@ -9,6 +9,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import beast.base.core.BEASTInterface;
+import beastfx.app.beauti.ThemeProvider;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -85,6 +86,7 @@ public class Alert {
 			alert.setX(node.getX() + node.getWidth()/2);
 			alert.setY(node.getY() + node.getHeight()/2);
 		}
+//    	ThemeProvider.loadStyleSheet(alert.getDialogPane().getScene());
 		alert.showAndWait();
 	}
 
@@ -98,6 +100,7 @@ public class Alert {
 			alert.setX(node.getX() + node.getWidth()/2);
 			alert.setY(node.getY() + node.getHeight()/2);
 		}
+//    	ThemeProvider.loadStyleSheet(alert.getDialogPane().getScene());
 		Optional<ButtonType> option = alert.showAndWait();
 		return option.get();
 	}
@@ -117,6 +120,7 @@ public class Alert {
 			alert.setX(node.getX() + node.getWidth()/2);
 			alert.setY(node.getY() + node.getHeight()/2);
 		}
+//    	ThemeProvider.loadStyleSheet(alert.getDialogPane().getScene());
 		alert.showAndWait();
 	}
 
@@ -169,6 +173,7 @@ public class Alert {
 		pane.setPrefHeight(600);
 		pane.setPrefWidth(600);
 		alert.setResizable(true);
+//		ThemeProvider.loadStyleSheet(alert.getDialogPane().getScene());
 		alert.showAndWait();
 	}
 
@@ -181,7 +186,9 @@ public class Alert {
     	}
     	ChoiceDialog<?> dlg = new ChoiceDialog<>(valueOf(initialSelectionValue), 
     			values);
-    	dlg.setHeaderText(title);
+    	dlg.setTitle(title);
+    	dlg.setHeaderText(message.toString());
+//    	ThemeProvider.loadStyleSheet(dlg.getDialogPane().getScene());
     	Optional<?> option = dlg.showAndWait();
 		if (parent != null) {
 			Scene node = parent.getScene();
@@ -207,6 +214,7 @@ public class Alert {
             Object message, String title, AlertType messageType, String initialSelectionValue) {    	
     	TextInputDialog dlg = new TextInputDialog(initialSelectionValue);
     	dlg.setHeaderText(title);
+//    	ThemeProvider.loadStyleSheet(dlg.getDialogPane().getScene());
     	Optional<?> option = dlg.showAndWait();
 		if (parent != null) {
 			Scene node = parent.getScene();

@@ -28,7 +28,7 @@
 
     <property name="openjreMac" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64"/>
     <property name="openjreWin" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-win_x64/"/>
-    <property name="openjreWin" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-linux_x64/"/>
+    <property name="openjreLnx" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-linux_x64/"/>
 
 	<path id="classpath">
 		<fileset dir="${libFX}" includes="jam.jar"/>

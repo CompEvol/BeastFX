@@ -134,14 +134,12 @@ public class FastaImporter implements AlignmentImporter {
 									i++;
 								}
 							}
-				        	ComboBox<String> jcb = new ComboBox<>();
-				        	for (String s : new String[]{"aminoacid", "nucleotide", "all are aminoacid", "all are nucleotide"}) {
-				        		jcb.getItems().add(s);
-				        	}
-				        	jcb.setEditable(true);
-				        	jcb.setValue(datatype);
-				        	Alert.showMessageDialog(null, jcb, "Choose the datatype of alignment " + alignment.getID(), Alert.QUESTION_MESSAGE);
-				        	String selectedType = (String) jcb.getValue();
+				        	String [] providers = new String[]{"aminoacid", "nucleotide", "all are aminoacid", "all are nucleotide"};
+				        	String selectedType = (String) Alert.showInputDialog(null, "Choose the datatype of alignment " + alignment.getID(),
+				                    "Add partition",
+				                    Alert.QUESTION_MESSAGE, null, providers,
+				                    providers[0]);
+				        	
 				        	switch (selectedType) {
 					        	case "aminoacid": datatype = "aminoacid"; totalCount = 20; break;
 					        	case "nucleotide": datatype = "nucleotide"; totalCount = 4; break;
