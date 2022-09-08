@@ -155,7 +155,7 @@ public class FXUtils {
 		//System.out.println(id);
 		
 		String HMC_BASE = getHMCBase();
-		String url = HMC_BASE + "/" + id + "/";//.html";
+		String url = HMC_BASE + "/" + id;// + "/";//.html";
 		Button hmc = createHMCButton(url);
         if (input instanceof BeautiPanelConfig.FlexibleInput) {
         	BeautiPanelConfig.FlexibleInput flexInput = (BeautiPanelConfig.FlexibleInput) input;
