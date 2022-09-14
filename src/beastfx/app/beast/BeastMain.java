@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,30 +29,14 @@ import beastfx.app.util.Utils;
 import beastfx.app.beauti.ThemeProvider;
 import beastfx.app.util.Console;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ButtonBar.ButtonData;
 
 public class BeastMain extends Console {
     private final static Version version = new BEASTVersion2();
 
 	@Override
 	protected void createDialog() {
-//		
-//		PrintStream err = System.err;
-//		System.setErr(new PrintStream(new OutputStream() {
-//		    public void write(int b) {
-//		    }
-//		}));
-//		// Utils.loadUIManager();
-//		System.setErr(err);
-		
-//        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-//        System.setProperty("apple.laf.useScreenMenuBar", "true");
-//        System.setProperty("apple.awt.showGrowBox", "true");
-
 
         Dialog<String> dialog = new Dialog<>();
 	    dialog.setTitle("BEAST " + BEASTVersion.INSTANCE.getVersion());
@@ -64,7 +47,6 @@ public class BeastMain extends Console {
 		try {
 			root = fl.load();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		dialog.getDialogPane();
@@ -76,29 +58,9 @@ public class BeastMain extends Console {
 	    	((Controller)o).dialog = dialog;
 	    	((Controller)o).textView = textView;
 	    }
-	    
-//	    ButtonType run = new ButtonType("Run", ButtonData.OK_DONE);
-//	    dialog.getDialogPane().getButtonTypes().add(run);
-//	    ButtonType cancel = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
-//	    dialog.getDialogPane().getButtonTypes().add(cancel);
-	    
+	    	    
 		//Showing the dialog on clicking the button
 	    dialog.show();
-//        Optional<String> result = dialog.showAndWait();
-//        dialog.close();
-//        
-//        Object o = result.get();
-//        String str = o.toString();
-//        
-//	    if (str.equals("RUN")) {
-//		    Controller controller = fl.getController();
-//        	controller.run();
-//        } else {
-//        	Log.warning("Quiting BEAST");
-//        	System.exit(0);
-//    		return;
-//        }
-
  	}
 	
     public static void centreLine(final String line, final int pageWidth) {
@@ -158,14 +120,9 @@ public class BeastMain extends Console {
 	
 	public static void main(String[] args) {
         final List<String> MCMCargs = new ArrayList<>();
-//    	Utils.loadUIManager();
 
         final Arguments arguments = new Arguments(
                 new Arguments.Option[]{
-
-//                        new Arguments.Option("verbose", "Give verbose XML parsing messages"),
-//                        new Arguments.Option("warnings", "Show warning messages about BEAST XML file"),
-//                        new Arguments.Option("strict", "Fail on non-conforming BEAST XML file"),
                         new Arguments.Option("window", "Provide a console window"),
                         new Arguments.Option("options", "Display an options dialog"),
                         new Arguments.Option("working", "Change working directory to input file's directory"),
@@ -242,16 +199,12 @@ public class BeastMain extends Console {
             System.exit(0);
         }
 
-//        final boolean verbose = arguments.hasOption("verbose");
-//        final boolean parserWarning = arguments.hasOption("warnings"); // if dev, then auto turn on, otherwise default to turn off
-//        final boolean strictXML = arguments.hasOption("strict");
         final boolean window = arguments.hasOption("window");
         final boolean options = arguments.hasOption("options");
         final boolean working = arguments.hasOption("working");
         final boolean doNotRun = arguments.hasOption("validate");
         String fileNamePrefix = null;
         String stateFileName = null;
-        //boolean allowOverwrite = arguments.hasOption("overwrite");
 
         long seed = Randomizer.getSeed();
         boolean useJava = false;
@@ -461,10 +414,6 @@ public class BeastMain extends Console {
             System.setProperty("state.file.name", stateFileName.trim());
             Log.info.println("Writing state to file " + stateFileName);
         }
-
-//        if (allowOverwrite) {
-//            System.setProperty("log.allow.overwrite", "true");
-//        }
 
         if (beagleFlags != 0) {
             System.setProperty("beagle.preferred.flags", Long.toString(beagleFlags));

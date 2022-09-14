@@ -265,9 +265,9 @@ public class Controller implements Initializable {
 	List<Message> backLog = new ArrayList<>();
 	
 	void logToView(String _data, String _style) {
-		//textView.setStyle("-fx-fill:" + _style + ";");
+		textView.setStyle("-fx-fill:" + _style + ";");
 		Log.info(_data);
-		//textView.setStyle("-fx-fill:black;");
+		textView.setStyle("-fx-fill:black;");
 	}
 
 	

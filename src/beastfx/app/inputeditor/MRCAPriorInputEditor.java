@@ -138,15 +138,7 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
                 List<?> list = (List<?>) m_input.get();
                 MRCAPrior prior2 = (MRCAPrior) list.get(itemNr);
 
-//System.err.println("PRIOR" + beastObject2);
-//            	try {
-//					prior.m_distInput.setValue(beastObject2, prior);
-//				} catch (Exception e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
                 try {
-                    //BEASTObject beastObject2 =
                     template.createSubNet(new PartitionContext(""), prior2, prior2.distInput, true);
                 } catch (Exception e1) {
                     e1.printStackTrace();
@@ -268,27 +260,6 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         return candidates;
     }
 
-    /**
-     * class to deal with toggling monophyletic flag on an MRCAPrior *
-     */
-//    class MRCAPriorActionListener implements ActionListener {
-//        MRCAPrior m_prior;
-//
-//        MRCAPriorActionListener(MRCAPrior prior) {
-//            m_prior = prior;
-//        }
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            try {
-//                m_prior.isMonophyleticInput.setValue(((CheckBox) e.getSource()).isSelected(), m_prior);
-//                refreshPanel();
-//            } catch (Exception ex) {
-//            	Log.warning.println("PriorListInputEditor " + ex.getMessage());
-//            }
-//        }
-//    }
-    
     
     InputEditor tipsonlyEditor;
     
@@ -299,9 +270,6 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         	public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption,
         			boolean addButtons) {
         		super.init(input, beastObject, itemNr, isExpandOption, addButtons);
-        		// hack to get to Button
-        		//Node [] components = getComponents();       		
-        		//((Button) components[0])
         		for (Node o : getChildren()) {
         			if (o instanceof CheckBox) {
         				((CheckBox)o).setOnAction(e -> {

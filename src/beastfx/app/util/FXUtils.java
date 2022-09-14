@@ -2,6 +2,7 @@ package beastfx.app.util;
 
 
 
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -27,8 +28,6 @@ import java.util.List;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
-import beastfx.app.beauti.Beauti;
-import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.inputeditor.BeautiPanelConfig;
 
 public class FXUtils {
