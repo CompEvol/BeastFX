@@ -89,7 +89,8 @@ public class Beauti extends Application {
                 FXUtils.logToSplashScreen("Initialising BEAUti . . .");
         		String [] args = getParameters().getRaw().toArray(new String[] {}); 
                 BeautiDoc doc = BeautiTabPane.initialise(args);
-                FXUtils.logToSplashScreen("BEAUti initialised.");
+                FXUtils.logToSplashScreen("Setting up window");
+                Thread.sleep(50);
                 return doc;
             }
         };
@@ -125,7 +126,7 @@ public class Beauti extends Application {
         task.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
                 initStage.toFront();
-                FadeTransition fadeSplash = new FadeTransition(Duration.seconds(2.0), splashLayout);
+                FadeTransition fadeSplash = new FadeTransition(Duration.seconds(1.234), splashLayout);
                 fadeSplash.setFromValue(1.0);
                 fadeSplash.setToValue(0.0);
                 fadeSplash.setOnFinished(actionEvent -> initStage.hide());

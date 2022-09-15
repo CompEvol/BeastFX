@@ -7,13 +7,13 @@
 				<provider classname="beastfx.app.beauti.theme.Caspian"/>
 				<provider classname="beastfx.app.beauti.theme.Foenix"/>
 				<provider classname="beastfx.app.beauti.theme.MetroDark"/>
+				<provider classname="beastfx.app.beauti.theme.Aqua"/>
  				-->
 				<provider classname="beastfx.app.beauti.theme.Dark"/>
 				<provider classname="beastfx.app.beauti.theme.Bootstrap"/>
 				<provider classname="beastfx.app.beauti.theme.Fluent"/>
 				<provider classname="beastfx.app.beauti.theme.Win7"/>
 				<provider classname="beastfx.app.beauti.theme.Metro"/>
-				<provider classname="beastfx.app.beauti.theme.Aqua"/>
 			</service>
 			
 			<service type="beastfx.app.inputeditor.InputEditor">

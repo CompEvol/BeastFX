@@ -48,9 +48,15 @@ and from `BeastFX/locallib`
 
 * jam.jar -- gui library
 * testfx.jar -- assists in testing
-* aquafx-0.1.jar -- GUI theme
 * FXSkins-1.0.0.jar -- GUI theme
 * jmetro-11.6.15.jar -- GUI theme
+
+
+## Source folders
+
+Sources are in `BeastFX/src`, and resources in `BeastFX/resources`.
+
+If you are setting up in an IDE, make sure to include both as source folders, otherwise themes will not be available (i.e. dark mode will not work) when debugging.
 
 ## Building from the command line
 
