@@ -2,6 +2,8 @@ package beastfx.app.inputeditor;
 
 
 
+
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,10 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JFrame;
 import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,9 +48,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import beastfx.app.beauti.BeautiTabPane;
-import beastfx.app.inputeditor.*;
 import beastfx.app.util.PartitionContextUtil;
-import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;
@@ -85,7 +84,6 @@ import beast.base.parser.XMLParser;
 import beast.base.parser.XMLParserException;
 import beast.base.parser.XMLProducer;
 import beast.base.parser.XMLParser.RequiredInputProvider;
-import beast.pkgmgmt.Utils6;
 import beast.pkgmgmt.launcher.BeastLauncher;
 
 
@@ -563,7 +561,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                             && template.getName().toLowerCase().endsWith(".xml")) {
                         if (!loadedTemplates.contains(template.getName())) {
                             Log.warning.println("Processing " + template.getAbsolutePath());
-                            Utils.logToSplashScreen("Processing " + template.getName());
+                            FXUtils.logToSplashScreen("Processing " + template.getName());
                             loadedTemplates.add(template.getName());
                             String xml2 = load(template.getAbsolutePath());
                             if (!xml2.contains("<mergepoint ")) {

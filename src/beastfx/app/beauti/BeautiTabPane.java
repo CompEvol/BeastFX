@@ -5,7 +5,6 @@ package beastfx.app.beauti;
 
 
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -13,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -26,10 +24,10 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.inputeditor.BEASTObjectPanel;
@@ -57,11 +55,13 @@ import beast.base.core.ProgramStatus;
 import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.tree.MRCAPrior;
 import beast.base.inference.MCMC;
+import beast.base.parser.XMLParserException;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.Utils6;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -1157,7 +1157,98 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
    
 
+    public static BeautiDoc initialise(String[] args) {
+    	ProgramStatus.name = "BEAUti";
+
+    	ByteArrayOutputStream baos = null;
+        for (String arg : args) {
+        	if (arg.equals("-v") || arg.equals("-version")) {
+                System.out.println((new BEASTVersion2()).getVersionString());
+                System.exit(0);
+        	}
+        	if (arg.equals("-h") || arg.equals("-help")) {
+                System.out.println(usage());
+                System.exit(0);
+        	}
+        	if (arg.equals("-capture")) {
+        		final PrintStream beautiLog = System.err;
+            	baos = new ByteArrayOutputStream() {
+            		@Override
+            		public synchronized void write(byte[] b, int off, int len) {
+            			super.write(b, off, len);
+            			beautiLog.write(b, off, len);
+            		};
+
+            		@Override
+            		public synchronized void write(int b) {
+            			super.write(b);
+            			beautiLog.write(b);
+            		};
+
+            		@Override
+            		public void write(byte[] b) throws java.io.IOException {
+            			super.write(b);
+            			beautiLog.write(b);
+            		};
+
+            		@Override
+            		public void flush() throws java.io.IOException {
+            			super.flush();
+            			beautiLog.flush();
+            		};
+
+            		@Override
+            		public void close() throws IOException {
+            			super.close();
+            			beautiLog.close();
+            		}
+            	};
+
+            	PrintStream p = new PrintStream(baos);
+            	System.setOut(p);
+            	System.setErr(p);
+            	Log.err = p;
+            	Log.warning = p;
+            	Log.info = p;
+            	Log.debug = p;
+            	Log.trace = p;
+        	}
+        }
+
+        BeautiDoc.baos = baos;
+
+        BeautiDoc doc;
+        try {
+			PackageManager.loadExternalJars();
+			if (Utils.isMac()) {
+			  	Utils.loadUIManager();
+			}
+			BEASTObjectPanel.init();
+
+            // make sure templates know we are in BEAUti while parsing arguments 
+            BeautiTabPane.BEAUtiIntances++;
+
+            doc = new BeautiDoc();
+        	if (doc.parseArgs(args) == ActionOnExit.WRITE_XML) {
+			    return null;
+			}
+            // reset instances
+            BeautiTabPane.BEAUtiIntances--;
+
+        } catch (XMLParserException | SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+        return doc;
+    }    
+    
     public static BeautiTabPane main2(String[] args, Stage primaryStage) {
+    	BeautiDoc doc = initialise(args);
+    	return main2(args, primaryStage, doc);    	
+    }
+    
+    public static BeautiTabPane main2(String[] args, Stage primaryStage, BeautiDoc doc) {
     	
     	ProgramStatus.name = "BEAUti";
     	
@@ -1168,77 +1259,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
     	}
     	
         try {
-        	ByteArrayOutputStream baos = null;
-            for (String arg : args) {
-            	if (arg.equals("-v") || arg.equals("-version")) {
-                    System.out.println((new BEASTVersion2()).getVersionString());
-                    System.exit(0);
-            	}
-            	if (arg.equals("-h") || arg.equals("-help")) {
-                    System.out.println(usage());
-                    System.exit(0);
-            	}
-            	if (arg.equals("-capture")) {
-            		final PrintStream beautiLog = System.err;
-                	baos = new ByteArrayOutputStream() {
-                		@Override
-                		public synchronized void write(byte[] b, int off, int len) {
-                			super.write(b, off, len);
-                			beautiLog.write(b, off, len);
-                		};
 
-                		@Override
-                		public synchronized void write(int b) {
-                			super.write(b);
-                			beautiLog.write(b);
-                		};
-
-                		@Override
-                		public void write(byte[] b) throws java.io.IOException {
-                			super.write(b);
-                			beautiLog.write(b);
-                		};
-
-                		@Override
-                		public void flush() throws java.io.IOException {
-                			super.flush();
-                			beautiLog.flush();
-                		};
-
-                		@Override
-                		public void close() throws IOException {
-                			super.close();
-                			beautiLog.close();
-                		}
-                	};
-
-                	PrintStream p = new PrintStream(baos);
-                	System.setOut(p);
-                	System.setErr(p);
-                	Log.err = p;
-                	Log.warning = p;
-                	Log.info = p;
-                	Log.debug = p;
-                	Log.trace = p;
-            	}
-            }
-
-            PackageManager.loadExternalJars();
-            if (Utils.isMac()) {
-            	Utils.loadUIManager();
-            }
-            BEASTObjectPanel.init();
-
-            BeautiDoc doc = new BeautiDoc();
-            BeautiDoc.baos = baos;
-
-            // make sure templates know we are in BEAUti while parsing arguments 
-            BeautiTabPane.BEAUtiIntances++;
-            if (doc.parseArgs(args) == ActionOnExit.WRITE_XML) {
-                return null;
-            }
-            // reset instances
-            BeautiTabPane.BEAUtiIntances--;
 
             final BeautiTabPane beauti = new BeautiTabPane(doc);
 
@@ -1320,7 +1341,6 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
                 beauti.currentTab.setHeight(oldVal, newVal);
             });
 
-        	Utils6.endSplashScreen();
             beauti.setId("BeautiTabPane");
                                   
             return beauti;

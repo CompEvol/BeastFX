@@ -4,6 +4,7 @@ package beastfx.app.util;
 
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -280,5 +281,32 @@ public class FXUtils {
 		}
 		new File(file).mkdirs();
 	}
+
+	public static SimpleStringProperty startSplashScreen() {
+		// see https://github.com/CompEvol/BeastFX/blob/master/src/beastfx/app/beauti/Beauti.java
+		// on how to use splash screen.
+		// make sure to call endSplashScreen() after the splash screen is not necessary any more.
+		splashLabel = new SimpleStringProperty();
+		return splashLabel;
+	}
+	
+	public static void endSplashScreen() {
+		if (splashLabel != null) {
+			splashLabel = null;
+		}
+	}
+	
+    static private SimpleStringProperty splashLabel;
+
+    public static void logToSplashScreen(String msg) {
+    	if (splashLabel != null) {
+    		Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+			    	splashLabel.setValue(msg);
+				}
+    		});
+    	}
+    }
 
 }
