@@ -32,6 +32,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 
+import static beast.pkgmgmt.BEASTClassLoader.addServices;
+
 public class BeastMain extends Console {
     private final static Version version = new BEASTVersion2();
 
@@ -156,6 +158,7 @@ public class BeastMain extends Console {
                         new Arguments.StringOption("DF", "DEFINITIONFILE", "as -D, but attribute-value pairs defined in file in JSON format").allowMultipleUse(),
                         new Arguments.StringOption("DFout", "DEFINITIONRESULTFILE", "BEAST XML file written when -DF option is used"),
                         new Arguments.Option("sampleFromPrior", "samples from prior for MCMC analysis (by adding sampleFromPrior=\"true\" in the first run element)"),
+                        new Arguments.StringOption("version_file", "VERSIONFILE" ,"Provide a version file containing a list of services to explicitly allow. (Useful for package development.)").allowMultipleUse(),
                 });
 
         try {
@@ -358,7 +361,13 @@ public class BeastMain extends Console {
             MCMCargs.add("-DFout");
             MCMCargs.add(arguments.getStringOption("DFout"));
         }
-        
+
+        if (arguments.hasOption("version_file")) {
+            addServices(arguments.getStringOption("version_file"));
+            for (String optionVal : arguments.getAdditionalStringOptions("version_file"))
+                addServices(optionVal);
+        }
+
         if (beagleShowInfo) {
             Log.info.println("\n--- BEAGLE RESOURCES ---\n");
             for (beagle.ResourceDetails details : BeagleFactory.getResourceDetails())
