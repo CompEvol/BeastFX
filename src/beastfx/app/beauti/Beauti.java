@@ -2,7 +2,10 @@ package beastfx.app.beauti;
 
 
 
+import java.net.URL;
+
 import beast.base.core.ProgramStatus;
+import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.util.FXUtils;
@@ -59,7 +62,9 @@ public class Beauti extends Application {
 
     @Override
     public void init() {
-        ImageView splash = FXUtils.getIcon(BeautiTabPane.BEAUTI_ICON);
+    	URL url = BEASTClassLoader.getSystemClassLoader().getResource("beast/pkgmgmt/icons/beauti.png");
+		ImageView splash = new ImageView(url.toExternalForm());
+        
         progressText = new Label("Initialising BEAUti . . .");
         progressText.setMinWidth(SPLASH_WIDTH);
         splashLayout = new BorderPane();

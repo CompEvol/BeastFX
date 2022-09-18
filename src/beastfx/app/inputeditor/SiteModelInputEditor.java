@@ -240,12 +240,12 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
 				RealParameter p = (RealParameter) m_input.get();
 				if (p.isEstimatedInput.get() && p.valuesInput.get().get(0) <= 0.0) {
                     m_validateLabel.setVisible(true);
-                    m_validateLabel.setTooltip(new Tooltip("<html><p>Proportion invariant should be non-zero when estimating</p></html>"));
+                    m_validateLabel.setTooltip(new Tooltip("Proportion invariant should be non-zero when estimating"));
                     return;
 				}
 				if (p.valuesInput.get().get(0) < 0.0 || p.valuesInput.get().get(0) >= 1.0) {
                     m_validateLabel.setVisible(true);
-                    m_validateLabel.setTooltip(new Tooltip("<html><p>Proportion invariant should be from 0 to 1 (exclusive 1)</p></html>"));
+                    m_validateLabel.setTooltip(new Tooltip("Proportion invariant should be from 0 to 1 (exclusive 1)"));
                     return;
 				}
             	super.validateInput();

@@ -74,6 +74,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 
@@ -152,8 +153,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             int tabNr = tabNrForPanel(panelNr);
             BeautiPanelConfig panel = doc.beautiConfig.panels.get(panelNr);
             getTabs().add(tabNr, panels[panelNr]);
-            getTabs().get(tabNr).getTabPane().setTooltip(new Tooltip(panel.tipTextInput.get()));
-            // getTabs().get(tabNr).setText(panel.nameInput.get());
+            getTabs().get(tabNr).setTooltip(new Tooltip(panel.tipTextInput.get()));
             getSelectionModel().select(tabNr);
         }
     }
@@ -1292,7 +1292,8 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             frame.setTitle("BEAUti 2: " + doc.getTemplateName()
                     + " " + doc.getFileName());
             beauti.frame = frame;
-            ImageView icon = FXUtils.getIcon(BEAUTI_ICON);
+        	URL url = BEASTClassLoader.getSystemClassLoader().getResource("beast/pkgmgmt/icons/beauti.png");
+    		ImageView icon = new ImageView(url.toExternalForm());
             if (icon != null) {
                 frame.getIcons().add(icon.getImage());
             }

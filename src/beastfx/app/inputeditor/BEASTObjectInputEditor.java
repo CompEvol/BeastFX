@@ -7,6 +7,7 @@ import java.util.List;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
+import beast.base.evolution.likelihood.GenericTreeLikelihood;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.geometry.Insets;
@@ -377,7 +378,24 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                 }
             });
 
-            m_selectBEASTObjectBox.setTooltip(new Tooltip(input.getTipText()));
+            if (input instanceof BeautiPanelConfig.FlexibleInput) {
+            	Object o2 = input.get();
+            	if (o2 instanceof BEASTInterface) {
+            		BEASTInterface bi = (BEASTInterface) o2;
+            		for (Object o3 : bi.getOutputs()) {
+            			if (o3 instanceof GenericTreeLikelihood) {
+            				GenericTreeLikelihood tl = (GenericTreeLikelihood) o3;
+            				for (Input<?> tlInput : tl.listInputs()) {
+            					if (tlInput.get() == o2) {
+                                	m_selectBEASTObjectBox.setTooltip(new Tooltip(tlInput.getTipText()));            	
+            					}
+            				}
+            			}
+            		}
+            	}
+            } else {
+            	m_selectBEASTObjectBox.setTooltip(new Tooltip(input.getTipText()));
+            }
             //int fontsize = m_selectBEASTObjectBox.getFont().getSize();
             //m_selectBEASTObjectBox.setMaxSize(1024, 200 * fontsize / 13);
             box.getChildren().add(m_selectBEASTObjectBox);

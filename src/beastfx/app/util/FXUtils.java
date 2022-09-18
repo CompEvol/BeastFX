@@ -23,12 +23,14 @@ import java.awt.Desktop.Action;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
+import beast.pkgmgmt.BEASTClassLoader;
 import beastfx.app.inputeditor.BeautiPanelConfig;
 
 public class FXUtils {
@@ -105,12 +107,23 @@ public class FXUtils {
     	}
     }
 
-	public static ImageView getIcon(String string) {
+	public static ImageView getIcon(String iconLocation) {
+		return getIcon("BEAST.app", iconLocation);
+	}
+	
+	public static ImageView getIcon(String packageName, String iconLocation) {
 		try {
-			string = FXUtils.class.getResource(string).toExternalForm();
-			ImageView img = new ImageView(string);
+	    	URL url = BEASTClassLoader.getResource(packageName, iconLocation);
+	    	if (url == null) {
+	        	if (iconLocation != null && iconLocation.length() > 1 && iconLocation.startsWith("/")) {
+	        		return getIcon(packageName, iconLocation.substring(1));
+	        	}
+	    	}
+			// string = FXUtils.class.getResource(string).toExternalForm();
+			ImageView img = new ImageView(url.toExternalForm());
 			return img;
 		} catch (NullPointerException e) {
+			System.err.println("FXUtils:getIcon failed for " + iconLocation + " -- using black box instead");
 			ImageView img = new ImageView(new WritableImage(16, 16));
 			return img;
 		}
