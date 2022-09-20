@@ -22,6 +22,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -128,6 +129,7 @@ public class LogCombinerController implements Initializable {
         	}        	
         	filesTable.refresh();
         });
+        fillDownButton.setTooltip(new Tooltip("Set all burnin value the same as first one selected"));
         
         
         filesTable.setEditable(true);
