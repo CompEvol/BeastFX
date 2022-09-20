@@ -1,49 +1,64 @@
 package beastfx.app.tools;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-
-import beastfx.app.util.Utils;
-import beastfx.app.util.WholeNumberField;
+import beastfx.app.util.LogFile;
+import beastfx.app.util.OutFile;
 import beast.base.core.BEASTVersion2;
+import beast.base.core.Description;
+import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.evolution.tree.coalescent.CompoundPopulationFunction;
 import beast.base.evolution.tree.coalescent.CompoundPopulationFunction.Type;
+import beast.base.inference.Runnable;
 import beast.base.util.DiscreteStatistics;
 import beast.base.util.HeapSort;
-import jam.console.ConsoleApplication;
-import jam.panels.OptionsPanel;
 
-
-
-public class EBSPAnalyser {
+@Description("Application to convert output of a BEAST EBSP analysis into a table with population history estimates through time")
+public class EBSPAnalyser extends Runnable {
+	public Input<LogFile> inputFileInput = new Input<>("inputFile", "Input file produced by EBSP analysis. Must be specified.", new LogFile("not selected"));
+	public Input<Type> fileTypeInput = new Input<>("fileType", "type of file, either linear or stepwise", Type.LINEAR, Type.values());
+	public Input<Integer> burninPercentageInput = new Input<>("burnIn", "Percentage of cases to be disregarded as burn-in", 10);
+	public Input<OutFile> outputFileInput = new Input<>("outputFile", "Output file where EBSPAnalyser results will be stored (stdout if not specified)", new OutFile("not selected"));
+	
+	
     String m_sFileOut;
     PrintStream m_out = System.out;
     CompoundPopulationFunction.Type m_type = Type.LINEAR;
     String m_sInputFile;
     int m_nBurninPercentage = 10;
+    
+	@Override
+	public void initAndValidate() {
+        BEASTVersion2 version = new BEASTVersion2();
+        final String versionString = version.getVersionString();
+        String aboutString = "EBSPAnalyser " + versionString + ", " + version.getDateString() + "\n" +
+                "                        by\n" +
+                "          Joseph Heled and Remco Bouckaert\n" +
+                "Department of Computer Science, University of Auckland\n" +
+                "                  jheled@gmail.com\n" +
+                "               remco@cs.auckland.ac.nz\n" +
+                "             Part of the BEAST 2 package\n" +
+                "                http://www.beast2.org\n" +
+                "\n";
+        Log.warning(aboutString);
+	}
 
-    private void run() throws IOException {
+
+	@Override
+    public void run() throws IOException {
+		m_sInputFile = inputFileInput.get().getAbsolutePath();		
+		m_nBurninPercentage = burninPercentageInput.get();
+		m_type = fileTypeInput.get();
+		m_out = outputFileInput.get().getName().equals("not selected") ?
+				System.out :
+				new PrintStream(outputFileInput.get());
         parse(m_sInputFile, m_nBurninPercentage, m_type, m_out);
     }
 
@@ -173,64 +188,6 @@ public class EBSPAnalyser {
         return 0;
     }
 
-    private void parseArgs(String[] args) {
-        int i = 0;
-        try {
-            while (i < args.length) {
-                int old = i;
-                if (i < args.length) {
-                    if (args[i].equals("")) {
-                        i += 1;
-                    } else if (args[i].equals("-help") || args[i].equals("-h") || args[i].equals("--help")) {
-                        System.out.println(getUsage());
-                        System.exit(0);
-                    } else if (args[i].equals("-i")) {
-                        m_sInputFile = args[i + 1];
-                        i += 2;
-                    } else if (args[i].equals("-o")) {
-                        m_sFileOut = args[i + 1];
-                        m_out = new PrintStream(m_sFileOut);
-                        i += 2;
-                    } else if (args[i].equals("-type")) {
-                        if (args[i + 1].equals("linear")) {
-                            m_type = Type.LINEAR;
-                        } else if (args[i + 1].equals("stepwise")) {
-                            m_type = Type.STEPWISE;
-                        } else {
-                            throw new IllegalArgumentException("Expected linear or stepwise, not " + args[i + 1]);
-                        }
-                        i += 2;
-                    } else if (args[i].equals("-burnin")) {
-                        m_nBurninPercentage = Integer.parseInt(args[i + 1]);
-                        i += 2;
-                    }
-                    if (i == old) {
-                        throw new IllegalArgumentException("Unrecognised argument (argument " + i + ": " + args[i] + ")");
-                    }
-                }
-            }
-        } catch (IllegalArgumentException e) {
-        	throw e;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("Error parsing command line arguments: " + Arrays.toString(args) + "\nArguments ignored\n\n" + getUsage());
-        }
-        if (m_sFileOut == null) {
-        	Log.warning.println("No output file specified");
-        }
-
-    }
-
-    static String getUsage() {
-        return "EBSPAnalyse -i <inputfile> [options]\n" +
-                "analyses trace file generated by EBSP analysis\n" +
-                "Options are:\n" +
-                "-i <inputfile> name of input file (required)\n" +
-                "-burnin <percentage> percent of log to consider burn in, default 10\n" +
-                "-type [linear|step] type of population function\n" +
-                "-o <outputfile> name of output file, default to output on stdout\n" +
-                "";
-    }
 
     protected void log(String s) {
     	Log.warning.print(s);
@@ -240,216 +197,139 @@ public class EBSPAnalyser {
     	Log.warning.println(s);
     }
 
-    private void printTitle(String aboutString) {
-        aboutString = "LogCombiner" + aboutString.replaceAll("</p>", "\n\n");
-        aboutString = aboutString.replaceAll("<br>", "\n");
-        aboutString = aboutString.replaceAll("<[^>]*>", " ");
-        String[] strs = aboutString.split("\n");
-        for (String str : strs) {
-            int n = 80 - str.length();
-            int n1 = n / 2;
-            for (int i = 0; i < n1; i++) {
-                log(" ");
-            }
-            logln(str);
-        }
-    }
-
-    public class EBSPAnalyserDialog {
-        private final JFrame frame;
-
-        private final OptionsPanel optionPanel;
-
-        private final JTextField inputFileNameText = new JTextField("not selected", 16);
-        private final JComboBox<String> typeCombo = new JComboBox<>(new String[]{"linear", "stepwise"});
-
-        final WholeNumberField burninText = new WholeNumberField(0, Long.MAX_VALUE);
-        private final JTextField outputFileNameText = new JTextField("not selected", 16);
-
-        private File outputFile = null;
-        private File inputFile = null;
-
-        public EBSPAnalyserDialog(final JFrame frame, String titleString, Icon icon) {
-            this.frame = frame;
-
-            optionPanel = new OptionsPanel(12, 12);
-
-            final JLabel titleText = new JLabel(titleString);
-            titleText.setIcon(icon);
-            optionPanel.addSpanningComponent(titleText);
-            Font font = UIManager.getFont("Label.font");
-            titleText.setFont(new Font("sans-serif", font.getStyle(), font.getSize()));
-
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.setOpaque(false);
-
-            JButton button = new JButton("Choose Input File...");
-            button.addActionListener(ae -> {
-                    File file = Utils.getLoadFile("Select input file...");
-                    if (file == null) {
-                        // the dialog was cancelled...
-                        return;
-                    }
-
-                    inputFile = file;
-                    inputFileNameText.setText(inputFile.getName());
-
-                });
-            inputFileNameText.setEditable(false);
-
-            JButton button2 = new JButton("Choose Output File...");
-            button2.addActionListener(ae -> {
-                    File file = Utils.getSaveFile("Select output file...");
-                    if (file == null) {
-                        // the dialog was cancelled...
-                        return;
-                    }
-
-                    outputFile = file;
-                    outputFileNameText.setText(outputFile.getName());
-
-                });
-            outputFileNameText.setEditable(false);
-
-            JPanel panel1 = new JPanel(new BorderLayout(0, 0));
-            panel1.add(inputFileNameText, BorderLayout.CENTER);
-            panel1.add(button, BorderLayout.EAST);
-            optionPanel.addComponentWithLabel("Input File: ", panel1);
-
-            optionPanel.addComponentWithLabel("File type: ", typeCombo);
-
-            burninText.setColumns(12);
-            burninText.setValue(10);
-            optionPanel.addComponentWithLabel("Burn in percentage: ", burninText);
-
-            optionPanel.addSpanningComponent(panel);
-
-            JPanel panel3 = new JPanel(new BorderLayout(0, 0));
-            panel3.add(outputFileNameText, BorderLayout.CENTER);
-            panel3.add(button2, BorderLayout.EAST);
-            optionPanel.addComponentWithLabel("Output File: ", panel3);
-        }
-
-        public boolean showDialog(String title) {
-
-            JOptionPane optionPane = new JOptionPane(optionPanel,
-                    JOptionPane.PLAIN_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION,
-                    null,
-                    new String[]{"Run", "Quit"},
-                    null);
-            optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-            final JDialog dialog = optionPane.createDialog(frame, title);
-            //dialog.setResizable(true);
-            dialog.pack();
-
-            dialog.setVisible(true);
-
-            return optionPane.getValue().equals("Run");
-        }
-
-        public String getOutputFileName() {
-            if (outputFile == null) return null;
-            return outputFile.getPath();
-        }
-
-        public String[] getArgs() {
-            java.util.List<String> args = new ArrayList<>();
-            if (inputFile != null) {
-                args.add("-i");
-                args.add(inputFile.getPath());
-            }
-            args.add("-burnin");
-            args.add(burninText.getText());
-            args.add("-type");
-            args.add(typeCombo.getSelectedItem().toString());
-            if (outputFile != null) {
-                args.add("-o");
-                args.add(outputFile.getPath());
-            }
-            return args.toArray(new String[0]);
-        }
-
-    }
+//
+//    public class EBSPAnalyserDialog {
+//        private final JFrame frame;
+//
+//        private final OptionsPanel optionPanel;
+//
+//        private final JTextField inputFileNameText = new JTextField("not selected", 16);
+//        private final JComboBox<String> typeCombo = new JComboBox<>(new String[]{"linear", "stepwise"});
+//
+//        final WholeNumberField burninText = new WholeNumberField(0, Long.MAX_VALUE);
+//        private final JTextField outputFileNameText = new JTextField("not selected", 16);
+//
+//        private File outputFile = null;
+//        private File inputFile = null;
+//
+//        public EBSPAnalyserDialog(final JFrame frame, String titleString, Icon icon) {
+//            this.frame = frame;
+//
+//            optionPanel = new OptionsPanel(12, 12);
+//
+//            final JLabel titleText = new JLabel(titleString);
+//            titleText.setIcon(icon);
+//            optionPanel.addSpanningComponent(titleText);
+//            Font font = UIManager.getFont("Label.font");
+//            titleText.setFont(new Font("sans-serif", font.getStyle(), font.getSize()));
+//
+//            JPanel panel = new JPanel(new BorderLayout());
+//            panel.setOpaque(false);
+//
+//            JButton button = new JButton("Choose Input File...");
+//            button.addActionListener(ae -> {
+//                    File file = Utils.getLoadFile("Select input file...");
+//                    if (file == null) {
+//                        // the dialog was cancelled...
+//                        return;
+//                    }
+//
+//                    inputFile = file;
+//                    inputFileNameText.setText(inputFile.getName());
+//
+//                });
+//            inputFileNameText.setEditable(false);
+//
+//            JButton button2 = new JButton("Choose Output File...");
+//            button2.addActionListener(ae -> {
+//                    File file = Utils.getSaveFile("Select output file...");
+//                    if (file == null) {
+//                        // the dialog was cancelled...
+//                        return;
+//                    }
+//
+//                    outputFile = file;
+//                    outputFileNameText.setText(outputFile.getName());
+//
+//                });
+//            outputFileNameText.setEditable(false);
+//
+//            JPanel panel1 = new JPanel(new BorderLayout(0, 0));
+//            panel1.add(inputFileNameText, BorderLayout.CENTER);
+//            panel1.add(button, BorderLayout.EAST);
+//            optionPanel.addComponentWithLabel("Input File: ", panel1);
+//
+//            optionPanel.addComponentWithLabel("File type: ", typeCombo);
+//
+//            burninText.setColumns(12);
+//            burninText.setValue(10);
+//            optionPanel.addComponentWithLabel("Burn in percentage: ", burninText);
+//
+//            optionPanel.addSpanningComponent(panel);
+//
+//            JPanel panel3 = new JPanel(new BorderLayout(0, 0));
+//            panel3.add(outputFileNameText, BorderLayout.CENTER);
+//            panel3.add(button2, BorderLayout.EAST);
+//            optionPanel.addComponentWithLabel("Output File: ", panel3);
+//        }
+//
+//        public boolean showDialog(String title) {
+//
+//            JOptionPane optionPane = new JOptionPane(optionPanel,
+//                    JOptionPane.PLAIN_MESSAGE,
+//                    JOptionPane.OK_CANCEL_OPTION,
+//                    null,
+//                    new String[]{"Run", "Quit"},
+//                    null);
+//            optionPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+//
+//            final JDialog dialog = optionPane.createDialog(frame, title);
+//            dialog.pack();
+//
+//            dialog.setVisible(true);
+//
+//            return optionPane.getValue().equals("Run");
+//        }
+//
+//        public String getOutputFileName() {
+//            if (outputFile == null) return null;
+//            return outputFile.getPath();
+//        }
+//
+//        public String[] getArgs() {
+//            java.util.List<String> args = new ArrayList<>();
+//            if (inputFile != null) {
+//                args.add("-i");
+//                args.add(inputFile.getPath());
+//            }
+//            args.add("-burnin");
+//            args.add(burninText.getText());
+//            args.add("-type");
+//            args.add(typeCombo.getSelectedItem().toString());
+//            if (outputFile != null) {
+//                args.add("-o");
+//                args.add(outputFile.getPath());
+//            }
+//            return args.toArray(new String[0]);
+//        }
+//
+//    }
 
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
         BEASTVersion2 version = new BEASTVersion2();
         final String versionString = version.getVersionString();
-        String nameString = "EBSP Analyser " + versionString;
-        String aboutString = "<html><center><p>" + versionString + ", " + version.getDateString() + "</p>" +
-                "<p>by<br>" +
-                "<p>Joseph Heled and Remco Bouckaert</p>" +
-                "<p>Department of Computer Science, University of Auckland<br>" +
-                "<a href=\"mailto:jheled@gmail.com\">jheled@gmail.com</a></p>" +
-                "<a href=\"mailto:remco@cs.auckland.ac.nz\">remco@cs.auckland.ac.nz</a></p>" +
-                "<p>Part of the BEAST 2 package:<br>" +
-                "<a href=\"http://beast2.cs.auckland.ac.nz/\">http://beast2.cs.auckland.ac.nz/</a></p>" +
-                "</center></html>";
-
+        String title = "EBSP Analyser " + versionString;
 
         try {
-            EBSPAnalyser analyser = new EBSPAnalyser();
-            if (args.length == 0) {
-            	Utils.loadUIManager();
-
-            	System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-                System.setProperty("apple.laf.useScreenMenuBar", "true");
-                System.setProperty("apple.awt.showGrowBox", "true");
-
-                // TODO: set up ICON
-                java.net.URL url = EBSPAnalyser.class.getClassLoader().getResource("images/EBSPAnalyser.png");
-                javax.swing.Icon icon = null;
-
-                if (url != null) {
-                    icon = new javax.swing.ImageIcon(url);
-                }
-
-
-                //ConsoleApplication consoleApp =
-                new ConsoleApplication(nameString, aboutString, icon, true);
-
-                analyser.printTitle(aboutString);
-
-                String titleString = "<html><center><p>EBSPAnalyser<br>" +
-                        "Version " + version.getVersionString() + ", " + version.getDateString() + "</p></center></html>";
-
-                EBSPAnalyserDialog dialog = analyser.new EBSPAnalyserDialog(new JFrame(), titleString, icon);
-
-                if (!dialog.showDialog(nameString)) {
-                    return;
-                }
-                String[] args2 = dialog.getArgs();
-
-                try {
-                    analyser.parseArgs(args2);
-                    analyser.run();
-
-                } catch (Exception ex) {
-                    Log.err.println("Exception: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
-                System.out.println("Finished - Quit program to exit.");
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                analyser.printTitle(aboutString);
-                analyser.parseArgs(args);
-                analyser.run();
-            }
+    		new Application(new EBSPAnalyser(), title, 600, 300, args);
+    		if (args.length == 0) {
+    			System.out.println("Finished - Quit program to exit.");
+    		}
         } catch (Exception e) {
-            System.out.println(getUsage());
             e.printStackTrace();
         }
 
     }
+
 }

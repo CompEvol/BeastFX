@@ -67,7 +67,7 @@ public class Application extends Console {
 		// Utils6.endSplashScreen();
 		
 		dialog.setResizable(true);
-		dialog.getDialogPane().setPrefSize(1024, 768);
+		dialog.getDialogPane().setPrefSize(prefDialogWidth, prefDialogHeight);
 		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		// show the dialog
 		Optional<ButtonType> option = dialog.showAndWait();
@@ -94,25 +94,23 @@ public class Application extends Console {
 	static beast.base.inference.Runnable analyser;
 	static String title;
 	static String[] suppressedInputs;
+	static int prefDialogWidth = 1024, prefDialogHeight = 768;
 	
 	public Application(beast.base.inference.Runnable analyser, String title, String[] args) throws Exception {
 		this(analyser, null, title, args);
-//		this.analyser =  analyser;
-//		this.title = title;
-//		analyser.setID(title);
-//
-//		if (args.length == 0) {
-//			launch(Application.class, args);
-//			return;
-//		}
-//
-//		Application main = new Application(analyser);
-//		main.parseArgs(args, false);
-//		analyser.initAndValidate();
-//		analyser.run();
+	}
+
+	public Application(beast.base.inference.Runnable analyser, String title, int prefDialogWidth, int prefDialogHeight, String[] args) throws Exception {
+		this(analyser, null, title, prefDialogWidth, prefDialogHeight, args);
 	}
 
 	public Application(beast.base.inference.Runnable analyser, String[] suppressedInputs, String title, String[] args) throws Exception {
+		this(analyser, null, title, prefDialogWidth, prefDialogHeight, args);
+	}
+	
+	public Application(beast.base.inference.Runnable analyser, String[] suppressedInputs, String title, int prefDialogWidth, int prefDialogHeight, String[] args) throws Exception {
+		this.prefDialogWidth = prefDialogWidth;
+		this.prefDialogHeight = prefDialogHeight;
 		this.analyser =  analyser;
 		this.title = title;
 		this.suppressedInputs = suppressedInputs;

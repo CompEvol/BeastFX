@@ -3,12 +3,6 @@
 
 			<service type="beastfx.app.beauti.ThemeProvider">
 				<provider classname="beastfx.app.beauti.theme.Default"/>
-				<!--
-				<provider classname="beastfx.app.beauti.theme.Caspian"/>
-				<provider classname="beastfx.app.beauti.theme.Foenix"/>
-				<provider classname="beastfx.app.beauti.theme.MetroDark"/>
-				<provider classname="beastfx.app.beauti.theme.Aqua"/>
- 				-->
 				<provider classname="beastfx.app.beauti.theme.Dark"/>
 				<provider classname="beastfx.app.beauti.theme.Bootstrap"/>
 				<provider classname="beastfx.app.beauti.theme.Fluent"/>
@@ -95,17 +89,18 @@
 
 	    <packageapp description="Interactive Methods Section Generator"
               class="beastfx.app.methodsection.XML2HTMLPaneFX"
-              args=""
             />
 
 	    <packageapp description="Log File Analyser"
               class="beastfx.app.tools.LogAnalyser"
-              args=""
             />
 
 	    <packageapp description="Package healt checker"
               class="beastfx.app.tools.PackageHealthChecker"
-              args=""
             />
-            	
+
+	    <packageapp description="EBSP Analyser"
+              class="beastfx.app.tools.EBSPAnalyser"
+            />
+
 </package>
