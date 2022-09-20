@@ -140,7 +140,6 @@ public class ClockModelListInputEditor extends ListInputEditor {
 		    			parameters.add(clockRate);
 		    		}
 	    		}
-	    		//doc.autoSetClockRate = false;
 	    	}
 	    	if (!fixMeanRatesCheckBox.isSelected()) {
 	    		fixMeanRatesValidateLabel.setVisible(false);
@@ -173,7 +172,6 @@ public class ClockModelListInputEditor extends ListInputEditor {
 	    		fixMeanRatesValidateLabel.setVisible(false);
 	    	}
 			repaint();
-    		//doc.autoSetClockRate = true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

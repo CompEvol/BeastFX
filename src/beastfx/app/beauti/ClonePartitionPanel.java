@@ -37,21 +37,12 @@ public class ClonePartitionPanel extends VBox {
 
 
     public void init() {
-        // setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
         FlowPane pane = new FlowPane();
 
         Label label = new Label("Clone from");
         pane.getChildren().add(label);
 
-        // cloneFromComboBox.setMaximumRowCount(10);
         pane.getChildren().add(cloneFromComboBox);
-
-//        pane.getChildren().add(Box.createRigidArea(new Dimension(0, 10)));
-//        pane.getChildren().add(jPanel);
-//        pane.getChildren().add(Box.createVerticalGlue());
-//        pane.getChildren().add(Box.createVerticalStrut(5));
-
         okButton.setId("ok");
         okButton.setTooltip(new Tooltip("Click to clone configuration from the above selected partition " +
                 "into all selected partitions on the left."));

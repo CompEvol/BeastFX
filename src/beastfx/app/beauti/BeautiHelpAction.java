@@ -1,7 +1,6 @@
 package beastfx.app.beauti;
 
 
-import beastfx.app.inputeditor.MyAction;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -28,8 +27,5 @@ public class BeautiHelpAction extends CustomMenuItem {
 		Tooltip.install(getContent(), tooltip);		
 	}
 
-//	@Override
-//	public void actionPerformed(ActionEvent ae) {
-//	}
 
 }

@@ -115,8 +115,7 @@ public class PriorListInputEditor extends ListInputEditor {
     	
         rangeButtons = new ArrayList<>();
         taxonButtons = new ArrayList<>();
-        
-        //m_buttonStatus = ButtonStatus.NONE;
+       
         super.init(input, beastObject, itemNr, isExpandOption, addButtons);
 
         
@@ -202,27 +201,6 @@ public class PriorListInputEditor extends ListInputEditor {
         return candidates;
     }
 
-    /**
-     * class to deal with toggling monophyletic flag on an MRCAPrior *
-     */
-//    class MRCAPriorActionListener implements ActionListener {
-//        MRCAPrior m_prior;
-//
-//        MRCAPriorActionListener(MRCAPrior prior) {
-//            m_prior = prior;
-//        }
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            try {
-//                m_prior.isMonophyleticInput.setValue(((CheckBox) e.getSource()).isSelected(), m_prior);
-//                refreshPanel();
-//            } catch (Exception ex) {
-//                Log.err.println("PriorListInputEditor " + ex.getMessage());
-//            }
-//        }
-//    }
-
     @Override
     protected void addItem() {
         super.addItem();
@@ -238,7 +216,6 @@ public class PriorListInputEditor extends ListInputEditor {
     
     private void initProviders() {
     	priorProviders = new ArrayList<>();
-    	// priorProviders.add(new MRCAPriorProvider());
     	
         // build up list of data types
     	Set<String> providerClasses = Utils.loadService(PriorProvider.class);

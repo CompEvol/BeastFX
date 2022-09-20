@@ -2,11 +2,10 @@ package beastfx.app.beauti;
 
 
 
+
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -15,10 +14,7 @@ import javafx.scene.layout.HBox;
 import javax.swing.SwingUtilities;
 
 import beastfx.app.inputeditor.BeautiDoc;
-import beastfx.app.inputeditor.BeautiPanel;
-import beastfx.app.inputeditor.BeautiPanelConfig;
 import beastfx.app.inputeditor.BeautiSubTemplate;
-import beastfx.app.inputeditor.BeautiTabPane;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.inputeditor.SmallLabel;
 import beastfx.app.util.FXUtils;
@@ -42,17 +38,8 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
     public Class<?> type() {
         return TreeDistribution.class;
     }
-//	@Override
-//	public Class<?>[] types() {
-//		ArrayList<Class> types = new ArrayList<>();
-//		types.add(TreeDistribution.class);
-//		types.add(BirthDeathGernhard08Model.class);
-//		types.add(YuleModel.class);
-//		types.add(Coalescent.class);
-//		types.add(BayesianSkyline.class);
-//		return types.toArray(new Class[0]);
-//	}
-    ActionEvent m_e;
+
+	ActionEvent m_e;
 
     @Override
     public void init(Input<?> input, BEASTInterface beastObject, int listItemNr, ExpandOption isExpandOption, boolean addButtons) {
@@ -62,7 +49,6 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         this.itemNr = listItemNr;
 
         pane = FXUtils.newVBox();
-        // pane = new VBox();
         HBox itemBox = FXUtils.newHBox();
 
         TreeDistribution distr = (TreeDistribution) beastObject;
@@ -76,8 +62,6 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
         label.setMinSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
         label.setPrefSize(LABEL_SIZE.getWidth(), LABEL_SIZE.getHeight());
         itemBox.getChildren().add(label);
-        // List<String> availableBEASTObjects =
-        // PluginPanel.getAvailablePlugins(m_input, m_beastObject, null);
 
         List<BeautiSubTemplate> availableBEASTObjects = doc.getInputEditorFactory().getAvailableTemplates(m_input, m_beastObject,
                 null, doc); 
@@ -102,14 +86,12 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
 
         String id = distr.getID();
         try {
-            // id = BeautiDoc.parsePartition(id);
             id = id.substring(0, id.indexOf('.'));
         } catch (Exception e) {
             throw new RuntimeException("Improperly formatted ID: " + distr.getID());
         }
         for (BeautiSubTemplate template : availableBEASTObjects) {
-            if (template.matchesName(id)) { // getMainID().replaceAll(".\\$\\(n\\)",
-                // "").equals(id)) {
+            if (template.matchesName(id)) { 
                 comboBox.setValue(template);
                 comboBox.getSelectionModel().select(template);
             }
@@ -138,7 +120,6 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
             });
         itemBox.getChildren().add(comboBox);
         FXUtils.createHMCButton(itemBox, m_beastObject, m_input);
-        // itemBox.getChildren().add(new Separator());
 
         m_validateLabel = new SmallLabel("x", "red");
         m_validateLabel.setVisible(false);

@@ -19,6 +19,7 @@
 package beastfx.app.beauti;
 
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -26,11 +27,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.table.AbstractTableModel;
-
-import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
-import beastfx.app.beauti.JPackageDialog.Package0;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.collections.FXCollections;
@@ -38,7 +35,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -95,7 +91,6 @@ public class JPackageRepositoryDialog extends DialogPane {
         
         // Assemble table
         VBox pane = FXUtils.newVBox();
-        //final RepoTableModel repoTableModel = new RepoTableModel(urls);
         
         final TableView<URL0> repoTable = new TableView<>();
         pane.getChildren().add(repoTable);
@@ -106,12 +101,6 @@ public class JPackageRepositoryDialog extends DialogPane {
 		repoTable.getColumns().add(col1);
 
 		repoTable.setItems(this.urls0);
-//		int size = repoTable.getFont().getSize();
-//		repoTable.setRowHeight(20 * size/13);
-//        repoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        ScrollPane scrollPane = new ScrollPane();
-//        scrollPane.setContent(repoTable);
-//        getContentPane().add(scrollPane, BorderLayout.CENTER);
         
         // Add buttons
         HBox box = FXUtils.newHBox();
@@ -170,15 +159,6 @@ public class JPackageRepositoryDialog extends DialogPane {
         deleteURLButton.setDisable(true);
         box.getChildren().add(deleteURLButton);
         
-        // DONE
-//        Button OKButton = new Button("Done");
-//        OKButton.setOnAction(e -> {
-//            PackageManager.saveRepositoryURLs(repoTableModel.urls);
-//            dlg.close();
-//        });
-//        box.getChildren().add(OKButton);
-        // getContentPane().add(box, BorderLayout.PAGE_END);
-
         // Action listeners to disable/enable delete button
         repoTable.getSelectionModel().selectedIndexProperty().
     	addListener(e -> {
@@ -187,17 +167,7 @@ public class JPackageRepositoryDialog extends DialogPane {
             else
                 deleteURLButton.setDisable(false);
         });
-
-        // Set size and location of dialog
-//        Dimension2D dim = scrollPane.getPreferredSize();
-//        Dimension2D dim2 = box.getPreferredSize();
-//        pane.setPrefSize(dim.getWidth() + 30, dim.getHeight() + dim2.getHeight() + 30);
-//        Point frameLocation = frame.getLocation();
-//        Dimension frameSize = frame.getSize();
-//        setLocation(frameLocation.x + frameSize.width / 2 - dim.getWidth() / 2,
-//                frameLocation.y + frameSize.height / 2 - dim.getWidth() / 2);
-        
-        
+                
         pane.getChildren().add(box);
         pane.setPrefWidth(400);
         pane.setPrefHeight(400);
@@ -217,37 +187,5 @@ public class JPackageRepositoryDialog extends DialogPane {
 		}
 		PackageManager.saveRepositoryURLs(urls);
 	}
-	
-    /**
-     * Class of tables containing the current list of package repositories.
-     */
-//    class RepoTableModel extends AbstractTableModel {
-//		
-//		public List<URL> urls;
-//
-//        public RepoTableModel(List<URL> urls) {
-//            this.urls = urls;
-//        }
-//
-//        @Override
-//        public int getRowCount() {
-//            return urls.size();
-//        }
-//
-//        @Override
-//        public int getColumnCount() {
-//            return 1;
-//        }
-//
-//        @Override
-//        public String getColumnName(int column) {
-//            return "Package repository URLs";
-//        }
-//
-//        @Override
-//        public Object getValueAt(int rowIndex, int columnIndex) {
-//            return urls.get(rowIndex);
-//        }
-//    }
 
 }

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -54,11 +53,11 @@ public class OperatorListInputEditor extends ListInputEditor {
     public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption, boolean addButtons) {
     	HBox box = FXUtils.newHBox();
     	pane = new BorderPane();
-    	//box.getChildren().add(new Separator());
+
     	box.getChildren().add(new Label("Operator"));
-    	//box.getChildren().add(new Separator());
+
     	box.getChildren().add(new Label("Weight"));
-    	//box.getChildren().add(new Separator());
+
     	((BorderPane)pane).setTop(box);
     	
 
@@ -68,7 +67,6 @@ public class OperatorListInputEditor extends ListInputEditor {
     	BEASTObjectInputEditor osEditor = new BEASTObjectInputEditor(doc);
     	osEditor.init(((BEASTInterface) doc.mcmc.get()).getInput("operatorschedule"), (BEASTInterface) doc.mcmc.get(), -1, isExpandOption, addButtons);
     	((BorderPane)pane).setBottom(osEditor);
-    	//getChildren().add(pane); <- already done by super class
     }
     
     @Override
@@ -77,32 +75,23 @@ public class OperatorListInputEditor extends ListInputEditor {
 
         TextField entry = new TextField(" " + getLabel(operator));
         entry.setMinSize(700, 16);
-        //entry.setMaxSize(new Dimension(200, 20));
+
         m_entries.add(entry);
         entry.setBackground(getBackground());
         entry.setBorder(null);
-        // itemBox.getChildren().add(new Separator());//Box.createRigidArea(new Dimension(5, 1)));
         itemBox.getChildren().add(entry);
         entry.setEditable(false);
 
-//        Label label = new Label(getLabel(operator));
-//        label.setBackground(Color.WHITE);
-//        m_labels.add(label);
-//        m_entries.add(null);
-//        itemBox.add(label);
 
-
-        // itemBox.getChildren().add(new Separator());
         TextField weightEntry = new TextField();
         weightEntry.setTooltip(new Tooltip(operator.m_pWeight.getTipText()));
         weightEntry.setText(operator.m_pWeight.get() + "");
         weightEntry.setOnKeyReleased(e->new OperatorDocumentListener(operator, weightEntry));
-        // weightEntry.getDocument().addDocumentListener(new OperatorDocumentListener(operator, weightEntry));
+
         Dimension size = new Dimension(50, 25);
         weightEntry.setMinSize(size.getWidth(), size.getHeight());
         weightEntry.setPrefSize(size.getWidth(), size.getHeight());
-        //int fontsize = weightEntry.getFont().getSize();
-        //weightEntry.setMaxSize(new Dimension(50 * fontsize/13, 50 * fontsize/13));
+
         itemBox.getChildren().add(weightEntry);
 
         FXUtils.createHMCButton(itemBox, operator, m_input);

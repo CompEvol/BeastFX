@@ -35,6 +35,5 @@ public class SpeciesTreePriorInputEditor extends BEASTObjectInputEditor {
     	String label = "Species Tree Population Size";
     	addInputLabel(label, label);
     	m_bAddButtons = false;
-    	// getChildren().add(new Separator());
     }
 }

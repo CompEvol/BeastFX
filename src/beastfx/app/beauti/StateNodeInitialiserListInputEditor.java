@@ -117,12 +117,10 @@ public class StateNodeInitialiserListInputEditor extends ListInputEditor {
 		}
 		Label label = new Label("Initial " + name + ":");
 
-		// itemBox.getChildren().add(new Separator());// Box.createRigidArea(new Dimension(5, 1)));
 		itemBox.getChildren().add(label);
 		if (comboBox != null) {
 			itemBox.getChildren().add(comboBox);
 		}
-		// itemBox.getChildren().add(new Separator());
 		return this;
 	}
 

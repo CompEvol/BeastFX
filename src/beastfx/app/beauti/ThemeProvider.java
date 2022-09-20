@@ -3,14 +3,10 @@ package beastfx.app.beauti;
 import beastfx.app.util.Utils;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
-import beastfx.app.util.Alert;
 import javafx.scene.Scene;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

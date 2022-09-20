@@ -7,8 +7,6 @@ package beastfx.app.beauti;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.naming.directory.DirContext;
-
 import javafx.geometry.Dimension2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -81,7 +79,7 @@ public class PriorInputEditor extends InputEditor.Base {
         comboBox.setId(text+".distr");
 
         String id = prior.distInput.get().getID();
-        //Log.warning.println("id=" + id);
+
         id = id.substring(0, id.indexOf('.'));
         for (BeautiSubTemplate template : availableBEASTObjects) {
             if (template.classInput.get() != null && template.shortClassName.equals(id)) {
@@ -95,8 +93,6 @@ public class PriorInputEditor extends InputEditor.Base {
             List<?> list = (List<?>) m_input.get();
 
             BeautiSubTemplate template = (BeautiSubTemplate) comboBox1.getValue();
-            //String id = ((BEASTObject) list.get(item)).getID();
-            //String partition = BeautiDoc.parsePartition(id);
             PartitionContext context = doc.getContextFor((BEASTInterface) list.get(itemNr));
             Prior prior1 = (Prior) list.get(itemNr);
             try {
@@ -142,7 +138,7 @@ public class PriorInputEditor extends InputEditor.Base {
                 }
             });
             rangeButton.setPrefWidth(InputEditor.Base.LABEL_SIZE.getWidth());
-            // itemBox.getChildren().add(new Separator());
+
             itemBox.getChildren().add(rangeButton);
         } else if (prior.m_x.get() instanceof IntegerParameter) {
             // add range button for real parameters
@@ -162,20 +158,19 @@ public class PriorInputEditor extends InputEditor.Base {
                     refreshPanel();
                 }
             });
-            // itemBox.getChildren().add(new Separator());
+
             itemBox.getChildren().add(rangeButton);
         }
         int fontsize = (int) comboBox.getEditor().getFont().getSize();
         comboBox.setMaxSize(1024 * fontsize / 13, 24 * fontsize / 13);
 
         String tipText = getDoc().tipTextMap.get(beastObject.getID());
-        //System.out.println(beastObject.getID());
+
         if (tipText != null) {
             Label tipTextLabel = new Label(" " + tipText);
             itemBox.getChildren().add(tipTextLabel);
         }
-        // itemBox.getChildren().add(new Separator());
-
+        
         pane.getChildren().add(itemBox);
         getChildren().add(pane);
 	}

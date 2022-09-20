@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.InputEditor;
 import beastfx.app.util.FXUtils;
-import javafx.scene.layout.HBox;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.evolution.tree.coalescent.ConstantPopulation;
@@ -39,8 +38,6 @@ public class ConstantPopulationInputEditor extends InputEditor.Base {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// TODO Auto-generated method stub
-		//super.init(input, beastObject, itemNr, isExpandOption, addButtons);
 	}
 
 }
