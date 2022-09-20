@@ -1,12 +1,7 @@
 package beastfx.app.tools;
 
 
-import jam.console.ConsoleApplication;
 
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-
-import beastfx.app.util.Utils;
 import beast.base.core.BEASTVersion2;
 import beast.base.core.Log;
 
@@ -235,7 +230,7 @@ public class LogCombiner extends LogAnalyser {
     } // readLogFile
 
 
-    private void combineLogs(String[] logs, int[] burbIns) throws IOException {
+    protected void combineLogs(String[] logs, int[] burbIns) throws IOException {
     	preAmpleIsPrinted = false;
     	if (m_sFileOut == null)
     	    log("Writing to standard output.");
@@ -535,85 +530,11 @@ public class LogCombiner extends LogAnalyser {
 
 
         LogCombiner combiner = new LogCombiner();
+        
         try {
             if (args.length == 0) {
-            	Utils.loadUIManager();
-
-                System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-                System.setProperty("apple.laf.useScreenMenuBar", "true");
-                System.setProperty("apple.awt.showGrowBox", "true");
-
-                // TODO: set up ICON
-                java.net.URL url = LogCombiner.class.getClassLoader().getResource("images/logcombiner.png");
-                javax.swing.Icon icon = null;
-
-                if (url != null) {
-                    icon = new javax.swing.ImageIcon(url);
-                }
-
-                String titleString = "<html><center><p>LogCombiner<br>" +
-                        "Version " + version.getVersionString() + ", " + version.getDateString() + "</p></center></html>";
-
-                new ConsoleApplication(nameString, aboutString, icon, true);
-                Log.info = System.out;
-                Log.warning = System.out;
-                Log.err = System.err;
-
-                combiner.printTitle(aboutString);
-
-                LogCombinerDialog dialog = new LogCombinerDialog(new JFrame(), titleString, icon);
-
-                if (!dialog.showDialog(nameString)) {
-                    return;
-                }
-
-                // issue #437: ensure the table editor finished.
-                // this way, the latest entered burn-in is captured, otherwise 
-                // the last editing action may be ignored
-                TableCellEditor editor = dialog.filesTable.getCellEditor();
-                if (editor != null) {
-                    editor.stopCellEditing();
-                }
-
-                combiner.m_bIsTreeLog = dialog.isTreeFiles();
-                combiner.m_bUseDecimalFormat = dialog.convertToDecimal();
-                if (combiner.m_bUseDecimalFormat) {
-                    combiner.format = new DecimalFormat("#.############", new DecimalFormatSymbols(Locale.US));
-                }
-                if (!dialog.renumberOutputStates()) {
-                    combiner.m_nSampleInterval = -1;
-                }
-                if (dialog.isResampling()) {
-                    combiner.m_nResample = dialog.getResampleFrequency();
-                }
-
-                String[] inputFiles = dialog.getFileNames();
-                int[] burnins = dialog.getBurnins();
-
-                combiner.m_sFileOut = dialog.getOutputFileName();
-
-                if (combiner.m_sFileOut == null) {
-                	Log.warning.println("No output file specified");
-                } else {
-                    combiner.m_out = new PrintStream(combiner.m_sFileOut);
-                }
-
-                try {
-                    combiner.combineLogs(inputFiles, burnins);
- 
-                } catch (Exception ex) {
-                	Log.warning.println("Exception: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
-                System.out.println("Finished - Quit program to exit.");
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
+            	LogCombinerDialog.launch(LogCombinerDialog.class, new String[] {});
+           } else {
                 combiner.printTitle(aboutString);
 
                 combiner.parseArgs(args);
