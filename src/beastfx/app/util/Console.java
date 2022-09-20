@@ -108,8 +108,8 @@ public class Console extends javafx.application.Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 	    textView = new TextArea("   ");
-	    textView.setPrefColumnCount(120);
-	    textView.setPrefRowCount(80);
+	    textView.setPrefColumnCount(80);
+	    textView.setPrefRowCount(60);
 	    
 	    				    
 		//ScrollPane root = new ScrollPane();

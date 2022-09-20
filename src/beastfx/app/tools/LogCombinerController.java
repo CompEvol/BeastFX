@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -59,6 +60,9 @@ public class LogCombinerController implements Initializable {
     public Button delButton;
 
     @FXML
+    public Button fillDownButton;
+    
+    @FXML
     public TextField fileNameText;
     
     @FXML
@@ -97,6 +101,7 @@ public class LogCombinerController implements Initializable {
 		});
 		
 		filesTable.setItems(files);
+		filesTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		filesTable.getSelectionModel().selectedItemProperty().addListener(
         	    (observable, oldValue, newValue) -> {
         	    	filesTableSelectionChanged();
@@ -105,22 +110,25 @@ public class LogCombinerController implements Initializable {
 
         delButton.setDisable(true);
         delButton.setOnAction(e-> {
+        	List<FileInfo> itemsToDelete = filesTable.getSelectionModel().getSelectedItems();
+        	files.removeAll(itemsToDelete);
+        	filesTable.refresh();
+            filesTableSelectionChanged();
+        });
+
+        fillDownButton.setDisable(true);
+        fillDownButton.setOnAction(e->{
         	List<Integer> selected = filesTable.getSelectionModel().getSelectedIndices();
         	if (selected.size() == 0) {
         		return;
         	}
-        	int row = selected.get(0);
-            files.remove(row);
-
-            if (row >= files.size()) {
-            	row = files.size() - 1;
-            }
-            if (row >= 0) {
-                filesTable.getSelectionModel().select(row);
-            }
-            filesTableSelectionChanged();
+        	int burnin = files.get(selected.get(0)).getBurnin();
+        	for (int i : selected) {
+        		files.get(i).setBurnin(burnin);
+        	}        	
+        	filesTable.refresh();
         });
-
+        
         
         filesTable.setEditable(true);
 
@@ -182,11 +190,9 @@ public class LogCombinerController implements Initializable {
 	}
 	
     private void filesTableSelectionChanged() {
-        if (filesTable.getSelectionModel().getSelectedItems().size() == 0) {
-            delButton.setDisable(true);
-        } else {
-            delButton.setDisable(false);
-        }
+    	int selected = filesTable.getSelectionModel().getSelectedItems().size();
+        delButton.setDisable(selected == 0);
+        fillDownButton.setDisable(selected <= 1);
     }
 
     private void addFiles(File[] fileArray) {
@@ -204,8 +210,9 @@ public class LogCombinerController implements Initializable {
 
         filesTable.refresh();
 
-        int sel2 = files.size() - 1;
-        filesTable.getSelectionModel().selectRange(sel1, sel2);
+        int sel2 = files.size();
+        filesTable.getSelectionModel().selectRange(sel1-1, sel2);
+        filesTable.refresh();
     }	
     	
     public String[] getFileNames() {
@@ -248,7 +255,7 @@ public class LogCombinerController implements Initializable {
 
     public String getOutputFileName() {
         if (outputFile == null) {
-        	if (fileNameText.getText() != null) {
+        	if (fileNameText.getText() != null && fileNameText.getText().trim().length() > 0) {
         		return fileNameText.getText();
         	} else {
         		return null;

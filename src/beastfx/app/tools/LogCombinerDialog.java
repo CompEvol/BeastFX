@@ -48,6 +48,7 @@ public class LogCombinerDialog extends Console {
         protected void createDialog() {
 
         Dialog<String> dialog = new Dialog<>();
+        	LogCombiner combiner = new LogCombiner();
             dialog.setTitle("LogCombiner " + BEASTVersion.INSTANCE.getVersion());
             FXMLLoader fl = new FXMLLoader();
             fl.setClassLoader(getClass().getClassLoader());
@@ -77,13 +78,11 @@ public class LogCombinerDialog extends Console {
 
             // Showing the dialog on clicking the button
             Optional<String> result = dialog.showAndWait();
-            dialog.close();
             if (result.toString().toLowerCase().contains("cancel")) {
-            	System.out.println("Canceled");
+            	Log.info("Canceled");
             	System.exit(0);
             }
             
-            LogCombiner combiner = new LogCombiner();
             combiner.m_bIsTreeLog = controller.isTreeFiles();
             combiner.m_bUseDecimalFormat = controller.convertToDecimal();
             if (combiner.m_bUseDecimalFormat) {
@@ -107,22 +106,18 @@ public class LogCombinerDialog extends Console {
                 } else {
                     combiner.m_out = new PrintStream(combiner.m_sFileOut);
                 }
-
-                combiner.combineLogs(inputFiles, burnins);
-
+                Log.warning("Start combining...");
+                new Thread(()->{
+                		try {
+                			combiner.combineLogs(inputFiles, burnins);
+                		} catch (Exception e) {
+                			e.printStackTrace();
+                		}
+                }).start();
             } catch (Exception ex) {
             	Log.warning.println("Exception: " + ex.getMessage());
                 ex.printStackTrace();
             }
-            System.out.println("Finished - Quit program to exit.");
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            
+            Log.warning("Finished - Quit program to exit.");
         }
 }
