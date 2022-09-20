@@ -32,9 +32,11 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Optional;
 
+import beast.base.core.BEASTVersion2;
 import beast.base.core.Log;
 import beast.pkgmgmt.BEASTVersion;
 import beastfx.app.beauti.ThemeProvider;
+import beastfx.app.util.Alert;
 import beastfx.app.util.Console;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Dialog;
@@ -61,6 +63,7 @@ public class LogCombinerDialog extends Console {
             dialog.setDialogPane(root);
             ThemeProvider.loadStyleSheet(root.getScene());        
 
+            dialog.getDialogPane().getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
             Object o = fl.getController();
             LogCombinerController controller = null;
             if (o != null) {
@@ -68,10 +71,15 @@ public class LogCombinerDialog extends Console {
             } else {
             	System.exit(0);
             }
-                    
+            
+            System.out.println("\nLogCombiner " + BEASTVersion2.INSTANCE.getVersionString());
+            System.out.println("Part of the BEAST 2 packages: http://www.beast2.org");
+
             // Showing the dialog on clicking the button
             Optional<String> result = dialog.showAndWait();
+            dialog.close();
             if (result.toString().toLowerCase().contains("cancel")) {
+            	System.out.println("Canceled");
             	System.exit(0);
             }
             

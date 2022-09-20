@@ -9,22 +9,27 @@ import java.util.ResourceBundle;
 
 import beast.base.core.ProgramStatus;
 import beastfx.app.util.FXUtils;
-import beastfx.app.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.util.converter.IntegerStringConverter;
 
 public class LogCombinerController implements Initializable {
-
-	static Dialog<String> dialog = null;
 
     private final ObservableList<FileInfo> files = FXCollections.observableArrayList();
     private File outputFile = null;
@@ -62,6 +67,7 @@ public class LogCombinerController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		fileTypeCombo.setItems(FXCollections.observableArrayList(new String[] {"Log Files", "Tree Files"}));
+		fileTypeCombo.getSelectionModel().select(0);
 		
 		browseButton.setOnAction(e -> {
 	        File file = FXUtils.getSaveFile("Select output file...", new File(ProgramStatus.g_sDir), "Beast log and tree files", "log", "trees");
@@ -91,7 +97,11 @@ public class LogCombinerController implements Initializable {
 		});
 		
 		filesTable.setItems(files);
-        filesTable.getSelectionModel().selectionModeProperty().addListener(e->filesTableSelectionChanged());
+		filesTable.getSelectionModel().selectedItemProperty().addListener(
+        	    (observable, oldValue, newValue) -> {
+        	    	filesTableSelectionChanged();
+        	    }
+        );
 
         delButton.setDisable(true);
         delButton.setOnAction(e-> {
@@ -108,16 +118,66 @@ public class LogCombinerController implements Initializable {
             if (row >= 0) {
                 filesTable.getSelectionModel().select(row);
             }
+            filesTableSelectionChanged();
         });
 
+        
+        filesTable.setEditable(true);
 
-		
-//        new FileDrop(null, scrollPane1, focusBorder, new FileDrop.Listener() {
-//            @Override
-//			public void filesDropped(java.io.File[] files) {
-//                addFiles(files);
-//            }   // end filesDropped
-//        }); // end FileDrop.Listener
+        // set up table columns
+        TableColumn<FileInfo, String> col = new TableColumn<>("File");
+        col.setPrefWidth(500);
+        col.setEditable(true);
+        col.setCellValueFactory(
+        	    new PropertyValueFactory<FileInfo, String>("File")
+        	);
+        filesTable.getColumns().add(col);
+
+        TableColumn<FileInfo,Integer> col2 = new TableColumn<>("Burnin");
+        col2.setPrefWidth(70);
+        col2.setEditable(true);
+        col2.setCellValueFactory(
+        	    new PropertyValueFactory<FileInfo, Integer>("Burnin")
+        	);
+        col2.setCellFactory(
+        		TextFieldTableCell.forTableColumn(new IntegerStringConverter())
+        	);
+        col2.setOnEditCommit(
+                new EventHandler<CellEditEvent<FileInfo, Integer>>() {
+					@Override
+					public void handle(CellEditEvent<FileInfo, Integer> event) {
+						Integer newValue = event.getNewValue();
+						FileInfo tipDate = event.getRowValue();
+						tipDate.setBurnin(newValue);
+					}
+				}
+            );        
+        filesTable.getColumns().add(col2);
+
+        // initial message in table view
+        filesTable.setPlaceholder(new Label("No files selected yet. Drag and drop files here\nor select the '+' button below to add files"));
+
+        // drag/drop file support
+        filesTable.setOnDragOver(new EventHandler<DragEvent>() {
+            public void handle(DragEvent event) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                event.consume();
+            }
+        });
+        
+        filesTable.setOnDragDropped((DragEvent event) -> {
+            Dragboard db = event.getDragboard();
+        	if (db.hasFiles()) {
+        		for (File file : db.getFiles()) {
+                    FileInfo fileInfo = new FileInfo(file);
+                    this.files.add(fileInfo);
+        		}
+        		filesTable.refresh();
+            } else {
+                event.setDropCompleted(false);
+            }
+            event.consume();
+        });        
 
 	}
 	
@@ -147,15 +207,7 @@ public class LogCombinerController implements Initializable {
         int sel2 = files.size() - 1;
         filesTable.getSelectionModel().selectRange(sel1, sel2);
     }	
-    
-	private void closeDialog() {
-		if (dialog.getDialogPane().getButtonTypes().size() == 0) {
-			// need a button to be able to close the dialog
-			dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-		}
-		dialog.close();
-	}
-	
+    	
     public String[] getFileNames() {
         String[] fileArray = new String[files.size()];
         for (int i = 0; i < files.size(); i++) {
@@ -195,7 +247,13 @@ public class LogCombinerController implements Initializable {
     }
 
     public String getOutputFileName() {
-        if (outputFile == null) return null;
+        if (outputFile == null) {
+        	if (fileNameText.getText() != null) {
+        		return fileNameText.getText();
+        	} else {
+        		return null;
+        	}
+        }
         return outputFile.getPath();
     }
 
