@@ -3,6 +3,7 @@ package beastfx.app.beauti;
 
 
 
+
 import java.util.List;
 
 import javafx.event.ActionEvent;
@@ -11,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 
-import javax.swing.SwingUtilities;
 
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.BeautiSubTemplate;
@@ -99,24 +99,19 @@ public class TreeDistributionInputEditor extends InputEditor.Base {
 
         comboBox.setOnAction(e -> {
                 m_e = e;
-                SwingUtilities.invokeLater(new Runnable() {
-					@Override
-                    public void run() {
-						@SuppressWarnings("unchecked")
-						ComboBox<BeautiSubTemplate> currentComboBox = (ComboBox<BeautiSubTemplate>) m_e.getSource();
-                        @SuppressWarnings("unchecked")
-						List<BEASTInterface> list = (List<BEASTInterface>) m_input.get();
-                        BeautiSubTemplate template = (BeautiSubTemplate) currentComboBox.getValue();
-                        PartitionContext partitionContext = doc.getContextFor(list.get(itemNr));
-                        try {
-                            template.createSubNet(partitionContext, list, itemNr, true);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        hardSync();
-                        refreshPanel();
-                    }
-                });
+				@SuppressWarnings("unchecked")
+				ComboBox<BeautiSubTemplate> currentComboBox = (ComboBox<BeautiSubTemplate>) m_e.getSource();
+                @SuppressWarnings("unchecked")
+				List<BEASTInterface> list = (List<BEASTInterface>) m_input.get();
+                BeautiSubTemplate template = (BeautiSubTemplate) currentComboBox.getValue();
+                PartitionContext partitionContext = doc.getContextFor(list.get(itemNr));
+                try {
+                    template.createSubNet(partitionContext, list, itemNr, true);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                hardSync();
+                refreshPanel();
             });
         itemBox.getChildren().add(comboBox);
         FXUtils.createHMCButton(itemBox, m_beastObject, m_input);

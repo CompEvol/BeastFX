@@ -367,23 +367,6 @@
                   productVersion="${version}.0"
                   txtProductVersion="${version}" />
 
-        <!--<launch4j configFile="${Windows_dir}/TreeStat_launch4j.xml"
-                              jar="${dist}/beast.jar"
-                              outfile="${Windows_package_dir}/${TreeStat_name}.exe"
-                              fileVersion="${version}.0"
-                              txtFileVersion="${version}"
-                              productVersion="${version}.0"
-                              txtProductVersion="${version}"/>-->
-
-        <!-- LogAnalyser v?.?.?.exe
-            <launch4j configFile="${Windows_dir}/LogAnalyser_launch4j_jre.xml"
-                              jar="${dist}/beast.jar"
-                              outfile="${Windows_package_dir}/${LogAnalyser_name}v${version}.exe"
-                              fileVersion="${version}.0"
-                              txtFileVersion="${version}"
-                              productVersion="${version}.0"
-                              txtProductVersion="${version}"/>      -->
-
         <launch4j configFile="${Windows_dir}/LogCombiner_launch4j_jre.xml"
                   jar="${dist}/launcher.jar"
                   outfile="${Windows_package_dir}/${LogCombiner_name}.exe"

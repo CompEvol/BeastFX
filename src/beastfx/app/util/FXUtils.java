@@ -288,13 +288,6 @@ public class FXUtils {
 		});
 	}
 
-	private static void creatDirs(String file) {
-		if (!file.endsWith("/")) {
-			file = file.substring(0, file.lastIndexOf('/'));
-		}
-		new File(file).mkdirs();
-	}
-
 	public static SimpleStringProperty startSplashScreen() {
 		// see https://github.com/CompEvol/BeastFX/blob/master/src/beastfx/app/beauti/Beauti.java
 		// on how to use splash screen.

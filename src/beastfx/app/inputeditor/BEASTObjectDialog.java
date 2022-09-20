@@ -2,15 +2,10 @@ package beastfx.app.inputeditor;
 
 
 
+
 import java.io.File;
 import java.util.List;
 import java.util.Scanner;
-
-//import javax.swing.Icon;
-//import javax.swing.ImageIcon;
-//import javax.swing.JDialog;
-//import beastfx.app.util.Alert;
-//import javax.swing.border.EmptyBorder;
 
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
@@ -66,20 +61,13 @@ public class BEASTObjectDialog extends Dialog {
 		
 		pane.setContent(new ScrollPane(m_panel));
 		pane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-		//dlg.setHeaderText(m_panel.m_beastObject.getClass().getName());
 		dlg.setTitle(m_panel.m_beastObject.getClass().getName());
 		Stage stage = (Stage) pane.getScene().getWindow();
-		//stage.getIcons().add(image);
 		pane.setGraphic(new ImageView(image));
 		pane.setPrefSize(InputEditor.Base.PREFERRED_SIZE.getWidth() * 9, 
 				InputEditor.Base.PREFERRED_SIZE.getHeight() * 15);
 		
 		dlg.setResizable(true);
-//		if (parent != null) {
-//			Scene node = parent.getScene();
-//			alert.setX(node.getX() + node.getWidth()/2);
-//			alert.setY(node.getY() + node.getHeight()/2);
-//		}
     	ThemeProvider.loadStyleSheet(pane.getScene());
 		ButtonType result = dlg.showAndWait().get();
 		m_bOK = (result != ButtonType.CANCEL);
@@ -113,48 +101,12 @@ public class BEASTObjectDialog extends Dialog {
         initModality(Modality.APPLICATION_MODAL);
 
         getDialogPane().getChildren().add(panel);
-        // add(BorderLayout.CENTER, panel);
 
         setTitle(panel.m_beastObject.getID() + " Editor");
 
-
-//        /* add cancel and ok buttons at the bottom */
-//        HBox cancelOkBox = FXUtils.newHBox();
-//        cancelOkBox.setBorder(new EtchedBorder());
-//        Button okButton = new Button("Ok");
-//        okButton.setOnAction(new ActionListener() {
-//
-//            // implementation ActionListener
-//            public void actionPerformed(ActionEvent e) {
-//                m_bOK = true;
-//                dispose();
-//            }
-//        });
-//        Button cancelButton = new Button("Cancel");
-//        cancelButton.setOnAction(new ActionListener() {
-//
-//            // implementation ActionListener
-//            public void actionPerformed(ActionEvent e) {
-//                m_bOK = false;
-//                dispose();
-//            }
-//        });
-//        cancelOkBox.add(new Separator());
-//        cancelOkBox.add(okButton);
-//        cancelOkBox.add(new Separator());
-//        cancelOkBox.add(cancelButton);
-//        cancelOkBox.add(new Separator());
-//
-//        add(BorderLayout.SOUTH, cancelOkBox);
-//
-//        Dimension dim = panel.getPreferredSize();
-//        Dimension dim2 = cancelOkBox.getPreferredSize();
-//        setSize(dim.width + 10, dim.height + dim2.height + 30);
     } // c'tor
 
     public boolean getOK(BeautiDoc doc) {
-        //PluginDialog.m_position.x -= 30;
-        //PluginDialog.m_position.y -= 30;
         if (m_bOK) {
             String oldID = m_panel.m_beastObject.getID();
             BEASTObjectPanel.g_plugins.remove(oldID);

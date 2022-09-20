@@ -106,18 +106,6 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                 "-fx-font-size: 5pt";
         m_editBEASTObjectButton.setStyle(style);
 
-//        m_editBEASTObjectButton.setGraphic(FXUtils.getIcon(BEASTObjectDialog.ICONPATH + "edit16.png"));
-//        m_editBEASTObjectButton.setStyle(
-//    	        "-fx-background-radius: 5em; " +
-//    	                "-fx-min-width: 10px; " +
-//    	                "-fx-min-height: 3px; " +
-//    	                "-fx-max-width: 10px; " +
-//    	                "-fx-max-height: 3px; " +
-//    	                "-fx-background-color: -fx-body-color;" +
-//    	                "-fx-background-insets: 5px; " +
-//    	                "-fx-spacing: 5px;" +
-//    	                "-fx-padding: 5px;"
-//    	        );
         if (input.get() == null) {
             m_editBEASTObjectButton.setDisable(true);
         }
@@ -151,13 +139,6 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 	        }
     	}
         super.refreshPanel();
-//        Component c = this;
-//        while (((Component) c).getParent() != null) {
-//        	c = ((Component) c).getParent();
-//        	if (c instanceof ListSelectionListener) {
-//        		((ListSelectionListener) c).valueChanged(null);
-//        	}
-//        }
     }
 
     void initSelectPluginBox() {
@@ -192,9 +173,6 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 
         doc.getInputEditorFactory().addInputs(box, (BEASTInterface) input.get(), this, this, doc);
 
-        // box.setBorder(new EtchedBorder());
-        //box.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-        
         HBox.setHgrow(box, Priority.ALWAYS);
         pane.getChildren().add(box);
         m_expansionBox = box;
@@ -216,17 +194,6 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
     	
         List<BeautiSubTemplate> availableTemplates = doc.getInputEditorFactory().getAvailableTemplates(m_input, m_beastObject, null, doc);
         if (availableTemplates.size() > 0) {
-//        	if (m_input.getRule() != Validate.REQUIRED || beastObject == null) {
-//        		availableBEASTObjects.add(NO_VALUE);
-//        	}
-//        	for (int i = 0; i < availableBEASTObjects.size(); i++) {
-//        		String beastObjectName = availableBEASTObjects.get(i);
-//        		if (beastObjectName.startsWith("new ")) {
-//        			beastObjectName = beastObjectName.substring(beastObjectName.lastIndexOf('.'));
-//        			availableBEASTObjects.set(i, beastObjectName);
-//        		}
-//
-//        	}
             m_selectBEASTObjectBox = new ComboBox<>();
             m_selectBEASTObjectBox.getItems().addAll(availableTemplates.toArray());
             m_selectBEASTObjectBox.setId(input.getName()+"ComboBox");
@@ -254,11 +221,6 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
 
             m_selectBEASTObjectBox.setOnAction(e -> {
 
-//            	SwingUtilities.invokeLater(new Runnable() {
-//					
-//					@Override
-//					public void run() {
-
                 // get a handle of the selected beastObject
             	BeautiSubTemplate selected = (BeautiSubTemplate) m_selectBEASTObjectBox.getValue();
                 BEASTInterface beastObject = (BEASTInterface) m_input.get();
@@ -268,34 +230,12 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                 if (partition.indexOf(':') >= 0) {
                 	partition = id.substring(id.indexOf(':') + 1);
                 }
-                //String newID = selected.getMainID().replaceAll("\\$\\(n\\)", partition);
 
                 if (selected.equals(NO_VALUE)) {
                     beastObject = null;
-//                } else if (PluginPanel.g_plugins.containsKey(newID)) {
-//                	beastObject = PluginPanel.g_plugins.get(newID);
                 } else {
                     try {
                         beastObject = selected.createSubNet(doc.getContextFor(beastObject), m_beastObject, m_input, true);
-                        //PluginPanel.addPluginToMap(beastObject);
-                        // tricky: try to connect up new inputs with old inputs of existing name
-//                        beastObject oldPlugin = (beastObject) m_input.get();
-//                        for (Input<?> oldInput: oldPlugin.listInputs()) {
-//                        	String name = oldInput.getName();
-//                        	try {
-//                        		Input<?> newInput = beastObject.getInput(name);
-//                        		if (newInput.get() instanceof List) {
-//                        			List<?> values = (List<?>) oldInput.get();
-//                        			for (Object value: values) {
-//                            			newInput.setValue(value, beastObject);
-//                        			}
-//                        		} else {
-//                        			newInput.setValue(oldInput.get(), beastObject);
-//                        		}
-//                        	} catch (Exception ex) {
-//								// ignore
-//							}
-//                        }
                     } catch (Exception ex) {
                         Alert.showMessageDialog(null, "Could not select beastObject: " +
                                 ex.getClass().getName() + " " +
@@ -323,14 +263,6 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                         if (!m_input.canSetValue(beastObject, m_beastObject)) {
                             throw new IllegalArgumentException("Cannot set input to this value");
                         }
-//                    	// get handle on ID of the beastObject, and add to combobox if necessary
-//                        String id = beastObject.getID();
-//                        // TODO RRB: have to remove ID first, then add it
-//                        // The addition is necessary to make the items in the expansionBox scale and show up
-//                        // Is there another way?
-//                        m_selectPluginBox.removeItem(id);
-//                        m_selectPluginBox.addItem(id);
-//                        m_selectPluginBox.setSelectedItem(id);
                         id = beastObject.getID();
                         if (id.indexOf('.') != -1) {
                         	id = id.substring(0,  id.indexOf('.'));
@@ -396,153 +328,11 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
             } else {
             	m_selectBEASTObjectBox.setTooltip(new Tooltip(input.getTipText()));
             }
-            //int fontsize = m_selectBEASTObjectBox.getFont().getSize();
-            //m_selectBEASTObjectBox.setMaxSize(1024, 200 * fontsize / 13);
             box.getChildren().add(m_selectBEASTObjectBox);
             FXUtils.createHMCButton(box, m_beastObject, m_input);
 
             HBox.setMargin(m_selectBEASTObjectBox, new Insets(0,5,0,5));
         }
     }
-
-//    protected void addComboBox2(Box box, Input <?> input, BEASTObject beastObject) {
-//        List<String> availableBEASTObjects = PluginPanel.getAvailablePlugins(m_input, m_beastObject, null);
-//        if (availableBEASTObjects.size() > 0) {
-//        	if (m_input.getRule() != Validate.REQUIRED || beastObject == null) {
-//        		availableBEASTObjects.add(NO_VALUE);
-//        	}
-//        	for (int i = 0; i < availableBEASTObjects.size(); i++) {
-//        		String beastObjectName = availableBEASTObjects.get(i);
-//        		if (beastObjectName.startsWith("new ")) {
-//        			beastObjectName = beastObjectName.substring(beastObjectName.lastIndexOf('.'));
-//        			availableBEASTObjects.set(i, beastObjectName);
-//        		}
-//
-//        	}
-//            m_selectPluginBox = new ComboBox(availableBEASTObjects.toArray(new String[0]));
-//            String selectString = NO_VALUE;
-//            if (input.get() != null) {
-//                selectString = ((BEASTObject) input.get()).getID();
-//            }
-//            m_selectPluginBox.setSelectedItem(selectString);
-//
-//            m_selectPluginBox.setOnAction(new ActionListener() {
-//                // implements ActionListener
-//                public void actionPerformed(ActionEvent e) {
-//                	
-//                	// get a handle of the selected beastObject
-//                    String selected = (String) m_selectPluginBox.getValue();
-//                    BEASTObject beastObject = (BEASTObject) m_input.get();
-//                    if (selected.equals(NO_VALUE)) {
-//                        beastObject = null;
-//                    } else if (!selected.startsWith(".")) {
-//                        beastObject = PluginPanel.g_plugins.get(selected);
-//                    } else {
-//                        List<String> availableBEASTObjects = PluginPanel.getAvailablePlugins(m_input, m_beastObject, null);
-//                        int i = 0;                     
-//                        while (!availableBEASTObjects.get(i).matches(".*\\"+selected+"$")) {
-//                        	i++;
-//                        }
-//                    	selected = availableBEASTObjects.get(i);                       
-//                        /* create new beastObject */
-//                        try {
-//                            beastObject = (BEASTObject) Class.forName(selected.substring(4)).newInstance();
-//                            PluginPanel.addPluginToMap(beastObject);
-//                            // tricky: try to connect up new inputs with old inputs of existing name
-//                            BEASTObject oldPlugin = (BEASTObject) m_input.get();
-//                            for (Input<?> oldInput: oldPlugin.listInputs()) {
-//                            	String name = oldInput.getName();
-//                            	try {
-//                            		Input<?> newInput = beastObject.getInput(name);
-//                            		if (newInput.get() instanceof List) {
-//                            			List<?> values = (List<?>) oldInput.get();
-//                            			for (Object value: values) {
-//                                			newInput.setValue(value, beastObject);
-//                            			}
-//                            		} else {
-//                            			newInput.setValue(oldInput.get(), beastObject);
-//                            		}
-//                            	} catch (Exception ex) {
-//									// ignore
-//								}
-//                            }
-//                            
-//                        } catch (Exception ex) {
-//                            Alert.showMessageDialog(null, "Could not select beastObject: " +
-//                                    ex.getClass().getName() + " " +
-//                                    ex.getMessage()
-//                            );
-//                        }
-//                    }
-//
-//                    
-//                    try {
-//                        if (beastObject == null) {
-//                            m_selectPluginBox.setSelectedItem(NO_VALUE);
-//                            // is this input expanded?
-//                            if (m_expansionBox != null) {
-//                            	// remove items from Expansion Box, if any
-//                            	for (int i = 1; i < m_expansionBox.getComponentCount(); i++) {
-//                            		m_expansionBox.remove(i);
-//                            	}
-//                            } else { // not expanded
-//                            	if (m_bAddButtons) {
-//                            		m_editPluginButton.setEnabled(false);
-//                            	}
-//                            }
-//                        } else {
-//                            if (!m_input.canSetValue(beastObject, m_beastObject)) {
-//                            	throw new Exception("Cannot set input to this value");
-//                            }
-//                        	// get handle on ID of the beastObject, and add to combobox if necessary
-//                            String id = beastObject.getID();
-//                            // TODO RRB: have to remove ID first, then add it
-//                            // The addition is necessary to make the items in the expansionBox scale and show up
-//                            // Is there another way?
-//                            m_selectPluginBox.removeItem(id);
-//                            m_selectPluginBox.addItem(id);
-//                            m_selectPluginBox.setSelectedItem(id);
-//                        }
-//                        
-//                        m_input.setValue(beastObject, m_beastObject);
-//                        
-//                        if (m_expansionBox != null) {
-//                        	// remove items from Expansion Box
-//                        	for (int i = 1; i < m_expansionBox.getComponentCount(); ) {
-//                        		m_expansionBox.remove(i);
-//                        	}
-//                        	// add new items to Expansion Box
-//                        	if (beastObject != null) {
-//                        		PluginPanel.addInputs(m_expansionBox, beastObject, _this, _this);
-//                        	}
-//                        } else {
-//                        	// it is not expanded, enable the edit button
-//                        	if (m_bAddButtons) {
-//                        		m_editPluginButton.setEnabled(true);
-//                        	}
-//                            checkValidation();
-//                        }
-//                        
-//                    } catch (Exception ex) {
-//                        String id = ((BEASTObject)m_input.get()).getID();
-//                        m_selectPluginBox.setSelectedItem(id);
-//                    	//ex.printStackTrace();
-//                        Alert.showMessageDialog(null, "Could not change beastObject: " +
-//                                ex.getClass().getName() + " " +
-//                                ex.getMessage()
-//                        );
-//                    }
-//                }
-//            });
-//            m_selectPluginBox.setTooltip(new Tooltip(input.getTipText()));
-//            m_selectPluginBox.setMaxSize(new Dimension(1024, 20));
-//            box.add(m_selectPluginBox);
-//        }
-//    }
-
-//    String[] getAvailablePlugins() {
-//        List<String> beastObjectNames = PackageManager.find(m_input.getType(), "beast");
-//        return beastObjectNames.toArray(new String[0]);
-//    } // getAvailablePlugins
-
+    
 } // class PluginInputEditor

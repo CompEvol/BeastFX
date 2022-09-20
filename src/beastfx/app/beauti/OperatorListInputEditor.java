@@ -1,6 +1,7 @@
 package beastfx.app.beauti;
 
 
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +12,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import beastfx.app.inputeditor.BEASTObjectInputEditor;
 import beastfx.app.inputeditor.BeautiDoc;
@@ -86,7 +84,15 @@ public class OperatorListInputEditor extends ListInputEditor {
         TextField weightEntry = new TextField();
         weightEntry.setTooltip(new Tooltip(operator.m_pWeight.getTipText()));
         weightEntry.setText(operator.m_pWeight.get() + "");
-        weightEntry.setOnKeyReleased(e->new OperatorDocumentListener(operator, weightEntry));
+        weightEntry.setOnKeyReleased(e->{
+            try {
+                Double weight = Double.parseDouble(weightEntry.getText());
+                operator.m_pWeight.setValue(weight, operator);
+            } catch (Exception ex) {
+                // ignore
+            }
+            validateInput();        	
+        });
 
         Dimension size = new Dimension(50, 25);
         weightEntry.setMinSize(size.getWidth(), size.getHeight());
@@ -98,48 +104,6 @@ public class OperatorListInputEditor extends ListInputEditor {
         return this;
     }
 
-
-    /**
-     * class to set weight-input on an operator when it changes in the list *
-     */
-    class OperatorDocumentListener implements DocumentListener {
-        Operator m_operator;
-        TextField m_weightEntry;
-
-        OperatorDocumentListener(Operator operator, TextField weightEntry) {
-            m_operator = operator;
-            m_weightEntry = weightEntry;
-            textFields.add(weightEntry);
-            operators.add(operator);
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            processEntry();
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            processEntry();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            processEntry();
-        }
-
-        void processEntry() {
-            try {
-                Double weight = Double.parseDouble(m_weightEntry.getText());
-                m_operator.m_pWeight.setValue(weight, m_operator);
-            } catch (Exception e) {
-                // ignore
-            }
-            validateInput();
-        }
-    }
-
-    ;
 
     @Override
     public void updateState() {

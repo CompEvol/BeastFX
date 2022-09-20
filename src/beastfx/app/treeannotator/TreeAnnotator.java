@@ -30,11 +30,6 @@ import java.io.*;
 import java.util.*;
 
 import beastfx.app.beauti.ThemeProvider;
-import beastfx.app.treeannotator.CladeSystem;
-import beastfx.app.treeannotator.ContourMaker;
-import beastfx.app.treeannotator.ContourPath;
-import beastfx.app.treeannotator.ContourWithSynder;
-import beastfx.app.util.Utils;
 import beast.base.core.Log;
 import beast.base.evolution.alignment.TaxonSet;
 import beast.base.evolution.tree.Node;
@@ -50,12 +45,10 @@ import beast.pkgmgmt.Arguments;
 import beast.pkgmgmt.BEASTVersion;
 
 import beastfx.app.util.Console;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.stage.Stage;
 import javafx.scene.control.ButtonBar.ButtonData;
 
 /**
@@ -1189,19 +1182,9 @@ public class TreeAnnotator extends Console {
 		    public void write(int b) {
 		    }
 		}));
-//		Utils.loadUIManager();
 		System.setErr(err);
-		
-//        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-//        System.setProperty("apple.laf.useScreenMenuBar", "true");
-//        System.setProperty("apple.awt.showGrowBox", "true");
 
         java.net.URL url = TreeAnnotator.class.getClassLoader().getResource("../tools/images/utility.png");
-        javax.swing.Icon icon = null;
-
-        if (url != null) {
-            icon = new javax.swing.ImageIcon(url);
-        }
 
         final String versionString = version.getVersionString();
         String nameString = "TreeAnnotator " + versionString;
@@ -1216,7 +1199,6 @@ public class TreeAnnotator extends Console {
                 "<a href=\"http://beast.bio.ed.ac.uk/\">http://beast.bio.ed.ac.uk/</a></p>" +
                 "</center></html>";
 
-        // new ConsoleApplication(nameString, aboutString, icon, true);
         Log.info = System.out;
         Log.err = System.err;
 
@@ -1224,14 +1206,8 @@ public class TreeAnnotator extends Console {
         // to capture the output to the window:
         // new beastfx.app.util.Console();            
         progressStream = System.out;
-        // System.out.println(nameString);
-        // System.out.println(aboutString);
 
         printTitle();
-
-
-        // next line initialises JavaFX toolkit
-//        new JFXPanel();
         
 	        	try {
 					Dialog<String> dialog = new Dialog<>();
@@ -1319,18 +1295,10 @@ public class TreeAnnotator extends Console {
 			}
 		}.start();
 
-//		        while (true) {
-//		            try {
-//		                Thread.sleep(100);
-//		            } catch (InterruptedException e) {
-//		                e.printStackTrace();
-//		            }
-//		        }
 
-		        } catch (IOException e) {
-		        	e.printStackTrace();
-		        }
-	// }});
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
     }
 
 
