@@ -283,7 +283,9 @@ public class AppLauncher {
                 packageApp.argumentsString = packageAppElement.getAttribute("args");
 
                 String iconLocation = packageAppElement.getAttribute("icon");
-                packageApp.icon = Utils.getIcon(packageApp.packageName, iconLocation);
+                if (iconLocation.length() > 0) {
+                    packageApp.icon = Utils.getIcon(packageApp.packageName, iconLocation);
+                }
                 if (packageApp.icon == null || iconLocation.trim().isEmpty())
                     packageApp.icon = Utils.getIcon("BEAST.app", DEFAULT_ICON);
 
@@ -406,6 +408,12 @@ System.err.println("Done invoking " + packageApp.className);
                         System.exit(0);
 
                     case "-list":
+                        try {
+            				PackageManager.loadExternalJars();
+            			} catch (IOException e) {
+            				// TODO Auto-generated catch block
+            				e.printStackTrace();
+            			}
                         System.out.println("\nAvailable package apps:\n");
                         if (args.length>1) {
                             String packageNameFilter = args[1].toLowerCase();
