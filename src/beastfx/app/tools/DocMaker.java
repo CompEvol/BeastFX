@@ -27,12 +27,15 @@ package beastfx.app.tools;
 
 
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 
 import beast.base.core.BEASTObject;
 import beast.base.core.BEASTVersion2;
@@ -43,6 +46,10 @@ import beast.base.core.Log;
 import beast.base.core.Loggable;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
+import beastfx.app.util.FXUtils;
+import javafx.embed.swing.JFXPanel;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.ImageView;
 
 
 
@@ -281,15 +288,19 @@ public class DocMaker {
 
         {
         	try {
-	            InputStream in = new FileInputStream(new File("src/beast/app/draw/icons/beast.png"));
-	            OutputStream out = new FileOutputStream(new File(m_sDir + "/beast.png"));
-	            byte[] buf = new byte[1024];
-	            int len;
-	            while ((len = in.read(buf)) > 0) {
-	                out.write(buf, 0, len);
-	            }
-	            in.close();
-	            out.close();
+        		ImageView icon = FXUtils.getIcon("/beastfx/app/inputeditor/icon/beast.png");
+        		BufferedImage img = SwingFXUtils.fromFXImage(icon.getImage(), null);
+        		ImageIO.write(img, "png", new File(m_sDir + "/beast.png"));
+        		
+//	            InputStream in = new FileInputStream(new File("src/beast/app/draw/icons/beast.png"));
+//	            OutputStream out = new FileOutputStream(new File(m_sDir + "/beast.png"));
+//	            byte[] buf = new byte[1024];
+//	            int len;
+//	            while ((len = in.read(buf)) > 0) {
+//	                out.write(buf, 0, len);
+//	            }
+//	            in.close();
+//	            out.close();
         	} catch (Exception e) {
 				// ignore exception -- too bad we could not 
         		Log.warning.println("WARNING: something went wrong copying beast.png image:" + e.getMessage());
@@ -303,7 +314,10 @@ public class DocMaker {
         out.println("<h1>BEAST " + version.getVersionString() + " Documentation index</h1>\n");
         String prev = null;
         String prevPackage = null;
-        for (String beastObjectName : m_beastObjectNames) {
+        
+        String [] names = m_beastObjectNames.toArray(new String[] {});
+        Arrays.sort(names);
+        for (String beastObjectName : names) {
             String next = beastObjectName.substring(0, beastObjectName.indexOf('.'));
             if (prev != null && !next.equals(prev)) {
                 out.println("<hr/>");
@@ -340,7 +354,7 @@ public class DocMaker {
                 if (!beastObjectName.equals(name) && beastObject.getClass().isAssignableFrom(BEASTClassLoader.forName(beastObjectName))) {
                     implementations.add(beastObjectName);
                 }
-            } catch (ClassNotFoundException e) {
+            } catch (Throwable e) {
             }
         }
         return implementations.toArray(new String[0]);
@@ -645,6 +659,10 @@ public class DocMaker {
         try {
             System.err.println("Producing documentation...");
             PackageManager.loadExternalJars();
+            
+            // next line initialises some fx related stuff required for processing some classes and icon 
+            JFXPanel jfxPanel = new JFXPanel();
+            
             DocMaker b = new DocMaker(args);
             b.generateDocs();
             System.err.println("Done!!!");
