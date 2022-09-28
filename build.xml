@@ -197,16 +197,16 @@
 		</copy>
 
 		<copy todir="${Add_on_dir}/lib">
-			<fileset  file="${distFX}/BeastFX.addon.jar" />
+			<fileset  file="${distFX}/BEAST.app.jar" />
 		</copy>
 		<copy todir="${Add_on_dir}">
-			<fileset file="${distFX}/BeastFX.src.jar" />
+			<fileset file="${distFX}/BEAST.app.src.jar" />
 		</copy>
 		<copy todir="${Add_on_dir}/fxtemplates">
             <fileset dir="${beast2app}/fxtemplates/" />		
 		</copy>
 
-		<jar jarfile="${distFX}/BeastFX.addon.v${version}.zip">
+		<jar jarfile="${distFX}/BEAST.app.addon.v${version}.zip">
 			<fileset dir="${Add_on_dir}">
 				<include name="**/*" />
 			</fileset>

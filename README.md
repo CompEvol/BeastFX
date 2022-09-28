@@ -64,7 +64,7 @@ Use [apache ant](https://ant.apache.org/) to build the BeastFX package.
 
 `ant addon`
 
-should build the `BEAST.app` package (TODO: verify whether this still works).
+should build the `BEAST.app` package in `/path/to/BeastFX/build/dist/BEAST.app.addon.v2.7.X.zip` where X the current version of BeastFX and `/path/to/BeastFX` the path to where `BeastFX` resides on your computer.
 
 Releases containing all applications for your operating system can be built using one of:
 
