@@ -192,7 +192,7 @@
 			<fileset file="version.xml"/>
 		</copy>
 		<copy todir="${Add_on_dir}/examples">
-			<fileset dir="examples" includes="*.xml">
+			<fileset dir="${beast2path}/examples" includes="*.xml">
 			</fileset>
 		</copy>
 
@@ -203,7 +203,7 @@
 			<fileset file="${distFX}/BeastFX.src.jar" />
 		</copy>
 		<copy todir="${Add_on_dir}/fxtemplates">
-			<fileset file="fxtemplates/BeastFX.xml" />
+            <fileset dir="${beast2app}/fxtemplates/" />		
 		</copy>
 
 		<jar jarfile="${distFX}/BeastFX.addon.v${version}.zip">

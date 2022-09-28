@@ -186,7 +186,7 @@ public class SequenceSimulator extends beast.base.inference.Runnable {
      * @param alignment
      * @
      */
-    void traverse(Node node, int[] parentSequence, int[] category, Alignment alignment)  {
+    protected void traverse(Node node, int[] parentSequence, int[] category, Alignment alignment)  {
         for (int childIndex = 0; childIndex < 2; childIndex++) {
             Node child = (childIndex == 0 ? node.getLeft() : node.getRight());
             for (int i = 0; i < m_categoryCount; i++) {

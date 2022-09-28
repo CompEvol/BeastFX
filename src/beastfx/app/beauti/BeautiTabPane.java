@@ -1137,6 +1137,8 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
      * record number of frames. If the last frame is closed, exit the app. *
      */
     static int BEAUtiIntances = 0;
+    @Deprecated // do not use since this causes an IllegalStateException: Toolkit not initialized
+    // when called outside BEAUti. use `ProgramStatus.name.equals("BEAUti")` instead.
     static public boolean isInBeauti() {
     	return ProgramStatus.name.equals("BEAUti");
     	// return BEAUtiIntances > 0;
