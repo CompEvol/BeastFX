@@ -266,6 +266,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             	Log.warning.println(context + " " + id);
             	doc.beautiConfig.hyperPriorTemplate.createSubNet(context, true);
             }
+        	hardSync();
             refreshPanel();
         } catch (Exception ex) {
             Log.err.println("ParameterInputEditor " + ex.getMessage());

@@ -101,7 +101,7 @@ public class BeautiAlignmentProvider extends BEASTObject {
 			}
 		}
         File [] files = FXUtils.getLoadFiles("Load Alignment File",
-                new File(ProgramStatus.g_sDir), "Alignment files", extensions.toArray(new String[]{}));
+                new File(ProgramStatus.g_sDir), "Alignment files");//extensions.toArray(new String[]{}));
         if (files != null && files.length > 0) {
         	ProgramStatus.setCurrentDir(files[0].getPath().substring(0,
         			files[0].getPath().lastIndexOf(File.separator)));
