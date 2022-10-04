@@ -6,13 +6,29 @@ import java.io.File;
 import java.io.PrintStream;
 
 import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.Start;
 
 import beastfx.app.beauti.Beauti;
+import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.inputeditor.BeautiDoc;
+import javafx.stage.Stage;
 
-public class BeautiCLITest {
+public class BeautiCLITest extends BeautiBase {
 
+	BeautiDoc doc;
 	
+	@Start
+    public void start(Stage stage) {
+    	try {
+    		System.setProperty("beast.is.junit.testing", "true");
+    		BeautiTabPane tabPane = BeautiTabPane.main2(new String[] {}, stage);
+    		this.doc = tabPane.doc;
+            stage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+
 	public static void setUpTestDir() {
 		// make sure output goes to test directory
 		File testDir = 	new File("./test");

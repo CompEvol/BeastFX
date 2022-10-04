@@ -39,7 +39,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
 		}
     }
 
-    final static String PREFIX = "doc/tutorials/DivergenceDating/figures/BEAUti_";
+    final static String PREFIX = "../beast2/doc/tutorials/DivergenceDating/figures/BEAUti_";
 
     @Test
     public void DivergenceDatingTutorial(FxRobot robot) throws Exception {
@@ -261,6 +261,7 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
         robot.clickOn("#listOfTaxonCandidates").clickOn("Homo_sapiens");
         clickOnButtonWithText(robot, ">>");
         robot.clickOn("#listOfTaxonCandidates").clickOn("Pan");
+        clickOnButtonWithText(robot, ">>");
 //        dialog.list("listOfTaxonCandidates").selectItems("Homo_sapiens", "Pan");
 //        dialog.button(">>").click();
 //        dialog.okButton().click();

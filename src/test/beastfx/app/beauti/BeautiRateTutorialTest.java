@@ -37,7 +37,7 @@ public class BeautiRateTutorialTest extends BeautiBase {
     }
 	// file used to store, then reload xml
 	final static String XML_FILE = "rsv.xml";
-	final static String PREFIX = "doc/tutorials/MEPs/figures/generated/BEAUti_";
+	final static String PREFIX = "../beast2/doc/tutorials/MEPs/figures/generated/BEAUti_";
 
 	@Test
 	public void MEPTutorial(FxRobot robot) throws Exception {

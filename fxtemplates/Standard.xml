@@ -337,7 +337,7 @@ ClusterTree/clusterType/,
         	    <operator id='StrictClockRateScalerX.c:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter='@clockRate.c:$(n)'/>
 	        </operator>
 
-        	<operator id="strictClockUpDownOperator.s:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="1.5">
+        	<operator id="strictClockUpDownOperator.c:$(n)" spec="beast.base.evolution.operator.AdaptableOperatorSampler" weight="1.5">
                 <parameter idref="clockRate.c:$(n)"/>
                 <tree idref="Tree.t:$(n)"/>
 	            <operator idref="AVMNOperator.$(n)"/>
@@ -402,7 +402,7 @@ ClusterTree/clusterType/,
             <connect srcID='StrictClockRateScaler.c:$(n)'     targetID='mcmc' inputName='operator' if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'>Scale clock rate of partition c:$(n)</connect>
             <connect srcID='YuleBirthRateScaler.t:$(n)'       targetID='mcmc' inputName='operator' if='inposterior(birthRate.t:$(n)) and birthRate.t:$(n)/estimate=true'>Scales birth rate of Yule prior for partition t:$(n)</connect>
             <connect srcID='strictClockUpDownOperator.c:$(n)' targetID='mcmc' inputName='operator'
-                     if='nooperator(FixMeanRatesOperator) and inlikelihood(clockRate.c:$(n)) and inlikelihood(Tree.t:$(n)) and Tree.t:$(n)/estimate=true and clockRate.c:$(n)/estimate=true'>
+                     if='inlikelihood(clockRate.c:$(n)) and inlikelihood(Tree.t:$(n)) and Tree.t:$(n)/estimate=true and clockRate.c:$(n)/estimate=true'>
                 Scale up substitution rate c:$(n) and scale down tree t:($n)
             </connect>
 

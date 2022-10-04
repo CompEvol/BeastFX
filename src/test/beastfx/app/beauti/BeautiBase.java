@@ -80,7 +80,7 @@ import beast.pkgmgmt.PackageManager;
  * 
  */
 @ExtendWith(ApplicationExtension.class)
-public class BeautiBase extends Beauti {
+public class BeautiBase extends ApplicationExtension {
 	final static String TEMPLATE_DIR = BeautiConfig.TEMPLATE_DIR;
 	final static String NEXUS_DIR = "../beast2/examples/nexus/";
 
@@ -92,6 +92,7 @@ public class BeautiBase extends Beauti {
 
 	public BeautiBase() {
 		// make sure BEAST.base and BEAST.app are installed
+		System.setProperty("beast.is.junit.testing", "true");
 		try {
 			Set<String> packages = listInstalledPackages();
 			if (!packages.contains("BEAST.base")) {

@@ -313,7 +313,7 @@ public class LinkUnlinkTest extends BeautiBase {
         //JComboBoxFixture substModel = beautiFrame.comboBox("substModel");
         //substModel.selectItem("HKY");
 		printBeautiState();
-		assertParameterCountInPriorIs(5+2);		
+		assertParameterCountInPriorIs(5+3);		
 		
 		selectTab(robot, "Partitions");
 		warning("Link site models");
@@ -322,11 +322,11 @@ public class LinkUnlinkTest extends BeautiBase {
 		printBeautiState();
 
 		selectPartitions(robot, 0, 1, 2);
-		assertParameterCountInPriorIs(5+2);		
+		assertParameterCountInPriorIs(5+3);		
 		clickOnButtonWithText(robot, "Unlink Site Models");
 
 		printBeautiState();
-		assertParameterCountInPriorIs(9+6);		
+		assertParameterCountInPriorIs(9+9);		
 
 		warning("Delete second partition");
 		selectTab(robot, "Partitions");
@@ -334,7 +334,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		clickOnButtonWithText(robot, "-");
 		printBeautiState();
 
-		assertParameterCountInPriorIs(6+4);		
+		assertParameterCountInPriorIs(6+6);		
 
 		warning("Delete first partition");
 		selectTab(robot, "Partitions");
@@ -344,7 +344,7 @@ public class LinkUnlinkTest extends BeautiBase {
 		clickOnButtonWithText(robot, "-");
 		printBeautiState();
 		assertPriorsEqual("YuleModel.t:26", "YuleBirthRatePrior.t:26", "KappaPrior.s:59", "FrequenciesPrior.s:59");		
-		assertParameterCountInPriorIs(3+2);
+		assertParameterCountInPriorIs(3+3);
 		
 		makeSureXMLParses();
 	}
@@ -429,7 +429,7 @@ public class LinkUnlinkTest extends BeautiBase {
 	}
 
 	@Test
-	public void linkSiteModelssAndDeleteTest(FxRobot robot) throws Exception {
+	public void linkSiteModelsAndDeleteTest2(FxRobot robot) throws Exception {
 		warning("Load gopher data 26.nex, 47.nex, 59.nex");
 		importAlignment(NEXUS_DIR, new File("26.nex"), new File("47.nex"), new File("59.nex"));
 

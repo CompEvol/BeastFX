@@ -31,7 +31,7 @@ public class BeautiStarBeastTest extends BeautiBase {
 		}
 	}
 	
-	final static String PREFIX = "doc/tutorials/STARBEAST/figures/BEAUti_";
+	final static String PREFIX = "../beast2/doc/tutorials/STARBEAST/figures/BEAUti_";
 
 	@Test
 	public void simpleStarBeastTest(FxRobot robot) throws Exception {
