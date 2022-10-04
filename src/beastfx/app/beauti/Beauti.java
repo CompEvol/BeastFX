@@ -154,4 +154,13 @@ public class Beauti extends Application {
     public interface InitCompletionHandler {
         void complete();
     }
+    
+
+    @Deprecated 
+    // do not use since this can cause an IllegalStateException: Toolkit not initialized
+    // when called outside BEAUti. use `ProgramStatus.name.equals("BEAUti")` instead.
+    static public boolean isInBeauti() {
+    	return ProgramStatus.name.equals("BEAUti");
+    	// return BEAUtiIntances > 0;
+    }
 }
