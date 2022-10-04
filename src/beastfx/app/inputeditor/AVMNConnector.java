@@ -17,7 +17,7 @@ import beast.base.inference.parameter.RealParameter;
 public class AVMNConnector {
 
     public static boolean customConnector(BeautiDoc doc) {
-    	System.err.println("AVMNConnector::customConnector() called");
+    	// System.err.println("AVMNConnector::customConnector() called");
     	
     	// count how many partitions have the a unique clock
     	List<BEASTInterface> partitions = doc.getPartitions("Partitions");

@@ -611,13 +611,16 @@ System.err.println("Trying to load " + dir + " " + files[0]);
 
 	protected FxRobot clickOnNodesWithID(FxRobot robot, String id) {
 		NodeQuery q = robot.lookup(target -> {
-			if (target.getId() != null) System.err.println(target.getId());
+			// if (target.getId() != null) System.err.println(target.getId());
 			return id.equals(target.getId()) && target.isVisible();
 		});
 		Set<Node> nodes = q.queryAll();
-		for (Node node : nodes) {
-			robot.clickOn(node);
+		if (nodes.size() > 0) {
+			robot.clickOn((Node)(nodes.toArray()[0]));
 		}
+//		for (Node node : nodes) {
+//			robot.clickOn(node);
+//		}
 		return robot;
 	}
 

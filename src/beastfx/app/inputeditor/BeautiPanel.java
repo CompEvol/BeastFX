@@ -213,8 +213,12 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
     }
 
     public void updateList() {
+    	List<Integer> selected = null;
         if (listModel == null) {
             return;
+        } else {
+        	selected = new ArrayList<>();
+        	selected.addAll(listOfPartitions.getSelectionModel().getSelectedIndices());	
         }
         listModel.clear();
         if (listModel.size() > 0) {
@@ -237,8 +241,15 @@ public class BeautiPanel extends Tab implements ChangeListener, BeautiDocProvide
             }
             listModel.add(partitionID);
         }
-        if (partitionIndex >= 0 && listModel.size() > 0)
-            listOfPartitions.getSelectionModel().select(partitionIndex);
+        if (partitionIndex >= 0 && listModel.size() > 0) {
+        	if (selected != null && selected.size() > 0) {
+        		for (int index : selected) {
+        			listOfPartitions.getSelectionModel().select(index);
+        		}
+        	} else {
+        		listOfPartitions.getSelectionModel().select(partitionIndex);
+        	}
+        }
     }
 
     

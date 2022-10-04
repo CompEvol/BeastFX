@@ -458,7 +458,7 @@ public abstract class Base extends Pane implements InputEditor {
             	BeautiPanel panel = beauti.getCurrentPanel();
                 BeautiPanelConfig cfgPanel = panel.config;
                 cfgPanel.sync(panel.partitionIndex);
-            	// Platform.runLater(() ->	beauti.refreshPanel());
+            	Platform.runLater(() ->	beauti.refreshPanel());
             }
         }
     }

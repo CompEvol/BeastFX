@@ -16,6 +16,9 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -169,7 +172,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
         //scroller.setMinSize(doc.beauti.frame.getWidth(), doc.beauti.frame.getHeight()-155);
         BeautiPanel.resizeList.clear();
         BeautiPanel.resizeList.add(table);
-    	table.setMinWidth(1020);
+    	//table.setMinWidth(1020);
         getChildren().add(pane);
         updateStatus();
 	}
@@ -685,13 +688,23 @@ public class AlignmentListInputEditor extends ListInputEditor {
 		}
 		
         try {
-        	if (!Double.isNaN(doc.beauti.frame.getWidth())) {
-        		table.setMinSize(doc.beauti.frame.getWidth() - 20, doc.beauti.frame.getHeight()-160);
-        	} else {
-            	table.setMinSize(1024 - 20, 768 - 138);
-        	}
+        	
+//        	Parent root = getScene().getRoot();
+//        	Bounds localRootBounds = root.getBoundsInLocal();
+//        	Point2D	 localRootTopLeft = new Point2D(localRootBounds.getMinX(), localRootBounds.getMinY());
+//        	Point2D screenRootTopLeft = root.localToScreen(localRootTopLeft);
+
+            table.setMinSize(doc.beauti.frame.getWidth() - 12, doc.beauti.frame.getHeight() - 160);
+        	// System.err.println("table.setMinSize(" + (doc.beauti.frame.getWidth()-12)+","+ (doc.beauti.frame.getHeight()-230) +")");
+
+//        	if (!Double.isNaN(doc.beauti.frame.getWidth())) {
+//        		table.setMinSize(doc.beauti.frame.getWidth() - 20, doc.beauti.frame.getHeight()-160);
+//        	} else {
+//            	table.setMinSize(1024 - 20, 768 - 138);
+//        	}
         } catch (NullPointerException e) {
         	// ignore
+        	// System.err.println("table.setMinSize(1024 - 20, 768 - 138)");
         	table.setMinSize(1024 - 20, 768 - 138);
         }
 

@@ -99,6 +99,9 @@ public class CloneTest extends BeautiBase {
         // set category count back to 1
         //beautiFrame.checkBox("shape.isEstimated").uncheck();
         clickOnNodesWithID(robot, "shape.isEstimated");
+        printBeautiState();
+        assertStateEquals("Tree.t:3rdpos", "birthRate.t:3rdpos", "Tree.t:2ndpos", "birthRate.t:2ndpos", "Tree.t:noncoding", "birthRate.t:noncoding", "Tree.t:coding", "birthRate.t:coding", "Tree.t:1stpos", "birthRate.t:1stpos", "kappa.s:coding", "gammaShape.s:coding", "kappa.s:1stpos", "gammaShape.s:1stpos", "kappa.s:2ndpos", "gammaShape.s:2ndpos", "kappa.s:3rdpos", "gammaShape.s:3rdpos", "freqParameter.s:2ndpos", "freqParameter.s:3rdpos", "freqParameter.s:1stpos", "freqParameter.s:coding");
+
         robot.doubleClickOn("#gammaCategoryCount").write("1");
         printBeautiState();
         assertStateEquals("Tree.t:3rdpos", "birthRate.t:3rdpos", "Tree.t:2ndpos", "birthRate.t:2ndpos", "Tree.t:noncoding", "birthRate.t:noncoding", "Tree.t:coding", "birthRate.t:coding", "Tree.t:1stpos", "birthRate.t:1stpos", "kappa.s:coding", "gammaShape.s:coding", "kappa.s:1stpos", "gammaShape.s:1stpos", "kappa.s:2ndpos", "gammaShape.s:2ndpos", "kappa.s:3rdpos", "gammaShape.s:3rdpos", "freqParameter.s:2ndpos", "freqParameter.s:3rdpos", "freqParameter.s:1stpos", "freqParameter.s:coding");
@@ -149,10 +152,12 @@ public class CloneTest extends BeautiBase {
         warning("1. Set the clock model of second partition to UCLD exponential");
         selectTab(robot, "Clock Model");
 //		final ListView<?> list = robot.lookup(".list-view").queryAs(ListView.class);
-		robot.clickOn("noncoding");
-		robot.clickOn(".combo-box");//.clickOn("coding");
-		robot.interact(()->robot.lookup(".combo-box").queryAs(ComboBox.class).getSelectionModel().select(1));
-		robot.clickOn("Relaxed Clock Exponential");
+		robot.clickOn(".list-view").clickOn("noncoding");
+		
+//		robot.clickOn(".combo-box");//.clickOn("coding");
+//		robot.interact(()->robot.lookup(".combo-box").queryAs(ComboBox.class).getSelectionModel().select(1));
+		selectFromCombobox(robot, "indexComboBox", "Relaxed Clock Exponential");
+		robot.clickOn(".list-view").clickOn("noncoding");
 		//robot.clickOn("Relaxed Clock Log Normal");
 		
 		// Platform.runLater(()->list.getSelectionModel().select(1));
@@ -188,7 +193,7 @@ public class CloneTest extends BeautiBase {
         	list.getSelectionModel().clearAndSelect(2);
         });
 		// robot.clickOn(".combo-box").clickOn(".arrow-button").clickOn("Relaxed Clock Log Normal");
-        robot.interact(()->robot.lookup(".combo-box").queryAs(ComboBox.class).getSelectionModel().select(2));
+        robot.interact(()->robot.lookup(".combo-box").queryAs(ComboBox.class).getSelectionModel().select(3));
         printBeautiState();
         assertStateEquals("Tree.t:coding", "birthRate.t:coding", "clockRate.c:2ndpos", "ucedMean.c:noncoding", "expRateCategories.c:noncoding", "expRateCategories.c:coding", "ucedMean.c:3rdpos", "expRateCategories.c:3rdpos", "ucldMean.c:1stpos", "ucldStdev.c:1stpos", "rateCategories.c:1stpos");
         assertOperatorsEqual("YuleBirthRateScaler.t:coding", "YuleModelBICEPSEpochTop.t:coding", "YuleModelBICEPSEpochAll.t:coding", "YuleModelBICEPSTreeFlex.t:coding", "YuleModelTreeRootScaler.t:coding", "YuleModelUniformOperator.t:coding", "YuleModelSubtreeSlide.t:coding", "YuleModelNarrow.t:coding", "YuleModelWide.t:coding", "YuleModelWilsonBalding.t:coding", "StrictClockRateScaler.c:2ndpos", "strictClockUpDownOperator.c:2ndpos", "ucedMeanScaler.c:noncoding", "ExpCategoriesRandomWalk.c:noncoding", "ExpCategoriesSwapOperator.c:noncoding", "ExpCategoriesUniform.c:noncoding", "relaxedUpDownOperatorExp.c:noncoding", "ExpCategoriesRandomWalk.c:coding", "ExpCategoriesSwapOperator.c:coding", "ExpCategoriesUniform.c:coding", "ucedMeanScaler.c:3rdpos", "ExpCategoriesRandomWalk.c:3rdpos", "ExpCategoriesSwapOperator.c:3rdpos", "ExpCategoriesUniform.c:3rdpos", "relaxedUpDownOperatorExp.c:3rdpos", "ucldMeanScaler.c:1stpos", "ucldStdevScaler.c:1stpos", "CategoriesRandomWalk.c:1stpos", "CategoriesSwapOperator.c:1stpos", "CategoriesUniform.c:1stpos", "relaxedUpDownOperator.c:1stpos");

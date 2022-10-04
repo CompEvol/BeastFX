@@ -318,7 +318,7 @@ public class SiteModelInputEditor extends BEASTObjectInputEditor {
     }
     
     public static boolean avmnConnector(BeautiDoc doc) {
-    	System.err.println("SiteModelInputEditor::avmnConnector() called");
+    	// System.err.println("SiteModelInputEditor::avmnConnector() called");
     	return AVMNConnector.customConnector(doc);
     }
 
