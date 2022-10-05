@@ -18,6 +18,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import beastfx.app.util.FXUtils;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -49,6 +51,7 @@ import org.xml.sax.SAXException;
 
 import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.util.PartitionContextUtil;
+import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;
@@ -84,6 +87,8 @@ import beast.base.parser.XMLParser;
 import beast.base.parser.XMLParserException;
 import beast.base.parser.XMLProducer;
 import beast.base.parser.XMLParser.RequiredInputProvider;
+import beast.pkgmgmt.BEASTClassLoader;
+import beast.pkgmgmt.Utils6;
 import beast.pkgmgmt.launcher.BeastLauncher;
 
 
@@ -891,7 +896,23 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
      */
     public void mergeSequences(String xml) throws XMLParserException, SAXException, IOException, ParserConfigurationException {
         if (xml == null) {
-            xml = processTemplate(STANDARD_TEMPLATE);
+        	if (new File(STANDARD_TEMPLATE).exists()) {
+        		xml = processTemplate(STANDARD_TEMPLATE);
+        	} else {        	
+        		String launcherJar = BeautiDoc.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        		// deal with special characters and spaces in path
+        		launcherJar = URLDecoder.decode(launcherJar, "UTF-8");
+        		String template = launcherJar + "/../" + STANDARD_TEMPLATE;
+        		if (new File(template).exists()) {
+        			xml = processTemplate(template);
+        		} else {
+        			FXUtils.endSplashScreen();
+        			JOptionPane.showMessageDialog(null, "Could not find template " + template + "\n" +
+        									"Try to pass the template as command line argument to beauti\n" +
+        									"e.g /path/to/beast/bin/beauti -template /path/to/template.xml");
+        			System.exit(1);
+        		}
+        	}
         }
         loadTemplate(xml);
         // create XML for alignments
