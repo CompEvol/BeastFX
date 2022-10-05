@@ -88,6 +88,7 @@ import beast.base.parser.XMLParserException;
 import beast.base.parser.XMLProducer;
 import beast.base.parser.XMLParser.RequiredInputProvider;
 import beast.pkgmgmt.BEASTClassLoader;
+import beast.pkgmgmt.PackageManager;
 import beast.pkgmgmt.Utils6;
 import beast.pkgmgmt.launcher.BeastLauncher;
 
@@ -898,19 +899,38 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         if (xml == null) {
         	if (new File(STANDARD_TEMPLATE).exists()) {
         		xml = processTemplate(STANDARD_TEMPLATE);
-        	} else {        	
-        		String launcherJar = BeautiDoc.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        		// deal with special characters and spaces in path
-        		launcherJar = URLDecoder.decode(launcherJar, "UTF-8");
-        		String template = launcherJar + "/../" + STANDARD_TEMPLATE;
-        		if (new File(template).exists()) {
-        			xml = processTemplate(template);
-        		} else {
-        			FXUtils.endSplashScreen();
-        			JOptionPane.showMessageDialog(null, "Could not find template " + template + "\n" +
+        	} else {
+        		// try BEAST.app package in user package dir 
+        		String pacakgeUseDir = PackageManager.getPackageUserDir();
+    			// deal with special characters and spaces in path
+        		pacakgeUseDir = URLDecoder.decode(pacakgeUseDir, "UTF-8");
+        		String template1 = pacakgeUseDir + "/BEAST.app/" + STANDARD_TEMPLATE;
+        		if (new File(template1).exists()) {
+        			xml = processTemplate(template1);
+        		} else {        		
+            		// try fxtemplates where BEAST is installed 
+        			String launcherJar = BEASTClassLoader.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        			// deal with special characters and spaces in path
+        			launcherJar = URLDecoder.decode(launcherJar, "UTF-8");
+        			File launcherFile = new File(launcherJar);
+        			if (!launcherFile.isDirectory()) {
+        				launcherFile = launcherFile.getParentFile();
+        				launcherJar = launcherFile.getPath();
+            			launcherJar = URLDecoder.decode(launcherJar, "UTF-8");
+        			} else {
+                		// looks like a development environment, but BeastFX is not the working dir 
+        			}
+        			String template = launcherJar + "/../" + STANDARD_TEMPLATE;
+        			if (new File(template).exists()) {
+        				xml = processTemplate(template);
+        			} else {
+        				FXUtils.endSplashScreen();
+        				JOptionPane.showMessageDialog(null, "Could not find template at\n" + 
+        						STANDARD_TEMPLATE + "\n" + template1 + "\n" + template + "\n" +
         									"Try to pass the template as command line argument to beauti\n" +
         									"e.g /path/to/beast/bin/beauti -template /path/to/template.xml");
-        			System.exit(1);
+        				System.exit(1);
+        			}
         		}
         	}
         }
