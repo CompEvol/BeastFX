@@ -572,7 +572,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         @Override
 		public void actionPerformed(ActionEvent ae) {
             setCursor(Cursor.WAIT);
-            FXUtils.openInBrowser(FXUtils.getHMCBase());
+            FXUtils.openInBrowser(FXUtils.getHMCBase()+"..");
             setCursor(Cursor.DEFAULT);
         }
     } // class ActionHelp

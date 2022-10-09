@@ -364,7 +364,8 @@ public class PackageHealthChecker extends Runnable {
 			allOK = false;
 		}
 		if (hasExamples && exampleCount == 0) {
-			report("No examples in examples directory found. It is recommended to have at least one XML example "
+			report("Examples directory found without examples directly in it (did not check subdirectories). "
+					+ "It is recommended to have at least one XML example "
 					+ "file showing the features of the package");
 			allOK = false;
 		}

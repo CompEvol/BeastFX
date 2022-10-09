@@ -241,7 +241,7 @@ public class FXUtils {
 	public static void openInBrowser(String url)  {
 		
 		Platform.runLater(() -> {
-			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Action.BROWSE)) {
+			if (!Utils.isLinux() && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Action.BROWSE)) {
 				try {
 			        Desktop desktop = Desktop.getDesktop();
 					desktop.browse(new URI(url));
