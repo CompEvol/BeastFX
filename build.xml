@@ -33,7 +33,6 @@
 	<path id="classpath">
 		<fileset dir="${libFX}" includes="jam.jar"/>
 		<fileset dir="${libFX}" includes="testfx.jar"/>
-		<fileset dir="${libFX}" includes="jmetro-11.6.15.jar"/>
         <path location="${buildFX}"/>
         
 		<fileset dir="${beast2path}/lib" includes="beagle.jar"/>
@@ -135,7 +134,6 @@
 			</fileset>
 			<zipgroupfileset dir="${libFX}" includes="jam.jar"/>
 			<zipgroupfileset dir="${libFX}" includes="FXSkins-1.0.0.jar"/>
-			<zipgroupfileset dir="${libFX}" includes="jmetro-11.6.15.jar"/>
 		</jar>
 	</target>
 

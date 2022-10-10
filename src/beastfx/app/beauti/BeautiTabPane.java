@@ -261,8 +261,15 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             	ProgramStatus.setCurrentDir(doc.getFileName().substring(0,
                         doc.getFileName().lastIndexOf(File.separator)));
             }
-            if (!doc.getFileName().toLowerCase().endsWith(FILE_EXT) && !doc.getFileName().toLowerCase().endsWith(FILE_EXT2))
+            if (!doc.getFileName().toLowerCase().endsWith(FILE_EXT) && !doc.getFileName().toLowerCase().endsWith(FILE_EXT2)) {
                 doc.setFileName(doc.getFileName().concat(FILE_EXT));
+            }
+            // remove double dots in file name (xyz..xml) introduced in windows
+            if (doc.getFileName().toLowerCase().endsWith("." + FILE_EXT)) {
+            	String filename = doc.getFileName();
+            	filename = filename.substring(0, filename.length() - FILE_EXT.length() - 1);
+                doc.setFileName(filename + FILE_EXT);            	
+            }
             saveFile(doc.getFileName());
             setTitle();
             return true;
