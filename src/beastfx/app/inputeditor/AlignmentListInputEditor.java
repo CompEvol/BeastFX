@@ -81,16 +81,16 @@ public class AlignmentListInputEditor extends ListInputEditor {
 	/**
 	 * alignments that form a partition. These can be FilteredAlignments *
 	 */
-	List<Alignment> alignments;
-	int partitionCount;
-	GenericTreeLikelihood[] likelihoods;
-	Object[][] tableData;
-	ObservableList<Partition0> tableEntries;
-	TableView<Partition0> table;
-	TextField nameEditor;
-	List<Button> linkButtons;
-	List<Button> unlinkButtons;
-	Button splitButton;
+	protected List<Alignment> alignments;
+	protected int partitionCount;
+	protected GenericTreeLikelihood[] likelihoods;
+	protected Object[][] tableData;
+	protected ObservableList<Partition0> tableEntries;
+	protected TableView<Partition0> table;
+	protected TextField nameEditor;
+	protected List<Button> linkButtons;
+	protected List<Button> unlinkButtons;
+	protected Button splitButton;
 	
 	boolean updateInProgress = false;
 

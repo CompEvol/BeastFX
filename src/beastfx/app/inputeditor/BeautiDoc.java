@@ -51,7 +51,6 @@ import org.xml.sax.SAXException;
 
 import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.util.PartitionContextUtil;
-import beastfx.app.util.Utils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;
@@ -89,7 +88,6 @@ import beast.base.parser.XMLProducer;
 import beast.base.parser.XMLParser.RequiredInputProvider;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.PackageManager;
-import beast.pkgmgmt.Utils6;
 import beast.pkgmgmt.launcher.BeastLauncher;
 
 
@@ -2611,3 +2609,6 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
 
 
 } // class BeautiDoc
+
+
+

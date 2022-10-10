@@ -250,6 +250,15 @@ public class Controller implements Initializable {
 		Log.setLevel(logLevel.getSelectionModel().getSelectedItem());
 		
 		MCMCArgs.add(inputFile.getText());
+		
+		// ensure output directory = where input file resides
+		try {
+			File file = new File(inputFile.getText());
+			System.setProperty("file.name.prefix", file.getParentFile().getAbsolutePath() + File.separator);
+		} catch (Throwable t) {
+			// file probably does not exist: ignore, since this will be picked up later when opening the file
+		}
+
 		return MCMCArgs;
 	}
 
