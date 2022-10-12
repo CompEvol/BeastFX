@@ -107,5 +107,8 @@
               class="beastfx.app.tools.DocMaker"
             />
 
+	    <packageapp description="Calculates statistics on the credible set of a tree posterior"
+              class="beastfx.app.tools.TreeTraceAnalysis"
+            />
 
 </package>

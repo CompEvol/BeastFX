@@ -17,21 +17,24 @@
 package beastfx.app.tools;
 
 
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import beast.base.core.Description;
+import beast.base.core.Input;
 import beast.base.evolution.tree.Node;
 import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeUtils;
 import beast.base.parser.NexusParser;
 import beast.base.util.CredibleSet;
 import beast.base.util.FrequencySet;
+import beastfx.app.util.OutFile;
+import beastfx.app.util.TreeFile;
 
 
 // TODO: Calculate mean node heights for trees in credible set.
@@ -48,8 +51,41 @@ import beast.base.util.FrequencySet;
  * @author Alexei Drummond
  * @author Tim Vaughan
  */
-public class TreeTraceAnalysis {
+@Description("Calculates statistics on the credible set of a tree posterior")
+public class TreeTraceAnalysis extends beast.base.inference.Runnable {
+	final public Input<TreeFile> srcInput = new Input<>("trees", "source posterior tree set");
+	final public Input<Integer> burnInPercentageInput = new Input<>("burnin", "percentage of trees to used as burn-in (and will be ignored)", 10);
+	final public Input<Integer> confidencePercentageInput = new Input<>("confidence", "percentage of confidence level covered by credible set", 95);
+	final public Input<OutFile> outputInput = new Input<>("out", "output file with tree statistics, or stdout if not specified",
+			new OutFile("[[none]]"));
 
+
+	@Override
+	public void initAndValidate() {
+	}
+	
+	@Override
+	public void run() throws Exception {
+        List<Tree> trees = null;
+        try {
+            trees = TreeTraceAnalysis.Utils.getTrees(srcInput.get());
+        } catch (Exception e) {
+            System.out.println("Error occurred while parsing input file.");
+            System.exit(1);
+        }
+
+        addAllTrees(trees, burnInPercentageInput.get()/100.0);
+        computeCredibleSet(confidencePercentageInput.get()/100.0, null);
+
+        PrintStream out = System.out;
+		if (outputInput.get() != null &&
+				!outputInput.get().getName().equals("[[none]]")) {
+			out = new PrintStream(outputInput.get());
+		}
+        report(out);
+        out.close();
+	}
+	
     protected int nTrees; // total from original log
 
     protected FrequencySet<String> topologiesFrequencySet = new FrequencySet<>();
@@ -238,39 +274,40 @@ public class TreeTraceAnalysis {
     }
 
     //******** main *****
-    public static void main(String[] args) {
-        PrintStream out = System.out;
-        File inputFile = null;
-
-        if (args.length > 0) {
-            System.out.println("Input file  = " + args[0]);
-            inputFile = new File(args[0]);
-        } else {
-            System.out.println("Error: Expected nexus file, but not file name was provided.");
-            System.exit(1);
-        }
-
-        if (args.length > 1) {
-            System.out.println("Output file = " + args[1]);
-            try {
-                out = new PrintStream(new FileOutputStream(args[1]));
-            } catch (FileNotFoundException e) {
-                System.out.println("Error: Unable to create output file.");
-                System.exit(1);
-            }
-        }
-
-        List<Tree> trees = null;
-        try {
-            trees = TreeTraceAnalysis.Utils.getTrees(inputFile);
-        } catch (Exception e) {
-            System.out.println("Error occurred while parsing input file.");
-            System.exit(1);
-        }
-
-        TreeTraceAnalysis analysis = new TreeTraceAnalysis(trees, 0.1);
-        analysis.computeCredibleSet(0.95, null);
-        analysis.report(out);
+    public static void main(String[] args) throws Exception {
+    	new Application(new TreeTraceAnalysis(), "TreeTraceAnalysis", 600, 300, args);
+//        PrintStream out = System.out;
+//        File inputFile = null;
+//
+//        if (args.length > 0) {
+//            System.out.println("Input file  = " + args[0]);
+//            inputFile = new File(args[0]);
+//        } else {
+//            System.out.println("Error: Expected nexus file, but not file name was provided.");
+//            System.exit(1);
+//        }
+//
+//        if (args.length > 1) {
+//            System.out.println("Output file = " + args[1]);
+//            try {
+//                out = new PrintStream(new FileOutputStream(args[1]));
+//            } catch (FileNotFoundException e) {
+//                System.out.println("Error: Unable to create output file.");
+//                System.exit(1);
+//            }
+//        }
+//
+//        List<Tree> trees = null;
+//        try {
+//            trees = TreeTraceAnalysis.Utils.getTrees(inputFile);
+//        } catch (Exception e) {
+//            System.out.println("Error occurred while parsing input file.");
+//            System.exit(1);
+//        }
+//
+//        TreeTraceAnalysis analysis = new TreeTraceAnalysis(trees, 0.1);
+//        analysis.computeCredibleSet(0.95, null);
+//        analysis.report(out);
     }
 
 
