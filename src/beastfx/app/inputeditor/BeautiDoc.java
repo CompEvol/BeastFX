@@ -549,6 +549,11 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                 mergePoints.put(str, "");
             }
         }
+        
+        // find namespace of main template
+        List<String> namespaces = new ArrayList<>();
+        processNamespace(templateXML, namespaces);
+        int mainNamespaceCount = namespaces.size();
 
         // find XML to merge
         // ensure processed templates are unique in name.
@@ -597,8 +602,10 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                                             String str = mergePoints.get(mergePoint);
                                             str += xml;
                                             mergePoints.put(mergePoint, str);
-                                        }
 
+                                            // find namespace of sub template
+                                            processNamespace(xml2, namespaces);
+                                        }
                                     }
                                 } catch (Exception e) {
                                     if (e.getMessage() != null) {
@@ -637,6 +644,9 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         }
         templateName = nameFromFile(fileName);
 
+        mergeNamespace(templateXML, mainNamespaceCount, namespaces);
+
+        
         if (Boolean.valueOf(System.getProperty("beast.debug"))) {
             Writer out = new OutputStreamWriter(new FileOutputStream("/tmp/beast.xml"));
             try {
@@ -649,7 +659,46 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         return templateXML;
     }
 
-    public void processBeautiConfig(Document doc) throws XMLParserException, TransformerException  {
+    /** insert namespaces into main template
+     * if there are any namespaces picked up from subtemplates 
+     * (and thus mainNamespaceCount < namespaces.size()) **/
+    private void mergeNamespace(String templateXML, int mainNamespaceCount, List<String> namespaces) {
+        if (mainNamespaceCount < namespaces.size()) {
+        	// only change if number of name spaces has changed when merging sub-templates
+        	StringBuilder b = new StringBuilder();
+        	for (String n : namespaces) {
+        		b.append(n).append(':');
+        	}
+        	b.deleteCharAt(b.length()-1);
+        	String namespace = b.toString();
+        	
+            int i = templateXML.indexOf("namespace=");
+            if (i > 0) {
+            	char c = templateXML.charAt(i + 10);
+            	int j = templateXML.indexOf(c, i+11);
+            	templateXML = templateXML.substring(0, i + 11) +
+            			namespace +
+            			templateXML.substring(j);
+            }
+        }
+	}
+
+	/** grab namespace from templateXML by string processing **/
+    private void processNamespace(String templateXML, List<String> namespaces) {
+        int i = templateXML.indexOf("namespace=");
+        if (i > 0) {
+        	char c = templateXML.charAt(i + 10);
+        	int j = templateXML.indexOf(c, i+11);
+        	String namespace = templateXML.substring(i+11, j);
+        	for (String n : namespace.split(":")) {
+        		if (!namespaces.contains(n)) {
+        			namespaces.add(n);
+        		}
+        	}
+        }		
+	}
+
+	public void processBeautiConfig(Document doc) throws XMLParserException, TransformerException  {
         // find configuration elements, process and remove
         NodeList nodes = doc.getElementsByTagName("beauticonfig");
         Node topNode = doc.getElementsByTagName("*").item(0);
