@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.json.JSONObject;
 
+import beastfx.app.beauti.ThemeProvider;
 import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.inputeditor.BEASTObjectPanel;
 import beastfx.app.inputeditor.BeautiConfig;
@@ -69,6 +70,8 @@ public class Application extends Console {
 		dialog.setResizable(true);
 		dialog.getDialogPane().setPrefSize(prefDialogWidth, prefDialogHeight);
 		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+		ThemeProvider.loadStyleSheet(dialog.getDialogPane().getScene());
+		
 		// show the dialog
 		Optional<ButtonType> option = dialog.showAndWait();
 		long start = System.currentTimeMillis();
