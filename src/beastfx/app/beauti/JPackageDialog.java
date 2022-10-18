@@ -14,6 +14,7 @@ import beast.pkgmgmt.PackageVersion;
 import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -21,6 +22,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
@@ -31,6 +33,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -142,10 +145,10 @@ public class JPackageDialog extends DialogPane {
 					sleep(30000);
 	    			if (isRunning) {
 	    				t.interrupt();
-	    				Alert.showMessageDialog(null, "<html>Download of file " +
-	    						PackageManager.PACKAGES_XML + " timed out.<br>" +
-	    								"Perhaps this is due to lack of internet access</br>" +
-	    								"or some security settings not allowing internet access.</html>"
+	    				Alert.showMessageDialog(null, "Download of file " +
+	    						PackageManager.PACKAGES_XML + " timed out.\n" +
+	    								"Perhaps this is due to lack of internet access\n" +
+	    								"or some security settings not allowing internet access."
 	    						);
 	    			}
 				} catch (InterruptedException e) {
@@ -176,7 +179,13 @@ public class JPackageDialog extends DialogPane {
 
     private TableView<Package0> createTable() {
         dataTable = new TableView<>();
-                
+        dataTable.setPlaceholder(new TextArea("No package found yet.\n"
+        		+ "The package manager needs access to https://github.com/CompEvol/CBAN.\n"
+        		+ "If no packages appear here shortly, check your internet connection.\n"
+        		+ "If the connection is OK, check if you can access\n"
+        		+ "     https://github.com/CompEvol/CBAN\n"
+        		+ "by opening the above link in a browser."));
+
         final int linkColumn = 4;
 
         
@@ -285,13 +294,12 @@ public class JPackageDialog extends DialogPane {
             	dataTable.refresh();
             }
         } catch (PackageManager.PackageListRetrievalException e) {
-        	StringBuilder msgBuilder = new StringBuilder("<html>" + e.getMessage() + "<br>");
+        	StringBuilder msgBuilder = new StringBuilder(e.getMessage() + "\n");
             if (e.getCause() instanceof IOException)
-                msgBuilder.append(NO_CONNECTION_MESSAGE.replaceAll("\\.", ".<br>"));
-            msgBuilder.append("</html>");
+                msgBuilder.append(NO_CONNECTION_MESSAGE.replaceAll("\\.", ".\n"));
 
         	try {
-        		Alert.showMessageDialog(null, msgBuilder.toString());
+        		Platform.runLater(() -> Alert.showMessageDialog(null, msgBuilder.toString()));
         	} catch (Exception e0) {
         		e0.printStackTrace();
         	}
@@ -364,8 +372,8 @@ public class JPackageDialog extends DialogPane {
 
                 if (getToDeleteListFile().exists()) {
                     Alert.showMessageDialog(box,
-                            "<html><body><p style='width: 200px'>Upgrading packages on your machine requires BEAUti " +
-                                    "to restart. Shutting down now.</p></body></html>");
+                            "Upgrading packages on your machine requires BEAUti " +
+                                    "to restart. Shutting down now.");
                     System.exit(0);
                 }
 
@@ -450,8 +458,8 @@ public class JPackageDialog extends DialogPane {
 
             if (getToDeleteListFile().exists()) {
                 Alert.showMessageDialog(dataTable,
-                        "<html><body><p style='width: 200px'>Removing packages on your machine requires BEAUti " +
-                                "to restart. Shutting down now.</p></body></html>");
+                        "Removing packages on your machine requires BEAUti " +
+                                "to restart. Shutting down now.");
                 System.exit(0);
             }
 
@@ -488,7 +496,10 @@ public class JPackageDialog extends DialogPane {
         closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
         	// set a result (any object but 'null' will do) to be able to close the dialog
-        	dlg.setResult((Package)packageMap.values().toArray()[0]);
+        	if (packageMap != null && packageMap.size() > 0) {
+        		dlg.setResult((Package)packageMap.values().toArray()[0]);
+        	}
+        	dlg.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         	dlg.close();
         });
         closeButton.setOnKeyReleased(e-> {

@@ -98,7 +98,7 @@ public class BeastMain extends Console {
     }
 
 	private static void printVersion() {
-    	Log.info("BEAST " + (new BEASTVersion2()).getVersionString());
+    	Log.info("BEAST " + (new BEASTVersion()).getVersionString());
         Log.info("---");
         for (String jarDirName : PackageManager.getBeastDirectories()) {
             File versionFile = new File(jarDirName + "/version.xml");
