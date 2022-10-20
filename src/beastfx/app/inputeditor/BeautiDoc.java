@@ -552,6 +552,9 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         
         // find namespace of main template
         List<String> namespaces = new ArrayList<>();
+        for (String s :"beastfx.app.beauti:beastfx.app.inputeditor:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.branchratemodel:beast.base.evolution.speciation:beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood:beast.evolution:beast.base.inference.distribution".split(":")) {
+        	namespaces.add(s);
+        }
         processNamespace(templateXML, namespaces);
         int mainNamespaceCount = namespaces.size();
 
@@ -656,6 +659,13 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
             }
         }
 
+        // flatten namespaces to string (for use in BeuatiSubTemplate.createSubNet())
+        namespace = "";
+        for (String s : namespaces) {
+        	namespace += s + ":";
+        }
+    	namespace = namespace.substring(0, namespace.length()-1);
+        
         return templateXML;
     }
 
@@ -2657,6 +2667,11 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
     }
 
 
+    private String namespace = "beastfx.app.beauti:beastfx.app.inputeditor:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.branchratemodel:beast.base.evolution.speciation:beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood:beast.evolution:beast.base.inference.distribution";
+
+    public String getNamespace() {
+		return namespace;
+	}
 } // class BeautiDoc
 
 

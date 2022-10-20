@@ -359,7 +359,7 @@ public class BeautiSubTemplate extends BEASTObject {
     	
         // wrap in a beast element with appropriate name spaces
         String _sXML = "<beast version='2.0' \n" +
-                "namespace='beastfx.app.beauti:beastfx.app.inputeditor:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.branchratemodel:beast.base.evolution.speciation:beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood:beast.evolution:beast.base.inference.distribution'>\n" +
+                "namespace='" + doc.getNamespace() + "'>\n" +
                 xml +
                 "</beast>\n";
 
