@@ -175,8 +175,10 @@
 		<echo message="JUnit test report finished." />
 	</target>
 
-	<target name="addon"
-	        depends="build_jar_all_BeastFX_NoJUnitTest"
+<!--
+            depends="build_jar_all_BeastFX_NoJUnitTest"
+-->            
+	<target name="addon" depends="init"
 	        description="release BEAST 2 package version of BeastFX">
 
 		<delete dir="${Add_on_dir}" />
@@ -209,7 +211,28 @@
 				<include name="**/*" />
 			</fileset>
         </jar>
-		<echo message="Add-on version release is finished." />
+		<echo message="Add-on version release BEAST.app ${version} is finished." />
+
+        <delete dir="${Add_on_dir}" />
+        <!-- Create the release directory -->
+        <mkdir dir="${Add_on_dir}" />
+        <mkdir dir="${Add_on_dir}/lib" />
+
+        <copy todir="${Add_on_dir}">
+            <fileset file="${beast2path}/version.xml"/>
+        </copy>
+        <copy todir="${Add_on_dir}/lib">
+            <fileset  file="${dist}/BEAST.base.jar" />
+        </copy>
+        <copy todir="${Add_on_dir}">
+            <fileset file="${dist}/BEAST.base.src.jar" />
+        </copy>
+        <jar jarfile="${distFX}/BEAST.base.addon.v${version}.zip">
+            <fileset dir="${Add_on_dir}">
+                <include name="**/*" />
+            </fileset>
+        </jar>
+        <echo message="Add-on version release BEAST.base ${version} is finished." />
 	</target>
 
 
