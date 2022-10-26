@@ -84,15 +84,18 @@ public class FXUtils {
     			fileChooser.setInitialFileName(defaultFileOrDir.getName());
     		}
     	}
-    	
-    	for (String extension : extensions) {
-    		if (extension.equals("")) {
-    			extension = "*.*";
-    		}
-    		fileChooser.getExtensionFilters().add(
-    				new FileChooser.ExtensionFilter(extension, "*."+extension)
-    		);
-    	}
+
+		if (extensions != null) {
+			for (String extension : extensions) {
+				if (extension.equals("")) {
+					extension = "*.*";
+				}
+				fileChooser.getExtensionFilters().add(
+						new FileChooser.ExtensionFilter(extension, "*."+extension)
+				);
+			}
+		}
+
     	fileChooser.setTitle(message);
     	
     	if (isLoadNotSave) {
