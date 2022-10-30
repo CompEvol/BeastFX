@@ -36,7 +36,7 @@ open [Project Structure](https://www.jetbrains.com/help/idea/project-settings-an
 
 Here is the final setting you need to achieve:
 
-<a href="./figures/IntelliJProject.png"><img src="./figures/IntelliJProject.png" align="left" ></a>
+<a href="./figures/IntelliJProject.png"><img src="./figures/IntelliJProject.png" ></a>
 
 If you did not have the Zulu 17, then you need to add it, otherwise you can skip the next section.
 
@@ -47,7 +47,7 @@ If you are not familiar with this process, you can read the tutorials [SDKs](htt
 
 In the end, you should have Zulu 17 in your SDKs list:
 
-<a href="./figures/zulu-17.png"><img src="./figures/zulu-17.png" align="left" width="750"></a>
+<a href="./figures/zulu-17.png"><img src="./figures/zulu-17.png" width="750"></a>
 
 ## Setup modules
 
@@ -58,48 +58,48 @@ so that they will be available for other projects.
 
 1. beast2 library
 
-<a href="./figures/b2-lib.png"><img src="./figures/b2-lib.png" align="left" width="400"></a>
+<a href="./figures/b2-lib.png"><img src="./figures/b2-lib.png" width="500"></a>
 
 2. beast2 junit test
 
-<a href="./figures/b2-junit.png"><img src="./figures/b2-junit.png" align="left" width="400"></a>
+<a href="./figures/b2-junit.png"><img src="./figures/b2-junit.png" width="500"></a>
 
 3. BeastFx library
 
-<a href="./figures/b2fx-lib.png"><img src="./figures/b2fx-lib.png" align="left" width="400"></a>
+<a href="./figures/b2fx-lib.png"><img src="./figures/b2fx-lib.png" width="500"></a>
 
 ### beast2 module
 
 Add or modify the `beast2` module to make it same as the configuration below:
 
-<a href="./figures/b2Src.png"><img src="./figures/b2Src.png" align="left"></a>
+<a href="./figures/b2Src.png"><img src="./figures/b2Src.png" ></a>
 
 Then setup the dependencies:
 
-<a href="./figures/b2Dep.png"><img src="./figures/b2Dep.png" align="left"></a>
+<a href="./figures/b2Dep.png"><img src="./figures/b2Dep.png" ></a>
 
 
 ### BeastFx module
 
 Add or modify the `BeastFx` module to make it same as the configuration below:
 
-<a href="./figures/b2fxSrc.png"><img src="./figures/b2fxSrc.png" align="left"></a>
+<a href="./figures/b2fxSrc.png"><img src="./figures/b2fxSrc.png" ></a>
 
 Then setup the dependencies:
 
-<a href="./figures/b2fxDep.png"><img src="./figures/b2fxDep.png" align="left"></a>
+<a href="./figures/b2fxDep.png"><img src="./figures/b2fxDep.png" ></a>
 
 Because the test code is in a different folder structure, 
 you need to add the package prefix to make them compile in IntelliJ.
 Click the "pen" icon, and add "test" to the prefix.
 
-<a href="./figures/PkgPref.png"><img src="./figures/PkgPref.png" align="left" width="300"></a>
+<a href="./figures/PkgPref.png"><img src="./figures/PkgPref.png" width="400"></a>
 
 ## Run application in IntelliJ
 
 Create the [run configuration](https://www.jetbrains.com/help/idea/creating-and-running-your-first-java-application.html#create_jar_run_config) for BEAUti:
 
-<a href="./figures//BEAUti.png"><img src="./figures/BEAUti.png" align="left" ></a>
+<a href="./figures//BEAUti.png"><img src="./figures/BEAUti.png" ></a>
 
 
 
