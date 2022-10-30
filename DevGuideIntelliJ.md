@@ -85,15 +85,15 @@ Add or modify the `BeastFx` module to make it same as the configuration below:
 
 <a href="./figures/b2fxSrc.png"><img src="./figures/b2fxSrc.png" ></a>
 
-Then setup the dependencies:
-
-<a href="./figures/b2fxDep.png"><img src="./figures/b2fxDep.png" ></a>
-
 Because the test code is in a different folder structure, 
 you need to add the package prefix to make them compile in IntelliJ.
 Click the "pen" icon, and add "test" to the prefix.
 
 <a href="./figures/PkgPref.png"><img src="./figures/PkgPref.png" width="400"></a>
+
+Then setup the dependencies:
+
+<a href="./figures/b2fxDep.png"><img src="./figures/b2fxDep.png" ></a>
 
 ## Run application in IntelliJ
 
