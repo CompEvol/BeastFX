@@ -229,7 +229,7 @@ public class PackageHealthChecker extends Runnable {
 			Log.info = info;
 		}
 		if (failedFiles.size() > 0) {
-            report("Example XML parsing failed for folloding files:");
+            report("Example XML parsing failed for following files:");
             for (String fileName : failedFiles) {
             	report(fileName);
             }

@@ -96,7 +96,7 @@
               class="beastfx.app.tools.LogAnalyser"
             />
 
-	    <packageapp description="Package healt checker"
+	    <packageapp description="Package health checker"
               class="beastfx.app.tools.PackageHealthChecker"
             />
 
