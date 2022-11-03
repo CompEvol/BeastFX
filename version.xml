@@ -12,6 +12,7 @@
 			
 			<service type="beastfx.app.inputeditor.InputEditor">
 				<provider classname="beastfx.app.inputeditor.BEASTObjectInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.TypeTraitSetInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.BooleanInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.DoubleInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.DoubleListInputEditor"/>
