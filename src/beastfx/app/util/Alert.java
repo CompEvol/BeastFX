@@ -210,17 +210,20 @@ public class Alert {
 				o.toString();
 	}
 
-	public static Object showInputDialog(Parent parent,
-            Object message, String title, AlertType messageType, String initialSelectionValue) {    	
+	public static Optional<String> showInputDialog(Parent parent,
+												   Object message,
+												   String title,
+												   AlertType messageType,
+												   String initialSelectionValue) {
     	TextInputDialog dlg = new TextInputDialog(initialSelectionValue);
     	dlg.setHeaderText(title);
     	ThemeProvider.loadStyleSheet(dlg.getDialogPane().getScene());
-    	Optional<?> option = dlg.showAndWait();
+    	Optional<String> option = dlg.showAndWait();
 		if (parent != null) {
 			Scene node = parent.getScene();
 			dlg.setX(node.getX() + node.getWidth()/2);
 			dlg.setY(node.getY() + node.getHeight()/2);
 		}
-		return option.get();
+		return option;
     }
 }

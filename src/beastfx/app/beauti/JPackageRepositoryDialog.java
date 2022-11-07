@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import beast.pkgmgmt.PackageManager;
 import beastfx.app.util.Alert;
@@ -46,14 +47,14 @@ import javafx.scene.layout.VBox;
  * @author Tim Vaughan <tgvaughan@gmail.com>
  */
 public class JPackageRepositoryDialog extends DialogPane {
-    public class URL0 {
+    public static class URL0 {
     	URL url;
     	public URL0(URL url) {
     		this.url = url;
     	}
     	
     	public String getURL() {
-    		return url.getPath();
+    		return url.toString();
     	}
     	public void setURL(String URL) {
     		// ignore
@@ -64,10 +65,7 @@ public class JPackageRepositoryDialog extends DialogPane {
 
     
 	public JPackageRepositoryDialog(final Pane frame) {
-        // super(frame);
-
-        //setModal(true);
-		Dialog dlg = new Dialog();
+		Dialog<Void> dlg = new Dialog<>();
         dlg.setTitle("BEAST 2 Package Repository Manager");
         // Get current list of URLs:
         List<URL> urls;
@@ -82,7 +80,7 @@ public class JPackageRepositoryDialog extends DialogPane {
                 e.printStackTrace();
             }
         }
-        
+
         List<URL0> urls0 = new ArrayList<>();
         for (URL url : urls) {
         	urls0.add(new URL0(url));
@@ -97,7 +95,7 @@ public class JPackageRepositoryDialog extends DialogPane {
         
 		TableColumn<URL0, String> col1 = new TableColumn<>("Package repository URL");
 		col1.setPrefWidth(400);
-		col1.setCellValueFactory(new PropertyValueFactory<URL0, String>("URL"));
+		col1.setCellValueFactory(new PropertyValueFactory<>("URL"));
 		repoTable.getColumns().add(col1);
 
 		repoTable.setItems(this.urls0);
@@ -108,16 +106,16 @@ public class JPackageRepositoryDialog extends DialogPane {
         // ADD URL
         Button addURLButton = new Button("Add URL");
         addURLButton.setOnAction(e -> {
-            String newURLString = (String)Alert.showInputDialog(frame,
+            Optional<String> newURLString = Alert.showInputDialog(frame,
                     "Enter package repository URL",
                     "Add repository URL",Alert.PLAIN_MESSAGE, "http://");
 
-            if (newURLString == null)
+            if (newURLString.isEmpty())
                 return; // User canceled
 
-            URL newURL = null;
+            URL newURL;
             try {
-                newURL = new URL(newURLString);
+                newURL = new URL(newURLString.get());
             } catch (MalformedURLException exception) {
                 Alert.showMessageDialog(frame, "Invalid URL.");
                 return;
@@ -161,12 +159,7 @@ public class JPackageRepositoryDialog extends DialogPane {
         
         // Action listeners to disable/enable delete button
         repoTable.getSelectionModel().selectedIndexProperty().
-    	addListener(e -> {
-            if (repoTable.getSelectionModel().getSelectedIndex() == 0)
-                deleteURLButton.setDisable(true);
-            else
-                deleteURLButton.setDisable(false);
-        });
+    	addListener(e -> deleteURLButton.setDisable(repoTable.getSelectionModel().getSelectedIndex() == 0));
                 
         pane.getChildren().add(box);
         pane.setPrefWidth(400);

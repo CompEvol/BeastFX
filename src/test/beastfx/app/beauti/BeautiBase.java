@@ -398,7 +398,7 @@ public class BeautiBase extends ApplicationExtension {
 		}
 	}
 	
-	void printBeautiState() {
+	public void printBeautiState() {
 		// Thread.sleep(500);
 		// String s = stateAsString();
         doc.scrubAll(true, false);
@@ -432,13 +432,13 @@ public class BeautiBase extends ApplicationExtension {
 		}
 	}
 
-	void warning(String str) {
+	public void warning(String str) {
 		System.err.println("\n\n=====================================================\n");
 		System.err.println(str);
 		System.err.println("\n=====================================================\n\n");
 	}
 	
-	void makeSureXMLParses() {
+	public void makeSureXMLParses() {
 		warning("Make sure that XML that BEAUti produces parses");
 		File XMLFile = new File(org.assertj.core.util.Files.temporaryFolder() + "/x.xml");
 		if (XMLFile.exists()) {
@@ -486,7 +486,7 @@ public class BeautiBase extends ApplicationExtension {
 //	String _dir;
 //	File _file;
 
-	void importAlignment(String dir, File ... files) {
+public void importAlignment(String dir, File ... files) {
 //		if (!Utils.isMac()) {
 //			beautiFrame.menuItemWithPath("File", "Import Alignment").click();
 //			JFileChooserFixture fileChooser = findFileChooser().using(robot());
