@@ -21,7 +21,9 @@ import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.util.Console;
 import beastfx.app.util.Utils;
+import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 import beast.base.core.BEASTObject;
 import beast.base.core.Description;
 import beast.base.core.Input;
@@ -120,7 +122,20 @@ public class Application extends Console {
 		analyser.setID(title);
 
 		if (args.length == 0) {
-			launch(Application.class, args);
+			if (ProgramStatus.name.equals("BEAUti")) {
+				// if we are in BEAUti, launch() is already called, so cannot call it again
+				Platform.runLater(()->{
+		            try {
+		                Application application = new Application(analyser);
+		                Stage primaryStage = new Stage();
+		                application.start(primaryStage);
+		            } catch (Exception e) {
+		                e.printStackTrace();
+		            }
+		        });
+			} else {
+				launch(Application.class, args);
+			}
 			return;
 		}
 
