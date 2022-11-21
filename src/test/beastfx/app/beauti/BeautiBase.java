@@ -1,45 +1,19 @@
 package test.beastfx.app.beauti;
 
 
-
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
-
-import javax.imageio.ImageIO;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.testfx.api.FxRobot;
-import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.service.query.NodeQuery;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import beastfx.app.beauti.Beauti;
+import beast.base.core.BEASTInterface;
+import beast.base.core.BEASTObject;
+import beast.base.core.Function;
+import beast.base.inference.*;
+import beast.base.inference.distribution.Prior;
+import beast.base.inference.parameter.Parameter;
+import beast.base.parser.XMLParser;
+import beast.pkgmgmt.PackageManager;
 import beastfx.app.beauti.BeautiTabPane;
 import beastfx.app.inputeditor.AlignmentListInputEditor;
+import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
 import beastfx.app.inputeditor.BeautiConfig;
 import beastfx.app.inputeditor.BeautiDoc;
-import beastfx.app.inputeditor.AlignmentListInputEditor.Partition0;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -47,31 +21,30 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import beast.base.core.BEASTInterface;
-import beast.base.core.BEASTObject;
-import beast.base.core.Function;
-import beast.base.inference.CompoundDistribution;
-import beast.base.inference.Distribution;
-import beast.base.inference.Logger;
-import beast.base.inference.MCMC;
-import beast.base.inference.Operator;
-import beast.base.inference.State;
-import beast.base.inference.StateNode;
-import beast.base.inference.distribution.Prior;
-import beast.base.inference.parameter.Parameter;
-import beast.base.parser.XMLParser;
-import beast.pkgmgmt.PackageManager;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.api.FxRobot;
+import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.service.query.NodeQuery;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.imageio.ImageIO;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 
@@ -82,7 +55,7 @@ import beast.pkgmgmt.PackageManager;
 @ExtendWith(ApplicationExtension.class)
 public class BeautiBase extends ApplicationExtension {
 	final static String TEMPLATE_DIR = BeautiConfig.TEMPLATE_DIR;
-	final static String NEXUS_DIR = "../beast2/examples/nexus/";
+	protected final static String NEXUS_DIR = "../beast2/examples/nexus/";
 
 	// If skipAssertions = true, the BEAUti status will not be checked
 	// Can be handy for debugging TestFX unit tests
