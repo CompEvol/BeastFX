@@ -1,6 +1,7 @@
 package beastfx.app.inputeditor;
 
 
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -174,6 +175,7 @@ public class ListInputEditor extends InputEditor.Base {
     } // init
 
     protected void addSingleItem(BEASTInterface beastObject) {
+        Pane itemBox0 = FXUtils.newVBox();
         Pane itemBox = FXUtils.newHBox();
         
         SmallButton editButton = new SmallButton("e", true, SmallButton.ButtonType.square);
@@ -200,7 +202,7 @@ public class ListInputEditor extends InputEditor.Base {
         validateLabel.setVisible(true);
         m_validateLabels.add(validateLabel);
         
-        m_listBox.getChildren().add(itemBox);
+//        m_listBox.getChildren().add(itemBox);
 //        if (m_validateLabel == null) {
 //        	rowCount++;
 //            // m_listBox.add(itemBox, 0, rowCount);
@@ -214,7 +216,7 @@ public class ListInputEditor extends InputEditor.Base {
 //            m_listBox.getChildren().add(c);
 //        }
 
-
+        itemBox0.getChildren().add(itemBox);
         if (m_bExpandOption == ExpandOption.TRUE || m_bExpandOption == ExpandOption.TRUE_START_COLLAPSED ||
                 (m_bExpandOption == ExpandOption.IF_ONE_ITEM && ((List<?>) m_input.get()).size() == 1)) {
         	VBox expandBox = createExpandBox(beastObject, editor, editButton);
@@ -258,12 +260,15 @@ public class ListInputEditor extends InputEditor.Base {
             } catch (Exception e) {
     			// TODO: handle exception
     		}
+            itemBox0.getChildren().add(expandBox);
         } else {
             if (BEASTObjectPanel.countInputs(beastObject, doc) == 0) {
 System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
                 editButton.setVisible(false);
             }
         }
+         
+        m_listBox.getChildren().add(itemBox0);
 
         // FXUtils.createHMCButton(itemBox, beastObject, m_input);
 
