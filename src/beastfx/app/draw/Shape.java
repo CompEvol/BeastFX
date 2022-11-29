@@ -110,21 +110,21 @@ abstract public class Shape {
             m_sID = node.getAttributes().getNamedItem("id").getNodeValue();
         }
         if (node.getAttributes().getNamedItem("x") != null) {
-            m_x = (new Integer(node.getAttributes().getNamedItem("x").getNodeValue())).intValue();
+            m_x = Integer.parseInt(node.getAttributes().getNamedItem("x").getNodeValue());
             m_x += 400;
         }
         if (node.getAttributes().getNamedItem("y") != null) {
-            m_y = (new Integer(node.getAttributes().getNamedItem("y").getNodeValue())).intValue();
+            m_y = Integer.parseInt(node.getAttributes().getNamedItem("y").getNodeValue());
             if (node.getAttributes().getNamedItem("h") != null) {
-                m_h = (new Integer(node.getAttributes().getNamedItem("h").getNodeValue())).intValue();
+                m_h = Integer.parseInt(node.getAttributes().getNamedItem("h").getNodeValue());
             }
             m_y = 550 - m_y - m_h;
         }
         if (node.getAttributes().getNamedItem("w") != null) {
-            m_w = (new Integer(node.getAttributes().getNamedItem("w").getNodeValue())).intValue();
+            m_w = Integer.parseInt(node.getAttributes().getNamedItem("w").getNodeValue());
         }
         if (node.getAttributes().getNamedItem("penwidth") != null) {
-            m_nPenWidth = (new Integer(node.getAttributes().getNamedItem("penwidth").getNodeValue())).intValue();
+            m_nPenWidth = Integer.parseInt(node.getAttributes().getNamedItem("penwidth").getNodeValue());
         }
         if (node.getAttributes().getNamedItem("fillcolor") != null) {
             m_fillcolor = string2Color(node.getAttributes().getNamedItem("fillcolor").getNodeValue());
@@ -199,21 +199,21 @@ abstract public class Shape {
         }
         int start = 0;
         String rStr = color.substring(start, space);
-        int r = (new Integer(rStr)).intValue();
+        int r = Integer.parseInt(rStr);
         start = space + 1;
         space = color.indexOf(' ', start);
         if (space < 0) {
             return new Color(128, 128, 128);
         }
         String gStr = color.substring(start, space);
-        int g = (new Integer(gStr)).intValue();
+        int g = Integer.parseInt(gStr);
         start = space + 1;
         space = color.indexOf(' ', start);
         if (space < 0) {
             space = color.length();
         }
         String isStr = color.substring(start, space);
-        int b = (new Integer(isStr)).intValue();
+        int b = Integer.parseInt(isStr);
         return new Color(r, g, b);
     } // string2Color
 

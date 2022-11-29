@@ -343,8 +343,8 @@ public class Document {
                 Arrow arrow = (Arrow) shape;
                 for (int j = 0; j < ids.size(); j++) {
                     if (arrow.m_sHeadID.startsWith(ids.get(j)) || arrow.m_sTailID.equals(ids.get(j))) {
-                        if (!selection.contains(new Integer(i))) {
-                            selection.add(new Integer(i));
+                        if (!selection.contains(Integer.valueOf(i))) {
+                            selection.add(Integer.valueOf(i));
                         }
                     }
                 }
@@ -525,7 +525,7 @@ public class Document {
 //        int size = action.getGroupSize();
 //        selection.clear();
 //        for (int i = 0; i < size; i++) {
-//            selection.m_Selection.add(new Integer(m_objects.size() - i - 1));
+//            selection.m_Selection.add(m_objects.size() - i - 1));
 //        }
 //    } // ungroup
 
@@ -989,7 +989,7 @@ public class Document {
             m_nPositions = new ArrayList<>();
             for (int i = 0; i < selection.size(); i++) {
                 if (m_objects.get(selection.get(i)) instanceof BEASTObjectShape) {
-                    m_nPositions.add(new Integer(selection.get(i).intValue()));
+                    m_nPositions.add(Integer.valueOf(selection.get(i).intValue()));
                 }
             }
             init();

@@ -153,7 +153,11 @@ public class ExampleXmlParsingTest  {
         }
     }
     
-    @Test
+    // Suppress warning for removal of SecurityManager
+    // there does not seem to be a viable alternative
+    // for blocking System.exit() calls yet
+    @SuppressWarnings({ "removal", "deprecation" })
+	@Test
     public void test_ThatParameterisedXmlExamplesRuns() throws IOException {
         String dir = System.getProperty("user.dir") + "/examples/parameterised";
         Logger.FILE_MODE = Logger.LogFileMode.overwrite;
@@ -161,7 +165,7 @@ public class ExampleXmlParsingTest  {
         Randomizer.setSeed(127);
         
         // prevent System.exit() having an effect
-        final SecurityManager securityManager = new SecurityManager() {
+		final SecurityManager securityManager = new SecurityManager() {
             @Override
             public void checkPermission( Permission permission ) {
               if( "exitVM".equals( permission.getName() ) ) {
@@ -175,7 +179,7 @@ public class ExampleXmlParsingTest  {
             	throw new ExitException(status);
             }
         };
-        SecurityManager sm = System.getSecurityManager();
+		SecurityManager sm = System.getSecurityManager();
         System.setSecurityManager( securityManager ) ;
           
         try {

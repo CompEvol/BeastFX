@@ -1034,7 +1034,7 @@ public class TreeAnnotator extends Console {
         int index = 0;
         for (Object key : values.keySet()) {
             name[index] = key.toString();
-            freq[index] = new Double(values.get(key));
+            freq[index] = Double.valueOf(values.get(key));
             totalCount += freq[index];
             index++;
         }

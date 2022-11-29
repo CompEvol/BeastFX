@@ -412,7 +412,7 @@ public class ExpFunctionViewer extends javafx.application.Application {
 		gtr = new GeneralSubstitutionModel();
 		Double [] freqs = new Double[N];
 		for (int i = 0; i < N; i++) {
-			freqs[i] = new Double (1.0/N);
+			freqs[i] = Double.valueOf(1.0/N);
 		}
 		RealParameter freqParam = new RealParameter(freqs);
 		Frequencies fs = new Frequencies();

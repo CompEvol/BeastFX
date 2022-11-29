@@ -60,7 +60,7 @@ public class Selection {
 
     void setSingleSelection(int selection) {
         m_Selection.removeAll(m_Selection);
-        m_Selection.add(new Integer(selection));
+        m_Selection.add(Integer.valueOf(selection));
         if (selection >= 0) {
             m_tracker = m_doc.m_objects.get(selection).getTracker();
         }
@@ -84,7 +84,7 @@ public class Selection {
         if (contains(selectionIndex)) {
             return;
         }
-        m_Selection.add(new Integer(selectionIndex));
+        m_Selection.add(Integer.valueOf(selectionIndex));
         List<TrackPoint> tracker = m_doc.m_objects.get(selectionIndex).getTracker();
         if (m_tracker == null) {
             m_tracker = new ArrayList<>();
@@ -164,7 +164,7 @@ public class Selection {
     void setSelection(int[] selection) {
         m_Selection.removeAll(m_Selection);
         for (int i = 0; i < selection.length; i++) {
-            m_Selection.add(new Integer(i));
+            m_Selection.add(Integer.valueOf(i));
         }
 
     }
