@@ -127,7 +127,7 @@
             <connect srcID='meanClockRate.c:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(meanClockRate.c:$(n)) and meanClockRate.c:$(n)/estimate=true'/>
             <connect srcID='meanClockRate.c:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
-                     if='inlikelihood(clockRate.c:$(n)) and clockRate.c:$(n)/estimate=true'/>
+                     if='inlikelihood(meanClockRate.c:$(n)) and meanClockRate.c:$(n)/estimate=true'/>
             <connect srcID='clockrates.c:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(clockrates.c:$(n))'/>
 
