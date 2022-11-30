@@ -142,8 +142,6 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
 
             <connect srcID='kappa.s:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'/>
-            <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
-                     if='inlikelihood(hky.$(n)) and inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
 
             <connect srcID='kappa.s:$(n)' targetID='AVMNLogTransform.$(n)' inputName='f'
                      if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'/>
@@ -152,15 +150,9 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                      if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'>Scale HKY transition-transversion
                 parameter of partition s:$(n)
             </connect>
-            <connect srcID='FrequenciesExchanger.s:$(n)' targetID='mcmc' inputName='operator'
-                     if='inlikelihood(hky.$(n)) and inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'>
-                Exchange values of frequencies of partition s:$(n)
-            </connect>
 
             <connect srcID='kappa.s:$(n)' targetID='tracelog' inputName='log'
                      if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'/>
-            <connect srcID='freqParameter.s:$(n)' targetID='tracelog' inputName='log'
-                     if='inlikelihood(hky.$(n)) and inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
 
             <connect srcID='KappaPrior.s:$(n)' targetID='prior' inputName='distribution'
                      if='inlikelihood(kappa.s:$(n)) and kappa.s:$(n)/estimate=true'>HKY transition-transversion
@@ -239,17 +231,11 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                      if='inlikelihood(kappa2.s:$(n)) and kappa2.s:$(n)/estimate=true'>Scale TN93 kappa2 (rateCT)
                 parameter of partition s:$(n)
             </connect>
-            <connect srcID='FrequenciesExchanger.s:$(n)' targetID='mcmc' inputName='operator'
-                     if='inlikelihood(hky.$(n)) and inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'>
-                Exchange values of frequencies of partition s:$(n)
-            </connect>
 
             <connect srcID='kappa1.s:$(n)' targetID='tracelog' inputName='log'
                      if='inlikelihood(kappa1.s:$(n)) and kappa1.s:$(n)/estimate=true'/>
             <connect srcID='kappa2.s:$(n)' targetID='tracelog' inputName='log'
                      if='inlikelihood(kappa2.s:$(n)) and kappa2.s:$(n)/estimate=true'/>
-            <connect srcID='freqParameter.s:$(n)' targetID='tracelog' inputName='log'
-                     if='inlikelihood(hky.$(n)) and inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
 
             <connect srcID='kappa1Prior.s:$(n)' targetID='prior' inputName='distribution'
                      if='inlikelihood(kappa1.s:$(n)) and kappa1.s:$(n)/estimate=true'>TN93 kappa1 (rateAG) parameter of
@@ -353,8 +339,6 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
 		</prior>
 ]]>
 
-            <connect srcID='freqParameter.s:$(n)' targetID='state' inputName='stateNode'
-                     if='inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
             <connect srcID='rateAC.s:$(n)' targetID='state' inputName='stateNode'
                      if='inlikelihood(rateAC.s:$(n)) and rateAC.s:$(n)/estimate=true'/>
             <connect srcID='rateAG.s:$(n)' targetID='state' inputName='stateNode'
@@ -382,10 +366,6 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
                      if='inlikelihood(rateGT.s:$(n)) and rateGT.s:$(n)/estimate=true'/>
 
 
-            <connect srcID='FrequenciesExchanger.s:$(n)' targetID='mcmc' inputName='operator'
-                     if='inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'>Exchange values of
-                frequencies of partition s:$(n)
-            </connect>
             <connect srcID='RateACScaler.s:$(n)' targetID='mcmc' inputName='operator'
                      if='inlikelihood(rateAC.s:$(n)) and rateAC.s:$(n)/estimate=true'>Scale GTR A-C substitution
                 parameter of partition s:$(n)
@@ -411,8 +391,6 @@ RateGTPrior/index/=Priors/RateGTRPrior/,
                 parameter of partition s:$(n)
             </connect>
 
-            <connect srcID='freqParameter.s:$(n)' targetID='tracelog' inputName='log'
-                     if='inlikelihood(freqParameter.s:$(n)) and freqParameter.s:$(n)/estimate=true'/>
             <connect srcID='rateAC.s:$(n)' targetID='tracelog' inputName='log'
                      if='inlikelihood(rateAC.s:$(n)) and rateAC.s:$(n)/estimate=true'/>
             <connect srcID='rateAG.s:$(n)' targetID='tracelog' inputName='log'
