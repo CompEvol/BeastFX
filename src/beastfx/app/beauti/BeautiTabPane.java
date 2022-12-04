@@ -63,6 +63,8 @@ import beast.pkgmgmt.Utils6;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import static beast.pkgmgmt.BEASTClassLoader.addServices;
+
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -1229,6 +1231,17 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         BeautiDoc doc;
         try {
 			PackageManager.loadExternalJars();
+	        for (int i = 0; i < args.length - 1; i++) {
+	        	if (args[i].equals("-version_file")) {
+	        		args[i] = "";
+	        		i++;
+	        		while (i < args.length && !args[i].startsWith("-")) {
+	        			BEASTClassLoader.addServices(args[i]);
+		        		args[i] = "";
+	        			i++;
+	        		}
+	        	}
+	        }
 			if (Utils.isMac()) {
 			  	Utils.loadUIManager();
 			}

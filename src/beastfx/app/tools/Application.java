@@ -29,6 +29,7 @@ import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.core.ProgramStatus;
+import beast.pkgmgmt.BEASTClassLoader;
 
 @Description("BEAST application that handles argument parsing by introspection "
 		+ "using Inputs declared in the class.")
@@ -232,12 +233,21 @@ public class Application extends Console {
 					Log.info.println(getUsage());
 					// CLI usage only
 					System.exit(0);
+				} else if (name.equals("version_file")) {
+					i++;
+	        		while (i < args.length && !args[i].startsWith("-")) {
+	        			BEASTClassLoader.addServices(args[i]);
+	        			i++;
+	        		}
+	        		i--;
+	        		done = true;
 				} else if (name.equals("wd")) {
 					// set working directory
 					ProgramStatus.g_sDir = value;
 					i++;
+	        		done = true;
 				}
-				if (matchingInput == null) {
+				if (!done) {
 					
 					throw new IllegalArgumentException("Could not find match for argument -" + name + "\n"
 							+ getUsage());
@@ -298,6 +308,7 @@ public class Application extends Console {
 			e.printStackTrace();
 		}
 		buf.append("-help\t show arguments");
+		buf.append("-help\t Provide one or more version files containing a list of services to explicitly allow. (Useful for package development.)");
 		return buf.toString();
 	}
 
