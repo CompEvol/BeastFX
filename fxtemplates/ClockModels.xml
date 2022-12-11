@@ -137,7 +137,7 @@
                 partition c:$(n)
             </connect>
             <connect srcID='randomClockUpDownOperator.c:$(n)' targetID='mcmc' inputName='operator'
-                     if='inlikelihood(meanClockRate.c:$(n)) and inlikelihood(Tree.t:$(n)) and Tree.t:$(n)/esimate=true and meanClockRate.c:$(n)/estimate=true'>
+                     if='inlikelihood(meanClockRate.c:$(n)) and inlikelihood(Tree.t:$(n)) and Tree.t:$(n)/estimate=true and meanClockRate.c:$(n)/estimate=true'>
                 Up/down scaler for mean rate and tree of partition c:$(n)
             </connect>
             <connect srcID='IndicatorsBitFlip.c:$(n)' targetID='mcmc' inputName='operator'

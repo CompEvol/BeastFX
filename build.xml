@@ -28,6 +28,9 @@
 
     <property name="openjreMac" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64"/>
     <property name="openjreWin" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-win_x64/"/>
+<!--
+    <property name="openjreLnx" value="../../Downloads/bellsoft-jre-17.0.4.1-full/"/>
+-->
     <property name="openjreLnx" value="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-linux_x64/"/>
 
 	<path id="classpath">
@@ -65,6 +68,8 @@
 	<target name="cleanBeastFX">
     	<delete dir="${buildFX}" />
 	</target>
+	
+	<target name="cleanFX" depends="cleanBeastFX"/>
 
 	<!-- clean previous build, and then compile Java source code, and Juint test -->
 	<target name="build_all_BeastFX" depends="cleanBeastFX,compile-allBeastFX,junitBeastFX"
@@ -260,18 +265,19 @@
             </fileset>
         </copy>
 
-        <copy file="${beast2}/version.xml" tofile="${Linux_package_dir}/lib/BEAST.base.version.xml" />
-        <copy file="${beast2app}/version.xml" tofile="${Linux_package_dir}/lib/BEAST.app.version.xml" />
 
         <copy file="${common_dir}/icons/beast.png" todir="${Linux_package_dir}/images" />
         <copy file="${common_dir}/icons/beauti.png" todir="${Linux_package_dir}/images" />
 
         <copy file="${dist}/launcher.jar" todir="${Linux_package_dir}/lib" />
         <copy file="${dist}/launcher.src.jar" todir="${Linux_package_dir}/lib" />
-        <copy file="${dist}/BEAST.base.jar" todir="${Linux_package_dir}/lib" />
-        <copy file="${dist}/BEAST.base.src.jar" todir="${Linux_package_dir}/lib" />
-        <copy file="${distapp}/BEAST.app.jar" tofile="${Linux_package_dir}/lib/BEAST.app.jar" />
-        <copy file="${distapp}/BEAST.app.src.jar" tofile="${Linux_package_dir}/lib/BEAST.app.src.jar" />
+
+        <copy file="${beast2}/version.xml" tofile="${Linux_package_dir}/lib/packages/BEAST.base.version.xml" />
+        <copy file="${beast2app}/version.xml" tofile="${Linux_package_dir}/lib/packages/BEAST.app.version.xml" />
+        <copy file="${dist}/BEAST.base.jar" todir="${Linux_package_dir}/lib/packages" />
+        <copy file="${dist}/BEAST.base.src.jar" todir="${Linux_package_dir}/lib/packages" />
+        <copy file="${distapp}/BEAST.app.jar" tofile="${Linux_package_dir}/lib/packages/BEAST.app.jar" />
+        <copy file="${distapp}/BEAST.app.src.jar" tofile="${Linux_package_dir}/lib/packages/BEAST.app.src.jar" />
 
         <copy file="${tools_dir}/DensiTree.jar" todir="${Linux_package_dir}/lib" />
         <copy file="${tools_dir}/DensiTree.png" todir="${Linux_package_dir}/images" />
@@ -316,18 +322,19 @@
             </fileset>
         </copy>
 
-        <copy file="${beast2}/version.xml" tofile="${Windows_package_dir}/lib/BEAST.base.version.xml" />
-        <copy file="${beast2app}/version.xml" tofile="${Windows_package_dir}/lib/BEAST.app.version.xml" />
 
         <copy file="${common_dir}/icons/beast.png" todir="${Windows_package_dir}/images" />
         <copy file="${common_dir}/icons/beauti.png" todir="${Windows_package_dir}/images" />
 
         <copy file="${dist}/launcher.jar" todir="${Windows_package_dir}/lib" />
         <copy file="${dist}/launcher.src.jar" todir="${Windows_package_dir}/lib" />
-        <copy file="${dist}/BEAST.base.jar" todir="${Windows_package_dir}/lib" />
-        <copy file="${dist}/BEAST.base.src.jar" todir="${Windows_package_dir}/lib" />
-        <copy file="${distapp}/BEAST.app.jar" tofile="${Windows_package_dir}/lib/BEAST.app.jar" />
-        <copy file="${distapp}/BEAST.app.src.jar" tofile="${Windows_package_dir}/lib/BEAST.app.src.jar" />
+
+        <copy file="${beast2}/version.xml" tofile="${Windows_package_dir}/lib/packages/BEAST.base.version.xml" />
+        <copy file="${beast2app}/version.xml" tofile="${Windows_package_dir}/lib/packages/BEAST.app.version.xml" />
+        <copy file="${dist}/BEAST.base.jar" todir="${Windows_package_dir}/lib/packages" />
+        <copy file="${dist}/BEAST.base.src.jar" todir="${Windows_package_dir}/lib/packages" />
+        <copy file="${distapp}/BEAST.app.jar" tofile="${Windows_package_dir}/lib/packages/BEAST.app.jar" />
+        <copy file="${distapp}/BEAST.app.src.jar" tofile="${Windows_package_dir}/lib/packages/BEAST.app.src.jar" />
 
         <copy file="${tools_dir}/DensiTree.jar" todir="${Windows_package_dir}/lib" />
         <copy file="${tools_dir}/DensiTree.png" todir="${Windows_package_dir}/images" />
