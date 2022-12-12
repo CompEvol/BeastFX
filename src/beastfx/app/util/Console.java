@@ -10,6 +10,8 @@ import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -108,25 +110,27 @@ public class Console extends javafx.application.Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 	    textView = new TextArea("   ");
-	    textView.setPrefColumnCount(80);
-	    textView.setPrefRowCount(60);
-	    
-	    				    
-		//ScrollPane root = new ScrollPane();
-        //root.setContent(textView);
- 
-        // Set the Style-properties of the VBox
-	    textView.setStyle(
-                "-fx-border-style: solid inside;" +
-                "-fx-border-width: 2;" +
-                "-fx-border-insets: 5;" +
-                "-fx-border-radius: 5;" +
-                "-fx-border-color: blue;" +
-                "-fx-font: 11pt Menlo;");				    
+	    textView.setPrefColumnCount(120);
+		textView.setId("consoletextview");
+	    textView.setFont(Font.font ("Menlo", 12));
 
-        
 		Scene scene = new Scene(textView);
 		ThemeProvider.loadStyleSheet(scene);
+		textView.applyCss();
+		textView.layout();
+		Text t = (Text)textView.lookup(".text");
+		double lineHeight = t.getBoundsInLocal().getHeight();
+
+	    Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+	    // guessing that 30 is the size of the window decoration
+	    // this cannot be obtained from scene.getWindow().getHeight() or scene.getHeight() yet
+	    // because the window is not yet initialised (scene.getWindow() == null)
+	    // Note: textView.setPrefRowCount() needs to be called here, otherwise
+	    // the default row count of 10 will be used, and calling setPrefRowCount later on is ignored.
+	    double maxHeight = screenBounds.getHeight() - 30;
+	    int rowCount = Math.min(160, (int)(maxHeight/lineHeight));
+	    textView.setPrefRowCount(rowCount);
+
 		// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.show();

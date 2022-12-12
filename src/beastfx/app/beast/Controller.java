@@ -273,10 +273,15 @@ public class Controller implements Initializable {
 	};
 	List<Message> backLog = new ArrayList<>();
 	
-	void logToView(String _data, String _style) {
-		textView.setStyle("-fx-fill:" + _style + ";");
-		Log.info(_data);
-		textView.setStyle("-fx-fill:black;");
+	synchronized void logToView(String _data, String _style) {
+		try {
+			textView.setStyle("-fx-fill:" + _style + ";");
+			Log.info(_data);
+			textView.setStyle("-fx-fill:black;");
+		} catch (NullPointerException | ConcurrentModificationException e) {
+			// can happen due to some racing condition
+			// ignore, and suppress output so not to confuse the user
+		}
 	}
 
 	
