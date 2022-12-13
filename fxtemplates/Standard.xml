@@ -408,7 +408,10 @@ ClusterTree/clusterType/,
 
             <connect srcID='allTipDatesRandomWalker.t:$(n)'   targetID='mcmc' inputName='operator' if='inposterior(Tree.t:$(n)) and Tree.t:$(n)/estimate=true and allTipDatesRandomWalker.t:$(n)/weight!=0.0'>Estimates tip dates for tree t:$(n)</connect>
 
+<!--
+			TreeScaler is replaced with more efficient BICESPS operators.
             <connect srcID="YuleModelTreeScaler.t:$(n)"       targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Scales all internal nodes for tree t:$(n)</connect>
+-->
             <connect srcID="YuleModelTreeRootScaler.t:$(n)"   targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Scales root node for tree t:$(n)</connect>
             <connect srcID="YuleModelUniformOperator.t:$(n)"  targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Draws new internal node heights uniformally for tree t:$(n)</connect>
             <connect srcID="YuleModelSubtreeSlide.t:$(n)"     targetID="mcmc" inputName="operator" if="inposterior(YuleModel.t:$(n)) and Tree.t:$(n)/estimate=true" >Performs subtree slide rearrangement of tree t:$(n)</connect>
