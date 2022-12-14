@@ -159,6 +159,7 @@ public class BeastMain extends Console {
                         new Arguments.StringOption("DFout", "DEFINITIONRESULTFILE", "BEAST XML file written when -DF option is used"),
                         new Arguments.Option("sampleFromPrior", "samples from prior for MCMC analysis (by adding sampleFromPrior=\"true\" in the first run element)"),
                         new Arguments.StringOption("version_file", "VERSIONFILE" ,"Provide a version file containing a list of services to explicitly allow. (Useful for package development.)").allowMultipleUse(),
+                        new Arguments.StringOption("packagedir", "PACKAGEDIR" ,"Set user package directory instead of using the default"),
                 });
 
         try {
@@ -169,6 +170,11 @@ public class BeastMain extends Console {
         	Log.info.println();
             printUsage(arguments);
             System.exit(1);
+        }
+        
+        if (arguments.hasOption("packagedir")) {
+            String dir = arguments.getStringOption("packagedir");
+            System.setProperty("beast.user.package.dir", dir);
         }
         
         if (arguments.hasOption("loglevel")) {
