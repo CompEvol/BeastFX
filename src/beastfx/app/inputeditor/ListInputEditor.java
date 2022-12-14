@@ -31,8 +31,8 @@ import beast.pkgmgmt.BEASTClassLoader;
 
 public class ListInputEditor extends InputEditor.Base {
 
-    static Image DOWN_ICON;
-    static Image RIGHT_ICON;
+    static public Image DOWN_ICON;
+    static public Image RIGHT_ICON;
 
     {
         try {

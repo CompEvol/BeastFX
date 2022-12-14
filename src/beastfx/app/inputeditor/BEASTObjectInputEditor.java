@@ -231,7 +231,7 @@ public class BEASTObjectInputEditor extends InputEditor.Base {
                 	partition = id.substring(id.indexOf(':') + 1);
                 }
 
-                if (selected.equals(NO_VALUE)) {
+                if (selected == null || selected.equals(NO_VALUE)) {
                     beastObject = null;
                 } else {
                     try {
