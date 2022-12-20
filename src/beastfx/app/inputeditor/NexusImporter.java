@@ -48,13 +48,13 @@ public class NexusImporter implements AlignmentImporter {
 					partitionNr++;
 				}
 				if (overlap.size() > 0) {
-					String overlaps = "<html>Warning: The following partitions overlap:<br/>";
+					String overlaps = "Warning: The following partitions overlap:\n";
 					for (int i : overlap) {
 						overlaps += parser.filteredAlignments.get(i / 10000 - 1).getID()
 								+ " overlaps with "
-								+ parser.filteredAlignments.get(i % 10000 - 1).getID() + "<br/>";
+								+ parser.filteredAlignments.get(i % 10000 - 1).getID() + "\n";
 					}
-					overlaps += "The first thing you might want to do is delete some of these partitions.</html>";
+					overlaps += "The first thing you might want to do is delete some of these partitions.";
 					Alert.showMessageDialog(null, overlaps);
 				}
 				/** add alignments **/

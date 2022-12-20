@@ -7,13 +7,17 @@
 	</description>
 
 	<!-- set global properties for this build -->
-	<property name="srcFX" location="../BeastFX/src" />
-	<property name="buildFX" location="../BeastFX/build" />
-	<property name="libFX" location="../BeastFX/locallib" />
+	<property name="BeastFX" location="../BeastFX" />
+	<property name="srcFX" location="${BeastFX}/src" />
+	<property name="buildFX" location="${BeastFX}/build" />
+	<property name="libFX" location="${BeastFX}/locallib" />
+	<property name="JAVA_HOME" location="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64/zulu-17.jre/Contents/Home/"/>
+	<property name="LD_LIBRARY_PATH" location="$JAVA_HOME/lib"/>
+
 	<!--
-	<property name="javafx-home" location="/usr/share/java/"/>
--->
 	<property name="javafx-home" location="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/"/>
+-->
+	<property name="javafx-home" location="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64/lib/"/>
 	<property name="release_dir" value="release" />
 	<property name="distFX" location="${buildFX}/dist" />
 	<property name="beast2path" location="../beast2" />
@@ -39,19 +43,7 @@
 
         <fileset dir="${beast2path}/lib/junit" includes="junit-platform-console-standalone-1.8.2.jar"/>
         <fileset dir="${libFX}" includes="assertj-core-3.20.2.jar"/>
-	
-		<fileset dir="${javafx-home}" includes="jfxrt.jar"/>
-		<fileset dir="${javafx-home}/../" includes="jfswt.jar"/>
-<!--
-		<fileset dir="${javafx-home}" includes="javafx-swt.jar"/>
-		<fileset dir="${javafx-home}" includes="javafx-base.jar"/>
-		<fileset dir="${javafx-home}" includes="javafx-controls.jar"/>
-		<fileset dir="${javafx-home}" includes="javafx-fxml.jar"/>
-		<fileset dir="${javafx-home}" includes="javafx-graphics.jar"/>
-		<fileset dir="${javafx-home}" includes="javafx-media.jar"/>
-		<fileset dir="${javafx-home}" includes="javafx-swing.jar"/>
-		<fileset dir="${javafx-home}" includes="javafx-web.jar"/>
--->
+
         <path location="${beast2classpath}"/>
 	</path>
 
@@ -166,31 +158,30 @@
 	<!-- JUnit test -->
 	<target name="junitBeastFX">
 		<mkdir dir="${report}" />
-		
-		<copy todir="${libFX}">
-			<fileset dir="${javafx-home}" includes="jfxrt.jar"/>
-			<fileset dir="${javafx-home}/../" includes="jfswt.jar"/>
-			<!--
-			<fileset dir="${javafx-home}" includes="javafx-base-11.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-controls-11.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-fxml-11.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-graphics-11.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-web-11.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-media-11.jar"/>
-			<fileset dir="${javafx-home}" includes="javafx-swing-11.jar"/>
-		-->
-		</copy>
+
+        <exec executable="curl">
+             <arg line=" --output-dir ${BeastFX}/fxtemplates -O -L https://raw.githubusercontent.com/BEAST2-Dev/beast-classic/master/fxtemplates/RelaxedClockModels.xml"/>
+        </exec>
+        <exec executable="curl">
+             <arg line=" --output-dir ${BeastFX}/fxtemplates -O -L https://raw.githubusercontent.com/BEAST2-Dev/beast-classic/master/fxtemplates/StarBeast.xml"/>
+        </exec>
 
 		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
-			<!--jvmarg line="-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni/"/-->
-			<jvmarg line="-Djava.library.path=/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64"/>
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
 			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
-			<!--
-				IF UNCOMMENTING, RESTORE DOUBLE - - in next two lines
-			<jvmarg line="- - module-path=${libFX}"/>
-			<jvmarg line="- - add-modules=javafx.base,javafx.fxml,javafx.graphics,javafx.web,javafx.media,javafx.swing"/>
-		-->
+            <arg line="-c test.beastfx.app.beauti.SimpleTreePriorTest"/>            
+            <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>            
             <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiDivergenceDatingTest"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiRateTutorialTest"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiStarBeastTest"/>
+            <arg line="-c test.beastfx.app.beauti.CloneTest"/>
+            <arg line="-c test.beastfx.app.beauti.FixedMeanRateTest"/>
+            <arg line="-c test.beastfx.app.beauti.LinkUnlinkTest"/>
+            <arg line="-c test.beastfx.app.beauti.SimpleClockModelTest"/>
             
             <arg line="--reports-dir build/junitreport"/>
         </java>

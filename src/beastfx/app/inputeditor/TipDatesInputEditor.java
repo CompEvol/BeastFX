@@ -174,6 +174,7 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
             VBox box = FXUtils.newVBox();
 
             useTipDates = new CheckBox("Use tip dates");
+            useTipDates.setId("useTipDates");
             useTipDates.setSelected(traitSet != null);
             useTipDates.setOnAction(e -> {
             	CheckBox checkBox = (CheckBox) e.getSource();

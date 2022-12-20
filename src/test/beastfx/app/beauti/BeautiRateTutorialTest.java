@@ -71,6 +71,7 @@ public class BeautiRateTutorialTest extends BeautiBase {
 		selectTab(robot, "Partitions");
 		selectPartitions(robot, 0);
 		
+				
 		//0. Split partition... 
 		warning("0. Split partition...");
 		clickOnButtonWithText(robot, "Split");
@@ -181,8 +182,8 @@ public class BeautiRateTutorialTest extends BeautiBase {
 		
 		//4. set up tip dates
 		selectTab(robot, "Tip Dates");
-		warning("4. Seting up tip dates");
-		robot.clickOn(".check-box");
+		warning("4. Setting up tip dates");
+		setCheckBox(robot, "useTipDates");
 		clickOnButtonWithText(robot, "Auto-configure");
 		
 		robot.doubleClickOn("#SplitChar").write("s");

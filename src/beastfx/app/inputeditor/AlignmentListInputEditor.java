@@ -997,7 +997,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 							if (!empty) {
 								comboBox.getSelectionModel().select(item.get());
 								comboBox.setUserData(item);
-						        comboBox.setOnKeyReleased(k->{
+						        comboBox.setOnKeyPressed(k->{
 						        	if (k.getCode().equals(KeyCode.ENTER) || k.getCode().equals(KeyCode.TAB)) {
 						        		comboActionListener(comboBox, item, SITEMODEL_COLUMN);
 						        	}
@@ -1029,7 +1029,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 							if (!empty) {
 								comboBox.getSelectionModel().select(item.get());
 						        comboBox.setUserData(item);
-						        comboBox.setOnKeyReleased(k->{
+						        comboBox.setOnKeyPressed(k->{
 						        	if (k.getCode().equals(KeyCode.ENTER) || k.getCode().equals(KeyCode.TAB)) {
 						        		comboActionListener(comboBox, item, CLOCKMODEL_COLUMN);
 						        	}
@@ -1061,7 +1061,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 							if (!empty) {
 								comboBox.getSelectionModel().select(item.get());
 						        comboBox.setUserData(item);
-						        comboBox.setOnKeyReleased(k->{
+						        comboBox.setOnKeyPressed(k->{
 						        	if (k.getCode().equals(KeyCode.ENTER) || k.getCode().equals(KeyCode.TAB)) {
 						        		comboActionListener(comboBox, item, TREE_COLUMN);
 						        	}
@@ -1092,7 +1092,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 
 	}
 
-	private void comboActionListener(ComboBox comboBox /*ActionEvent e, */,StringProperty item, int column) {
+	synchronized private void comboActionListener(ComboBox comboBox /*ActionEvent e, */,StringProperty item, int column) {		
 		Partition0 partition0 = null;
 		for (Partition0 partition : tableEntries) {
 			if (partition.siteModel == item ||
@@ -1102,7 +1102,7 @@ public class AlignmentListInputEditor extends ListInputEditor {
 			}
 		}
 		
-		String newValue = (String) comboBox.getValue();
+		String newValue = (String) comboBox.getEditor().getText();		
 		String oldValue = (String) item.get();
 		
 		if (!oldValue.equals(newValue)) {

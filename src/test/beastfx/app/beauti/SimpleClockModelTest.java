@@ -82,7 +82,6 @@ public class SimpleClockModelTest extends BeautiBase {
 		
 		warning("Change to Coalescent - constant population");
 		
-		// robot.clickOn("TreeDistribution").clickOn("Coalescent Constant Population");
 		robot.clickOn(".combo-box").clickOn("Coalescent Constant Population");
 		printBeautiState();
 		assertStateEquals("Tree.t:anolis", "popSize.t:anolis");
@@ -93,7 +92,7 @@ public class SimpleClockModelTest extends BeautiBase {
 		selectTab(robot, "Clock Model");
 
 		warning("Change to Relaxed Clock - exponential");
-		robot.clickOn(".combo-box").clickOn("Relaxed Clock Exponential");
+		selectFromCombobox(robot, "indexComboBox", "Relaxed Clock Exponential");
 		printBeautiState();
 		assertStateEquals("Tree.t:anolis", "popSize.t:anolis", "expRateCategories.c:anolis");
 		assertOperatorsEqual("CoalescentConstantBICEPSEpochTop.t:anolis", "CoalescentConstantBICEPSEpochAll.t:anolis", "CoalescentConstantBICEPSTreeFlex.t:anolis", "CoalescentConstantTreeRootScaler.t:anolis", "CoalescentConstantUniformOperator.t:anolis", "CoalescentConstantSubtreeSlide.t:anolis", "CoalescentConstantNarrow.t:anolis", "CoalescentConstantWide.t:anolis", "CoalescentConstantWilsonBalding.t:anolis", "PopSizeScaler.t:anolis", "ExpCategoriesRandomWalk.c:anolis", "ExpCategoriesSwapOperator.c:anolis", "ExpCategoriesUniform.c:anolis");
@@ -101,7 +100,7 @@ public class SimpleClockModelTest extends BeautiBase {
 		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:anolis", "popSize.t:anolis", "CoalescentConstant.t:anolis", "rateStat.c:anolis");
 		
 		warning("Change to Relaxed Clock - log normal");
-		robot.clickOn(".combo-box").clickOn("Relaxed Clock Log Normal");
+		selectFromCombobox(robot, "indexComboBox", "Relaxed Clock Log Normal");
 		printBeautiState();
 		assertStateEquals("Tree.t:anolis", "popSize.t:anolis", "ucldStdev.c:anolis", "rateCategories.c:anolis");
 		assertOperatorsEqual("CoalescentConstantBICEPSEpochTop.t:anolis", "CoalescentConstantBICEPSEpochAll.t:anolis", "CoalescentConstantBICEPSTreeFlex.t:anolis", "CoalescentConstantTreeRootScaler.t:anolis", "CoalescentConstantUniformOperator.t:anolis", "CoalescentConstantSubtreeSlide.t:anolis", "CoalescentConstantNarrow.t:anolis", "CoalescentConstantWide.t:anolis", "CoalescentConstantWilsonBalding.t:anolis", "PopSizeScaler.t:anolis", "ucldStdevScaler.c:anolis", "CategoriesRandomWalk.c:anolis", "CategoriesSwapOperator.c:anolis", "CategoriesUniform.c:anolis");
@@ -109,7 +108,7 @@ public class SimpleClockModelTest extends BeautiBase {
 		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:anolis", "popSize.t:anolis", "CoalescentConstant.t:anolis", "ucldStdev.c:anolis", "rate.c:anolis");
 
 		warning("Change to Random Local Clock");
-		robot.clickOn(".combo-box").clickOn("Random Local Clock");
+		selectFromCombobox(robot, "indexComboBox", "Random Local Clock");
 		printBeautiState();
 		assertStateEquals("Tree.t:anolis", "popSize.t:anolis", "Indicators.c:anolis", "clockrates.c:anolis");
 		assertOperatorsEqual("CoalescentConstantBICEPSEpochTop.t:anolis", "CoalescentConstantBICEPSEpochAll.t:anolis", "CoalescentConstantBICEPSTreeFlex.t:anolis", "CoalescentConstantTreeRootScaler.t:anolis", "CoalescentConstantUniformOperator.t:anolis", "CoalescentConstantSubtreeSlide.t:anolis", "CoalescentConstantNarrow.t:anolis", "CoalescentConstantWide.t:anolis", "CoalescentConstantWilsonBalding.t:anolis", "PopSizeScaler.t:anolis", "IndicatorsBitFlip.c:anolis", "ClockRateScaler.c:anolis");
@@ -117,7 +116,7 @@ public class SimpleClockModelTest extends BeautiBase {
 		assertTraceLogEqual("posterior", "likelihood", "prior", "treeLikelihood.anolis", "TreeHeight.t:anolis", "popSize.t:anolis", "CoalescentConstant.t:anolis", "Indicators.c:anolis", "clockrates.c:anolis", "RRateChanges.c:anolis");
 
 		warning("Change to Strickt Clock");
-		robot.clickOn(".combo-box").clickOn("Strict Clock");
+		selectFromCombobox(robot, "indexComboBox", "Strict Clock");
 		printBeautiState();
 		assertStateEquals("Tree.t:anolis", "popSize.t:anolis");
 		assertOperatorsEqual("CoalescentConstantBICEPSEpochTop.t:anolis", "CoalescentConstantBICEPSEpochAll.t:anolis", "CoalescentConstantBICEPSTreeFlex.t:anolis", "CoalescentConstantTreeRootScaler.t:anolis", "CoalescentConstantUniformOperator.t:anolis", "CoalescentConstantSubtreeSlide.t:anolis", "CoalescentConstantNarrow.t:anolis", "CoalescentConstantWide.t:anolis", "CoalescentConstantWilsonBalding.t:anolis", "PopSizeScaler.t:anolis");

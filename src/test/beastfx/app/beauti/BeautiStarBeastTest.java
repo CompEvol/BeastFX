@@ -103,17 +103,17 @@ public class BeautiStarBeastTest extends BeautiBase {
 
 		// 3. Set site model to HKY + empirical frequencies
 		warning("3. Set site model to HKY + empirical frequencies");
-		robot.clickOn("Site Model");
+        robot.clickOn("Site Model");
 		final ListView<?> list0 = robot.lookup(".list-view").queryAs(ListView.class);
 		robot.interact(()->list0.getSelectionModel().select(0));
-		robot.clickOn("#substModelComboBox").clickOn("HKY");
-		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
+		selectFromCombobox(robot, "substModelComboBox", "HKY");
+		selectFromCombobox(robot, "frequenciesComboBox", "Empirical");
 		robot.interact(()->list0.getSelectionModel().clearAndSelect(1));
-		robot.clickOn("#substModelComboBox").clickOn("HKY");
-		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
+		selectFromCombobox(robot, "substModelComboBox", "HKY");
+		selectFromCombobox(robot, "frequenciesComboBox", "Empirical");
 		robot.interact(()->list0.getSelectionModel().clearAndSelect(2));
-		robot.clickOn("#substModelComboBox").clickOn("HKY");
-		robot.clickOn("#frequenciesComboBox").clickOn("Empirical");
+		selectFromCombobox(robot, "substModelComboBox", "HKY");
+		selectFromCombobox(robot, "frequenciesComboBox", "Empirical");
 
 		//JCheckBoxFixture fixMeanMutationRate = beautiFrame.checkBox("FixMeanMutationRate");
 		//fixMeanMutationRate.check();
