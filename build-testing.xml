@@ -11,7 +11,10 @@
 	<property name="srcFX" location="${BeastFX}/src" />
 	<property name="buildFX" location="${BeastFX}/build" />
 	<property name="libFX" location="${BeastFX}/locallib" />
+<!--
 	<property name="JAVA_HOME" location="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64/zulu-17.jre/Contents/Home/"/>
+-->	
+	<property name="JAVA_HOME" location="/tmp/zulu17.38.21-ca-fx-jdk17.0.5-linux_x64/"/>
 	<property name="LD_LIBRARY_PATH" location="$JAVA_HOME/lib"/>
 
 	<!--
@@ -160,10 +163,10 @@
 		<mkdir dir="${report}" />
 
         <exec executable="curl">
-             <arg line=" --output-dir ${BeastFX}/fxtemplates -O -L https://raw.githubusercontent.com/BEAST2-Dev/beast-classic/master/fxtemplates/RelaxedClockModels.xml"/>
+             <arg line=" --output ${BeastFX}/fxtemplates/RelaxedClockModels.xml -O -L https://raw.githubusercontent.com/BEAST2-Dev/beast-classic/master/fxtemplates/RelaxedClockModels.xml"/>
         </exec>
         <exec executable="curl">
-             <arg line=" --output-dir ${BeastFX}/fxtemplates -O -L https://raw.githubusercontent.com/BEAST2-Dev/beast-classic/master/fxtemplates/StarBeast.xml"/>
+             <arg line=" --output ${BeastFX}/fxtemplates/StarBeast.xml -O -L https://raw.githubusercontent.com/BEAST2-Dev/beast-classic/master/fxtemplates/StarBeast.xml"/>
         </exec>
 
 		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
@@ -171,9 +174,9 @@
 			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
 			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
 			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
-            <arg line="-c test.beastfx.app.beauti.SimpleTreePriorTest"/>            
             <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>            
-            <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>
+            <!--
+            <arg line="-c test.beastfx.app.beauti.SimpleTreePriorTest"/>            
             <arg line="-c test.beastfx.app.beauti.BeautiDivergenceDatingTest"/>
             <arg line="-c test.beastfx.app.beauti.BeautiRateTutorialTest"/>
             <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>
@@ -182,7 +185,7 @@
             <arg line="-c test.beastfx.app.beauti.FixedMeanRateTest"/>
             <arg line="-c test.beastfx.app.beauti.LinkUnlinkTest"/>
             <arg line="-c test.beastfx.app.beauti.SimpleClockModelTest"/>
-            
+            -->
             <arg line="--reports-dir build/junitreport"/>
         </java>
         <junitreport todir="build/junitreport">
@@ -203,7 +206,7 @@
 	</target>
 
 
-	<target name="test-all" depends="junitBeastFX">
+	<target name="test-all" depends="compile-allBeastFX,junitBeastFX">
 		<echo message="All tests done." />
 	</target>
 
