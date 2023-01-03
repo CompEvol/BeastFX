@@ -63,8 +63,6 @@ import beast.pkgmgmt.Utils6;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static beast.pkgmgmt.BEASTClassLoader.addServices;
-
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -200,7 +198,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         
 
         public ActionSave() {
-            super("Save", "Save Model", "save", new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+            super("Save", "Save Model", "save", new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
             setDisable(true);
         } // c'tor
 
@@ -296,7 +294,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         
 
         public ActionNew() {
-            super("New", "Start new analysis", "new", new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
+            super("New", "Start new analysis", "new", new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN));
         } // c'tor
 
         @Override
@@ -311,7 +309,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
         
 
         public ActionLoad() {
-            super("Load", "Load Beast File", "open", new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+            super("Load", "Load Beast File", "open", new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
         }
 
         public ActionLoad(String name, String toolTipText, String icon,
@@ -437,7 +435,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
     class ActionClose extends ActionSave {
         public ActionClose() {
-            super("Close", "Close Window", "close", new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
+            super("Close", "Close Window", "close", new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN));
         } // c'tor
 
         @Override
@@ -453,7 +451,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
     class ActionQuit extends ActionSave {
         public ActionQuit() {
-            super("Exit", "Exit Program", "exit", new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
+            super("Exit", "Exit Program", "exit", new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN));
             //putValue(Action.MNEMONIC_KEY, new Integer('x'));
         } // c'tor
 
