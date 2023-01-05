@@ -37,7 +37,9 @@ public class BeautiStarBeastTest extends BeautiBase {
 	public void simpleStarBeastTest(FxRobot robot) throws Exception {
 
 		String BASE_DIR = PREFIX.substring(0, PREFIX.lastIndexOf('/'));
-		for (File file : new File(BASE_DIR).listFiles()) {
+		File dir = new File(BASE_DIR);
+		if (dir.listFiles() != null)
+		for (File file : dir.listFiles()) {
 			if (file.getAbsolutePath().contains(PREFIX) && file.getName().endsWith(".png")) {
 				file.delete();
 			}

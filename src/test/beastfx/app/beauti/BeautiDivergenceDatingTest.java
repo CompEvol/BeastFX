@@ -326,7 +326,9 @@ public class BeautiDivergenceDatingTest extends BeautiBase {
             //beauti.frame.setSize(1200, 800);
 
             String BASE_DIR = PREFIX.substring(0, PREFIX.lastIndexOf('/'));
-            for (File file : new File(BASE_DIR).listFiles()) {
+            File dir = new File(BASE_DIR);
+            if (dir.listFiles() != null)
+            for (File file : dir.listFiles()) {
                 if (file.getAbsolutePath().contains(PREFIX) && file.getName().endsWith(".png")) {
                     file.delete();
                 }

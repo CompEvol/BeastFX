@@ -11,6 +11,7 @@
 	<property name="srcFX" location="${BeastFX}/src" />
 	<property name="buildFX" location="${BeastFX}/build" />
 	<property name="libFX" location="${BeastFX}/locallib" />
+	<property name="resourcesFX" location="${BeastFX}/resources" />
 <!--
 	<property name="JAVA_HOME" location="../../Downloads/zulu17.34.19-ca-fx-jre17.0.3-macosx_x64/zulu-17.jre/Contents/Home/"/>
 -->	
@@ -106,7 +107,9 @@
 			<include name="test/**" />
 		</javac>
         <copy todir="${build}">
+            <fileset dir="${srcFX}" includes="**/*.fxml" />
             <fileset dir="${srcFX}" includes="**/*.png" />
+            <fileset dir="${resourcesFX}" includes="**/*.css" />
         </copy>
 
 		<echo message="Successfully compiled." />
@@ -176,6 +179,7 @@
 			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
             <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>            
             <!--
+            -->
             <arg line="-c test.beastfx.app.beauti.SimpleTreePriorTest"/>            
             <arg line="-c test.beastfx.app.beauti.BeautiDivergenceDatingTest"/>
             <arg line="-c test.beastfx.app.beauti.BeautiRateTutorialTest"/>
@@ -185,7 +189,6 @@
             <arg line="-c test.beastfx.app.beauti.FixedMeanRateTest"/>
             <arg line="-c test.beastfx.app.beauti.LinkUnlinkTest"/>
             <arg line="-c test.beastfx.app.beauti.SimpleClockModelTest"/>
-            -->
             <arg line="--reports-dir build/junitreport"/>
         </java>
         <junitreport todir="build/junitreport">

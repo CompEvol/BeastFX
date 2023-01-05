@@ -49,6 +49,7 @@ public class BeautiRateTutorialTest extends BeautiBase {
 		if (!dir.exists()) {
 			dir.mkdir();
 		}
+		if (dir.listFiles() != null)
 		for (File file : dir.listFiles()) {
 			file.delete();
 		}

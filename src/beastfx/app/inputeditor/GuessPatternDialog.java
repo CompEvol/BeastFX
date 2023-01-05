@@ -503,7 +503,7 @@ public class GuessPatternDialog implements Initializable {
 	    try {
 			root = fl.load();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+			Log.err("Could not load " + this.getClass().getResource("GuessPatternDialog.fxml"));
 			e1.printStackTrace();
 			return Status.canceled;
 		}
