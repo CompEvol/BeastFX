@@ -1350,6 +1350,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
             // check file needs to be save on closing main frame
             frame.setOnCloseRequest(e-> {
                     if (!beauti.quit()) {
+                        e.consume();
                         return;
                     }
                     Stage frame0 = (Stage) e.getSource();
