@@ -38,23 +38,23 @@ WORKDIR /root/BeastFX
 
 
 # Add JDK
-RUN if [`uname -m` = 'x86_64']; then \
+RUN if [ `uname -m` = 'x86_64' ]; then \
 	curl -fsSL -o /tmp/jdk17.0.5-linux.tar.gz https://cdn.azul.com/zulu/bin/zulu17.38.21-ca-fx-jdk17.0.5-linux_x64.tar.gz; \
-	else \
+    else \
 	curl -fsSL -o /tmp/jdk17.0.5-linux.tar.gz https://download.bell-sw.com/java/17.0.5+8/bellsoft-jdk17.0.5+8-linux-aarch64-full.tar.gz; \
-	fi 
+    fi 
 
 RUN cd /tmp/ \
   && tar fxz /tmp/jdk17.0.5-linux.tar.gz \
-  && if [`uname -m` = 'x86_64']; then \
-  		mv /tmp/zulu17.38.21-ca-fx-jdk17.0.5-linux_x64 /tmp/jdk17.0.5-linux; \
-  	 else \
- 		mv /tmp/jdk-17.0.5-full /tmp/jdk17.0.5-linux;\
-  	fi
+  && if [ `uname -m` = 'x86_64' ]; then \
+        mv /tmp/zulu17.38.21-ca-fx-jdk17.0.5-linux_x64 /tmp/jdk17.0.5-linux; \
+     else \ 
+        mv /tmp/jdk-17.0.5-full /tmp/jdk17.0.5-linux;\ 
+     fi
   		
 
 # Install Apache Ant
-RUN curl -fsSL -o /tmp/apache-ant-1.10.12-bin.tar.gz https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.tar.gz \
+RUN curl -k -fsSL -o /tmp/apache-ant-1.10.12-bin.tar.gz https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.tar.gz \
   && cd /tmp/ \
   && tar fxz /tmp/apache-ant-1.10.12-bin.tar.gz 
 
@@ -75,7 +75,8 @@ RUN cd /root && git clone --depth=1 https://github.com/CompEvol/beast2.git
 
 
 # Install and configure VNC server
-RUN apt install -y xfce4 xfce4-goodies xfonts-base dbus-x11 tightvncserver
+#RUN apt install -y xfce4 xfce4-goodies xfonts-base dbus-x11 tightvncserver
+RUN apt install -y xfce4 tightvncserver
 RUN mkdir /root/.vnc
 RUN echo password | vncpasswd -f > /root/.vnc/passwd
 RUN chmod 600 /root/.vnc/passwd

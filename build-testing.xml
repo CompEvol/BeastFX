@@ -172,14 +172,13 @@
              <arg line=" --output ${BeastFX}/fxtemplates/StarBeast.xml -O -L https://raw.githubusercontent.com/BEAST2-Dev/beast-classic/master/fxtemplates/StarBeast.xml"/>
         </exec>
 
+	            <!--
 		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
-			<jvmarg line="--add-exports"/>
+			<jvmarg line="- -add-exports"/>
 			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
 			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
 			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
             <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>            
-            <!--
-            -->
             <arg line="-c test.beastfx.app.beauti.SimpleTreePriorTest"/>            
             <arg line="-c test.beastfx.app.beauti.BeautiDivergenceDatingTest"/>
             <arg line="-c test.beastfx.app.beauti.BeautiRateTutorialTest"/>
@@ -189,8 +188,105 @@
             <arg line="-c test.beastfx.app.beauti.FixedMeanRateTest"/>
             <arg line="-c test.beastfx.app.beauti.LinkUnlinkTest"/>
             <arg line="-c test.beastfx.app.beauti.SimpleClockModelTest"/>
+            <arg line="- -reports-dir build/junitreport"/>
+        </java>
+            -->
+
+
+
+
+
+
+
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.CloneTest"/>
             <arg line="--reports-dir build/junitreport"/>
         </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>            
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.SimpleTreePriorTest"/>            
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiDivergenceDatingTest"/>
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiStarBeastTest"/>
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.FixedMeanRateTest"/>
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.LinkUnlinkTest"/>
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.SimpleClockModelTest"/>
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
+			<jvmarg line="--add-exports"/>
+			<jvmarg line="javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"/> 
+			<jvmarg line="-Djava.library.path=$JAVA_HOME/lib/"/>
+			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
+            <arg line="-c test.beastfx.app.beauti.BeautiRateTutorialTest"/>
+            <arg line="--reports-dir build/junitreport"/>
+        </java>
+
+
+
+
+
+
+
+
+
         <junitreport todir="build/junitreport">
             <fileset dir="build/junitreport">
                 <include name="TEST-*.xml"/>
