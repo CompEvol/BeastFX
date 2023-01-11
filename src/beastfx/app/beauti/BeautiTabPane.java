@@ -1239,7 +1239,7 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 	        			i++;
 	        		}
 	        	}
-	        	if (args[i].equals("-packagedir")) {
+	        	if (i < args.length-1 && args[i].equals("-packagedir")) {
 	        		args[i] = "";
 	        		i++;
 	                String dir = args[i];
