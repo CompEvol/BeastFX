@@ -73,14 +73,16 @@ public class FXUtils {
     public static File[] getFile(String message, boolean isLoadNotSave, File defaultFileOrDir, boolean allowMultipleSelection, String description, final String... extensions) {
 
     	FileChooser fileChooser = new FileChooser();
-    	
-    	fileChooser.setInitialDirectory(defaultFileOrDir);
-    	
+    	    	
     	if (defaultFileOrDir != null) {
     		if (defaultFileOrDir.isDirectory()) {
-    			fileChooser.setInitialDirectory(defaultFileOrDir);
-    		} else if (defaultFileOrDir.getParentFile().isDirectory()){
-    			fileChooser.setInitialDirectory(defaultFileOrDir.getParentFile());
+    			if (defaultFileOrDir.exists()) {
+    				fileChooser.setInitialDirectory(defaultFileOrDir);
+    			}
+    		} else if (defaultFileOrDir.getParentFile().isDirectory()) {
+    			if (defaultFileOrDir.getParentFile().exists()) {
+    				fileChooser.setInitialDirectory(defaultFileOrDir.getParentFile());
+    			}
     			fileChooser.setInitialFileName(defaultFileOrDir.getName());
     		}
     	}
