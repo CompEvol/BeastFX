@@ -270,20 +270,23 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
         	public void init(Input<?> input, BEASTInterface beastObject, int itemNr, ExpandOption isExpandOption,
         			boolean addButtons) {
         		super.init(input, beastObject, itemNr, isExpandOption, addButtons);
-        		for (Node o : getChildren()) {
-        			if (o instanceof CheckBox) {
-        				((CheckBox)o).setOnAction(e -> {
-		                	CheckBox src = (CheckBox) e.getSource();
-		                	if (src.isSelected()) {
-		                		enableTipSampling();
-		                	} else {
-		                		disableTipSampling(m_beastObject, doc);
-		                	}
-        				});
-        			}
-        		}
-        	}
-        	
+        		for (Node o1 : getChildren()) {
+        			if (o1 instanceof HBox) {
+	            		for (Node o : ((HBox)o1).getChildren()) {
+		        			if (o instanceof CheckBox) {
+		        				((CheckBox)o).setOnAction(e -> {
+				                	CheckBox src = (CheckBox) e.getSource();
+				                	if (src.isSelected()) {
+				                		enableTipSampling();
+				                	} else {
+				                		disableTipSampling(m_beastObject, doc);
+				                	}
+		        				});
+		        			}
+		    			}
+		    		}
+		    	}
+			}
         };
 
         MRCAPrior prior = (MRCAPrior) m_beastObject;
