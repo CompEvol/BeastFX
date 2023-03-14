@@ -61,6 +61,7 @@ public class GuessPatternDialog implements Initializable {
                     "trait value must be a TAB.";
 
 
+	private boolean allowAddingValues = false;
 
     public enum Status {
         canceled, pattern, trait
@@ -385,16 +386,17 @@ public class GuessPatternDialog implements Initializable {
     }
 
     public void allowAddingValues() {
-    	if (chckbxAddFixedValue == null) {
-    		return;
-    	}
-        chckbxAddFixedValue.setVisible(true);
-        textAddValue.setVisible(true);
-        chckbxUnlessLessThan.setVisible(true);
-        lblThenAdd.setVisible(true);
-        chckbxUnlessLessThan.setVisible(true);
-        textUnlessLessThan.setVisible(true);
-        textThenAdd.setVisible(true);
+    	allowAddingValues = true;;
+//    	if (chckbxAddFixedValue == null) {
+//    		return;
+//    	}
+//        chckbxAddFixedValue.setVisible(true);
+//        textAddValue.setVisible(true);
+//        chckbxUnlessLessThan.setVisible(true);
+//        lblThenAdd.setVisible(true);
+//        chckbxUnlessLessThan.setVisible(true);
+//        textUnlessLessThan.setVisible(true);
+//        textThenAdd.setVisible(true);
     }
 
     protected void updateFields() {
@@ -511,6 +513,16 @@ public class GuessPatternDialog implements Initializable {
         dialog.setDialogPane(root);
         dialog.getDialogPane().setId("GuessTaxonSets");
         dialog.setResizable(true);
+	    GuessPatternDialog dlg = fl.getController();
+        if (allowAddingValues) {
+          dlg.chckbxAddFixedValue.setVisible(true);
+          dlg.textAddValue.setVisible(true);
+          dlg.chckbxUnlessLessThan.setVisible(true);
+          dlg.lblThenAdd.setVisible(true);
+          dlg.chckbxUnlessLessThan.setVisible(true);
+          dlg.textUnlessLessThan.setVisible(true);
+          dlg.textThenAdd.setVisible(true);
+        }
 
         dialog.getDialogPane().getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
     	ThemeProvider.loadStyleSheet(root.getScene());
@@ -520,7 +532,6 @@ public class GuessPatternDialog implements Initializable {
             return Status.canceled;
         }
 
-	    GuessPatternDialog dlg = fl.getController();
 	    Status status = dlg.process();
 	    pattern = dlg.getPattern();
 	    traitMap = dlg.getTraitMap();
