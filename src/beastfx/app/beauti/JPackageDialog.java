@@ -180,10 +180,13 @@ public class JPackageDialog extends DialogPane {
     private TableView<Package0> createTable() {
         dataTable = new TableView<>();
         dataTable.setPlaceholder(new TextArea("No package found yet.\n"
-        		+ "The package manager needs access to https://github.com/CompEvol/CBAN.\n"
+        		+ "The package manager needs access to " + PACKAGES_XML + "\n"
+        				+ "or " + PACKAGES_XML_BACKUP + ".\n"
         		+ "If no packages appear here shortly, check your internet connection.\n"
         		+ "If the connection is OK, check if you can access\n"
-        		+ "     https://github.com/CompEvol/CBAN\n"
+        		+ "     " + PACKAGES_XML.substring(0,PACKAGES_XML.indexOf("master")) +"\n"
+        		+ "or\n"
+        		+ "     " + PACKAGES_XML_BACKUP.substring(0,PACKAGES_XML_BACKUP.indexOf("raw")) +"\n"
         		+ "by opening the above link in a browser."));
 
         final int linkColumn = 4;

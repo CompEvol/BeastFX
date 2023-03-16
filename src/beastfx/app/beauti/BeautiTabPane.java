@@ -386,8 +386,8 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
         @Override
 		public void actionPerformed(ActionEvent ae) {
-        	JPackageDialog panel = new JPackageDialog();
-        	Dialog dlg = panel.asDialog(frame.getScene().getRoot());
+        	//JPackageDialog panel = new JPackageDialog();
+        	Dialog dlg = JPackageDialog.asDialog(frame.getScene().getRoot());
         	ThemeProvider.loadStyleSheet(dlg.getDialogPane().getScene());
         	dlg.showAndWait();
             // refresh template menu item
