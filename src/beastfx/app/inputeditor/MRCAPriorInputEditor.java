@@ -276,6 +276,8 @@ public class MRCAPriorInputEditor extends InputEditor.Base {
 		        			if (o instanceof CheckBox) {
 		        				((CheckBox)o).setOnAction(e -> {
 				                	CheckBox src = (CheckBox) e.getSource();
+				                    MRCAPrior prior = (MRCAPrior) m_beastObject;
+				                    prior.onlyUseTipsInput.setValue(src.isSelected(), prior);
 				                	if (src.isSelected()) {
 				                		enableTipSampling();
 				                	} else {
