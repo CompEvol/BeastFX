@@ -388,7 +388,7 @@ public class TreeAnnotator extends Console {
                     }
                 }
 
-                if (translationMap != null) treeParser.translateLeafIds(translationMap);
+                //if (translationMap != null) treeParser.translateLeafIds(translationMap);
 
                 return treeParser;
             }
@@ -1383,7 +1383,7 @@ public class TreeAnnotator extends Console {
             }
         }
         if (heights == HeightsSummary.CA_HEIGHTS) {
-            Log.info.println("Please cite: Heled and Bouckaert: Looking for trees in the forest:\n" +
+            Log.warning.println("Please cite: Heled and Bouckaert: Looking for trees in the forest:\n" +
                     "summary tree from posterior samples. BMC Evolutionary Biology 2013 13:221.");
         }
         
