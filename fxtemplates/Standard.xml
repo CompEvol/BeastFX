@@ -19,7 +19,11 @@
         inputLabelMap='beast.base.inference.MCMC.operator=Operators,
 	        beast.base.inference.MCMC.logger=Loggers,
 			beast.base.evolution.sitemodel.SiteModel.mutationRate =Substitution Rate,
-			beast.base.evolution.speciation.YuleModel.birthDiffRate=Birth Rate'
+			beast.base.evolution.speciation.YuleModel.birthDiffRate=Birth Rate,
+			beast.base.evolution.branchratemodel.UCRelaxedClockModel.clock.rate=Mean clock rate,
+			beast.base.evolution.branchratemodel.StrictClockModel.clock.rate=Mean clock rate,
+			beast.base.evolution.branchratemodel.RandomLocalClockModel.clock.rate=Mean clock rate
+			'
         inlinePlugins ='beast.base.inference.MCMC.distribution,
             beast.base.evolution.sitemodel.SiteModel.substModel,
             beast.base.evolution.tree.coalescent.ExponentialGrowth,

@@ -111,7 +111,7 @@ public class Application extends Console {
 	}
 
 	public Application(beast.base.inference.Runnable analyser, String[] suppressedInputs, String title, String[] args) throws Exception {
-		this(analyser, null, title, prefDialogWidth, prefDialogHeight, args);
+		this(analyser, suppressedInputs, title, prefDialogWidth, prefDialogHeight, args);
 	}
 	
 	public Application(beast.base.inference.Runnable analyser, String[] suppressedInputs, String title, int prefDialogWidth, int prefDialogHeight, String[] args) throws Exception {

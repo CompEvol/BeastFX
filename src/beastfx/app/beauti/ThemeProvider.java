@@ -70,9 +70,13 @@ abstract public class ThemeProvider {
 	abstract public String getThemeName();
 
 
+	static public boolean clear = true;
 	static public boolean loadStyleSheet(Scene scene, String themeFile) {
 		try {
-			scene.getStylesheets().clear();
+			if (clear) {
+				scene.getStylesheets().clear();
+				clear = false;
+			}
 			URL url = ThemeProvider.class.getResource(themeFile);
 			String css = url.toExternalForm();
 			scene.getStylesheets().add(css);
@@ -99,6 +103,7 @@ abstract public class ThemeProvider {
 	 * @return true if stylesheet was successfully loaded
 	 */
 	abstract public boolean loadMyStyleSheet(Scene scene);
+
 	
 	
 	

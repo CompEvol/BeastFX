@@ -100,6 +100,7 @@
 		<!-- Compile the java code from ${srcFX} into ${buildFX} /bin -->
 		<javac srcdir="${srcFX}" destdir="${buildFX}" classpathref="classpath" 
 		       fork="true"
+			   encoding="UTF-8"
 		       memoryinitialsize="256m"
 		       memorymaximumsize="1024m"
 			   >

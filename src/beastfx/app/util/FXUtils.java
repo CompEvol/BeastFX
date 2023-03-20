@@ -90,7 +90,7 @@ public class FXUtils {
 		if (extensions != null) {
 			for (String extension : extensions) {
 				if (extension.equals("")) {
-					extension = "*.*";
+					extension = "*";
 				}
 				fileChooser.getExtensionFilters().add(
 						new FileChooser.ExtensionFilter(extension, "*."+extension)
