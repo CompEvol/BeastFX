@@ -188,6 +188,7 @@ public class Alert {
     			values);
     	dlg.setTitle(title);
     	dlg.setHeaderText(message.toString());
+    	dlg.setResizable(true);
     	ThemeProvider.loadStyleSheet(dlg.getDialogPane().getScene());
     	Optional<?> option = dlg.showAndWait();
 		if (parent != null) {

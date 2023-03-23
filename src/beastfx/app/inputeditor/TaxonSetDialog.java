@@ -83,6 +83,7 @@ public class TaxonSetDialog extends DialogPane {
     public boolean showDialog() {
     	Dialog<ButtonType> dialog = new Dialog<>();
     	dialog.setDialogPane(this);
+    	dialog.setResizable(true);
     	
     	getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
     	dialog.setTitle("Taxon set editor");    	
