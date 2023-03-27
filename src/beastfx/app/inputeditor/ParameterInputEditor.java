@@ -1,20 +1,6 @@
 package beastfx.app.inputeditor;
 
 
-
-
-import java.util.List;
-
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import beastfx.app.util.Alert;
-import beastfx.app.util.FXUtils;
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -24,6 +10,17 @@ import beast.base.inference.Operator;
 import beast.base.inference.distribution.ParametricDistribution;
 import beast.base.inference.parameter.Parameter;
 import beast.base.parser.PartitionContext;
+import beastfx.app.util.Alert;
+import beastfx.app.util.FXUtils;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+
+import java.util.List;
 
 
 
@@ -148,7 +145,8 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 								for (BEASTInterface candidate : candidates) {
 									jcb.getItems().add(candidate);
 								}
-								Alert.showMessageDialog( null, jcb, "select parameter to link with", Alert.QUESTION_MESSAGE);
+                                HBox hbox = new HBox(jcb);
+								Alert.showMessageDialog( null, hbox, "select parameter to link with", Alert.QUESTION_MESSAGE);
 								BEASTInterface candidate = (BEASTInterface) jcb.getValue();
 								if (candidate != null) {
 									try {
@@ -158,6 +156,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
 										e2.printStackTrace();
 									}
 								}
+                                sync();
 							}
 							refreshPanel();
 						});
