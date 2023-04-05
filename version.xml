@@ -14,6 +14,7 @@
 				<provider classname="beastfx.app.inputeditor.BEASTObjectInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.TypeTraitSetInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.BooleanInputEditor"/>
+				<provider classname="beastfx.app.inputeditor.ConstantInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.DoubleInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.DoubleListInputEditor"/>
 				<provider classname="beastfx.app.inputeditor.EnumInputEditor"/>
@@ -46,6 +47,8 @@
 				<provider classname="beastfx.app.inputeditor.TipDatesInputEditor"/>
 				<provider classname="beastfx.app.beauti.ClockModelListInputEditor"/>
 				<provider classname="beastfx.app.beauti.ConstantPopulationInputEditor"/>
+				<provider classname="beastfx.app.beauti.ExponentialPopulationInputEditor"/>
+				<provider classname="beastfx.app.beauti.ScaledPopulationInputEditor"/>
 				<provider classname="beastfx.app.beauti.GeneTreeForSpeciesTreeDistributionInputEditor"/>
 				<provider classname="beastfx.app.beauti.OperatorListInputEditor"/>
 				<provider classname="beastfx.app.beauti.SpeciesTreePriorInputEditor"/>

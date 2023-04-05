@@ -230,7 +230,7 @@ public class LogCombiner extends LogAnalyser {
     } // readLogFile
 
 
-    protected void combineLogs(String[] logs, int[] burbIns) throws IOException {
+    protected void combineLogs(String[] logs, int[] burnIns) throws IOException {
     	preAmpleIsPrinted = false;
     	if (m_sFileOut == null)
     	    log("Writing to standard output.");
@@ -246,9 +246,9 @@ public class LogCombiner extends LogAnalyser {
             String str = fin.readLine();
             if (str.toUpperCase().startsWith("#NEXUS")) {
                 m_bIsTreeLog = true;
-                state = readTreeLogFile(fileName, burbIns[k], state);
+                state = readTreeLogFile(fileName, burnIns[k], state);
             } else {
-                state = readLogFile(fileName, burbIns[k], state);
+                state = readLogFile(fileName, burnIns[k], state);
             }
             k++;
             fin.close();

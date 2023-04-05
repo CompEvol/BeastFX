@@ -293,7 +293,7 @@ System.err.println("BEASTObjectPanel.countInputs(beastObject, doc) = 0");
     	expandBox.getChildren().clear();
         List<InputEditor> editors = doc.getInputEditorFactory().addInputs(expandBox, beastObject, editor, null, doc);
         
-        boolean addExpansionBox = editors.size() > 1;
+        boolean addExpansionBox = editors.size() >= 1;
         //System.err.print(expandBox.getComponentCount());
         if (editors.size() == 1 && editors.get(0) instanceof BEASTObjectInputEditor) {
         	BEASTObjectInputEditor boie = (BEASTObjectInputEditor) editors.get(0);

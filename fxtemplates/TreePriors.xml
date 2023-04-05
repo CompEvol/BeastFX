@@ -344,7 +344,11 @@ GrowthRateRandomWalk/index/=Operators/BactrianRandomWalk'>
         <subtemplate id='CoalescentBayesianSkyline' class='beast.base.evolution.tree.coalescent.Coalescent'
                      mainid='BayesianSkyline.t:$(n)'
                      suppressInputs='beast.base.inference.distribution.MarkovChainDistribution.parameter,
-                     beast.base.inference.distribution.MarkovChainDistribution.initialMean' hmc='
+                     beast.base.inference.distribution.MarkovChainDistribution.initialMean,
+                     beast.base.evolution.tree.coalescent.BayesianSkyline.tree,
+                     beast.base.evolution.tree.coalescent.BayesianSkyline.treeIntevals
+                     ' 
+                     hmc='
 BayesianSkylineUniformOperator/index/=Operators/BactrianNodeOperator/index,
 BayesianSkylineSubtreeSlide/index/=Operators/SubtreeSlide/,
 BayesianSkylineNarrow/index/=Operators/Exchange/,
