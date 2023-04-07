@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -67,6 +68,8 @@ public class PriorInputEditor extends InputEditor.Base {
         Dimension2D size = new Dimension2D(font.getSize() * 200 / 13, font.getSize() * 25/13);
         label.setMinSize(size.getWidth(), size.getHeight());
         label.setPrefSize(size.getWidth(), size.getHeight());
+        String tipText = getDoc().tipTextMap.get(beastObject.getID());
+        label.setTooltip(new Tooltip(text + " " + (tipText != null ? tipText : "")));
         itemBox.getChildren().add(label);
 
         
@@ -98,7 +101,8 @@ public class PriorInputEditor extends InputEditor.Base {
                 }
             });
             rangeButton.setPrefWidth(InputEditor.Base.LABEL_SIZE.getWidth());
-
+            rangeButton.setTooltip(new Tooltip("Initial value and range of " + p.getID()));
+            
             itemBox.getChildren().add(rangeButton);
         } else if (prior.m_x.get() instanceof IntegerParameter) {
             // add range button for real parameters
@@ -123,8 +127,6 @@ public class PriorInputEditor extends InputEditor.Base {
         }
         int fontsize = (int) comboBox.getEditor().getFont().getSize();
         comboBox.setMaxSize(1024 * fontsize / 13, 24 * fontsize / 13);
-
-        String tipText = getDoc().tipTextMap.get(beastObject.getID());
 
         if (tipText != null) {
             Label tipTextLabel = new Label(" " + tipText);
@@ -259,11 +261,16 @@ public class PriorInputEditor extends InputEditor.Base {
             		((RealParameter)f).setDimension(prior1.m_x.get().getDimension());
             	}
             }
-
             
             sync();
             refreshPanel();
         });
+        
+        String tipText = getDoc().tipTextMap.get(m_beastObject.getID());
+        if (tipText != null) {
+        	comboBox.setTooltip(new Tooltip(tipText));
+        }
+        
         
         return comboBox;
 
