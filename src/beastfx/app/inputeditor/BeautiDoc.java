@@ -245,6 +245,19 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                     }
                     i += 2;
                     traitset = parser.traitSet;
+                } else if (args[i].startsWith("-fasta_")) {
+                    FastaImporter fastaImporter = new FastaImporter();
+                    if (args[i].equals("-fasta_nucleotide"))
+                        fastaImporter.datatype = FastaImporter.dtype.nucleotide;
+                    else if (args[i].equals("-fasta_aminoacid"))
+                        fastaImporter.datatype = FastaImporter.dtype.aminoacid;
+                    else
+                        throw new IllegalArgumentException("Unknown command line argument " + args[i]);
+                    String fileName = args[i+1];
+                    List<BEASTInterface> results = fastaImporter.loadFile(new File(fileName));
+                    if (results != null && results.size()==1 && results.get(0) instanceof Alignment)
+                        alignments.add((Alignment) results.get(0));
+                    i += 2;
                 } else if (args[i].equals("-xmldata")) {
                     // NB: multiple -xmldata/-nex commands can be processed!
                     String fileName = args[i + 1];
