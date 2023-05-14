@@ -484,6 +484,48 @@ ClusterTree/clusterType/,
         </subtemplate>
 		
 
+    <subtemplate id='MCMC' class='beast.base.inference.MCMC' mainid='mcmc'
+        suppressInputs='
+        	beast.base.inference.MCMC.operator,
+    		beast.base.inference.MCMC.operatorschedule,
+    		beast.base.inference.MCMC.state,
+    		beast.base.inference.MCMC.distribution,
+    		beast.base.inference.MCMC.init
+            '>
+<![CDATA[
+    <run spec="beast.base.inference.MCMC" id="mcmc" chainLength="10000000">
+		<operatorschedule id="OperatorSchedule" spec="OperatorSchedule"/>
+        <state storeEvery='5000' id='state'>
+        </state>
+
+        <distribution spec="CompoundDistribution" id="posterior">
+            <distribution spec="CompoundDistribution" id="prior">
+            </distribution>
+            <distribution spec="CompoundDistribution" id="likelihood" useThreads="true">
+            </distribution>
+        </distribution>
+
+        <logger id='tracelog' logEvery="1000" fileName="$(filebase).log" sort="smart" sanitiseHeaders='true'>
+	        <model idref='posterior'/>
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+        </logger>
+
+        <logger id='screenlog' logEvery="1000">
+	        <!--model idref='posterior'/-->
+            <log idref="posterior"/>
+            <!--this ESS is computed solely based on the current BEAST run (not the chain)-->
+      	    <!--<ESS spec='ESS' name='log' arg="@posterior"/>-->
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+        </logger>
+    </run>
+]]>
+    </subtemplate>
+
+		<mergepoint id='runnables'/>
+
     </beauticonfig>
 
 

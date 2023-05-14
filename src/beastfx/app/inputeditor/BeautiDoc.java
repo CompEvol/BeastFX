@@ -1549,6 +1549,9 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
             throw new IllegalArgumentException("Could not find beastObject with id " + srcID + ". Typo in template perhaps?\n");
         }
         String targetID = translatePartitionNames(connector.targetID, context);
+    	if (targetID.equals("mcmc")) {
+    		targetID = mcmc.get().getID();
+    	}
         connect(srcBEASTObject, targetID, connector.targetInput);
     }
 
