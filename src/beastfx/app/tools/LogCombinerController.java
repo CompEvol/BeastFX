@@ -1,6 +1,7 @@
 package beastfx.app.tools;
 
 
+
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -97,7 +98,9 @@ public class LogCombinerController implements Initializable {
         });
 
 		addButton.setOnAction(e-> {
-            File[] files = FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "log", "trees");
+            File[] files = isTreeFiles() ?
+            		FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "log", "trees") :
+            		FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "trees", "log");
             if (files != null) {
                 addFiles(files);
             }			

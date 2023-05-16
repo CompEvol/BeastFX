@@ -45,79 +45,79 @@ import javafx.scene.control.DialogPane;
 public class LogCombinerDialog extends Console {
 
 	@Override
-        protected void createDialog() {
+    protected void createDialog() {
 
         Dialog<String> dialog = new Dialog<>();
-        	LogCombiner combiner = new LogCombiner();
-            dialog.setTitle("LogCombiner " + BEASTVersion.INSTANCE.getVersion());
-            FXMLLoader fl = new FXMLLoader();
-            fl.setClassLoader(getClass().getClassLoader());
-            fl.setLocation(LogCombiner.class.getResource("logcombiner.fxml"));
-            DialogPane root = null;
-            try {
-                    Object o = fl.load();
-                    root = (DialogPane) o;
-            } catch (IOException e) {
-                    e.printStackTrace();
-            }
-            dialog.getDialogPane();
-            dialog.setDialogPane(root);
-            ThemeProvider.loadStyleSheet(root.getScene());        
-
-            dialog.getDialogPane().getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
-            Object o = fl.getController();
-            LogCombinerController controller = null;
-            if (o != null) {
-            	controller = (LogCombinerController) o;
-            } else {
-            	System.exit(0);
-            }
-            
-            System.out.println("\nLogCombiner " + BEASTVersion2.INSTANCE.getVersionString());
-            System.out.println("Part of the BEAST 2 packages: http://www.beast2.org");
-
-            // Showing the dialog on clicking the button
-            Optional<String> result = dialog.showAndWait();
-            if (result.toString().toLowerCase().contains("cancel")) {
-            	Log.info("Canceled");
-            	System.exit(0);
-            }
-            
-            combiner.m_bIsTreeLog = controller.isTreeFiles();
-            combiner.m_bUseDecimalFormat = controller.convertToDecimal();
-            if (combiner.m_bUseDecimalFormat) {
-                combiner.format = new DecimalFormat("#.############", new DecimalFormatSymbols(Locale.US));
-            }
-            if (!controller.renumberOutputStates()) {
-                combiner.m_nSampleInterval = -1;
-            }
-            if (controller.isResampling()) {
-                combiner.m_nResample = controller.getResampleFrequency();
-            }
-
-            String[] inputFiles = controller.getFileNames();
-            int[] burnins = controller.getBurnins();
-
-            combiner.m_sFileOut = controller.getOutputFileName();
-
-            try {
-                if (combiner.m_sFileOut == null) {
-                	Log.warning.println("No output file specified");
-                } else {
-                    combiner.m_out = new PrintStream(combiner.m_sFileOut);
-                }
-                Log.warning("Start combining...");
-                new Thread(()->{
-                		try {
-                			combiner.combineLogs(inputFiles, burnins);
-                		} catch (Exception e) {
-                			e.printStackTrace();
-                		}
-                }).start();
-            } catch (Exception ex) {
-            	Log.warning.println("Exception: " + ex.getMessage());
-                ex.printStackTrace();
-            }
-            Log.warning("Finished - Quit program to exit.");
+    	LogCombiner combiner = new LogCombiner();
+        dialog.setTitle("LogCombiner " + BEASTVersion.INSTANCE.getVersion());
+        FXMLLoader fl = new FXMLLoader();
+        fl.setClassLoader(getClass().getClassLoader());
+        fl.setLocation(LogCombiner.class.getResource("logcombiner.fxml"));
+        DialogPane root = null;
+        try {
+                Object o = fl.load();
+                root = (DialogPane) o;
+        } catch (IOException e) {
+                e.printStackTrace();
         }
+        dialog.getDialogPane();
+        dialog.setDialogPane(root);
+        ThemeProvider.loadStyleSheet(root.getScene());        
+
+        dialog.getDialogPane().getButtonTypes().addAll(Alert.OK_CANCEL_OPTION);
+        Object o = fl.getController();
+        LogCombinerController controller = null;
+        if (o != null) {
+        	controller = (LogCombinerController) o;
+        } else {
+        	System.exit(0);
+        }
+        
+        System.out.println("\nLogCombiner " + BEASTVersion2.INSTANCE.getVersionString());
+        System.out.println("Part of the BEAST 2 packages: http://www.beast2.org");
+
+        // Showing the dialog on clicking the button
+        Optional<String> result = dialog.showAndWait();
+        if (result.toString().toLowerCase().contains("cancel")) {
+        	Log.info("Canceled");
+        	System.exit(0);
+        }
+        
+        combiner.m_bIsTreeLog = controller.isTreeFiles();
+        combiner.m_bUseDecimalFormat = controller.convertToDecimal();
+        if (combiner.m_bUseDecimalFormat) {
+            combiner.format = new DecimalFormat("#.############", new DecimalFormatSymbols(Locale.US));
+        }
+        if (!controller.renumberOutputStates()) {
+            combiner.m_nSampleInterval = -1;
+        }
+        if (controller.isResampling()) {
+            combiner.m_nResample = controller.getResampleFrequency();
+        }
+
+        String[] inputFiles = controller.getFileNames();
+        int[] burnins = controller.getBurnins();
+
+        combiner.m_sFileOut = controller.getOutputFileName();
+
+        try {
+            if (combiner.m_sFileOut == null) {
+            	Log.warning.println("No output file specified");
+            } else {
+                combiner.m_out = new PrintStream(combiner.m_sFileOut);
+            }
+            Log.warning("Start combining...");
+            new Thread(()->{
+            		try {
+            			combiner.combineLogs(inputFiles, burnins);
+            		} catch (Exception e) {
+            			e.printStackTrace();
+            		}
+            }).start();
+        } catch (Exception ex) {
+        	Log.warning.println("Exception: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        Log.warning("Finished - Quit program to exit.");
+    }
 }
