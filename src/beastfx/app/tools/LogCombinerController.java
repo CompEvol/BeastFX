@@ -1,7 +1,6 @@
 package beastfx.app.tools;
 
 
-
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -76,9 +75,9 @@ public class LogCombinerController implements Initializable {
 		fileTypeCombo.getSelectionModel().select(0);
 		
 		browseButton.setOnAction(e -> {
-	        File[] files = isTreeFiles() ?
-            		FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "log", "trees") :
-            		FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "trees", "log");
+            File file = isTreeFiles() ?
+            		FXUtils.getSaveFile("Select output file...", new File(ProgramStatus.g_sDir), "Beast log and tree files", "log", "trees") :
+            		FXUtils.getSaveFile("Select output file...", new File(ProgramStatus.g_sDir), "Beast log and tree files", "trees", "log");
 	        if (file == null) {
 	            // the dialog was cancelled...
 	            return;
