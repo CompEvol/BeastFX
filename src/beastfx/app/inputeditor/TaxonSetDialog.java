@@ -14,6 +14,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import beastfx.app.beauti.ThemeProvider;
@@ -24,6 +25,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 import javax.swing.UIManager;
 
@@ -165,12 +167,44 @@ public class TaxonSetDialog extends DialogPane {
         listOfTaxonCandidates.setId("listOfTaxonCandidates");
         listOfTaxonCandidates.setMinSize(200,300);
         listOfTaxonCandidates.setPrefSize(200,300);
+        listOfTaxonCandidates.setCellFactory(new Callback<ListView<Taxon>, ListCell<Taxon>>() {
+			@Override
+			public ListCell<Taxon> call(ListView<Taxon> param) {
+				return new ListCell<Taxon>() {
+					@Override
+					public void updateItem(Taxon taxon, boolean empty) {
+						super.updateItem(taxon, empty);
+		                if (empty || taxon == null) {
+		                    setText(null);
+		                } else {
+		                    setText(taxon.getID());
+		                }
+					}
+				};
+			}
+		});
 
         listOfTaxonSet = new ListView<>();
         listOfTaxonSet.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listOfTaxonSet.setId("listOfTaxonSet");
         listOfTaxonSet.setMinSize(200,300);
         listOfTaxonSet.setPrefSize(200,300);
+        listOfTaxonSet.setCellFactory(new Callback<ListView<Taxon>, ListCell<Taxon>>() {
+			@Override
+			public ListCell<Taxon> call(ListView<Taxon> param) {
+				return new ListCell<Taxon>() {
+					@Override
+					public void updateItem(Taxon taxon, boolean empty) {
+						super.updateItem(taxon, empty);
+		                if (empty || taxon == null) {
+		                    setText(null);
+		                } else {
+		                    setText(taxon.getID());
+		                }
+					}
+				};
+			}
+		});
 
 //        ScrollPane scroller = new ScrollPane();
 //        scroller.setContent(listOfTaxonCandidates);

@@ -2,12 +2,14 @@ package beastfx.app.beauti;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import beastfx.app.util.Alert;
 
 import beastfx.app.inputeditor.BEASTObjectPanel;
 import beastfx.app.inputeditor.BeautiDoc;
 import beastfx.app.inputeditor.TaxonSetDialog;
+import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.alignment.TaxonSet;
 import beast.base.evolution.tree.MRCAPrior;
 import beast.base.evolution.tree.Tree;
@@ -53,7 +55,8 @@ public class MRCAPriorProvider implements PriorProvider {
             prior.treeInput.setValue(trees.get(treeIndex), prior);
             TaxonSet taxonSet = new TaxonSet();
 
-            TaxonSetDialog dlg = new TaxonSetDialog(taxonSet, PriorListInputEditor.getTaxonCandidates(prior, doc), doc);
+            Set<Taxon> candidates = PriorListInputEditor.getTaxonCandidates(prior, doc);
+            TaxonSetDialog dlg = new TaxonSetDialog(taxonSet, candidates, doc);
             if (!dlg.showDialog() || dlg.taxonSet.getID() == null || dlg.taxonSet.getID().trim().equals("")) {
                 return null;
             }
