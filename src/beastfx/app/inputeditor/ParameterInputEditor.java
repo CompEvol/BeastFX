@@ -1,6 +1,7 @@
 package beastfx.app.inputeditor;
 
 
+
 import beast.base.core.BEASTInterface;
 import beast.base.core.Input;
 import beast.base.core.Log;
@@ -236,6 +237,18 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             Parameter.Base<?> parameter2 = (Parameter.Base<?>) m_input.get();
             parameter2.isEstimatedInput.setValue(m_isEstimatedBox.isSelected(), parameter2);
             if (isParametricDistributionParameter) {
+            	if (m_isEstimatedBox.isSelected()) {
+            		javafx.scene.control.ButtonType result = Alert.showConfirmDialog(this, 
+            				  "You are about to estimate a parameter of aprior and add a hyperprior.\n\n"
+            				+ "Hyper priors are rarely used for parametric distribution parameters.\n\n"
+            				+ "If you are certain it is useful for you analysis, choose YES, otherwise choose NO", "Hyper prior", Alert.YES_NO_OPTION);
+            		if (!result.getText().equals("Yes")) {
+            			m_isEstimatedBox.setSelected(false);
+            			parameter2.isEstimatedInput.setValue(false, parameter2);
+            			return;
+            		}
+            	}
+            	
             	String id = parameter2.getID();
             	
 
