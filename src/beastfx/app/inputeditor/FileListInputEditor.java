@@ -3,10 +3,10 @@ package beastfx.app.inputeditor;
 
 
 
+
 import java.awt.Color;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import javax.swing.table.AbstractTableModel;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -27,9 +27,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.BorderPane;
 
@@ -229,10 +230,24 @@ public class FileListInputEditor extends ListInputEditor {
 //            }   // end filesDropped
 //        }); // end FileDrop.Listener
         
-        filesTable.setOnDragDropped(e -> {
-        	List<File> files = Clipboard.getSystemClipboard().getFiles();
-        	addFiles(files.toArray(new File[] {}));
+        filesTable.setOnDragOver(new EventHandler<DragEvent>() {
+            public void handle(DragEvent event) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                event.consume();
+            }
         });
+        
+        filesTable.setOnDragDropped((DragEvent event) -> {
+            Dragboard db = event.getDragboard();
+        	if (db.hasFiles()) {
+            	List<File> files = db.getFiles();
+            	addFiles(files.toArray(new File[] {}));
+        		filesTable.refresh();
+            } else {
+                event.setDropCompleted(false);
+            }
+            event.consume();
+        });        
         return panel;
     }
 

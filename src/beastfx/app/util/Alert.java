@@ -196,7 +196,7 @@ public class Alert {
 			dlg.setX(node.getX() + node.getWidth()/2);
 			dlg.setY(node.getY() + node.getHeight()/2);
 		}
-		if (option == null) {
+		if (option.isEmpty()) {
 			return null;
 		}
 		String value = (String) option.get();
