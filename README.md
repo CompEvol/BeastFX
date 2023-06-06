@@ -62,9 +62,9 @@ If you are setting up in an IDE, make sure to include both as source folders, ot
 
 Use [apache ant](https://ant.apache.org/) to build the BeastFX package.
 
-`ant addon`
+`ant package`
 
-should build the `BEAST.app` package in `/path/to/BeastFX/build/dist/BEAST.app.addon.v2.7.X.zip` where X the current version of BeastFX and `/path/to/BeastFX` the path to where `BeastFX` resides on your computer.
+should build the `BEAST.app` package in `/path/to/BeastFX/build/dist/BEAST.base.package.v2.7.X.zip` and `/path/to/BeastFX/build/dist/BEAST.app.package.v2.7.X.zip` where X the current version of BeastFX and `/path/to/BeastFX` the path to where `BeastFX` resides on your computer.
 
 Releases containing all applications for your operating system can be built using one of:
 

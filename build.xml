@@ -184,9 +184,11 @@
 <!--
             depends="build_jar_all_BeastFX_NoJUnitTest"
 -->            
-	<target name="addon" depends="init"
+	<target name="package" depends="init"
 	        description="release BEAST 2 package version of BeastFX">
 
+		<mkdir dir="${dist}" />
+		<mkdir dir="${distFX}" />
 		<delete dir="${Add_on_dir}" />
 		<!-- Create the release directory -->
 		<mkdir dir="${Add_on_dir}" />
@@ -212,7 +214,7 @@
             <fileset dir="${beast2app}/fxtemplates/" />		
 		</copy>
 
-		<jar jarfile="${distFX}/BEAST.app.addon.v${version}.zip">
+		<jar jarfile="${distFX}/BEAST.app.package.v${version}.zip">
 			<fileset dir="${Add_on_dir}">
 				<include name="**/*" />
 			</fileset>
@@ -233,7 +235,7 @@
         <copy todir="${Add_on_dir}">
             <fileset file="${dist}/BEAST.base.src.jar" />
         </copy>
-        <jar jarfile="${distFX}/BEAST.base.addon.v${version}.zip">
+        <jar jarfile="${distFX}/BEAST.base.package.v${version}.zip">
             <fileset dir="${Add_on_dir}">
                 <include name="**/*" />
             </fileset>

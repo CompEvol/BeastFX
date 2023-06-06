@@ -40,7 +40,7 @@
   </rowConstraints>
    <children>
       <Label text="Burn in percentage:" />
-      <Label text="Posterior pribability limit:" GridPane.rowIndex="1" />
+      <Label text="Posterior probability limit:" GridPane.rowIndex="1" />
       <Label text="Target tree type:" GridPane.rowIndex="2" />
       
       <TextField fx:id="burninPercentage" prefWidth="20.0" maxWidth="75" text="10" GridPane.columnIndex="1" />
