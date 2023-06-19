@@ -190,12 +190,12 @@ public class Alert {
     	dlg.setHeaderText(message.toString());
     	dlg.setResizable(true);
     	ThemeProvider.loadStyleSheet(dlg.getDialogPane().getScene());
-    	Optional<?> option = dlg.showAndWait();
 		if (parent != null) {
 			Scene node = parent.getScene();
 			dlg.setX(node.getX() + node.getWidth()/2);
 			dlg.setY(node.getY() + node.getHeight()/2);
 		}
+    	Optional<?> option = dlg.showAndWait();
 		if (option.isEmpty()) {
 			return null;
 		}
