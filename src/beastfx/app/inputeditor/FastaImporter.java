@@ -134,7 +134,7 @@ public class FastaImporter implements AlignmentImporter {
 									i++;
 								}
 							}
-				        	String [] providers = new String[]{"aminoacid", "nucleotide", "all are aminoacid", "all are nucleotide"};
+				        	String [] providers = dataNames;
 				        	String selectedType = (String) Alert.showInputDialog(null, "Choose the datatype of alignment " + alignment.getID(),
 				                    "Add partition",
 				                    Alert.QUESTION_MESSAGE, null, providers,
@@ -173,8 +173,8 @@ public class FastaImporter implements AlignmentImporter {
 	    	}
 		return selectedBEASTObjects;
 	}
-	
-    /** Ported from jebl2
+
+	/** Ported from jebl2
      * Guess type of sequence from contents.
      * @param seq the sequence
      * @return SequenceType.NUCLEOTIDE or SequenceType.AMINO_ACID, if sequence is believed to be of that type.
