@@ -443,15 +443,15 @@ public class TipDatesInputEditor extends BEASTObjectInputEditor {
 
         if (dateParseError) {
             Alert.showMessageDialog(this,
-                    "<html>Error interpreting one or more trait values as a formatted date or numeric value.<br><br>" +
-                            "Problem taxa will be highlighted in table.</html>",
+                    "Error interpreting one or more trait values as a formatted date or numeric value.\n\n" +
+                            "Problem taxa will be highlighted in table.",
                     "Date parsing error",
                     Alert.ERROR_MESSAGE);
             clearTable(true);
         } else if (numericParseError) {
             Alert.showMessageDialog(this,
-                    "Error interpreting one or more trait values as a numeric value.<br><br>" +
-                            "Problem taxa will be highlighted in table.</html>",
+                    "Error interpreting one or more trait values as a numeric value.\n\n" +
+                            "Problem taxa will be highlighted in table.",
                     "Date parsing error",
                     Alert.ERROR_MESSAGE);
             clearTable(true);

@@ -216,9 +216,9 @@ public class ParametricDistributionInputEditor extends BEASTObjectInputEditor {
             if (minValue > 0 && minValue - xRange < 0) {
             	minValue = 0 + 1e-5;
             }
-            if (maxValue < 1 && maxValue + xRange > 0) {
-            	maxValue = 1 - 1e-5;
-            }
+//            if (maxValue < 1 && maxValue + xRange > 0) {
+//            	maxValue = 1 - 1e-5;
+//            }
             xRange = maxValue - minValue;
             int k = 0;
 //            double f = maxValue;

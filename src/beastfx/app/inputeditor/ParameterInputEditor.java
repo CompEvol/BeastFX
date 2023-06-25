@@ -205,6 +205,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             if (itemNr < 0) {
 	            for (Object beastObject2 : ((BEASTInterface) m_input.get()).getOutputs()) {
 	                if (beastObject2 instanceof ParametricDistribution) {
+	                    m_isEstimatedBox.setVisible(doc.allowLinking);
 	                    m_isEstimatedBox.setVisible(true);
 	                	isParametricDistributionParameter = true;
 	                    break;

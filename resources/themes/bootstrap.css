@@ -19,8 +19,9 @@
 	-fx-background-radius: 4;
 	-fx-border-radius: 4;
 	-fx-pref-height: 30;
-	-fx-min-width: 30;
 }
+/*	-fx-min-width: 50;*/
+
 .button,.menu-button,.split-menu-button,.toggle-button,.number-button {
 	-fx-background-insets: 0, 0, -1, 0;
 }
