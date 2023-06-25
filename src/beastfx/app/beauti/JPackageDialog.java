@@ -7,6 +7,7 @@ package beastfx.app.beauti;
 
 
 
+
 import beast.base.core.Description;
 import beast.pkgmgmt.Package;
 import beast.pkgmgmt.PackageManager;
@@ -532,7 +533,9 @@ public class JPackageDialog extends DialogPane {
 	public static Dialog<Package> asDialog(Parent pane) {
 		dlg = new Dialog<>();
 		dlg.setDialogPane(new JPackageDialog());
-
+		Window    window = dlg.getDialogPane().getScene().getWindow();
+		window.setOnCloseRequest(event -> window.hide());
+		
 		dlg.setTitle("BEAST 2 Package Manager");
 		dlg.setResizable(true);
 		
@@ -551,6 +554,7 @@ public class JPackageDialog extends DialogPane {
         	pane.setCursor(Cursor.DEFAULT);
         }
 
+        closeButton.setCancelButton(true);
         closeButton.requestFocus();
         return dlg;
 	}
