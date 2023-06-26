@@ -31,6 +31,7 @@ import beastfx.app.util.Console;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.stage.Window;
 
 import static beast.pkgmgmt.BEASTClassLoader.addServices;
 
@@ -45,6 +46,7 @@ public class BeastMain extends Console {
 	    FXMLLoader fl = new FXMLLoader();
 	    fl.setClassLoader(getClass().getClassLoader());
 	    fl.setLocation(BeastMain.class.getResource("BeastMain.fxml"));
+
 	    DialogPane root = null;
 		try {
 			root = fl.load();
@@ -60,9 +62,12 @@ public class BeastMain extends Console {
 	    	((Controller)o).dialog = dialog;
 	    	((Controller)o).textView = textView;
 	    }
-	    	    
+
 		//Showing the dialog on clicking the button
 	    dialog.show();
+
+	    Window window = dialog.getDialogPane().getScene().getWindow();
+		window.setOnCloseRequest(event -> window.hide());
  	}
 	
     public static void centreLine(final String line, final int pageWidth) {
