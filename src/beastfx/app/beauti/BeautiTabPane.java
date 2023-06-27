@@ -15,6 +15,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
@@ -29,6 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import beastfx.app.beauti.theme.Default;
 import beastfx.app.inputeditor.BEASTObjectDialog;
 import beastfx.app.inputeditor.BEASTObjectPanel;
 import beastfx.app.inputeditor.BeautiAlignmentProvider;
@@ -76,7 +78,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
 
 
 public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane implements BeautiDocListener {
@@ -927,22 +928,36 @@ public class BeautiTabPane extends beastfx.app.inputeditor.BeautiTabPane impleme
 
         List<String> themes = new ArrayList<>();
         themes.addAll(ThemeProvider.getThemeMap().keySet());
+        String currentTheme = Utils.getBeautiProperty("theme");
+        if (currentTheme == null) {
+        	currentTheme = new Default().getThemeName();
+        }
         Collections.sort(themes);
+        
+        List<RadioMenuItem> items = new ArrayList<>();
     	for (String name: themes) {
     		ThemeProvider provider = ThemeProvider.getThemeProvider(name);
     		if (name != null & name.length() > 0) {
-            	MyAction themeAction = new MyAction("Theme " + name, "Choose " + name + " theme to skin BEAUti", null, null) {
-        			@Override
-        			public void actionPerformed(ActionEvent ae) {
-        				if (provider.loadMyStyleSheet(frame.getScene())) {
-        					Utils.saveBeautiProperty("theme", name);
-        					refreshPanel();
-        				}
-        			}
-            	};
-        		viewMenu.getItems().add(themeAction);
+    			RadioMenuItem item = new RadioMenuItem("Theme " + name);
+    			Tooltip tooltip = new Tooltip("Choose " + name + " theme to skin BEAUti");
+    			Tooltip.install(item.getGraphic(), tooltip);
+				item.setOnAction(i -> {
+					if (provider.loadMyStyleSheet(frame.getScene())) {
+						Utils.saveBeautiProperty("theme", name);
+						try {
+							docHasChanged();
+							refreshPanel();
+						} catch (NoSuchMethodException | SecurityException | ClassNotFoundException
+								| InstantiationException | IllegalAccessException | IllegalArgumentException
+								| InvocationTargetException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				viewMenu.getItems().add(item);
+				item.setSelected(currentTheme.equals(name));
     		}
-        }
+    	}
     }
 
     class TemplateAction extends MyAction {
