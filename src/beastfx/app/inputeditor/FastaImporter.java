@@ -3,11 +3,7 @@ package beastfx.app.inputeditor;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import javafx.scene.control.ComboBox;
 import beastfx.app.util.Alert;
@@ -84,6 +80,7 @@ public class FastaImporter implements AlignmentImporter {
 				
 				int charCount = -1;
 				Alignment alignment = new Alignment();
+				HashMap<String, Integer> guessDataTypeMap = new HashMap<>();
 		        for (final String taxon : taxa) {
 		            final StringBuilder bsData = seqMap.get(taxon);
 		            String data = bsData.toString();
@@ -98,8 +95,15 @@ public class FastaImporter implements AlignmentImporter {
 		            data = data.replace(missing.charAt(0), DataType.MISSING_CHAR);
 		            data = data.replace(gap.charAt(0), DataType.GAP_CHAR);
 
+					String guessType = guessSequenceType(data);
+					if (guessDataTypeMap.containsKey(guessType)) {
+						guessDataTypeMap.put(guessType, guessDataTypeMap.get(guessType) + 1);
+					} else {
+						guessDataTypeMap.put(guessType, 1);
+					}
+
 		            if (mayBeAminoacid && datatype.equals("nucleotide") && 
-		            		guessSequenceType(data).equals("aminoacid")) {
+		            		guessType != null && guessType.equals("aminoacid")) {
 		            	datatype = "aminoacid";
 		            	totalCount = 20;
 		            	for (Sequence seq : alignment.sequenceInput.get()) {
@@ -117,28 +121,68 @@ public class FastaImporter implements AlignmentImporter {
 		        ID = ID.substring(0, ID.lastIndexOf('.')).replaceAll("\\..*", "");
 		        alignment.setID(ID);
 
+				// get most likely guess for data type
+				int maxCount = 0;
+				String guessTypeMax = "nucleotide";
+				Set<String> dataTypeKeys = guessDataTypeMap.keySet();
+				for (String k: dataTypeKeys) {
+					if (guessDataTypeMap.get(k) > maxCount) {
+						maxCount = guessDataTypeMap.get(k);
+						guessTypeMax = k;
+					}
+				}
+				
+				String currentProvider = "";
 		        if (mayBeAminoacid) {
 		        	switch (this.datatype) {
 			        	case userdefined: 
 			        		// make user choose 
 							TreeMap<String, DataType> allTypes = Alignment.getTypes();
-							String[] dataNames = new String[allTypes.keySet().size() + 2];
-							dataNames[0] = "aminoacid";
-							dataNames[1] = "nucleotide";
-							dataNames[2] = "all are aminoacid";
-							dataNames[3] = "all are nucleotide";
-							int i = 4;
-							for (String key: allTypes.keySet()) {
-								if (!key.equals("nucleotide") && !key.equals("aminoacid")) {
-									dataNames[i] = key;
-									i++;
+							// guessing data type
+							String[] providers;
+							if (guessTypeMax != null && (guessTypeMax.equals("nucleotide") || guessTypeMax.equals("aminoacid"))) {
+								// data types excluding numeric types
+								Set<String> providerSet = new HashSet<>();
+								for (String typeName: allTypes.keySet()) {
+									try {
+										DataType.Base type = (DataType.Base) allTypes.get(typeName);
+										if (isNumericType(type) == false) {
+											providerSet.add(typeName);
+										}
+									} catch	(ClassCastException e) {}
 								}
+								providers = addAllNucleotideAminoAcidToSet(providerSet);
+								System.out.println("Guessing type: " + guessTypeMax);
+								if (guessTypeMax.equals("nucleotide")) {
+									currentProvider = "nucleotide";
+								} else {
+									currentProvider = "aminoacid";
+								}
+							} else if (guessTypeMax != null && guessTypeMax.equals("numerictype")) {
+								// data types excluding non numeric types
+								Set<String> providerSet = new HashSet<>();
+								for (String typeName: allTypes.keySet()) {
+									try {
+										DataType.Base type = (DataType.Base) allTypes.get(typeName);
+										if (isNumericType(type)) {
+											// add numeric data type
+											providerSet.add(typeName);
+										}
+									} catch (ClassCastException e) {}
+								}
+								providers = new String[providerSet.size()];
+								providers = providerSet.toArray(providers);
+								currentProvider = providers[0];
+							} else {
+								// all data types
+								providers = addAllNucleotideAminoAcidToSet(allTypes.keySet());	;
+								currentProvider = providers[0];
 							}
-				        	String [] providers = dataNames;
+
 				        	String selectedType = (String) Alert.showInputDialog(null, "Choose the datatype of alignment " + alignment.getID(),
 				                    "Add partition",
 				                    Alert.QUESTION_MESSAGE, null, providers,
-				                    providers[0]);
+				                    currentProvider);
 				        	
 				        	switch (selectedType) {
 					        	case "aminoacid": datatype = "aminoacid"; totalCount = 20; break;
@@ -174,6 +218,50 @@ public class FastaImporter implements AlignmentImporter {
 		return selectedBEASTObjects;
 	}
 
+	private String[] addAllNucleotideAminoAcidToSet(Set<String> keySet) {
+		String[] dataNames = new String[keySet.size() + 2];
+		dataNames[0] = "aminoacid";
+		dataNames[1] = "nucleotide";
+		dataNames[2] = "all are aminoacid";
+		dataNames[3] = "all are nucleotide";
+		int i = 4;
+		for (String key: keySet) {
+			if (!key.equals("nucleotide") && !key.equals("aminoacid")) {
+				dataNames[i] = key;
+				i++;
+			}
+		}
+		return dataNames;
+	}
+
+	private boolean isNumericType(DataType.Base type) {
+		int stateCount = type.getStateCount();
+		if (stateCount == -1) {
+			// infinite state count such as IntegerData
+			return true;
+		}
+		boolean allNumeric = true;
+		String codeMap = type.getCodeMap();
+		if (codeMap != null) {
+			for (int z = 0; z < codeMap.length(); z++) {
+				char c = codeMap.charAt(z);
+				String numericString = "0123456789.-";
+				if (c != DataType.GAP_CHAR && c != DataType.MISSING_CHAR && numericString.indexOf(c) == -1) {
+					allNumeric = false;
+				}
+			}
+			if (allNumeric) {
+				// type has all numeric character map
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			// type has no code map (may not be numeric)
+			return false;
+		}
+	}
+
 	/** Ported from jebl2
      * Guess type of sequence from contents.
      * @param seq the sequence
@@ -191,15 +279,18 @@ public class FastaImporter implements AlignmentImporter {
 
         boolean onlyValidNucleotides = true;
         boolean onlyValidAminoAcids = true;
+		boolean onlyValidNumeric = true;
 
         // do not use toCharArray: it allocates an array size of sequence
-        for(int k = 0; (k < seqLen) && (onlyValidNucleotides || onlyValidAminoAcids); ++k) {
+        for(int k = 0; (k < seqLen) && (onlyValidNucleotides || onlyValidAminoAcids || onlyValidNumeric); ++k) {
             final char c = seq.charAt(k);
             final boolean isNucState = ("ACGTUXNacgtuxn?_-".indexOf(c) > -1);
-            final boolean isAminoState = true;
+            final boolean isAminoState = ("ACDEFGHIKLMNPQRSTVWYXacdefghiklmnpqrstvwyx?_-".indexOf(c) > -1);
+			final boolean isNumericState = ("0123456789?_-.".indexOf(c) > -1);
 
             onlyValidNucleotides &= isNucState;
             onlyValidAminoAcids &= isAminoState;
+			onlyValidNumeric &= isNumericState;
 
             if (onlyValidNucleotides) {
                 assert(isNucState);
@@ -212,7 +303,11 @@ public class FastaImporter implements AlignmentImporter {
                         ++undeterminedStates;
                     }
                 }
-            }
+            } else if (onlyValidAminoAcids && "?_-".indexOf(c) > -1) {
+				--sequenceLength;
+			} else if (onlyValidNumeric && "?_-".indexOf(c) > -1) {
+				--sequenceLength;
+			}
         }
 
         String result = "aminoacid";
@@ -232,9 +327,11 @@ public class FastaImporter implements AlignmentImporter {
             }
         } else if (onlyValidAminoAcids) {
             result = "aminoacid";
-        } else {
-            result = null;
-        }
+        } else if (onlyValidNumeric && canonicalNucStates == 0) {
+			result = "numerictype";
+		} else {
+			result = null;
+		}
         return result;
     }
 
