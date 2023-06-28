@@ -42,7 +42,7 @@ public class BeastMain extends Console {
 	protected void createDialog() {
 
         Dialog<String> dialog = new Dialog<>();
-	    dialog.setTitle("BEAST " + BEASTVersion.INSTANCE.getVersion());
+	    dialog.setTitle("BEAST " + BEASTVersion2.INSTANCE.getVersion());
 	    FXMLLoader fl = new FXMLLoader();
 	    fl.setClassLoader(getClass().getClassLoader());
 	    fl.setLocation(BeastMain.class.getResource("BeastMain.fxml"));

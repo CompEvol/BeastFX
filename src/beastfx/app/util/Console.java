@@ -1,5 +1,7 @@
 package beastfx.app.util;
 
+
+import java.awt.Desktop;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -19,7 +21,7 @@ public class Console extends javafx.application.Application {
 	protected static TextArea textView;
 
 	// to be implemented by sub-classes
-	protected void createDialog() {				
+	protected void createDialog() {
 	}
 	
 	private void initStreams() {
@@ -115,6 +117,7 @@ public class Console extends javafx.application.Application {
 	    textView.setFont(Font.font ("Menlo", 12));
 
 		Scene scene = new Scene(textView);
+	    
 		ThemeProvider.loadStyleSheet(scene);
 		textView.applyCss();
 		textView.layout();
@@ -139,9 +142,14 @@ public class Console extends javafx.application.Application {
 			// RRB: the recommended action is Platform.exit(), but this causes errors:
 			// "Java has been detached already, but someone is still trying to use it at"
 			// A crude System.exit() does not:
+			try {
+				Platform.exit();
+			} catch (Throwable e) {
+				// ignore
+			}
 		    System.exit(0);
 		});
-		
+
 		// prevent textView to exceed display size
 	    Rectangle2D screen = Screen.getPrimary().getBounds();
 	    double d = scene.getWindow().getHeight() - scene.getHeight();
@@ -152,9 +160,24 @@ public class Console extends javafx.application.Application {
 		Platform.runLater(new Runnable() {
 	        public void run() {
 	        	createDialog();
-	        }
+	        	
+	        	if (Utils.isMac()) {
+					new Thread(() -> {
+						Desktop.getDesktop().setQuitHandler((e, r) -> {
+							Platform.runLater(() -> {
+								try {
+									Platform.exit();
+								} catch (Throwable e2) {
+									// ignore
+								}
+								System.exit(0);
+							});
+						});
+					}).start();
+	        	}
+
+			}
 		});
-	    	
 	}       
 	
 }
