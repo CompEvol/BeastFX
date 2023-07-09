@@ -435,6 +435,11 @@ System.err.println("Done invoking " + packageApp.className);
                         System.exit(1);
                 }
             } else {
+                try {
+    				PackageManager.loadExternalJars();
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
 
                 // Find apps with class name or description that matches
                 // command line.
