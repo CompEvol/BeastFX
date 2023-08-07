@@ -4,6 +4,8 @@ package beastfx.app.inputeditor;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Background;
+import javafx.scene.paint.Paint;
 
 /**
  * Miniature round label
@@ -28,9 +30,7 @@ public class SmallLabel extends Label {
     } // c'tor
 
     public void setColor(String circleColor) {
-		this.circleColor = circleColor;
-        String style = "-fx-background-color: " + circleColor;
-        setStyle(style);
+        Background.fill(Paint.valueOf(circleColor));
     }
 
     public void setTooltip(String text) {
