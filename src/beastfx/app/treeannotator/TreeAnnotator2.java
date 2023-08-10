@@ -27,6 +27,8 @@ package beastfx.app.treeannotator;
 
 
 
+import static beast.pkgmgmt.BEASTClassLoader.addServices;
+
 import java.io.*;
 import java.util.*;
 
@@ -72,7 +74,8 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
     final public Input<Double> hpd2DInput = new Input<> ("hpd2D", "the HPD interval to be used for the bivariate traits");
     final public Input<Boolean> nohpd2DInput = new Input<> ("nohpd2D", "suppress calculation of HPD intervals for the bivariate traits");
     final public Input<Boolean> noSAInput = new Input<> ("noSA", "interpret the tree set as begin from a not being from a sampled ancestor analysis, even if there are zero branch lengths in the tree set");
-	
+    final public Input<List<String>> versionFileInput = new Input<> ("version_file", "Provide a version file containing a list of services to explicitly allow. (Useful for package development.)", new ArrayList<>());
+
     private final static BEASTVersion version = new BEASTVersion();
 
     private final static boolean USE_R = false;
@@ -87,7 +90,7 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
     public TopologySettingService topologySettingService;
     private int burninPercentage;
     // arguments that do not set any input option
-	static public Input<List<File>> filesInput = new  Input<> ("file", "Specify the input filename and (optional) output file name" , new ArrayList<>());
+	public Input<List<File>> filesInput = new  Input<> ("file", "Specify the input filename and (optional) output file name" , new ArrayList<>());
 
     public abstract class TreeSet {
     	public abstract boolean hasNext();
@@ -1254,13 +1257,12 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
 //        	return;
 //        }
         
-    	new Application(new TreeAnnotator2(), "Tree Annotator", args) {
-    		@Override
-    		public void parseArgs(String[] args, boolean sloppy) throws Exception {
-    			defaultInput = filesInput;
-    			super.parseArgs(args, true);
-    		}
-    	};
+        TreeAnnotator2 annotator = new TreeAnnotator2();
+        Application app = new Application(annotator);
+        app.setDefaultInput(annotator.filesInput);
+        app.parseArgs(args, true);
+        annotator.initAndValidate();
+        annotator.run();
     }
 
 	@Override
@@ -1271,6 +1273,10 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
     @Override
 	public void run() throws Exception {
 
+    	for (String versionFile : versionFileInput.get()) {
+    		BEASTClassLoader.addServices(versionFile);
+    	}
+    	
         String targetTreeFileName = null;
         String inputFileName = null;
         String outputFileName = null;

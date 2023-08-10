@@ -150,6 +150,10 @@ public class Application extends Console {
 	/** default input used for argument parsing **/
 	protected Input<?> defaultInput = null;
 
+	public void setDefaultInput(Input input) {
+		defaultInput = input;
+	}
+
 	/**
 	 * Arguments of the form -name value are processed by finding Inputs with
 	 * matching name and setting their value.
@@ -254,7 +258,7 @@ public class Application extends Console {
 				}
 			} else {
 				if (i == args.length - 1 && defaultInput != null) {
-					defaultInput.setValue(arg, null);
+					defaultInput.setValue(arg, myBeastObject);
 					done = true;
 				}
 			}

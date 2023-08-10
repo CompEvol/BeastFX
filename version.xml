@@ -91,6 +91,19 @@
 				<provider classname="beastfx.app.methodsection.XML2HTMLPaneFX"/>
 			</service>
 
+			<service type="beastfx.app.treeannotator.services.TopologySettingService">
+				<provider classname="beastfx.app.treeannotator.services.MCCTopologyService"/>
+				<provider classname="beastfx.app.treeannotator.services.MaxSumCladeCrediblityTopologyService"/>
+				<provider classname="beastfx.app.treeannotator.services.UserTargetTreeTopologyService"/>
+			</service>
+
+			<service type="beastfx.app.treeannotator.services.NodeHeightSettingService">
+				<provider classname="beastfx.app.treeannotator.services.CommonAncestorNodeHeigtService"/>
+				<provider classname="beastfx.app.treeannotator.services.KeepHeightsNodeHeightsService"/>
+				<provider classname="beastfx.app.treeannotator.services.MeanNodeHeightService"/>
+				<provider classname="beastfx.app.treeannotator.services.MedianNodeHeightService"/>
+			</service>
+
 	    <packageapp description="Interactive Methods Section Generator"
               class="beastfx.app.methodsection.XML2HTMLPaneFX"
             />
