@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -257,9 +258,24 @@ public class Application extends Console {
 							+ getUsage());
 				}
 			} else {
-				if (i == args.length - 1 && defaultInput != null) {
-					defaultInput.setValue(arg, myBeastObject);
-					done = true;
+				if (defaultInput != null) {
+					if (defaultInput.get() instanceof Collection) {
+						StringBuilder str = new StringBuilder();
+						for (int j = i; j < args.length; j++) {
+							arg = args[j];
+							if (arg.startsWith("-")) {
+								throw new Exception("Problem parsing arguments: are all arguments specified by a dash?");
+							}
+							str.append(arg);
+							str.append(" ");
+						}
+						defaultInput.setValue(str.toString(), null);
+						i = args.length;
+						done = true;
+					} else if (i == args.length-1) {
+						defaultInput.setValue(arg, null);
+						done = true;
+					}
 				}
 			}
 			if (!done) {

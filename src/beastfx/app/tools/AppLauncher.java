@@ -395,7 +395,6 @@ System.err.println("Done invoking " + packageApp.className);
             try {
 				PackageManager.loadExternalJars();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
             SwingUtilities.invokeLater(() -> appStore.launchGUI().setVisible(true));

@@ -498,7 +498,7 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
         	return;
         }
         
-        if (topologySettingService.getServiceName().equals(UserTargetTreeTopologyService.SERVICE_NAME)) {
+        if (!topologySettingService.getServiceName().equals(UserTargetTreeTopologyService.SERVICE_NAME)) {
             // even when a user specified target tree is provided we still need to count the totalTreesUsed for subsequent steps.
             treeSet.reset();
             while (treeSet.hasNext()) {
@@ -1259,6 +1259,7 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
         
         TreeAnnotator2 annotator = new TreeAnnotator2();
         Application app = new Application(annotator);
+        annotator.filesInput.determineClass(annotator);
         app.setDefaultInput(annotator.filesInput);
         app.parseArgs(args, true);
         annotator.initAndValidate();

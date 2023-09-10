@@ -66,9 +66,21 @@ abstract public class Application extends javafx.application.Application {
 					}
 				}
 			} else {
-				if (i == args.length - 1) {
-			        defaultInput.setValue(arg, null);
-			        done = true;
+				if (defaultInput != null) {
+					if (defaultInput.getType().isAssignableFrom(List.class)) {
+						for (int j = i; j < args.length; j++) {
+							arg = args[j];
+							if (arg.startsWith("-")) {
+								throw new Exception("Problem parsing arguments: are all arguments specified by a dash?");
+							}
+							defaultInput.setValue(arg, null);
+						}
+						i = args.length;
+						done = true;
+					} else if (i == args.length-1) {
+						defaultInput.setValue(arg, null);
+						done = true;
+					}
 				}
 			}
 			if (!done) {
