@@ -26,13 +26,12 @@
 package beastfx.app.treeannotator;
 
 
-
-import static beast.pkgmgmt.BEASTClassLoader.addServices;
-
 import java.io.*;
 import java.util.*;
 
 import beastfx.app.tools.Application;
+import beastfx.app.treeannotator.TreeAnnotator.HeightsSummary;
+import beastfx.app.treeannotator.TreeAnnotator.Target;
 import beastfx.app.treeannotator.services.NodeHeightSettingService;
 import beastfx.app.treeannotator.services.TopologySettingService;
 import beastfx.app.treeannotator.services.UserTargetTreeTopologyService;
@@ -49,13 +48,6 @@ import beast.base.util.DiscreteStatistics;
 import beast.base.util.HeapSort;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.BEASTVersion;
-
-import beastfx.app.util.Console;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.ButtonBar.ButtonData;
 
 /**
  * @author Alexei Drummond
@@ -76,7 +68,7 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
     final public Input<Boolean> noSAInput = new Input<> ("noSA", "interpret the tree set as begin from a not being from a sampled ancestor analysis, even if there are zero branch lengths in the tree set");
     final public Input<List<String>> versionFileInput = new Input<> ("version_file", "Provide a version file containing a list of services to explicitly allow. (Useful for package development.)", new ArrayList<>());
 
-    private final static BEASTVersion version = new BEASTVersion();
+    public final static BEASTVersion version = new BEASTVersion();
 
     private final static boolean USE_R = false;
 
@@ -476,6 +468,9 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
                          String inputFileName,
                          String outputFileName
     ) throws IOException  {
+
+        topologySettingService = getTopologySettingService();
+        nodeHeightSettingService = getNodeHeightSettingService();
 
         this.posteriorLimit = posteriorLimit;
         this.hpd2D = hpd2D;
@@ -1251,11 +1246,11 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
         // To ensure compatibility between programs in the package, enforce the US locale.
         Locale.setDefault(Locale.US);
 
-//        if (args.length == 0) {
-//        	// TODO: show GUI
-//        	new Application(new TreeAnnotator2(), "Tree Annotator", new String[] {"-help"});
-//        	return;
-//        }
+        if (args.length == 0) {
+        	// show GUI
+        	TAGui.launch(TAGui.class, args);
+        	return;
+        }
         
         TreeAnnotator2 annotator = new TreeAnnotator2();
         Application app = new Application(annotator);
@@ -1308,8 +1303,6 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
         	lowMem = true;
         }
 
-        nodeHeightSettingService = getNodeHeightSettingService();
-        
             		
 //        HeightsSummary heights = HeightsSummary.CA_HEIGHTS;
 //        if (arguments.hasOption("heights")) {
@@ -1350,8 +1343,6 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
             processBivariateAttributes = true;
         }
 
-        
-        topologySettingService = getTopologySettingService();
 
 //        Target target = Target.MAX_CLADE_CREDIBILITY;
 //        if (targetInput.get() != null) {
@@ -1398,7 +1389,7 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
         for (String str : nodeTopologySettingServices) {
             try {
             	TopologySettingService nodeTopologySettingService = (TopologySettingService) BEASTClassLoader.forName(str).newInstance();
-            	if (nodeTopologySettingService.getServiceName().equals(topology)) {
+            	if (nodeTopologySettingService.getServiceName().equals(topology) || nodeTopologySettingService.getDescription().equals(topology)) {
             		return nodeTopologySettingService;
             	}
             	if (topologyServiceNames.length() > 1) {
@@ -1411,7 +1402,7 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
             }
         }
         throw new IllegalArgumentException("Could not find method for setting topology with name " + topology
-        	+ "Choose one of these: " + topologyServiceNames);	
+        	+ ". Choose one of these: " + topologyServiceNames);	
 	}
 
 	private NodeHeightSettingService getNodeHeightSettingService() {
@@ -1421,7 +1412,7 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
         for (String str : nodeHeightSettingServices) {
             try {
             	NodeHeightSettingService nodeHeightSettingService = (NodeHeightSettingService) BEASTClassLoader.forName(str).newInstance();
-            	if (nodeHeightSettingService.getServiceName().equals(heights)) {
+            	if (nodeHeightSettingService.getServiceName().equals(heights) || nodeHeightSettingService.getDescription().equals(heights)) {
             		return nodeHeightSettingService;
             	}
             	if (heightServiceNames.length() > 1) {
@@ -1434,7 +1425,7 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
             }
         }
         throw new IllegalArgumentException("Could not find method for setting node height with name " + heights 
-        		+ "Choose one of these: " + heightServiceNames);	
+        		+ ". Choose one of these: " + heightServiceNames);	
 	}
 
 	/**
@@ -1548,9 +1539,11 @@ public class TreeAnnotator2 extends beast.base.inference.Runnable {
     private CladeSystem cladeSystem = null;
     
 	public CladeSystem getCladeSystem() {
+		burninPercentage = burnInPercentageInput.get();
         CladeSystem cladeSystem = new CladeSystem();
 	    try {
 	    	treeSet.reset();
+	    	totalTreesUsed = 0;
 	        cladeSystem.setProcessSA(false);
 	    	while (treeSet.hasNext()) {
 	    		Tree tree = treeSet.next();
