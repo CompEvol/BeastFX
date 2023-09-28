@@ -220,7 +220,7 @@ public class PriorInputEditor extends InputEditor.Base {
         	protected void updateItem(BeautiSubTemplate item, boolean empty) {
         		super.updateItem(item, empty);
         		if (!empty && item != null) {
-        			if (expandBox.isVisible()) {
+        			if (expandBox !=null && expandBox.isVisible()) {
         				setText(item.toString());
         			} else {
         				setText(item.toString() + getParameters());
