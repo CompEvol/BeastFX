@@ -6,8 +6,8 @@ import java.io.PrintStream;
 
 import beast.base.evolution.tree.Tree;
 import beastfx.app.treeannotator.CladeSystem;
-import beastfx.app.treeannotator.TreeAnnotator2;
-import beastfx.app.treeannotator.TreeAnnotator2.TreeSet;
+import beastfx.app.treeannotator.TreeAnnotator;
+import beastfx.app.treeannotator.TreeAnnotator.TreeSet;
 
 public class MCCTopologyService implements TopologySettingService {
 
@@ -16,7 +16,7 @@ public class MCCTopologyService implements TopologySettingService {
 	protected int totalTreesUsed;
 	
 	@Override
-	public Tree setTopology(TreeSet treeSet, PrintStream progressStream, TreeAnnotator2 annotator) throws IOException {
+	public Tree setTopology(TreeSet treeSet, PrintStream progressStream, TreeAnnotator annotator) throws IOException {
         progressStream.println("Finding maximum credibility tree...");
 		this.treeSet = treeSet;
 		this.totalTreesUsed = annotator.getTotalTreesUsed();

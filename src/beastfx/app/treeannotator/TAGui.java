@@ -8,7 +8,7 @@ import java.util.Optional;
 import beast.base.core.Log;
 import beast.pkgmgmt.BEASTVersion;
 import beastfx.app.beauti.ThemeProvider;
-import beastfx.app.treeannotator.TreeAnnotator2.Target;
+import beastfx.app.treeannotator.TreeAnnotator.Target;
 import beastfx.app.util.Console;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
@@ -23,7 +23,7 @@ public class TAGui extends Console {
 	
 	@Override
 	protected void createDialog() {
-	Controller2 controller;
+	Controller controller;
 	PrintStream err = System.err;
 	System.setErr(new PrintStream(new OutputStream() {
 	    public void write(int b) {
@@ -33,9 +33,9 @@ public class TAGui extends Console {
 
       java.net.URL url = TreeAnnotator.class.getClassLoader().getResource("../tools/images/utility.png");
 
-      final String versionString = TreeAnnotator2.version.getVersionString();
+      final String versionString = TreeAnnotator.version.getVersionString();
       String nameString = "TreeAnnotator " + versionString;
-      String aboutString = "<html><center><p>" + versionString + ", " + TreeAnnotator2.version.getDateString() + "</p>" +
+      String aboutString = "<html><center><p>" + versionString + ", " + TreeAnnotator.version.getDateString() + "</p>" +
               "<p>by<br>" +
               "Andrew Rambaut and Alexei J. Drummond</p>" +
               "<p>Institute of Evolutionary Biology, University of Edinburgh<br>" +
@@ -52,16 +52,16 @@ public class TAGui extends Console {
       // The ConsoleApplication will have overridden System.out so set progressStream
       // to capture the output to the window:
       // new beastfx.app.util.Console();            
-      TreeAnnotator2.progressStream = System.out;
+      TreeAnnotator.progressStream = System.out;
 
-      TreeAnnotator2.printTitle();
+      TreeAnnotator.printTitle();
       
         	try {
 				Dialog<String> dialog = new Dialog<>();
 			    dialog.setTitle("TreeAnnotator " + BEASTVersion.INSTANCE.getVersion());
 			    FXMLLoader fl = new FXMLLoader();
-			    fl.setClassLoader(TreeAnnotator2.class.getClassLoader());
-			    fl.setLocation(TreeAnnotator.class.getResource("TreeAnnotator2.fxml"));
+			    fl.setClassLoader(TreeAnnotator.class.getClassLoader());
+			    fl.setLocation(TreeAnnotator0.class.getResource("TreeAnnotator.fxml"));
 			    DialogPane root = fl.load();
 			    dialog.setDialogPane(root);
 		
@@ -124,7 +124,7 @@ public class TAGui extends Console {
 	    	boolean lowMem = controller.useLowMem();
 
 	        try {
-	            TreeAnnotator2 ta = new TreeAnnotator2();
+	            TreeAnnotator ta = new TreeAnnotator();
 	            ta.heightInput.setValue(heightsOption, ta);
 	            ta.run(burninPercentage,
 	            		lowMem,
@@ -140,7 +140,7 @@ public class TAGui extends Console {
 	            Log.err.println("Exception: " + ex.getMessage());
 	        }
 
-	        TreeAnnotator2.progressStream.println("Finished - Quit program to exit.");
+	        TreeAnnotator.progressStream.println("Finished - Quit program to exit.");
 		}
 	}.start();
 

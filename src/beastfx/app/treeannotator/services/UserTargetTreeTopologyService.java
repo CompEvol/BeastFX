@@ -10,13 +10,13 @@ import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeParser;
 import beast.base.parser.NexusParser;
 import beast.base.util.FileUtils;
-import beastfx.app.treeannotator.TreeAnnotator2;
-import beastfx.app.treeannotator.TreeAnnotator2.TreeSet;
+import beastfx.app.treeannotator.TreeAnnotator;
+import beastfx.app.treeannotator.TreeAnnotator.TreeSet;
 
 public class UserTargetTreeTopologyService implements TopologySettingService {
 
 	@Override
-	public Tree setTopology(TreeSet treeSet, PrintStream progressStream, TreeAnnotator2 annotator) throws IOException {
+	public Tree setTopology(TreeSet treeSet, PrintStream progressStream, TreeAnnotator annotator) throws IOException {
 		String targetTreeFileName = annotator.targetInput.get();
         if (targetTreeFileName != null) {
             progressStream.println("Reading user specified target tree, " + targetTreeFileName);

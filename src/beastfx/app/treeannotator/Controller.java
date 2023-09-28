@@ -3,9 +3,13 @@ package beastfx.app.treeannotator;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Set;
 
-import beastfx.app.treeannotator.TreeAnnotator.HeightsSummary;
+import beast.base.core.Log;
+import beast.pkgmgmt.BEASTClassLoader;
 import beastfx.app.treeannotator.TreeAnnotator.Target;
+import beastfx.app.treeannotator.services.NodeHeightSettingService;
+import beastfx.app.treeannotator.services.TopologySettingService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,12 +50,36 @@ public class Controller implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		nodeHeights.getItems().addAll("Common Ancestor heights", "Median heights", "Mean heights",
-				"Keep target heights");
-		nodeHeights.setValue("Common Ancestor heights");
+		
+    	Set<String> nodeTopologySettingServices = BEASTClassLoader.loadService(TopologySettingService.class);
+        for (String str : nodeTopologySettingServices) {
+            try {
+            	TopologySettingService nodeTopologySettingService = (TopologySettingService) BEASTClassLoader.forName(str).newInstance();
+            	treeType.getItems().add(nodeTopologySettingService.getDescription());
+            } catch (Throwable e) {
+            	// ignore
+            }
+        }
 
-		treeType.getItems().addAll("Maximum clade credibility tree", "Maximum sum of clade credibilities",
-				"User target tree");
+		
+//		nodeHeights.getItems().addAll("Common Ancestor heights", "Median heights", "Mean heights",
+//				"Keep target heights");
+
+		
+    	Set<String> nodeHeightSettingServices = BEASTClassLoader.loadService(NodeHeightSettingService.class);
+        for (String str : nodeHeightSettingServices) {
+            try {
+            	NodeHeightSettingService nodeHeightSettingService = (NodeHeightSettingService) BEASTClassLoader.forName(str).newInstance();
+            	nodeHeights.getItems().add(nodeHeightSettingService.getDescription());
+            } catch (Throwable e) {
+            	// ignore
+            }
+        }
+		
+//		treeType.getItems().addAll("Maximum clade credibility tree", "Maximum sum of clade credibilities",
+//				"User target tree");
+
+        nodeHeights.setValue("Common Ancestor heights");
 		treeType.setValue("Maximum clade credibility tree");
 	}
 
@@ -131,13 +159,14 @@ public class Controller implements Initializable {
 		return null;
 	}
 
-	public HeightsSummary getHeightsOption() {
-		for (HeightsSummary t : HeightsSummary.values()) {
-			if (t.toString().equals(nodeHeights.getValue())) {
-				return t;
-			}
-		}
-		return null;
+	public String getHeightsOption() {
+		return nodeHeights.getValue();
+//		for (HeightsSummary t : HeightsSummary.values()) {
+//			if (t.toString().equals(nodeHeights.getValue())) {
+//				return t;
+//			}
+//		}
+//		return null;
 	}
 
 	public String getTargetFileName() {

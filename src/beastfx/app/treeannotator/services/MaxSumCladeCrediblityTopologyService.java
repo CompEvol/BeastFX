@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import beast.base.evolution.tree.Tree;
-import beastfx.app.treeannotator.TreeAnnotator2;
-import beastfx.app.treeannotator.TreeAnnotator2.TreeSet;
+import beastfx.app.treeannotator.TreeAnnotator;
+import beastfx.app.treeannotator.TreeAnnotator.TreeSet;
 
 public class MaxSumCladeCrediblityTopologyService extends MCCTopologyService {
 
 	@Override
-	public Tree setTopology(TreeSet treeSet, PrintStream progressStream, TreeAnnotator2 annotator) throws IOException {
+	public Tree setTopology(TreeSet treeSet, PrintStream progressStream, TreeAnnotator annotator) throws IOException {
         progressStream.println("Finding maximum sum clade credibility tree...");
 		this.treeSet = treeSet;
 		this.totalTreesUsed = annotator.getTotalTreesUsed();

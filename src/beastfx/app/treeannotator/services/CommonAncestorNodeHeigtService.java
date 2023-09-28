@@ -10,14 +10,14 @@ import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeUtils;
 import beast.base.util.CollectionUtils;
 import beastfx.app.treeannotator.CladeSystem;
-import beastfx.app.treeannotator.TreeAnnotator2;
-import beastfx.app.treeannotator.TreeAnnotator2.TreeSet;
+import beastfx.app.treeannotator.TreeAnnotator;
+import beastfx.app.treeannotator.TreeAnnotator.TreeSet;
 
 public class CommonAncestorNodeHeigtService implements NodeHeightSettingService {
 
 	private int totalTreesUsed;
 	@Override
-	public void setNodeHeights(Tree tree, PrintStream progressStream, TreeAnnotator2 treeAnnotator)  throws IOException {
+	public void setNodeHeights(Tree tree, PrintStream progressStream, TreeAnnotator treeAnnotator)  throws IOException {
         Log.warning.println("Please cite: Heled and Bouckaert: Looking for trees in the forest:\n" +
                 "summary tree from posterior samples. BMC Evolutionary Biology 2013 13:221.");
 
@@ -107,10 +107,10 @@ public class CommonAncestorNodeHeigtService implements NodeHeightSettingService 
 				max = Math.max(d, max);
 			}
 			if (Math.abs(min - max) > 1e-10) {
-				TreeAnnotator2.annotateMeanAttribute(node, attributeName + "_mean", values);
-				TreeAnnotator2.annotateMedianAttribute(node, attributeName + "_median", values);
-				TreeAnnotator2.annotateHPDAttribute(node, attributeName + "_95%_HPD", 0.95, values);
-				TreeAnnotator2.annotateRangeAttribute(node, attributeName + "_range", values);
+				TreeAnnotator.annotateMeanAttribute(node, attributeName + "_mean", values);
+				TreeAnnotator.annotateMedianAttribute(node, attributeName + "_median", values);
+				TreeAnnotator.annotateHPDAttribute(node, attributeName + "_95%_HPD", 0.95, values);
+				TreeAnnotator.annotateRangeAttribute(node, attributeName + "_range", values);
 			}
 		}
 

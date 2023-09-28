@@ -2,12 +2,12 @@ package beastfx.app.treeannotator.services;
 
 import beast.base.evolution.tree.Node;
 import beast.base.util.DiscreteStatistics;
-import beastfx.app.treeannotator.TreeAnnotator2;
+import beastfx.app.treeannotator.TreeAnnotator;
 
 public class MeanNodeHeightService implements NodeHeightSettingService {
 
 	@Override
-	public void setNodeHeight(Node node, double[] values, TreeAnnotator2 treeAnnotator) {
+	public void setNodeHeight(Node node, double[] values, TreeAnnotator treeAnnotator) {
         final double mean = DiscreteStatistics.mean(values);
         if (node.isDirectAncestor()) {
             node.getParent().setHeight(mean);
