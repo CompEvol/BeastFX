@@ -48,6 +48,7 @@ import beast.base.util.DiscreteStatistics;
 import beast.base.util.HeapSort;
 import beast.pkgmgmt.BEASTClassLoader;
 import beast.pkgmgmt.BEASTVersion;
+import beast.pkgmgmt.PackageManager;
 
 /**
  * @author Alexei Drummond
@@ -1245,7 +1246,9 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
         // There is a major issue with languages that use the comma as a decimal separator.
         // To ensure compatibility between programs in the package, enforce the US locale.
         Locale.setDefault(Locale.US);
-
+        
+        PackageManager.loadExternalJars();
+        
         if (args.length == 0) {
         	// show GUI
         	TAGui.launch(TAGui.class, args);
