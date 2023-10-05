@@ -321,8 +321,12 @@ public class JPackageDialog extends DialogPane {
 
     private void showDetail(Package aPackage) {
         //custom title, no icon
+        String msg = "Installed version: " + (aPackage.isInstalled() ? aPackage.getInstalledVersion() : "NA") + "\n";
+        msg += "Latest version: " + (aPackage.isAvailable() ? aPackage.getLatestVersion() : "NA") + "\n";
+        msg += "" + aPackage.getDescription() +"\n";
+
         Alert.showMessageDialog(null,
-                aPackage.toHTML(),
+                msg,
                 aPackage.getName(),
                 Alert.PLAIN_MESSAGE);
     }
