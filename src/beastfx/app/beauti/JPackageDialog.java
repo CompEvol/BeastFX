@@ -39,10 +39,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Window;
 
 import static beast.pkgmgmt.PackageManager.*;
@@ -119,13 +116,13 @@ public class JPackageDialog extends DialogPane {
 
     boolean isRunning;
     Thread t;
-    VBox pane;
+    BorderPane pane;
     
     public JPackageDialog() {
         jLabel = new Label("List of available packages for BEAST v" + beastVersion.getMajorVersion() + ".*");
         jLabel.setMinWidth(400);
-        pane = FXUtils.newVBox();
-        pane.getChildren().add(jLabel);
+        pane = new BorderPane();
+        pane.setTop(jLabel);
 
         dataTable = createTable();
         // update packages using a 30 second time out
@@ -166,15 +163,15 @@ public class JPackageDialog extends DialogPane {
 		}
 
         
-        pane.getChildren().add(dataTable);
+        pane.setCenter(dataTable);
 
         buttonBox = createButtonBox();
-        pane.getChildren().add(buttonBox);
+        pane.setBottom(buttonBox);
 
         setPrefSize(dataTable.getPrefWidth() + 0, dataTable.getPrefHeight() + buttonBox.getPrefHeight() + 60);
         
         dlgPane = this;
-        getChildren().add(pane);
+        setContent(pane);
     }
 
 
