@@ -76,8 +76,8 @@ public class LogCombinerController implements Initializable {
 		
 		browseButton.setOnAction(e -> {
             File file = isTreeFiles() ?
-            		FXUtils.getSaveFile("Select output file...", new File(ProgramStatus.g_sDir), "Beast log and tree files", "log", "trees") :
-            		FXUtils.getSaveFile("Select output file...", new File(ProgramStatus.g_sDir), "Beast log and tree files", "trees", "log");
+            		FXUtils.getSaveFile("Select output file...", new File(ProgramStatus.g_sDir), "Beast log and tree files", "trees", "trees") :
+            		FXUtils.getSaveFile("Select output file...", new File(ProgramStatus.g_sDir), "Beast log and tree files", "log", "log");
 	        if (file == null) {
 	            // the dialog was cancelled...
 	            return;
@@ -98,8 +98,8 @@ public class LogCombinerController implements Initializable {
 
 		addButton.setOnAction(e-> {
             File[] files = isTreeFiles() ?
-            		FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "log", "trees") :
-            		FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "trees", "log");
+            		FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "trees", "trees") :
+            		FXUtils.getLoadFiles("Select log file", new File(ProgramStatus.g_sDir), "Trace or tree log files", "log", "log");
             if (files != null) {
                 addFiles(files);
             }			
