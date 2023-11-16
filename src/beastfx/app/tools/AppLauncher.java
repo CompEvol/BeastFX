@@ -103,9 +103,6 @@ public class AppLauncher {
     }
 
     private Component createList() {
-        Box box = Box.createVerticalBox();
-        box.add(Box.createGlue());
-
         listApps = new JList<PackageApp>(model) {
  			private static final long serialVersionUID = 1L;
 
@@ -174,13 +171,7 @@ public class AppLauncher {
         listScroller.setPreferredSize(new Dimension(660, 400));
         listScroller.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel label = new JLabel("List of available package applications");
-        label.setLabelFor(listApps);
-
-        box.add(label);
-        box.add(listScroller);
-
-        return box;
+        return listScroller;
     }
 
     private void resetAppList() {
