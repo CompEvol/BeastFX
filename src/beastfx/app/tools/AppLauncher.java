@@ -3,11 +3,7 @@ package beastfx.app.tools;
 
 
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -20,20 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.swing.Box;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
@@ -144,9 +127,13 @@ public class AppLauncher {
                                                           boolean cellHasFocus) {
                 JLabel label = (JLabel) super
                         .getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                label.setIcon(((PackageApp) value).icon);
-                label.setHorizontalTextPosition(SwingConstants.CENTER);
-                label.setVerticalTextPosition(SwingConstants.BOTTOM);
+                PackageApp app = (PackageApp) value;
+                label.setText(app.description +  " (" + app.packageName + ")");
+                Image img = app.icon.getImage()
+                        .getScaledInstance(50,50, Image.SCALE_SMOOTH);
+                label.setIcon(new ImageIcon(img));
+                label.setHorizontalTextPosition(SwingConstants.RIGHT);
+                label.setVerticalTextPosition(SwingConstants.CENTER);
                 return label;
             }
         });
