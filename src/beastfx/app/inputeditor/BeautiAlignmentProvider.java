@@ -134,6 +134,17 @@ public class BeautiAlignmentProvider extends BEASTObject {
 					availableImporters.add(importer);
 				}
 			}
+			if (availableImporters.size() == 0 && file.getPath().toLowerCase().endsWith(".txt")) {
+				// remove .txt extension and try again
+				String path = file.getPath();
+				path = path.substring(0, path.length() - 4);
+				File file2 = new File(path);
+				for (AlignmentImporter importer : importers) {
+					if (importer.canHandleFile(file2)) {
+						availableImporters.add(importer);
+					}
+				}
+			}
 			
 			if (availableImporters.size() > 0) {
 				AlignmentImporter importer = availableImporters.get(0);

@@ -48,7 +48,11 @@ public class FastaImporter implements AlignmentImporter {
 				// .ffn = nucleotide coding regions
 				// .frn = non-coding RNA
 				// .ffa = amino acid
-	    		boolean mayBeAminoacid = !(file.getName().toLowerCase().endsWith(".fna") || file.getName().toLowerCase().endsWith(".ffn") || file.getName().toLowerCase().endsWith(".frn"));
+		        String filename = file.getName();
+		        if (filename.toLowerCase().endsWith(".txt")) {
+		        	filename = filename.substring(0, filename.length() - 4);
+		        }
+	    		boolean mayBeAminoacid = !(filename.toLowerCase().endsWith(".fna") || filename.toLowerCase().endsWith(".ffn") || filename.toLowerCase().endsWith(".frn"));
 	    		
 				while (fin.ready()) {
 					String line = fin.readLine();
