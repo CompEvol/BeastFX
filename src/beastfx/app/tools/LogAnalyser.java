@@ -1,5 +1,6 @@
 package beastfx.app.tools;
 
+
 import static beast.base.parser.OutputUtils.format;
 
 import java.io.BufferedReader;
@@ -10,6 +11,9 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import beastfx.app.util.Utils;
 import beast.base.core.BEASTVersion2;
@@ -659,6 +663,7 @@ public class LogAnalyser {
         System.out.println("-oneline Display only one line of output per file.\n" +
                 "         Header is generated from the first file only.\n" +
                 "         (Implies quiet mode.)");
+        System.out.println("-threads <threadcount> number of threads to use in oneline mode.");
         System.out.println("-quiet Quiet mode.  Avoid printing status updates to stderr.");
     	System.out.println("-help");
     	System.out.println("--help");
@@ -666,6 +671,53 @@ public class LogAnalyser {
     	System.out.println("[fileX] log file to analyse. Multiple files are allowed, each is analysed separately");
     	System.exit(0);
     }
+    
+    class CoreRunnable implements java.lang.Runnable {
+        private static boolean headerPrinted = false;
+        private static int lineNr = 0;
+        int start, end;
+        CountDownLatch countDown;
+        List<String> files;
+        int burnInPercentage;
+        String [] tags;
+        
+        CoreRunnable(int start, int end, List<String> files, CountDownLatch countDown, int burnInPercentage, String [] tags) {
+            this.start = start;
+            this.end = end;
+            this.countDown = countDown;
+            this.files = files;
+            this.burnInPercentage = burnInPercentage;
+            this.tags = tags;
+        }
+
+        @Override
+		public void run() {
+        	for (int i = start; i < end; i++) {
+        		LogAnalyser analyser;
+				try {
+					analyser = new LogAnalyser(files.get(i), burnInPercentage, true, tags);
+                    if (i == 0) {
+                        analyser.printOneLineHeader(System.out, tags);
+                        headerPrinted = true;
+                    }
+                    while (!headerPrinted) {
+						Thread.sleep(500);
+                    }
+                    
+                    synchronized (countDown) {
+                    	System.out.print(lineNr + "\t" + files.get(i) + "\t");
+                    	lineNr++;
+                    	analyser.printOneLine(System.out, tags);
+	                }            		
+				} catch (IOException | InterruptedException e) {
+					e.printStackTrace();
+				}
+        	}
+            countDown.countDown();
+        }
+
+    } // CoreRunnable
+
     
     /**
      * @param args
@@ -679,6 +731,7 @@ public class LogAnalyser {
                 boolean quiet = false;
             	List<String> files = new ArrayList<>();
             	String [] tags = null;
+            	int threads = 1;
             	int i = 0;
             	while (i < args.length) {
             		String arg = args[i];
@@ -713,6 +766,14 @@ public class LogAnalyser {
                         i += 1;
                         break;
 
+                    case "-threads":
+            			if (i+1 >= args.length) {
+            				Log.warning.println("-threads argument requires another argument");
+            				printUsageAndExit();
+            			}
+            			threads = Integer.parseInt(args[i+1].trim());
+            			i += 2;
+                        break;
             		case "-h":
             		case "-help":
             		case "--help":
@@ -740,16 +801,31 @@ public class LogAnalyser {
             	} else {
             		// process files
                     if (oneLine) {
-                        for (int idx=0; idx<files.size(); idx++) {
-                            analyser = new LogAnalyser(files.get(idx), burninPercentage, true, tags);
+                    	if (threads > 0) {
+                    		ExecutorService exec = Executors.newFixedThreadPool(threads);
+                    		CountDownLatch countDown = new CountDownLatch(threads);
+                    		int start = 0;
+                    		for (int j = 0; j < threads; j++) {
+                    			int end = (j+1) * files.size()/threads;
+                                CoreRunnable coreRunnable = new LogAnalyser().new CoreRunnable(start, end, files, countDown, burninPercentage, tags);
+                                exec.execute(coreRunnable);
+                                start = end;
 
-                            if (idx == 0) {
-                                analyser.printOneLineHeader(System.out, tags);
-                            }
+                    		}
+                            countDown.await();
 
-                            System.out.print(idx + "\t" + files.get(idx) + "\t");
-                            analyser.printOneLine(System.out, tags);
-                        }
+                    	} else {
+	                        for (int idx=0; idx<files.size(); idx++) {
+	                            analyser = new LogAnalyser(files.get(idx), burninPercentage, true, tags);
+	
+	                            if (idx == 0) {
+	                                analyser.printOneLineHeader(System.out, tags);
+	                            }
+	
+	                            System.out.print(idx + "\t" + files.get(idx) + "\t");
+	                            analyser.printOneLine(System.out, tags);
+	                        }
+                    	}
 
                     } else {
                         for (String file : files) {

@@ -736,7 +736,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
     }
 
     private void annotateNode(CladeSystem cladeSystem, Node node, BitSet bits, boolean isTip) {//, HeightsSummary heightsOption) {
-        CladeSystem.Clade clade= cladeSystem.getCladeMap().get(bits);
+        CladeSystem.Clade clade = cladeSystem.getCladeMap().get(bits);
         assert clade != null : "Clade missing?";
 
         boolean filter = false;
