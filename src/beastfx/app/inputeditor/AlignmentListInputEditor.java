@@ -1240,7 +1240,22 @@ public class AlignmentListInputEditor extends ListInputEditor {
 						break;
 					}
 				}
-				alignments.add(likelihood.dataInput.get());
+				if (likelihood != null) {
+					alignments.add(likelihood.dataInput.get());
+				} else {
+					// alignment maybe wrapped in a FilteredAlignment
+					for (BEASTInterface o2 : b.getOutputs()) {
+						if (o2 instanceof FilteredAlignment) {
+							for (BEASTInterface o : ((FilteredAlignment) o2).getOutputs()) {
+								if (o instanceof GenericTreeLikelihood) {
+									likelihood = (GenericTreeLikelihood) o;
+									alignments.add(likelihood.dataInput.get());
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 			partitionCount = alignments.size();
 			tableData = null;
