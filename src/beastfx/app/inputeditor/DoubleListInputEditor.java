@@ -229,7 +229,7 @@ public class DoubleListInputEditor extends ListInputEditor {
 //    			m_entry.setText(m_input.get() + "");
                 if (m_validateLabel != null) {
                     m_validateLabel.setVisible(true);
-                    m_validateLabel.setTooltip(new Tooltip("<html><p>Parsing error: " + ex.getMessage() + ". Value was left at " + m_input.get() + ".</p></html>"));
+                    m_validateLabel.setTooltip(new Tooltip("Parsing error: " + ex.getMessage() + ". Value was left at " + m_input.get() + "."));
                     m_validateLabel.setColor("orange");
                 }
                 repaint();
@@ -307,7 +307,7 @@ public class DoubleListInputEditor extends ListInputEditor {
                     notifyValidationListeners(ValidationStatus.HAS_INVALIDMEMBERS);
                     if (m_validateLabel != null) {
                         m_validateLabel.setVisible(true);
-                        m_validateLabel.setTooltip(new Tooltip("<html><p>Recursive error in " + e.getMessage() + "</p></html>"));
+                        m_validateLabel.setTooltip(new Tooltip("Recursive error in " + e.getMessage()));
                         m_validateLabel.setColor("orange");
                     }
                     repaint();

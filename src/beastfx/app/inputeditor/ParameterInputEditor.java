@@ -95,7 +95,7 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             validateInput();
         } catch (Exception ex) {
             m_validateLabel.setVisible(true);
-            m_validateLabel.setTooltip(new Tooltip("<html><p>Parsing error: " + ex.getMessage() + ". Value was left at " + m_input.get() + ".</p></html>"));
+            m_validateLabel.setTooltip(new Tooltip("Parsing error: " + ex.getMessage() + ". Value was left at " + m_input.get() + "."));
             m_validateLabel.setColor("orange");
             repaint();
         }
