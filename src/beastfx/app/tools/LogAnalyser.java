@@ -244,7 +244,7 @@ public class LogAnalyser {
             int i = 0;
             if (str.indexOf('#') < 0 && str.matches("[-0-9].*")) // {
                 //data++;
-                if (++data >= 0) //{
+                if (++data >= 0  && data < m_fTraces[0].length) //{
                     for (String str2 : str.split("\\s")) {
                         try {
                             if (str2.indexOf('.') >= 0) {
@@ -673,8 +673,8 @@ public class LogAnalyser {
     }
     
     class CoreRunnable implements java.lang.Runnable {
-        private static boolean headerPrinted = false;
-        private static int lineNr = 0;
+        private boolean headerPrinted = false;
+        private int lineNr = 0;
         int start, end;
         CountDownLatch countDown;
         List<String> files;
