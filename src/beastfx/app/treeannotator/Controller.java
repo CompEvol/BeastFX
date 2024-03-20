@@ -150,13 +150,14 @@ public class Controller implements Initializable {
 		}
 	}
 
-	public Target getTargetOption() {
-		for (Target t : Target.values()) {
-			if (t.toString().equals(treeType.getValue())) {
-				return t;
-			}
-		}
-		return null;
+	public String getTargetOption() {
+		return treeType.getValue();
+//		for (Target t : Target.values()) {
+//			if (t.toString().equals(treeType.getValue())) {
+//				return t;
+//			}
+//		}
+//		return null;
 	}
 
 	public String getHeightsOption() {

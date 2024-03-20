@@ -9,6 +9,7 @@ import beast.base.core.Log;
 import beast.pkgmgmt.BEASTVersion;
 import beastfx.app.beauti.ThemeProvider;
 import beastfx.app.treeannotator.TreeAnnotator.Target;
+import beastfx.app.treeannotator.services.UserTargetTreeTopologyService;
 import beastfx.app.util.Console;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
@@ -101,11 +102,11 @@ public class TAGui extends Console {
 	        }
 	        double posteriorLimit = controller.getPosteriorLimit();
 	        double hpd2D = 0.80;
-	        Target targetOption = controller.getTargetOption();
+	        String targetOption = controller.getTargetOption();
 	        String heightsOption = controller.getHeightsOption();
 
 	        String targetTreeFileName = controller.getTargetFileName();
-	        if (targetOption == Target.USER_TARGET_TREE && targetTreeFileName == null) {
+	        if (targetOption.equals(UserTargetTreeTopologyService.SERVICE_NAME) && targetTreeFileName == null) {
 	            Log.err.println("No target file specified");
 	            return;
 	        }
@@ -125,6 +126,7 @@ public class TAGui extends Console {
 
 	        try {
 	            TreeAnnotator ta = new TreeAnnotator();
+	            ta.topologyInput.setValue(targetOption, ta);
 	            ta.heightInput.setValue(heightsOption, ta);
 	            ta.run(burninPercentage,
 	            		lowMem,

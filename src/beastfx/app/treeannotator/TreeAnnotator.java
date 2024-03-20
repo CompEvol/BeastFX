@@ -58,7 +58,7 @@ import beast.pkgmgmt.PackageManager;
  */
 public class TreeAnnotator extends beast.base.inference.Runnable {
     final public Input<String> heightInput = new Input<> ("height", "name of the method for estimating node heights", "CA");
-    final public Input<Integer> burnInPercentageInput = new Input<>("burnin", "percentage of trees to used as burn-in (and will be ignored)", -1);
+    final public Input<Integer> burnInPercentageInput = new Input<>("burnin", "percentage of trees to used as burn-in (and will be ignored)", 10);
     final public Input<Double> limitInput = new Input<>("limit", "the minimum posterior probability for a node to be annotated", 0.0);
     final public Input<String> topologyInput = new Input<> ("topology", "name of the method for determining topology", "MCC");
     final public Input<String> targetInput = new Input<> ("target", "target_file_name, specifies a user target tree to be annotated");
