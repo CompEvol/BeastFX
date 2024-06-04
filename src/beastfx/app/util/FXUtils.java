@@ -161,6 +161,11 @@ public class FXUtils {
         }
         
         String id = o.getID();
+        if (id == null) {
+        	// cannot identify BEAST object, so there is no way to 
+        	// identify a suitable HMC page
+        	return;
+        }
 		if (id.lastIndexOf('.') > 0) {
 			id = id.substring(0, id.lastIndexOf('.'));
 		}

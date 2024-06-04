@@ -3,10 +3,18 @@ package beastfx.app.util;
 
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Optional;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import beast.base.core.BEASTInterface;
 import beastfx.app.beauti.ThemeProvider;
@@ -77,6 +85,7 @@ public class Alert {
     public static final AlertType   PLAIN_MESSAGE = AlertType.NONE;
     
 	public static void showMessageDialog(Parent parent, String message) {
+		message = removeHTML(message);
 		javafx.scene.control.Alert alert = new javafx.scene.control.Alert(AlertType.INFORMATION,
 				message, 
 				ButtonType.OK);
@@ -94,6 +103,7 @@ public class Alert {
 		javafx.scene.control.Alert alert = new javafx.scene.control.Alert(AlertType.CONFIRMATION,
 				message, 
 				yesNoCancelOption);
+		message = removeHTML(message);
 		alert.setHeaderText(header);
 		if (parent != null) {
 			Scene node = parent.getScene();
@@ -105,12 +115,8 @@ public class Alert {
 		return option.get();
 	}
 
-	public static void showMessageDialog(Pane frame, Pane scroller) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public static void showMessageDialog(Parent parent, String message, String header, AlertType informationMessage) {
+		message = removeHTML(message);
 		javafx.scene.control.Alert alert = new javafx.scene.control.Alert(informationMessage,
 				message, 
 				ButtonType.OK);
@@ -177,6 +183,22 @@ public class Alert {
 		alert.showAndWait();
 	}
 
+	private static String removeHTML(String html) {
+		String original = html;
+		html = html.replaceAll("<br>", "\n");
+		html = html.replaceAll("<br/>", "\n");
+		html = "<tag>" + html + "<tag>";
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        Document doc;
+        try {
+			doc = factory.newDocumentBuilder().parse(new InputSource(new StringReader(html)));
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			return original;
+		}
+		String text = doc.getTextContent();
+		return text;
+	}
+	
     public static Object showInputDialog(Parent parent,
             Object message, String title, AlertType messageType, Icon icon,
             Object[] selectionValues, Object initialSelectionValue) {
