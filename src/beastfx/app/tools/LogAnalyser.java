@@ -812,8 +812,12 @@ public class LogAnalyser {
                                 start = end;
 
                     		}
-                            countDown.await();
-
+                    		countDown.await();
+                    		
+                            // gracefully exit
+                            exec.shutdownNow();
+                            System.exit(0);
+                            
                     	} else {
 	                        for (int idx=0; idx<files.size(); idx++) {
 	                            analyser = new LogAnalyser(files.get(idx), burninPercentage, true, tags);
