@@ -79,11 +79,9 @@ public class CommonAncestorNodeHeigtService implements NodeHeightSettingService 
 				ths[k] += hs[k][counter];
 			}
 			totalTreesUsed += 1;
-			if (counter > 0 && counter % reportStepSize == 0 && reported < 61) {
-				while (1000 * reported < 61000 * (counter + 1) / this.totalTreesUsed) {
-					progressStream.print("*");
-					reported++;
-				}
+			while (reported < 61 && 1000.0 * reported < 61000.0 * (counter + 1) / this.totalTreesUsed) {
+				progressStream.print("*");
+				reported++;
 				progressStream.flush();
 			}
 			counter++;

@@ -671,13 +671,11 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
               bestTree = tree;
               bestScore = score;
           }
-          if (counter % stepSize == 0 && reported < 61) {
-			  while (1000*reported < 61000 * (counter + 1) / totalTreesUsed) {
-	              progressStream.print("*");
-	              reported++;
-        	  }
+		  while (reported < 61 && 1000.0*reported < 61000.0 * (counter + 1) / totalTreesUsed) {
+              progressStream.print("*");
+              reported++;
               progressStream.flush();
-          }
+    	  }
           counter++;
         }
         progressStream.println();
@@ -1496,13 +1494,11 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                 ths[k] += hs[k][counter];
             }
             totalTreesUsed += 1;
-            if (counter > 0 && counter % reportStepSize == 0 && reported < 61) {
-				while (1000 * reported < 61000 * (counter + 1)/ this.totalTreesUsed) {
-				    progressStream.print("*");
-				    reported++;
-				}
-                progressStream.flush();
-            }
+			while (reported < 61 && 1000.0*reported < 61000.0 * (counter + 1) / this.totalTreesUsed) {
+		          progressStream.print("*");
+		          reported++;
+		          progressStream.flush();
+			}
             counter++;
 
         }
@@ -1618,13 +1614,11 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                     setupAttributes(tree);
             	}
                 cladeSystem.collectAttributes(tree, attributeNames);
-                if (counter > 0 && counter % stepSize == 0 && reported < 61) {
-    				while (1000 * reported < 61000 * (counter + 1)/ this.totalTreesUsed) {
-    	                progressStream.print("*");
-    	                reported++;
-            	    }
-                    progressStream.flush();
-                }
+    			while (reported < 61 && 1000.0*reported < 61000.0 * (counter + 1) / this.totalTreesUsed) {
+  		          	progressStream.print("*");
+  		          	reported++;
+  		          	progressStream.flush();
+    			}
                 totalTreesUsedNew++;
                 counter++;
         	}

@@ -242,9 +242,8 @@ public class LogAnalyser {
         while (fin.ready()) {
             str = fin.readLine();
             int i = 0;
-            if (str.indexOf('#') < 0 && str.matches("[-0-9].*")) // {
-                //data++;
-                if (++data >= 0  && data < m_fTraces[0].length) //{
+            if (str.indexOf('#') < 0 && str.matches("[-0-9].*"))
+                if (++data >= 0  && data < m_fTraces[0].length)
                     for (String str2 : str.split("\\s")) {
                         try {
                             if (str2.indexOf('.') >= 0) {
@@ -262,14 +261,10 @@ public class LogAnalyser {
                         }
                         i++;
                     }
-            //}
-            //}
-            if (data > 0 && data % lines == 0 && reported < 81) {
-				while (10000 * reported < 810000 * (data + 1)/ total) {
-	                log("*");
-	                reported++;
-        	    }
-            }
+			while (reported < 81 && 1000.0 * reported < 81000.0 * (data + 1)/ total) {
+                log("*");
+                reported++;
+    	    }
         }
         logln("");
         // determine types

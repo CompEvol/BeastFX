@@ -44,13 +44,11 @@ public class MCCTopologyService implements TopologySettingService {
               bestTree = tree;
               bestScore = score;
           }
-          if (counter % stepSize == 0 && reported < 61) {
-			  while (1000*reported < 61000 * (counter + 1) / totalTreesUsed) {
-	              progressStream.print("*");
-	              reported++;
-        	  }
+		  while (reported < 61 && 1000.0 * reported < 61000.0 * (counter + 1) / totalTreesUsed) {
+              progressStream.print("*");
+              reported++;
               progressStream.flush();
-          }
+    	  }
           counter++;
         }
         progressStream.println();

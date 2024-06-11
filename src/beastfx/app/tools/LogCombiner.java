@@ -216,12 +216,10 @@ public class LogCombiner extends LogAnalyser {
 	                	m_out.println();
                 	}
                 }
-                if (data % lines == 0 && reported < 81) {
-    				while (10000 * reported < 810000 * (data + 1)/ total) {
-    	                log("*");
-    	                reported++;
-            	    }
-                }
+				while (reported < 81 && 1000.0 * reported < 81000.0 * (data + 1)/ total) {
+	                log("*");
+	                reported++;
+        	    }
         	}
         }
         logln("");
@@ -325,12 +323,10 @@ public class LogCombiner extends LogAnalyser {
                 	}
                 }
             }
-            if (data % lines == 0 && reported < 81) {
-				while (10000 * reported < 810000 * (data + 1)/ total) {
-	                log("*");
-	                reported++;
-        	    }
-            }
+			while (reported < 81 && 1000.0 * reported < 81000.0 * (data + 1)/ total) {
+                log("*");
+                reported++;
+    	    }
         }
         logln("");
         return state;
