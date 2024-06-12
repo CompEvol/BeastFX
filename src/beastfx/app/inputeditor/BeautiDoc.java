@@ -1914,6 +1914,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         taboo.add(mcmc);
         // add loggers
         taboo.addAll(mcmc.loggersInput.get());
+        taboo.addAll(doc.alignments);
         // add trees
         for (StateNode node : mcmc.startStateInput.get().stateNodeInput.get()) {
             if (node instanceof Tree) {
@@ -1946,11 +1947,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
         collectAncestors(beastObject, ancestors, taboo);
         Log.info.print(Arrays.toString(ancestors.toArray()));
         for (BEASTInterface beastObject2 : predecessors) {
-            if (beastObject2 instanceof StateNode) {
-                Set<BEASTInterface> ancestors2 = new HashSet<>();
-                collectAncestors(beastObject2, ancestors2, taboo);
-                ancestors.addAll(ancestors2);
-            } else if (beastObject2 instanceof Alignment || beastObject2 instanceof FilteredAlignment) {
+            if (beastObject2 instanceof Alignment || beastObject2 instanceof FilteredAlignment) {
                 for (Object output : beastObject2.getOutputs()) {
                     if (!taboo.contains(output)) {
                         Set<BEASTInterface> ancestors2 = new HashSet<>();
@@ -1958,7 +1955,11 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                         ancestors.addAll(ancestors2);
                     }
                 }
-            }
+            } else if (beastObject2 instanceof StateNode) {
+                Set<BEASTInterface> ancestors2 = new HashSet<>();
+                collectAncestors(beastObject2, ancestors2, taboo);
+                ancestors.addAll(ancestors2);
+            } 
         }
 
         // collect priors
