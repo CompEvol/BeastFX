@@ -587,7 +587,9 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             targetTree.init(stream);
             stream.println();
             
-            stream.print("tree TREE1 = ");
+            stream.print("tree TREE_" + 
+            		topologySettingService.getServiceName() + "_" + 
+            		nodeHeightSettingService.getServiceName() + " = ");
             int[] dummy = new int[1];
             String newick = targetTree.getRoot().toSortedNewick(dummy, true);
             stream.print(newick);
