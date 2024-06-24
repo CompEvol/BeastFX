@@ -2180,15 +2180,15 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
             char c = oldPartition.charAt(0);
             switch (c) {
                 case 's':
-                    newPartition = newContext.siteModel;
+                    newPartition = ".s:" + newContext.siteModel;
                     oldPartition  = oldContext.siteModel;
                     break;
                 case 'c':
-                    newPartition = newContext.clockModel;
+                    newPartition = ".c:" + newContext.clockModel;
                     oldPartition  = oldContext.clockModel;
                     break;
                 case 't':
-                    newPartition = newContext.tree;
+                    newPartition = ".t:" + newContext.tree;
                     oldPartition  = oldContext.tree;
                     break;
             }
@@ -2204,7 +2204,8 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
             // original id does not contain partition info
             return id + "." + newPartition;
         }
-        id = id.substring(0, id.length() - oldPartition.length()) + newPartition;
+        id = id.substring(0, id.lastIndexOf('.')) + newPartition;
+        // id = id.substring(0, id.length() - oldPartition.length()) + newPartition;
         return id;
     }
 
