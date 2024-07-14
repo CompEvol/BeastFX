@@ -42,7 +42,11 @@
       <ComboBox fx:id="fileTypeCombo" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <CheckBox fx:id="decimalCheck" mnemonicParsing="false" text="Convert numbers from  scientific to decimal notation" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <CheckBox fx:id="renumberOutput" mnemonicParsing="false" text="Renumber output states" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <Label fx:id="resampleLabel" text="Resample strategy:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+      <ComboBox fx:id="resampleCombo" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <!--
       <CheckBox fx:id="resampleCheck" mnemonicParsing="false" text="Resample states at lower frequency:" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      -->
       <TextField fx:id="resampleText" GridPane.columnIndex="2" GridPane.rowIndex="5" />
       <Label text="Select input files:" GridPane.rowIndex="6" />
       <TableView fx:id="filesTable" prefHeight="800.0" prefWidth="600.0" GridPane.columnSpan="3" GridPane.rowIndex="7">

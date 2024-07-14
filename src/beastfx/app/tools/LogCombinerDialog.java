@@ -91,8 +91,13 @@ public class LogCombinerDialog extends Console {
         if (!controller.renumberOutputStates()) {
             combiner.m_nSampleInterval = -1;
         }
-        if (controller.isResampling()) {
+        switch (controller.resampleComboState()) {
+        case 1:
             combiner.m_nResample = controller.getResampleFrequency();
+            break;
+        case 2:
+        	combiner.includeEvery = controller.getResampleFrequency();
+            break;
         }
 
         String[] inputFiles = controller.getFileNames();

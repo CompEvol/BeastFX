@@ -40,7 +40,7 @@ public class LogCombiner extends LogAnalyser {
     DecimalFormat format = new DecimalFormat("#.############E0", new DecimalFormatSymbols(Locale.US));
 
     // resample the log files to this frequency (the original sampling frequency must be a factor of this value)
-    int m_nResample = -1;
+    int m_nResample = -1, includeEvery = -1;
 
     private void parseArgs(String[] args) {
         int i = 0;
@@ -85,6 +85,9 @@ public class LogCombiner extends LogAnalyser {
                     } else if (args[i].equals("-resample")) {
                         m_nResample = Integer.parseInt(args[i + 1]);
                         i += 2;
+                    } else if (args[i].equals("-includeEvery")) {
+                        includeEvery = Integer.parseInt(args[i + 1]);
+                        i += 2;
                     } else if (args[i].equals("-renumber")) {
                         m_nSampleInterval = 1;
                         i++;
@@ -93,6 +96,9 @@ public class LogCombiner extends LogAnalyser {
                         throw new IllegalArgumentException("Unrecognised argument:" + args[i]);
                     }
                 }
+            }
+            if (m_nResample > 0 && includeEvery > 0) {
+            	throw new IllegalArgumentException("Only one of -resample and -includeEvery may be specified, not both");
             }
         } catch (IllegalArgumentException e) {
         	throw e;
@@ -181,10 +187,13 @@ public class LogCombiner extends LogAnalyser {
                 	long logState = Long.parseLong(strs[0]);
                     if (m_nSampleInterval < 0 && prevLogState >= 0) {
                         // need to renumber
-                    	if (m_nResample < 0) {
+                    	if (m_nResample < 0 && includeEvery <= 0) {
                     		m_nSampleInterval = (int) (logState - prevLogState);
-                    	} else {
+                    	} else if (m_nResample >= 0){
                     		m_nSampleInterval = m_nResample;
+                    	} else { // includeEvery > 0
+                    		m_nSampleInterval = includeEvery * (int) (logState - prevLogState);
+                    		m_nResample = m_nSampleInterval;
                     	}
                     }
                     prevLogState = logState;
@@ -303,10 +312,13 @@ public class LogCombiner extends LogAnalyser {
                     long logState = Long.parseLong(str2);
                     if (m_nSampleInterval < 0 && prevLogState >= 0) {
                         // need to renumber
-                    	if (m_nResample < 0) {
+                    	if (m_nResample < 0 && includeEvery <= 0) {
                     		m_nSampleInterval = (int) (logState - prevLogState);
-                    	} else {
+                    	} else if (m_nResample >= 0){
                     		m_nSampleInterval = m_nResample;
+                    	} else { // includeEvery > 0
+                    		m_nSampleInterval = includeEvery * (int) (logState - prevLogState);
+                    		m_nResample = m_nSampleInterval; 
                     	}
                    }
                     prevLogState = logState;
@@ -479,15 +491,16 @@ public class LogCombiner extends LogAnalyser {
         return "Usage: LogCombiner -log <file> -n <int> [<options>]\n" +
                 "combines multiple (trace or tree) log files into a single log file.\n" +
                 "options:\n" +
-                "-log <file>      specify the name of the log file, each log file must be specified with separate -log option\n" +
-                "-o <output.log>  specify log file to write into (default output is stdout)\n" +
-                "-b <burnin>      specify the number PERCENTAGE of lines in the log file considered to be burnin (default 10)\n" +
-                "-dir <directory> specify particle directory -- used for particle filtering in BEASTLabs only -- if defined only one log must be specified and the -n option specified\n" +
-                "-n <int>         specify the number of particles, ignored if -dir is not defined\n" +
-                "-resample <int>  specify number of states to resample\n" +
-                "-decimal         flag to indicate numbers should converted from scientific into decimal format\n" +
-                "-renumber        flag to indicate output states should be renumbered\n" +
-                "-help            print this message\n";
+                "-log <file>         specify the name of the log file, each log file must be specified with separate -log option\n" +
+                "-o <output.log>     specify log file to write into (default output is stdout)\n" +
+                "-b <burnin>         specify the number PERCENTAGE of lines in the log file considered to be burnin (default 10)\n" +
+                "-dir <directory>    specify particle directory -- used for particle filtering in BEASTLabs only -- if defined only one log must be specified and the -n option specified\n" +
+                "-n <int>            specify the number of particles, ignored if -dir is not defined\n" +
+                "-resample <int>     specify number of states to resample (only use when not using `includeEvery`)\n" +
+                "-includeEvery <int> specify number of states to be include (only use when not using `resample`)\n" +
+                "-decimal            flag to indicate numbers should converted from scientific into decimal format\n" +
+                "-renumber           flag to indicate output states should be renumbered\n" +
+                "-help               print this message\n";
     }
 
     private void printTitle(String aboutString) {

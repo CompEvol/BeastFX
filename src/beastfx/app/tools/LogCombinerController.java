@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 
 import beast.base.core.ProgramStatus;
+import beastfx.app.util.Alert;
 import beastfx.app.util.FXUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -48,8 +49,11 @@ public class LogCombinerController implements Initializable {
 	@FXML
 	public CheckBox renumberOutput;
 	
+	//@FXML
+	//public CheckBox resampleCheck;
+	
 	@FXML
-	public CheckBox resampleCheck;
+	public ComboBox<String> resampleCombo;
 	
 	@FXML
 	public TextField resampleText;
@@ -92,8 +96,10 @@ public class LogCombinerController implements Initializable {
 		
 		
 		resampleText.setDisable(true);
-        resampleCheck.setOnAction(e -> {
-            resampleText.setDisable(!resampleCheck.isSelected());
+		resampleCombo.setItems(FXCollections.observableArrayList(new String[] {"No resampling", "Resample states at lower frequency", "Include every"}));
+		resampleCombo.getSelectionModel().select(0);
+		resampleCombo.setOnAction(e -> {
+            resampleText.setDisable(resampleCombo.getSelectionModel().getSelectedIndex() == 0);
         });
 
 		addButton.setOnAction(e-> {
@@ -251,12 +257,17 @@ public class LogCombinerController implements Initializable {
         return renumberOutput.isSelected();
     }
 
-    public boolean isResampling() {
-        return resampleCheck.isSelected();
+    public int resampleComboState() {
+        return resampleCombo.getSelectionModel().getSelectedIndex();
     }
 
     public int getResampleFrequency() {
-        return Integer.parseInt(resampleText.getText());
+    	try {
+    		return Integer.parseInt(resampleText.getText());
+    	} catch (NumberFormatException e) {
+    		Alert.showMessageDialog(null, "Could not read the number in the resample field: " + e.getMessage());
+    		throw new RuntimeException(e);
+    	}
     }
 
     public String getOutputFileName() {
