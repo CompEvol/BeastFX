@@ -30,8 +30,6 @@ import java.io.*;
 import java.util.*;
 
 import beastfx.app.tools.Application;
-import beastfx.app.treeannotator.TreeAnnotator0.HeightsSummary;
-import beastfx.app.treeannotator.TreeAnnotator0.Target;
 import beastfx.app.treeannotator.services.NodeHeightSettingService;
 import beastfx.app.treeannotator.services.TopologySettingService;
 import beastfx.app.treeannotator.services.UserTargetTreeTopologyService;
@@ -212,16 +210,28 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             fin = new BufferedReader(new FileReader(new File(inputFileName)));
             lineNr = 0;
             try {
-                while (fin.ready()) {
-                    final String str = nextLine();
-                    if (str == null) {
-                        return;
-                    }
-                    final String lower = str.toLowerCase();
-                    if (lower.matches("^\\s*begin\\s+trees;\\s*$")) {
-                        parseTreesBlock();
-                        return;
-                    }
+                if (isNexus) {
+	                while (fin.ready()) {
+	                    final String str = nextLine();
+	                    if (str == null) {
+	                        return;
+	                    }
+	                    final String lower = str.toLowerCase();
+	                    if (lower.matches("^\\s*begin\\s+trees;\\s*$")) {
+	                        parseTreesBlock();
+	                        return;
+	                    }
+	                }
+                } else {
+                    while (fin.ready() && lineNr < burninCount) {
+                        final String str = nextLine();
+                        if (str == null) {
+                            return;
+                        }
+                        if (str.trim().length() > 2 && !str.trim().startsWith("#")) {
+                        	lineNr++;
+                        }
+                    }                	
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -372,6 +382,10 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
 			String str = nextLine();
     		if (!isNexus) {
                 TreeParser treeParser;
+                if (taxa == null) {
+                	collectTaxaNames(str);
+                }
+            	current++;
 
                 if (origin != -1) {
                     treeParser = new TreeParser(taxa, str, origin, false);
@@ -409,6 +423,50 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                 return treeParser;
             }
     		return null;
+    	}
+    	
+    	private void collectTaxaNames(String str) {
+    		taxa = new ArrayList<>();
+    		int i = 0;
+    		while (i < str.length()) {
+    			char c = str.charAt(i);
+    			switch (c) {
+    			case '(':
+    			case ')':
+    			case ',':
+    				// ignore
+    				i++;
+    				break;
+    			case '[':
+    				// eat up meta data
+    				while (i < str.length() && str.charAt(i) != ']') {
+    					i++;
+    				}
+    				break;
+    			case ':':
+    				// eat up length
+    				while (i < str.length() && !(str.charAt(i) == ')'|| str.charAt(i) == ',')) {
+    					i++;
+    				}
+    				break;
+    			default:
+    				StringBuilder b = new StringBuilder();
+    				boolean done = false;
+    				while (i < str.length() && !done) {
+    					c = str.charAt(i);
+    					done =  c == ')' || c == ':' || c == ',' || c == '(' || c == '[';
+    					if (!done) {
+    						if (c != '\'' && c != '"') {
+    							b.append(c);
+    						}
+    						i++;
+    					} else {
+    						taxa.add(b.toString());
+    					}
+    				}
+    				
+    			}
+    		}		
     	}
     }
     TreeSet treeSet;
