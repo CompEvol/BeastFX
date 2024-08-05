@@ -304,7 +304,9 @@ public class AppLauncher {
   					BEASTClassLoader.classLoader.addJar(jarFile);
   				}
   			}
-  		
+
+  			additionalArgs = processVersionFileArguments(additionalArgs);
+  			
   			Class<?> mainClass = BEASTClassLoader.forName(packageApp.className, "has.main.method");
   			Method mainMethod = mainClass.getMethod("main", String [].class);
 System.err.println("About to invoke " + packageApp.className + " " + mainMethod);
@@ -321,6 +323,34 @@ System.err.println("Done invoking " + packageApp.className);
 
     }
     
+	private String[] processVersionFileArguments(String[] additionalArgs) {
+		// process version file arguments;
+		boolean foundVersionFileArgument = false;
+		for (int i = 0; i < additionalArgs.length; i++) {
+			if (additionalArgs.equals("-version_file")) {
+				additionalArgs[i] = "";
+				i++;
+				while (i < additionalArgs.length && !additionalArgs[i].startsWith("-")) {
+					BEASTClassLoader.addServices(additionalArgs[i]);
+					additionalArgs[i] = "";
+					i++;
+					foundVersionFileArgument = true;
+				}
+			}
+		}
+		if (foundVersionFileArgument) {
+			List<String> args = new ArrayList<>();
+			for (String str : additionalArgs) {
+				if (!str.equals("")) {
+					args.add(str);
+				}
+			}
+			additionalArgs = args.toArray(new String[] {});
+		}
+		return additionalArgs;
+	}
+
+
 	private String sanitise(String property) {
 		// sanitise for windows
 		if (beastfx.app.util.Utils.isWindows()) {
@@ -405,7 +435,6 @@ System.err.println("Done invoking " + packageApp.className);
                             appStore.printAppList(appStore.getPackageApps(), System.out);
                         }
                         System.exit(0);
-
                     default:
                         System.err.print("\nUnsupported option.");
                         appStore.printUsage(System.err);
