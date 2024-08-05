@@ -327,7 +327,7 @@ System.err.println("Done invoking " + packageApp.className);
 		// process version file arguments;
 		boolean foundVersionFileArgument = false;
 		for (int i = 0; i < additionalArgs.length; i++) {
-			if (additionalArgs.equals("-version_file")) {
+			if (additionalArgs[i].equals("-version_file")) {
 				additionalArgs[i] = "";
 				i++;
 				while (i < additionalArgs.length && !additionalArgs[i].startsWith("-")) {
