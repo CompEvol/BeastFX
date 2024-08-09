@@ -668,8 +668,8 @@ public class LogAnalyser {
     }
     
     class CoreRunnable implements java.lang.Runnable {
-        private boolean headerPrinted = false;
-        private int lineNr = 0;
+        static private boolean headerPrinted = false;
+        static private int lineNr = 0;
         int start, end;
         CountDownLatch countDown;
         List<String> files;
