@@ -463,6 +463,8 @@ public class BeastMain extends Console {
             
             if (!doNotRun) {
             	beastMCMC.run();
+            } else {
+            	beastMCMC.validate();
             }
             Log.info.println("Done!");
         } catch (RuntimeException rte) {
