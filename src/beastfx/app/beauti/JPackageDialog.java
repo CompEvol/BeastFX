@@ -371,6 +371,18 @@ public class JPackageDialog extends DialogPane {
             }
 
             try {
+            	try {
+            		populatePackagesToInstall(packageMap, packagesToInstall);
+            	} catch (IllegalArgumentException ex) {
+                    setCursor(Cursor.DEFAULT);
+            		Alert.showMessageDialog(null, "Something went wrong (" + ex.getMessage() + ") "
+            				+ "\n\nPossibly the package is installed by hand and "
+            				+ "there is no package repository containing the package. Such packages "
+            				+ "cannot be upgraded.\n\nSet up the appropriate package repository to "
+            				+ "upgrade the package."
+            				);
+            		return;
+            	}
                 populatePackagesToInstall(packageMap, packagesToInstall);
 
                 prepareForInstall(packagesToInstall, false, null);
