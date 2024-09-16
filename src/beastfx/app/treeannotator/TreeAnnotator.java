@@ -147,8 +147,17 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             } else {
                 BufferedReader fin = new BufferedReader(new FileReader(inputFileName));
                 parsedTrees = new ArrayList<>();
+                current = 0;
                 while (fin.ready()) {
                     String line = fin.readLine().trim();
+
+                    String id = "" + current++;
+                    try {
+                    	int i = line.indexOf("(");
+    	                id = line.substring(5, i).split("=")[0].trim();
+                    } catch (Exception e) {
+                    	// ignore
+                    }
 
                     Tree thisTree;
                     try {
@@ -156,10 +165,12 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                     } catch (ArrayIndexOutOfBoundsException e) {
                         thisTree = new TreeParser(null, line, 1, false);
                     }
-
+                    thisTree.setID(id);
+                    
                     parsedTrees.add(thisTree);
                 }
                 fin.close();
+                current = 0;
             }
 
             int treesToUse = parsedTrees.size() - burninCount;
@@ -403,6 +414,14 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             if (str.trim().toLowerCase().startsWith("tree ")) {
             	current++;
                 final int i = str.indexOf('(');
+
+                String id = "" + current;
+                try {
+	                 id = str.substring(5, i).split("=")[0].trim();
+                } catch (Exception e) {
+                	// ignore
+                }
+                
                 if (i > 0) {
                     str = str.substring(i);
                 }
@@ -419,7 +438,8 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                 }
 
                 //if (translationMap != null) treeParser.translateLeafIds(translationMap);
-
+                treeParser.setID(id);
+                
                 return treeParser;
             }
     		return null;
