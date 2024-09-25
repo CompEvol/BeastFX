@@ -269,6 +269,13 @@ public class BeautiSubTemplate extends BEASTObject {
         for (BeautiConnector connector : template.connectors) {
             doc.disconnect(connector, context);
         }
+        if (template.suppressedInputs.get() != null) {
+            String[] inputs = template.suppressedInputs.get().split(",");
+            for (String input : inputs) {
+                input = input.trim();
+                doc.beautiConfig.suppressBEASTObjects.remove(input);
+            }
+        }
     }
     
     void removeSubNet(Object o)  {
