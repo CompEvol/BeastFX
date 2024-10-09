@@ -2194,7 +2194,7 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
             }
             //oldPartition = oldPartition.substring(oldPartition.indexOf(':') + 1);
         } else {
-            newPartition = newContext.partition;
+            newPartition = "." + newContext.partition;
             oldPartition = oldContext.partition;
         }
         if (id.indexOf('.') < 0 || !(id.endsWith(oldPartition))) {
