@@ -1333,13 +1333,19 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
         	return;
         }
         
-        TreeAnnotator annotator = new TreeAnnotator();
-        Application app = new Application(annotator);
-        annotator.filesInput.determineClass(annotator);
-        app.setDefaultInput(annotator.filesInput);
-        app.parseArgs(args, true);
-        annotator.initAndValidate();
-        annotator.run();
+        try {
+	        TreeAnnotator annotator = new TreeAnnotator();
+	        Application app = new Application(annotator);
+	        annotator.filesInput.determineClass(annotator);
+	        app.setDefaultInput(annotator.filesInput);
+	        app.parseArgs(args, true);
+	        annotator.initAndValidate();
+	        annotator.run();
+        } catch (OutOfMemoryError e) {
+        	Log.warning("TreeAnnotator ran out of memory: " + e.getMessage());
+        	Log.warning("You can subsample the tree set with LogCombiner or provide more memory to fix this.");
+        	Log.warning("See https://www.beast2.org/increasing-memory-usage/ on how to provide more memory");
+        }
     }
 
 	@Override
