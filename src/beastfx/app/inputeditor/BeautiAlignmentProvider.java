@@ -171,6 +171,11 @@ public class BeautiAlignmentProvider extends BEASTObject {
 				//	e.printStackTrace();
 				//}
 				List<BEASTInterface> list = importer.loadFile(file);
+				for (BEASTInterface o : list) {
+					if (o.getID() != null && o.getID().contains(":")) {
+						o.setID(o.getID().replaceAll(":", "-"));
+					}
+				}
 				selectedBEASTObjects.addAll(list);
 			} else {
                 Alert.showMessageDialog(null,

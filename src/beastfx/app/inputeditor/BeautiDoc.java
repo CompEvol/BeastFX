@@ -255,6 +255,11 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                         throw new IllegalArgumentException("Unknown command line argument " + args[i]);
                     String fileName = args[i+1];
                     List<BEASTInterface> results = fastaImporter.loadFile(new File(fileName));
+    				for (BEASTInterface o : results) {
+    					if (o.getID() != null && o.getID().contains(":")) {
+    						o.setID(o.getID().replaceAll(":", "-"));
+    					}
+    				}
                     if (results != null && results.size()==1 && results.get(0) instanceof Alignment)
                         alignments.add((Alignment) results.get(0));
                     i += 2;
