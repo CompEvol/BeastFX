@@ -10,6 +10,7 @@ import beast.pkgmgmt.BEASTClassLoader;
 import beastfx.app.treeannotator.TreeAnnotator.Target;
 import beastfx.app.treeannotator.services.NodeHeightSettingService;
 import beastfx.app.treeannotator.services.TopologySettingService;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -78,9 +79,10 @@ public class Controller implements Initializable {
 		
 //		treeType.getItems().addAll("Maximum clade credibility tree", "Maximum sum of clade credibilities",
 //				"User target tree");
-
-        nodeHeights.setValue("Common Ancestor heights");
-		treeType.setValue("Maximum clade credibility tree");
+		Platform.runLater(() -> {
+			nodeHeights.setValue("Common Ancestor heights");
+			treeType.setValue("Maximum clade credibility tree");
+		});
 	}
 
 	public void run(ActionEvent e) {
@@ -125,12 +127,13 @@ public class Controller implements Initializable {
 	}
 
 	public void refresh(ActionEvent e) {
-		if (!treeType.getValue().equals("User target tree")) {
-			targetTreeFile.setDisable(true);
-			targetTreeFileButton.setDisable(true);
-		} else {
+		// if (!treeType.getValue().equals("User target tree")) {
+		if ("User target tree".equals(treeType.getValue())) {
 			targetTreeFile.setDisable(false);
 			targetTreeFileButton.setDisable(false);
+		} else {
+			targetTreeFile.setDisable(true);
+			targetTreeFileButton.setDisable(true);
 		}
 	}
 
