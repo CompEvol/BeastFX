@@ -551,6 +551,32 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
         topologySettingService = getTopologySettingService();
         nodeHeightSettingService = getNodeHeightSettingService();
 
+     // Get citations, only print if eihter of them is not empty.
+        
+
+        String nodeCitation = nodeHeightSettingService.getCitations();
+ 
+
+        String topoCitation = topologySettingService.getCitations();
+ 
+        if (!nodeCitation.isBlank() || !topoCitation.isBlank()) {
+            System.out.println("======================================================");
+            System.out.println("Please cite the following when using the summary tree:\n");
+            if (!nodeCitation.isBlank()) {
+                System.out.println(nodeCitation);
+            }
+            // If both citations are present, print a separator line
+            if (!nodeCitation.isBlank() && !topoCitation.isBlank()) {
+                System.out.println("\n-----------------------------------------------------\n");
+            }
+            if (!topoCitation.isBlank()) {
+                System.out.println(topoCitation);
+            }
+            System.out.println("======================================================");
+ 
+        }  // Finished printing citations
+ 
+
         this.posteriorLimit = posteriorLimit;
         this.hpd2D = hpd2D;
 

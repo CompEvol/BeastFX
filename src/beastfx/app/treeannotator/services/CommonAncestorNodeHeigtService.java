@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.BitSet;
 
+import beast.base.core.Citation;
 import beast.base.core.Log;
 import beast.base.evolution.tree.Node;
 import beast.base.evolution.tree.Tree;
@@ -13,13 +14,14 @@ import beastfx.app.treeannotator.CladeSystem;
 import beastfx.app.treeannotator.TreeAnnotator;
 import beastfx.app.treeannotator.TreeAnnotator.TreeSet;
 
+@Citation(value = "Heled and Bouckaert (2013). BMC Evolutionary Biology.\nLooking for trees in the forest: summary tree from posterior samples.", DOI = "doi.org/10.1186/1471-2148-13-221")
 public class CommonAncestorNodeHeigtService implements NodeHeightSettingService {
 
 	private int totalTreesUsed;
 	@Override
 	public void setNodeHeights(Tree tree, PrintStream progressStream, TreeAnnotator treeAnnotator)  throws IOException {
-        Log.warning.println("Please cite: Heled and Bouckaert: Looking for trees in the forest:\n" +
-                "summary tree from posterior samples. BMC Evolutionary Biology 2013 13:221.");
+//        Log.warning.println("Please cite: Heled and Bouckaert: Looking for trees in the forest:\n" +
+//                "summary tree from posterior samples. BMC Evolutionary Biology 2013 13:221.");
 
         this.totalTreesUsed = treeAnnotator.getTotalTreesUsed();
 		setTreeHeightsByCA(tree, treeAnnotator.getTreeSet(), progressStream);
