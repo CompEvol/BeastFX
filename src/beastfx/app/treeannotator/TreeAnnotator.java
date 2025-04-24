@@ -33,6 +33,7 @@ import beastfx.app.tools.Application;
 import beastfx.app.treeannotator.services.NodeHeightSettingService;
 import beastfx.app.treeannotator.services.TopologySettingService;
 import beastfx.app.treeannotator.services.UserTargetTreeTopologyService;
+import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.evolution.alignment.TaxonSet;
@@ -54,6 +55,7 @@ import beast.pkgmgmt.PackageManager;
  * 
  * TreeAnnotator ported from BEAST 1
  */
+@Description("TreeAnnotator is a tool for summarising tree sets in by a summary tree and annotating the branches with summary statistics as metadata")
 public class TreeAnnotator extends beast.base.inference.Runnable {
     final public Input<String> heightInput = new Input<> ("height", "name of the method for estimating node heights", "CA");
     final public Input<Integer> burnInPercentageInput = new Input<>("burnin", "percentage of trees to used as burn-in (and will be ignored)", 10);
