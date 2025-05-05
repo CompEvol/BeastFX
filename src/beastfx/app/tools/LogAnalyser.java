@@ -46,6 +46,11 @@ public class LogAnalyser {
      */
     protected List<String>[] m_ranges;
 
+    public List<String>[] getRanges() {return m_ranges;}
+
+    public void setRanges(List<String>[] ranges) {this.m_ranges = ranges;}
+
+
     /**
      * data from log file with burn-in removed *
      */
@@ -152,7 +157,7 @@ public class LogAnalyser {
      *
      * @param args
      * @param burnInPercentage  burnInPercentage typical = 10; percentage of data that can be ignored
-     * @throws IOException 
+     * @throws IOException
      */
     public LogAnalyser(String[] args, int burnInPercentage) throws IOException {
     	this(args, burnInPercentage, false, true);
@@ -178,11 +183,11 @@ public class LogAnalyser {
     public LogAnalyser(String fileName, int burnInPercentage, String [] tags) throws IOException {
     	this(fileName, burnInPercentage, false, true, tags);
     }
-    
+
     public LogAnalyser(String fileName, int burnInPercentage, boolean quiet) throws IOException {
     	this(fileName, burnInPercentage, quiet, true, null);
     }
-    
+
     public LogAnalyser(String fileName, int burnInPercentage, boolean quiet, String [] tags) throws IOException {
     	this(fileName, burnInPercentage, quiet, true, tags);
     }
@@ -194,7 +199,7 @@ public class LogAnalyser {
     public LogAnalyser(String fileName, int burnInPercentage, boolean quiet, boolean calcStats) throws IOException {
     	this(fileName, burnInPercentage, quiet, calcStats, null);
     }
-    
+
     public LogAnalyser(String fileName, int burnInPercentage, boolean quiet, boolean calcStats, String [] tags) throws IOException {
         this.fileName = fileName;
         this.quiet = quiet;
@@ -238,7 +243,7 @@ public class LogAnalyser {
         // grab data from the log, ignoring burn in samples
         m_types = new type[items];
         Arrays.fill(m_types, type.INTEGER);
-        int reported = 0; 
+        int reported = 0;
         while (fin.ready()) {
             str = fin.readLine();
             int i = 0;
@@ -275,7 +280,7 @@ public class LogAnalyser {
                     m_types[i] = type.BOOL;
                 else
                     m_types[i] = type.NOMINAL;
-        
+
         fin.close();
     } // readLogFile
 
@@ -286,7 +291,7 @@ public class LogAnalyser {
     public void calcStats() {
     	calcStats(null);
     }
-    
+
     public void calcStats(String [] tags) {
         logln("\nCalculating statistics\n\n" + BAR);
         int stars = 0;
@@ -317,7 +322,7 @@ public class LogAnalyser {
 	                m_fMean[i] = Double.NaN;
 	                m_fStdDev[i] = Double.NaN;
 	            }
-	
+
 	            if (m_types[i] == type.REAL || m_types[i] == type.INTEGER) {
 	                // calc median, and 95% HPD interval
 	                Double[] sorted = trace.clone();
@@ -336,12 +341,12 @@ public class LogAnalyser {
 	                }
 	                m_f95HPDlow[i] = sorted[hpdIndex];
 	                m_f95HPDup[i] = sorted[hpdIndex + n];
-	
+
 	                // calc effective sample size
 	                m_fACT[i] = ESS.ACT(m_fTraces[i], sampleInterval);
 	                m_fStdError[i] = ESS.stdErrorOfMean(trace, sampleInterval);
 	                m_fESS[i] = trace.length / (m_fACT[i] / sampleInterval);
-	
+
 	                // calc geometric mean
 	                if (sorted[0] > 0) {
 	                    // geometric mean is only defined when all elements are positive
@@ -530,7 +535,7 @@ public class LogAnalyser {
     public void print(PrintStream out) {
     	print(out, null);
     }
-    
+
     public void print(PrintStream out, String [] tags) {
     	// set up header for prefix, if any is specified
     	String prefix = System.getProperty("prefix");
@@ -544,7 +549,7 @@ public class LogAnalyser {
 	    		}
 	    	}
     	}
-    	
+
         try {
             // delay so that stars can be flushed from stderr
             Thread.sleep(100);
@@ -598,7 +603,7 @@ public class LogAnalyser {
         out.println("\t");
     }
 
-    
+
     private boolean matchesTags(String [] tags, int paramIdx) {
     	if (tags == null) {
     		return true;
@@ -611,7 +616,7 @@ public class LogAnalyser {
 		}
 		return false;
     }
-    
+
     /**
      * Display results for single log on one line.
      *
@@ -620,7 +625,7 @@ public class LogAnalyser {
     public void printOneLine(PrintStream out) {
         printOneLine(out, null);
     }
-    
+
     public void printOneLine(PrintStream out, String [] tags) {
         for (int paramIdx=1; paramIdx<m_sLabels.length; paramIdx++) {
 	        if (matchesTags(tags, paramIdx)) {
@@ -666,7 +671,7 @@ public class LogAnalyser {
     	System.out.println("[fileX] log file to analyse. Multiple files are allowed, each is analysed separately");
     	System.exit(0);
     }
-    
+
     class CoreRunnable implements java.lang.Runnable {
         static private boolean headerPrinted = false;
         static private int lineNr = 0;
@@ -675,7 +680,7 @@ public class LogAnalyser {
         List<String> files;
         int burnInPercentage;
         String [] tags;
-        
+
         CoreRunnable(int start, int end, List<String> files, CountDownLatch countDown, int burnInPercentage, String [] tags) {
             this.start = start;
             this.end = end;
@@ -698,12 +703,12 @@ public class LogAnalyser {
                     while (!headerPrinted) {
 						Thread.sleep(500);
                     }
-                    
+
                     synchronized (countDown) {
                     	System.out.print(lineNr + "\t" + files.get(i) + "\t");
                     	lineNr++;
                     	analyser.printOneLine(System.out, tags);
-	                }            		
+	                }
 				} catch (IOException | InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -713,7 +718,7 @@ public class LogAnalyser {
 
     } // CoreRunnable
 
-    
+
     /**
      * @param args
      */
@@ -808,19 +813,19 @@ public class LogAnalyser {
 
                     		}
                     		countDown.await();
-                    		
+
                             // gracefully exit
                             exec.shutdownNow();
                             System.exit(0);
-                            
+
                     	} else {
 	                        for (int idx=0; idx<files.size(); idx++) {
 	                            analyser = new LogAnalyser(files.get(idx), burninPercentage, true, tags);
-	
+
 	                            if (idx == 0) {
 	                                analyser.printOneLineHeader(System.out, tags);
 	                            }
-	
+
 	                            System.out.print(idx + "\t" + files.get(idx) + "\t");
 	                            analyser.printOneLine(System.out, tags);
 	                        }
