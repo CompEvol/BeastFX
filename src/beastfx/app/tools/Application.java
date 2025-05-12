@@ -290,6 +290,7 @@ public class Application extends Console {
 			}
 		}
 
+		myBeastObject.validateInputs();
 	}
 
 	protected void parseArgs(JSONObject args) throws Exception {
