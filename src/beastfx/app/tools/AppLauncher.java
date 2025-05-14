@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -321,7 +322,7 @@ public class AppLauncher {
                 mainMethod.invoke(null, (Object) additionalArgs);
             } catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();
-                if (cause instanceof IllegalArgumentException) {
+                if (cause instanceof IllegalArgumentException || cause instanceof FileNotFoundException) {
                     Log.err("\n[Error]: " + cause.getMessage());
                 } else {
                     Log.err("\n[Unexpected Error]: " + cause.getClass().getSimpleName() + ": " + cause.getMessage());

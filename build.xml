@@ -1,8 +1,8 @@
 <!-- Build BEAST FX. It is also used by Hudson BEAST_FX project. JUnit test is available for this build. -->
 <project basedir="." default="build_jar_all_BeastFX" name="BUILD_BEAST_FX">
 	<description>
-	    Build BEAST FX. 
-            Also used by Hudson BEAST_FX project. 
+	    Build BEAST FX.
+            Also used by Hudson BEAST_FX project.
 	    JUnit test is available for this build.
 	    $Id: build_BEAST_FX.xml $
 	</description>
@@ -18,6 +18,8 @@
 	<property name="beast2path" location="../beast2" />
 	<property name="srcBeast2" location="${beast2path}/src" />
 	<property name="beast2classpath" location="${beast2path}/build" />
+
+	<property name="release_dir" value="release" />
 	<property name="Add_on_dir" value="${release_dir}/add-on" />
 
     <import file="${beast2path}/build.xml" />
@@ -37,7 +39,7 @@
 		<fileset dir="${libFX}" includes="jam.jar"/>
 		<fileset dir="${libFX}" includes="testfx.jar"/>
         <path location="${buildFX}"/>
-        
+
 		<fileset dir="${beast2path}/lib" includes="beagle.jar"/>
 		<fileset dir="${beast2path}/lib" includes="fest.jar"/>
 		<fileset dir="${beast2path}/lib" includes="colt.jar"/>
@@ -68,7 +70,7 @@
 	<target name="cleanBeastFX">
     	<delete dir="${buildFX}" />
 	</target>
-	
+
 	<target name="cleanFX" depends="cleanBeastFX"/>
 
 	<!-- clean previous build, and then compile Java source code, and Juint test -->
@@ -98,7 +100,7 @@
 		<mkdir dir="${buildFX}" />
 
 		<!-- Compile the java code from ${srcFX} into ${buildFX} /bin -->
-		<javac srcdir="${srcFX}" destdir="${buildFX}" classpathref="classpath" 
+		<javac srcdir="${srcFX}" destdir="${buildFX}" classpathref="classpath"
 		       fork="true"
 			   encoding="UTF-8"
 		       memoryinitialsize="256m"
@@ -148,11 +150,11 @@
 		<java jar="${distFX}/BeastFX.jar" fork="true" />
 	</target>
 
-	
+
 	<!-- JUnit test -->
 	<target name="junitBeastFX">
 		<mkdir dir="${report}" />
-		
+
 		<java classpathref="classpath" classname="org.junit.platform.console.ConsoleLauncher" fork="true" failonerror="true">
 			<jvmarg line="-Dbeast.user.package.dir=NONE"/>
 			<jvmarg line="--module-path=${javafx-home}/lib"/>
@@ -161,7 +163,7 @@
             <arg line="-p test.beastfx"/>
 -->
             <arg line="-c test.beastfx.app.beauti.BeautiSimpleTest"/>
-            
+
             <arg line="--reports-dir build/junitreport"/>
         </java>
         <junitreport todir="build/junitreport">
@@ -172,7 +174,7 @@
         </junitreport>
 		<echo message="JUnit test finished." />
 	</target>
-    
+
     <target name="junitreport">
 		<junitreport todir="${report}">
 			<fileset dir="${report}" includes="*.xml"/>
@@ -183,7 +185,7 @@
 
 <!--
             depends="build_jar_all_BeastFX_NoJUnitTest"
--->            
+-->
 	<target name="package" depends="init,compile-all,compile-allBeastFX,dist_all_BEAST,dist_all_BeastFX"
 	        description="release BEAST 2 package version of BeastFX">
 
@@ -211,7 +213,7 @@
 			<fileset file="${distFX}/BEAST.app.src.jar" />
 		</copy>
 		<copy todir="${Add_on_dir}/fxtemplates">
-            <fileset dir="${beast2app}/fxtemplates/" />		
+            <fileset dir="${beast2app}/fxtemplates/" />
 		</copy>
 
 		<jar jarfile="${distFX}/BEAST.app.package.v${version}.zip">
@@ -245,9 +247,9 @@
 
 
 
-    <target name="linux" depends="compile-all,compile-allBeastFX,dist_all_BEAST,dist_all_BeastFX" 
+    <target name="linux" depends="compile-all,compile-allBeastFX,dist_all_BEAST,dist_all_BeastFX"
             description="release Linux/Unix version of BEAST, BEAUTI, TreeAnnotator, LogCombiner">
-        
+
         <delete dir="${Linux_package_dir}" />
         <!-- Create the release directory -->
         <mkdir dir="${Linux_package_dir}" />
@@ -304,7 +306,7 @@
     <!-- Need to either install Launch4j under {BEAST workspace}/${release}
                  or install it in the default directory and change the location of launch4j.dir -->
     <!--depends="build_jar_all_BEAST_NoJUnitTest"-->
-    <target name="windows" depends="init" 
+    <target name="windows" depends="init"
             description="release Windows version of BEAST, BEAUTI, TreeAnnotator, LogCombiner">
 
         <delete dir="${Windows_package_dir}" />
@@ -380,7 +382,7 @@
                   txtFileVersion="${version}"
                   productVersion="${version}.0"
                   txtProductVersion="${version}" >
-                  <!-- to bunle a JRE, copy the desired JRE to folder ../jre 
+                  <!-- to bunle a JRE, copy the desired JRE to folder ../jre
                        (so java.exe is in ../jre/bin/) and uncomment following fragment
                        TODO: needs testing
                   <jre>
@@ -435,7 +437,7 @@
         <copy todir="${Windows_package_dir}/fxtemplates/">
             <fileset dir="${beast2app}/fxtemplates/" />
         </copy>
-        
+
         <!-- same as UoA password -->
 	<input message="Keystore password : " addproperty="storepass"></input>
 	<jsign file="${Windows_package_dir}/${BEAUti_name}.exe"
@@ -566,7 +568,7 @@
     </target>
 
 
-	
+
 	<condition property="isWindows"><os family="windows" /></condition>
 	<condition property="isLinux"><and><os family="unix"/><not><os family="mac"/></not></and></condition>
 	<condition property="isMac"><os family="mac" /></condition>
