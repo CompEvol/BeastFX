@@ -611,8 +611,8 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                     Log.err.println("A tree with a sampled ancestor is found. Turning on\n the sampled ancestor " +
                             "summary analysis.");
                     if (nodeHeightSettingService.getServiceName().equals("CA")) {
-                        throw new RuntimeException("The common ancestor height is not \n available for trees with sampled " +
-                                "ancestors. Please choose \n another height summary option");
+                        throw new RuntimeException("Common ancestor height is unavailable for trees with sampled ancestors.\n" +
+                                "Please select a different height summary option.");
                     }
                 }
                 totalTreesUsed++;
@@ -1485,11 +1485,14 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
         
         try {
         	run(burninPercentage, lowMem, posteriorLimit, hpd2D, targetTreeFileName, inputFileName, outputFileName);
-        //} catch (IOException e) {
-        //	throw e;
         } catch (Exception e) {
-			e.printStackTrace();
-		}
+            String msg = e.getMessage();
+            if (msg != null && msg.contains("Common ancestor height")) {
+                Log.err("[Error]:\n  " + msg.replace("\n", "\n  "));
+            } else {
+                e.printStackTrace();
+            }
+        }
 
 //        if (args.length == 0) {
 //        	// only need exit when in GUI mode
@@ -1650,7 +1653,8 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
     }
 
     private CladeSystem cladeSystem = null;
-    
+
+    // todo is this function irrelevant?
 	public CladeSystem getCladeSystem() {
 		burninPercentage = burnInPercentageInput.get();
         CladeSystem cladeSystem = new CladeSystem();
@@ -1666,8 +1670,8 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
 	                Log.err.println("A tree with a sampled ancestor is found. Turning on\n the sampled ancestor " +
 	                        "summary analysis.");
 	                if (nodeHeightSettingService.getServiceName().equals("CA")) {
-	                    throw new RuntimeException("The common ancestor height is not \n available for trees with sampled " +
-	                            "ancestors. Please choose \n another height summary option");
+                        throw new RuntimeException("Common ancestor height is unavailable for trees with sampled ancestors.\n" +
+                                "Please select a different height summary option.");
 	                }
 	                cladeSystem.setProcessSA(true);
 	            }
