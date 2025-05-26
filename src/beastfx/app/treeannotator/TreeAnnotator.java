@@ -599,7 +599,8 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
         	Log.err.println("Error Parsing Input Tree: " + e.getMessage());
         	return;
         }
-        
+
+        Log.err.println();
         if (!topologySettingService.getServiceName().equals(UserTargetTreeTopologyService.SERVICE_NAME)) {
             // even when a user specified target tree is provided we still need to count the totalTreesUsed for subsequent steps.
             treeSet.reset();
@@ -608,11 +609,22 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                 tree.getLeafNodeCount();
                 if (tree.getDirectAncestorNodeCount() > 0 && !SAmode && processSA) {
                     SAmode = true;
-                    Log.err.println("A tree with a sampled ancestor is found. Turning on\n the sampled ancestor " +
-                            "summary analysis.");
+                    Log.err("""
+                            [Info] A tree with sampled acnestors was detected.
+                                   Turning on sampled ancestor summary analysis.
+                            """
+                    );
                     if (nodeHeightSettingService.getServiceName().equals("CA")) {
                         throw new RuntimeException("Common ancestor height is unavailable for trees with sampled ancestors.\n" +
                                 "Please select a different height summary option.");
+                    }
+                    if (topologySettingService.getServiceName().contains("CCD")) {
+                        Log.err("""
+                                [Warning] Sampled ancestors are not directly supported by CCDs.
+                                          They will be treated as if they were tips of the tree.
+                                          Please interpret the resulting summary tree accordingly.
+                                """
+                        );
                     }
                 }
                 totalTreesUsed++;
