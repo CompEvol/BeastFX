@@ -308,14 +308,16 @@ public class AppLauncher {
                 }
             }
 
-            additionalArgs = processVersionFileArguments(additionalArgs);
+
+            if (additionalArgs == null) {
+                additionalArgs = new String[]{};
+            } else {
+	            additionalArgs = processVersionFileArguments(additionalArgs);
+			}
 
             Class<?> mainClass = BEASTClassLoader.forName(packageApp.className, "has.main.method");
             Method mainMethod = mainClass.getMethod("main", String[].class);
             Log.warning("About to invoke " + packageApp.className + " " + mainMethod);
-            if (additionalArgs == null) {
-                additionalArgs = new String[]{};
-            }
             Log.warning("Args:" + Arrays.toString(additionalArgs));
 
             try {
