@@ -71,6 +71,9 @@ public class NexusImporter implements AlignmentImporter {
 					selectedBEASTObjects.addAll(parser.calibrations);
 				}
 			}
+			if (parser.traitSet != null) {
+				selectedBEASTObjects.add(parser.traitSet);
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Alert.showMessageDialog(null, "Loading of " + file.getPath() + " failed: " + ex.getMessage());

@@ -1089,6 +1089,9 @@ public class BeautiDoc extends BEASTObject implements RequiredInputProvider {
                         // TODO: this might not be a valid type conversion from TreeInterface to Tree
                         Tree tree = (Tree) ((GenericTreeLikelihood) d).treeInput.get();
                         tree.m_traitList.setValue(trait, tree);
+                        List<TraitSet> list = new ArrayList<>();
+                        list.add(trait);
+                        tree.processTraits(list);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
