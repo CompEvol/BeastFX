@@ -269,13 +269,16 @@ public class BeautiSubTemplate extends BEASTObject {
         for (BeautiConnector connector : template.connectors) {
             doc.disconnect(connector, context);
         }
-        if (template.suppressedInputs.get() != null) {
-            String[] inputs = template.suppressedInputs.get().split(",");
-            for (String input : inputs) {
-                input = input.trim();
-                doc.beautiConfig.suppressBEASTObjects.remove(input);
-            }
-        }
+        // this code fixes disappearing parameters bewteen tree priors CompEvol/BeastFX/#89
+        // but doing so removes items like MCMC.state, which then shows up in the MCMC panel
+        // TOOD: fix #89 a better way
+//         if (template.suppressedInputs.get() != null) {
+//             String[] inputs = template.suppressedInputs.get().split(",");
+//             for (String input : inputs) {
+//                 input = input.trim();
+//                 doc.beautiConfig.suppressBEASTObjects.remove(input);
+//             }
+//         }
     }
     
     void removeSubNet(Object o)  {
