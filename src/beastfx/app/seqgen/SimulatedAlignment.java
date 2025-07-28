@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Input.Validate;
+import beast.base.core.Log;
 import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.alignment.Sequence;
 import beast.base.evolution.branchratemodel.BranchRateModel;
@@ -32,7 +33,12 @@ public class SimulatedAlignment extends Alignment {
     final public Input<Integer> m_sequenceLengthInput = new Input<>("sequencelength", "nr of samples to generate (default 1000).", 1000);
     final public Input<String> m_outputFileNameInput = new Input<>(
             "outputFileName",
-            "If provided, simulated alignment is additionally written to this file.");    
+            "If provided, simulated alignment is additionally written to this file.");
+    final public Input<Long> localSeedInput = new Input<>(
+            "seed",
+            "Optional local random seed for simulating this alignment. If not set, global seed is used.",
+            Input.Validate.OPTIONAL
+    );
 
     /**
      * nr of samples to generate *
@@ -87,9 +93,24 @@ public class SimulatedAlignment extends Alignment {
         m_outputFileName = m_outputFileNameInput.get();
         
         sequenceInput.get().clear();
-        
-        simulate();        
-        
+
+        Long customSeed = localSeedInput.get();
+        long originalSeed = Randomizer.getSeed();
+        long seedToUse = customSeed != null ? customSeed : originalSeed;
+
+        if (customSeed != null) {
+            Log.info.println();
+            Log.info.println("Random number seed for alignment simulation: " + customSeed);
+            Log.info.println();
+        }
+
+        try {
+            Randomizer.setSeed(seedToUse);
+            simulate();
+        } finally {
+            Randomizer.setSeed(originalSeed);
+        }
+
         // Write simulated alignment to disk if requested:
         if (m_outputFileName != null) {
             PrintStream pstream;
