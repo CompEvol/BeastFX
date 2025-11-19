@@ -60,7 +60,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
     final public Input<Integer> burnInPercentageInput = new Input<>("burnin", "percentage of trees to used as burn-in (and will be ignored)", 10);
     final public Input<Double> limitInput = new Input<>("limit", "the minimum posterior probability for a node to be annotated", 0.0);
     final public Input<String> topologyInput = new Input<> ("topology", "name of the method for determining topology", "MCC");
-    final public Input<String> targetInput = new Input<> ("target", "target_file_name, specifies a user target tree to be annotated");
+    final public Input<String> targetInput = new Input<> ("target", "target_file_name, specifies a user target tree to be annotated", "");
     final public Input<Boolean> forceDiscreteInput = new Input<> ("forceDiscrete", "forces integer traits to be treated as discrete traits.");
     final public Input<Boolean> lowMemInput = new Input<> ("lowMem", "use less memory, which is a bit slower.");
     final public Input<Double> hpd2DInput = new Input<> ("hpd2D", "the HPD interval to be used for the bivariate traits");
@@ -543,8 +543,6 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                          // HeightsSummary heightsOption,
                          double posteriorLimit,
                          double hpd2D,
-                         // Target targetOption,
-                         String targetTreeFileName,
                          String inputFileName,
                          String outputFileName
     ) throws IOException  {
@@ -614,11 +612,11 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             }
         }
 
-        if (targetTreeFileName != null) {
+        if (targetInput.get() != null && !targetInput.get().isEmpty()) {
             String current = topologySettingService.getServiceName();
             String required = UserTargetTreeTopologyService.SERVICE_NAME;
             if (!required.equals(current)) {
-                System.out.println("Setting topology to be the target tree...");
+                Log.info("Setting topology to be the target tree...");
                 topologyInput.setValue("target", this);
                 topologySettingService = getTopologySettingService();
             }
@@ -1390,8 +1388,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
     	for (String versionFile : versionFileInput.get()) {
     		BEASTClassLoader.addServices(versionFile);
     	}
-    	
-        String targetTreeFileName = null;
+
         String inputFileName = null;
         String outputFileName = null;
 
@@ -1461,10 +1458,6 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             processBivariateAttributes = true;
         }
 
-        if (targetInput.get() != null) {
-            targetTreeFileName = targetInput.get();
-        }
-
         final List<File> args2 = filesInput.get();
 
         switch (args2.size()) {
@@ -1483,9 +1476,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
         }
         
         try {
-        	run(burninPercentage, lowMem, posteriorLimit, hpd2D, targetTreeFileName, inputFileName, outputFileName);
-        //} catch (IOException e) {
-        //	throw e;
+            run(burninPercentage, lowMem, posteriorLimit, hpd2D, inputFileName, outputFileName);
         } catch (Exception e) {
 			e.printStackTrace();
 		}
