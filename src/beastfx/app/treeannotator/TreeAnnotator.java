@@ -614,15 +614,17 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             }
         }
 
-        Tree targetTree;
         if (targetTreeFileName != null) {
-            treeSet = new FastTreeSet(targetTreeFileName, 0);
-            treeSet.reset();
-            targetTree = treeSet.next();
-        } else {
-            targetTree = topologySettingService.setTopology(treeSet, progressStream, this);
+            String current = topologySettingService.getServiceName();
+            String required = UserTargetTreeTopologyService.SERVICE_NAME;
+            if (!required.equals(current)) {
+                System.out.println("Setting topology to be the target tree...");
+                topologyInput.setValue("target", this);
+                topologySettingService = getTopologySettingService();
+            }
         }
 
+        Tree targetTree = topologySettingService.setTopology(treeSet, progressStream, this);
         cladeSystem = getCladeSystem(targetTree);
 
 //        progressStream.println("Collecting node information...");
@@ -685,7 +687,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
 
         progressStream.println("Writing annotated tree....");
 
-        
+
         processMetaData(targetTree.getRoot());
         try {
             final PrintStream stream = outputFileName != null ?
@@ -694,17 +696,9 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             targetTree.init(stream);
             stream.println();
 
-            if (targetTreeFileName != null) {
-                int dotIndex = targetTreeFileName.lastIndexOf('.');
-                String treeName = (dotIndex == -1) ? targetTreeFileName : targetTreeFileName.substring(0, dotIndex);
-                stream.print("tree TREE_" +
-                        treeName + "_" +
-                        nodeHeightSettingService.getServiceName() + " = ");
-            } else {
-                stream.print("tree TREE_" +
+            stream.print("tree TREE_" +
                         topologySettingService.getServiceName() + "_" +
                         nodeHeightSettingService.getServiceName() + " = ");
-            }
             int[] dummy = new int[1];
             String newick = targetTree.getRoot().toSortedNewick(dummy, true);
             stream.print(newick);
