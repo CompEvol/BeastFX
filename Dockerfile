@@ -24,7 +24,7 @@
 #   docker run --platform linux/arm64/v8 --entrypoint /bin/bash -it -p 5900:5900 beastfx_testing
 
 
-FROM openjdk:8
+FROM eclipse-temurin:8-jdk
 
 RUN apt-get update
 # Install stuff required later
@@ -32,7 +32,7 @@ RUN apt-get install -y curl git
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV USER root
+ENV USER=root
 
 WORKDIR /root/BeastFX
 
@@ -84,7 +84,7 @@ RUN chmod 600 /root/.vnc/passwd
 
 ADD . ./
 
-ENV DISPLAY :2
+ENV DISPLAY=:2
 
 RUN echo "#!/bin/bash\n" \
         "export USER=root\n" \
