@@ -128,15 +128,15 @@ public class TAGui extends Console {
 	            TreeAnnotator ta = new TreeAnnotator();
 	            ta.topologyInput.setValue(targetOption, ta);
 	            ta.heightInput.setValue(heightsOption, ta);
-	            ta.run(burninPercentage,
+                ta.targetInput.setValue(targetTreeFileName, ta);
+
+                ta.run(burninPercentage,
 	            		lowMem,
-	                    //heightsOption,
 	                    posteriorLimit,
 	                    hpd2D,
-	                    //targetOption,
-	                    targetTreeFileName,
 	                    inputFileName,
-	                    outputFileName);
+	                    outputFileName
+                );
 
 	        } catch (Exception ex) {
 	            Log.err.println("Exception: " + ex.getMessage());
