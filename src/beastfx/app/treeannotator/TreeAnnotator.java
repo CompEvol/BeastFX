@@ -36,7 +36,6 @@ import beastfx.app.treeannotator.services.UserTargetTreeTopologyService;
 import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.core.Log;
-import beast.base.evolution.alignment.TaxonSet;
 import beast.base.evolution.tree.Node;
 import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeParser;
@@ -61,7 +60,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
     final public Input<Integer> burnInPercentageInput = new Input<>("burnin", "percentage of trees to used as burn-in (and will be ignored)", 10);
     final public Input<Double> limitInput = new Input<>("limit", "the minimum posterior probability for a node to be annotated", 0.0);
     final public Input<String> topologyInput = new Input<> ("topology", "name of the method for determining topology", "MCC");
-    final public Input<String> targetInput = new Input<> ("target", "target_file_name, specifies a user target tree to be annotated");
+    final public Input<String> targetInput = new Input<> ("target", "target_file_name, specifies a user target tree to be annotated", "");
     final public Input<Boolean> forceDiscreteInput = new Input<> ("forceDiscrete", "forces integer traits to be treated as discrete traits.");
     final public Input<Boolean> lowMemInput = new Input<> ("lowMem", "use less memory, which is a bit slower.");
     final public Input<Double> hpd2DInput = new Input<> ("hpd2D", "the HPD interval to be used for the bivariate traits");
@@ -544,8 +543,6 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                          // HeightsSummary heightsOption,
                          double posteriorLimit,
                          double hpd2D,
-                         // Target targetOption,
-                         String targetTreeFileName,
                          String inputFileName,
                          String outputFileName
     ) throws IOException  {
@@ -553,12 +550,8 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
         topologySettingService = getTopologySettingService();
         nodeHeightSettingService = getNodeHeightSettingService();
 
-     // Get citations, only print if eihter of them is not empty.
-        
-
+        // Get citations, only print if either of them is not empty.
         String nodeCitation = nodeHeightSettingService.getCitations();
- 
-
         String topoCitation = topologySettingService.getCitations();
  
         if (!nodeCitation.isBlank() || !topoCitation.isBlank()) {
@@ -619,11 +612,19 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             }
         }
 
-        Tree targetTree = topologySettingService.setTopology(treeSet, progressStream, this);
+        if (targetInput.get() != null && !targetInput.get().isEmpty()) {
+            String current = topologySettingService.getServiceName();
+            String required = UserTargetTreeTopologyService.SERVICE_NAME;
+            if (!required.equals(current)) {
+                Log.info("Setting topology to be the target tree...");
+                topologyInput.setValue("target", this);
+                topologySettingService = getTopologySettingService();
+            }
+        }
 
-     
+        Tree targetTree = topologySettingService.setTopology(treeSet, progressStream, this);
         cladeSystem = getCladeSystem(targetTree);
-        
+
 //        progressStream.println("Collecting node information...");
 //        progressStream.println("0              25             50             75            100");
 //        progressStream.println("|--------------|--------------|--------------|--------------|");
@@ -684,7 +685,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
 
         progressStream.println("Writing annotated tree....");
 
-        
+
         processMetaData(targetTree.getRoot());
         try {
             final PrintStream stream = outputFileName != null ?
@@ -692,10 +693,10 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                     System.out;
             targetTree.init(stream);
             stream.println();
-            
-            stream.print("tree TREE_" + 
-            		topologySettingService.getServiceName() + "_" + 
-            		nodeHeightSettingService.getServiceName() + " = ");
+
+            stream.print("tree TREE_" +
+                        topologySettingService.getServiceName() + "_" +
+                        nodeHeightSettingService.getServiceName() + " = ");
             int[] dummy = new int[1];
             String newick = targetTree.getRoot().toSortedNewick(dummy, true);
             stream.print(newick);
@@ -1175,7 +1176,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
     private final List<TreeAnnotationPlugin> beastObjects = new ArrayList<>();
 
     Set<String> attributeNames = new HashSet<>();
-    TaxonSet taxa = null;
+//    TaxonSet taxa = null;
 
     static boolean processBivariateAttributes = true;
     
@@ -1387,8 +1388,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
     	for (String versionFile : versionFileInput.get()) {
     		BEASTClassLoader.addServices(versionFile);
     	}
-    	
-        String targetTreeFileName = null;
+
         String inputFileName = null;
         String outputFileName = null;
 
@@ -1453,20 +1453,12 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
             hpd2D = hpd2DInput.get();
             if (hpd2D <= 0 || hpd2D >=1) {
             	Log.err.println("hpd2D is a fraction and should be in between 0.0 and 1.0.");
-            	System.exit(1);            	
+                System.exit(1);
             }
             processBivariateAttributes = true;
         }
 
-
-//        Target target = Target.MAX_CLADE_CREDIBILITY;
-//        if (targetInput.get() != null) {
-//            target = Target.USER_TARGET_TREE;
-//            targetTreeFileName = arguments.getStringOption("target");
-//        }
-
         final List<File> args2 = filesInput.get();
-        		
 
         switch (args2.size()) {
             case 2:
@@ -1484,9 +1476,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
         }
         
         try {
-        	run(burninPercentage, lowMem, posteriorLimit, hpd2D, targetTreeFileName, inputFileName, outputFileName);
-        //} catch (IOException e) {
-        //	throw e;
+            run(burninPercentage, lowMem, posteriorLimit, hpd2D, inputFileName, outputFileName);
         } catch (Exception e) {
 			e.printStackTrace();
 		}
