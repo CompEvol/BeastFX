@@ -37,6 +37,7 @@
 	<path id="classpath">
 		<fileset dir="${libFX}" includes="jam.jar"/>
 		<fileset dir="${libFX}" includes="testfx.jar"/>
+		<fileset dir="${libFX}" includes="javafx*.jar"/>
         <path location="${buildFX}"/>
 
 		<fileset dir="${beast2path}/lib" includes="beagle.jar"/>
