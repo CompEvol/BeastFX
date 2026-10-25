@@ -241,7 +241,7 @@ public class TreeAnnotator extends beast.base.inference.Runnable {
                             return;
                         }
                         if (str.trim().length() > 2 && !str.trim().startsWith("#")) {
-                        	lineNr++;
+                        	current++;
                         }
                     }                	
                 }
