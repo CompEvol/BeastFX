@@ -28,7 +28,10 @@ MutationRatePrior/index/=Priors/MutationRatePrior/
                 <shape               spec='parameter.RealParameter' id='gammaShape.s:$(n)' value='1.0' lower="0.1" estimate='false'/>
             </plugin>
 
-            <prior id='MutationRatePrior.s:$(n)' x='@mutationRate.s:$(n)'><distr spec="OneOnX"/></prior>
+            <prior id='MutationRatePrior.s:$(n)' x='@mutationRate.s:$(n)'><distr spec="beast.base.inference.distribution.LogNormalDistributionModel" meanInRealSpace='false'>
+                <parameter name='M' value="0.0" estimate='false'/>
+                <parameter name='S' value="8.0" estimate='false'/>
+            </distr></prior>
             <prior id='GammaShapePrior.s:$(n)' x='@gammaShape.s:$(n)'><distr spec="beast.base.inference.distribution.Exponential" mean='1'/></prior>
             <prior id='PropInvariantPrior.s:$(n)' x='@proportionInvariant.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
 

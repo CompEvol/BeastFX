@@ -3,6 +3,7 @@ package beastfx.app.inputeditor;
 
 
 import beast.base.core.BEASTInterface;
+import beast.base.inference.parameter.RealParameter;
 import beast.base.core.Input;
 import beast.base.core.Log;
 import beast.base.evolution.branchratemodel.BranchRateModel;
@@ -278,7 +279,13 @@ public class ParameterInputEditor extends BEASTObjectInputEditor {
             	
             	PartitionContext context = new PartitionContext(id.substring("parameter.".length()));
             	Log.warning.println(context + " " + id);
-            	doc.beautiConfig.hyperPriorTemplate.createSubNet(context, true);
+            	// A log-normal hyperprior and a scale operator suit a positive parameter. Legacy
+            	// parameters often have no lower bound even when positive (e.g. a LogNormal's S),
+            	// so a parameter counts as positive if its lower bound is >= 0 or its value is > 0;
+            	// otherwise (e.g. a LogNormal's M = 0) it gets a normal hyperprior and a
+            	// random-walk operator, since a scale operator cannot move a value of 0.
+            	boolean positive = !(parameter2 instanceof RealParameter rp) || rp.getLower() >= 0 || rp.getValue() > 0;
+            	(positive ? doc.beautiConfig.hyperPriorTemplate : doc.beautiConfig.realHyperPriorTemplate).createSubNet(context, true);
             }
         	hardSync();
             refreshPanel();

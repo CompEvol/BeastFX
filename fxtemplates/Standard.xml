@@ -269,8 +269,14 @@ ClusterTree/clusterType/,
                 </branchRateModel>
             </plugin>
 
-	        <prior id='ClockPrior.c:$(n)' x='@clockRate.c:$(n)'><distr spec="beast.base.inference.distribution.Uniform" upper='Infinity'/></prior>
-	        <prior id='MutationRatePrior.s:$(n)' x='@mutationRate.s:$(n)'><distr spec="OneOnX"/></prior>
+	        <prior id='ClockPrior.c:$(n)' x='@clockRate.c:$(n)'><distr spec="beast.base.inference.distribution.LogNormalDistributionModel" meanInRealSpace='false'>
+                <parameter name='M' value="0.0" estimate='false'/>
+                <parameter name='S' value="8.0" estimate='false'/>
+            </distr></prior>
+	        <prior id='MutationRatePrior.s:$(n)' x='@mutationRate.s:$(n)'><distr spec="beast.base.inference.distribution.LogNormalDistributionModel" meanInRealSpace='false'>
+                <parameter name='M' value="0.0" estimate='false'/>
+                <parameter name='S' value="8.0" estimate='false'/>
+            </distr></prior>
 
             <!-- tree and its properties -->
             <taxonset id='TaxonSet.$(n)' spec='beast.base.evolution.alignment.TaxonSet' alignment='@$(n)' />
@@ -309,7 +315,10 @@ ClusterTree/clusterType/,
             <operator id='YuleModelWilsonBalding.t:$(n)' spec='WilsonBalding' weight="3" tree="@Tree.t:$(n)"/>
 
 
-            <prior id='YuleBirthRatePrior.t:$(n)' x='@birthRate.t:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='Infinity'/></prior>
+            <prior id='YuleBirthRatePrior.t:$(n)' x='@birthRate.t:$(n)'><distr spec="beast.base.inference.distribution.LogNormalDistributionModel" meanInRealSpace='false'>
+                <parameter name='M' value="0.0" estimate='false'/>
+                <parameter name='S' value="8.0" estimate='false'/>
+            </distr></prior>
             <prior id='GammaShapePrior.s:$(n)' x='@gammaShape.s:$(n)'><distr spec="beast.base.inference.distribution.Exponential"><mean spec="parameter.RealParameter" estimate="false" value="1.0"/></distr></prior>
             <prior id='PropInvariantPrior.s:$(n)' x='@proportionInvariant.s:$(n)'><distr spec="beast.base.inference.distribution.Uniform" lower='0' upper='1'/></prior>
   		    <operator id='YuleBirthRateScaler.t:$(n)' spec='kernel.BactrianScaleOperator' scaleFactor="0.75" weight="3" parameter="@birthRate.t:$(n)"/>
