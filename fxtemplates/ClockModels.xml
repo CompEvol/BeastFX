@@ -115,7 +115,7 @@
 			</if>
 		</logger>
 
-      <prior id='MeanRRatePrior.c:s$(n)' x='@meanClockRate.c:$(n)'>
+      <prior id='MeanRRatePrior.c:$(n)' x='@meanClockRate.c:$(n)'>
                   <Gamma  name="distr">
                   	<alpha spec="parameter.RealParameter" value="0.01" estimate="false"/> 
                   	<beta  spec="parameter.RealParameter" value="100.0" estimate="false"/>
