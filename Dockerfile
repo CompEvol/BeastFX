@@ -54,13 +54,13 @@ RUN cd /tmp/ \
   		
 
 # Install Apache Ant
-RUN curl -k -fsSL -o /tmp/apache-ant-bin.tar.gz https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.14-bin.tar.gz \
+RUN curl -k -fsSL -o /tmp/apache-ant-bin.tar.gz https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.14-bin.tar.gz \
   && cd /tmp/ \
   && tar fxz /tmp/apache-ant-bin.tar.gz \
   && mv /tmp/apache-ant-1.10.14 /tmp/apache-ant
 
 ENV JAVA_HOME=/tmp/jdk17.0.5-linux
-ENV ANT_HOME=/tmp/apache-ant-1.10.12
+ENV ANT_HOME=/tmp/apache-ant
 ENV PATH=/tmp/jdk17.0.5-linux/bin:/tmp/apache-ant/bin:$PATH
 
 
