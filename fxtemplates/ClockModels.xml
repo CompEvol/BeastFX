@@ -92,7 +92,7 @@
 		<distribution idref="prior">
 			<if cond='inlikelihood(RandomLocalClock.c:$(n))'>
 				<!-- prior on rates -->
-			    <prior id='RRatesPrior.c:s$(n)' name="distribution" x='@clockrates.c:$(n)'>
+			    <prior id='RRatesPrior.c:$(n)' name="distribution" x='@clockrates.c:$(n)'>
 			        <Gamma id="Gamma.0" name="distr">
 			            <parameter estimate="false" name="alpha">0.5</parameter>
 			            <parameter estimate="false" name="beta">2.0</parameter>
@@ -115,7 +115,7 @@
 			</if>
 		</logger>
 
-      <prior id='MeanRRatePrior.c:s$(n)' x='@meanClockRate.c:$(n)'>
+      <prior id='MeanRRatePrior.c:$(n)' x='@meanClockRate.c:$(n)'>
                   <Gamma  name="distr">
                   	<alpha spec="parameter.RealParameter" value="0.01" estimate="false"/> 
                   	<beta  spec="parameter.RealParameter" value="100.0" estimate="false"/>
