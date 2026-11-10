@@ -91,7 +91,12 @@ public class BeautiConfig extends BEASTObject {
     public List<BeautiSubTemplate> subTemplates;
     public List<BeautiAlignmentProvider> alignmentProvider;
 
+    /** hyperprior for a positive parameter: LogNormal(0, 8) with a scale operator */
     public BeautiSubTemplate hyperPriorTemplate = null;
+    /** hyperprior for a parameter that may be negative (e.g. a LogNormal's M = 0):
+     *  Normal(0, 8) with a random-walk operator. Uses the same IDs as hyperPriorTemplate,
+     *  so BeautiDoc's sync rules (which apply hyperPriorTemplate's connectors) work for both. */
+    public BeautiSubTemplate realHyperPriorTemplate = null;
     
     @Override
     public void initAndValidate() {
@@ -125,6 +130,7 @@ public class BeautiConfig extends BEASTObject {
         try {
             XMLParser parser = new XMLParser();
         	hyperPriorTemplate = (BeautiSubTemplate) parser.parseBareFragment(HYPER_PRIOR_XML, true);
+        	realHyperPriorTemplate = (BeautiSubTemplate) new XMLParser().parseBareFragment(REAL_HYPER_PRIOR_XML, true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -134,14 +140,43 @@ public class BeautiConfig extends BEASTObject {
 	final static String HYPER_PRIOR_XML = 
     		"    <beast version='2.0'\n" +
     		"    	       namespace='beastfx.app.beauti:beast.base.core:beast.base.evolution.operators:beast.base.inference.distribution'>\n" +
-    		"    	<!-- Parameter Hyper Prior -->\n" +
+    		"    	<!-- Hyper prior for a positive parameter: LogNormal(0, 8) in log space (median 1, 95% from 1.6e-7 to 6.4e6) -->\n" +
     		"    	        <subtemplate spec='beastfx.app.inputeditor.BeautiSubTemplate' id='HyperPrior' class='beast.base.inference.distribution.Prior' mainid='HyperPrior.$(n)'>\n" +
     		"    	<![CDATA[\n" +
     		"    	        <beastObject id='HyperPrior.$(n)' spec='Prior' x='@parameter.$(n)'>\n" +
-    		"    	            <distr spec='OneOnX'/>\n" +
+    		"    	            <distr spec='beast.base.inference.distribution.LogNormalDistributionModel' meanInRealSpace='false'>\n" +
+    		"    	                <parameter name='M' value='0.0' estimate='false'/>\n" +
+    		"    	                <parameter name='S' value='8.0' estimate='false'/>\n" +
+    		"    	            </distr>\n" +
     		"    			</beastObject>\n" +
     		"\n" +
     		"    	        <beastObject id='hyperScaler.$(n)' spec='ScaleOperator' scaleFactor='0.5' weight='0.1' parameter='@parameter.$(n)'/>\n" +
+    		"    	]]>\n" +
+    		"    	            <connect spec='beastfx.app.inputeditor.BeautiConnector' srcID='parameter.$(n)'            targetID='state' inputName='stateNode' if='inposterior(parameter.$(n)) and parameter.$(n)/estimate=true'/>\n" +
+    		"\n" +
+    		"    	            <connect spec='beastfx.app.inputeditor.BeautiConnector' srcID='hyperScaler.$(n)'          targetID='mcmc' inputName='operator' if='inposterior(parameter.$(n)) and parameter.$(n)/estimate=true'>Scale hyper parameter $(n)</connect>\n" +
+    		"\n" +
+    		"    	            <connect spec='beastfx.app.inputeditor.BeautiConnector' srcID='parameter.$(n)'            targetID='tracelog' inputName='log'  if='inposterior(parameter.$(n)) and parameter.$(n)/estimate=true'/>\n" +
+    		"    	            <connect spec='beastfx.app.inputeditor.BeautiConnector' srcID='HyperPrior.$(n)'           targetID='tracelog' inputName='log'  if='inposterior(parameter.$(n)) and parameter.$(n)/estimate=true'/>\n" +
+    		"\n" +
+    		"    	            <connect spec='beastfx.app.inputeditor.BeautiConnector' srcID='HyperPrior.$(n)'           targetID='prior' inputName='distribution' if='inposterior(parameter.$(n)) and parameter.$(n)/estimate=true'>Hyper prior for parameter $(n)</connect>\n" +
+    		"    	        </subtemplate>\n" +
+    		"    	</beast>\n";
+
+	final static String REAL_HYPER_PRIOR_XML = 
+    		"    <beast version='2.0'\n" +
+    		"    	       namespace='beastfx.app.beauti:beast.base.core:beast.base.evolution.operators:beast.base.inference.distribution'>\n" +
+    		"    	<!-- Hyper prior for a parameter that may be negative: Normal(0, 8), with a random-walk operator, since a scale operator cannot cross zero -->\n" +
+    		"    	        <subtemplate spec='beastfx.app.inputeditor.BeautiSubTemplate' id='HyperPrior' class='beast.base.inference.distribution.Prior' mainid='HyperPrior.$(n)'>\n" +
+    		"    	<![CDATA[\n" +
+    		"    	        <beastObject id='HyperPrior.$(n)' spec='Prior' x='@parameter.$(n)'>\n" +
+    		"    	            <distr spec='beast.base.inference.distribution.Normal'>\n" +
+    		"    	                <parameter name='mean' value='0.0' estimate='false'/>\n" +
+    		"    	                <parameter name='sigma' value='8.0' estimate='false'/>\n" +
+    		"    	            </distr>\n" +
+    		"    			</beastObject>\n" +
+    		"\n" +
+    		"    	        <beastObject id='hyperScaler.$(n)' spec='beast.base.inference.operator.RealRandomWalkOperator' windowSize='1.0' weight='0.1' parameter='@parameter.$(n)'/>\n" +
     		"    	]]>\n" +
     		"    	            <connect spec='beastfx.app.inputeditor.BeautiConnector' srcID='parameter.$(n)'            targetID='state' inputName='stateNode' if='inposterior(parameter.$(n)) and parameter.$(n)/estimate=true'/>\n" +
     		"\n" +
@@ -161,6 +196,7 @@ public class BeautiConfig extends BEASTObject {
         }
         doc.setExpertMode(isExpertInput.get());
         hyperPriorTemplate.doc = doc;
+        realHyperPriorTemplate.doc = doc;
     }
 
     public void clear() {

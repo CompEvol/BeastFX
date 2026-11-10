@@ -30,10 +30,10 @@
     		    </operator>
 
 		        <prior id='ClockPrior.c:$(n)' x='@clockRate.c:$(n)'>
-                  <Gamma  name="distr">
-                  	<alpha spec="parameter.RealParameter" value="0.01" estimate="false"/> 
-                  	<beta  spec="parameter.RealParameter" value="100.0" estimate="false"/>
-                  </Gamma>
+                  <distr spec="beast.base.inference.distribution.LogNormalDistributionModel" meanInRealSpace='false'>
+                <parameter name='M' value="0.0" estimate='false'/>
+                <parameter name='S' value="8.0" estimate='false'/>
+            </distr>
               </prior>
 ]]>
             <connect srcID='clockRate.c:$(n)' targetID='state' inputName='stateNode'
@@ -116,10 +116,10 @@
 		</logger>
 
       <prior id='MeanRRatePrior.c:s$(n)' x='@meanClockRate.c:$(n)'>
-                  <Gamma  name="distr">
-                  	<alpha spec="parameter.RealParameter" value="0.01" estimate="false"/> 
-                  	<beta  spec="parameter.RealParameter" value="100.0" estimate="false"/>
-                  </Gamma>
+                  <distr spec="beast.base.inference.distribution.LogNormalDistributionModel" meanInRealSpace='false'>
+                <parameter name='M' value="0.0" estimate='false'/>
+                <parameter name='S' value="8.0" estimate='false'/>
+            </distr>
       </prior>
 ]]>
             <connect srcID='Indicators.c:$(n)' targetID='state' inputName='stateNode'
